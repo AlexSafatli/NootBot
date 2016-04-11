@@ -1,6 +1,7 @@
 package net.dirtydeeds.discordsoundboard.service;
 
 import net.dirtydeeds.discordsoundboard.ChatSoundBoardListener;
+import net.dirtydeeds.discordsoundboard.EntranceSoundBoardListener;
 import net.dirtydeeds.discordsoundboard.MainWatch;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
@@ -13,11 +14,13 @@ import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
+
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,10 +60,14 @@ public class SoundPlayerImpl implements Observer {
         initialized = false;
     }
     
-    public void setBotListener(ChatSoundBoardListener listener) {
+    public void addChatListener(ChatSoundBoardListener listener) {
         bot.addEventListener(listener);
     }
 
+    public void addEntranceListener(EntranceSoundBoardListener listener) {
+        bot.addEventListener(listener);
+    }
+    
     /**
      * Sets volume of the player.
      * @param volume - The volume value to set.
@@ -276,8 +283,14 @@ public class SoundPlayerImpl implements Observer {
 
             if (Boolean.valueOf(appProperties.getProperty("respond_to_chat_commands"))) {
                 ChatSoundBoardListener chatListener = new ChatSoundBoardListener(this);
-                this.setBotListener(chatListener);
+                this.addChatListener(chatListener);
             }
+            if (Boolean.valueOf(appProperties.getProperty("respond_to_user_entrances"))) {
+            	EntranceSoundBoardListener entranceListener = new EntranceSoundBoardListener(this);
+            	this.addEntranceListener(entranceListener);
+            }
+            
+            
         }
         catch (IllegalArgumentException e) {
             LOG.warn("The config was not populated. Please enter an email and password.");
