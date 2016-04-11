@@ -104,8 +104,12 @@ public class SoundPlayerImpl implements Observer {
      */
     public void playFileForChatCommand(String fileName, GuildMessageReceivedEvent event) throws Exception {
         if (event != null) {
-            moveToUserIdsChannel(event);
-            playFile(fileName);
+        	if (availableSounds.get(fileName) != null) {
+        		moveToUserIdsChannel(event);
+        		playFile(fileName);
+        	} else {
+        		event.getChannel().sendMessage("No sound file to play with that name.");
+        	}
         }
     }
 
@@ -156,7 +160,7 @@ public class SoundPlayerImpl implements Observer {
         }
 
         if (channel == null) {
-            event.getChannel().sendMessage("There isn't a VoiceChannel in this Guild with the name: event.getMessage().getChannelId() ");
+            event.getChannel().sendMessage("Could not move to your channel!");
             throw new Exception("Problem moving to requested users channel" + event.getAuthor().getId());
         }
 
