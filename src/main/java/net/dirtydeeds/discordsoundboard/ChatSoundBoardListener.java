@@ -49,7 +49,7 @@ public class ChatSoundBoardListener extends ListenerAdapter {
             try {
                 String fileNameRequested = message.substring(1, message.length());
                 LOG.info("Attempting to play file: " + fileNameRequested + ".");
-                soundPlayer.playFileForEvent(fileNameRequested, event);
+                soundPlayer.playFileForChatCommand(fileNameRequested, event);
             } catch (Exception e) {
                 e.printStackTrace();
             }

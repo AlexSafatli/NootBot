@@ -26,6 +26,7 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
 
     public void onVoiceJoin(VoiceJoinEvent event)
     {        
+    	
         String joined = event.getUser().getUsername().toLowerCase();
 
         //Respond
@@ -40,10 +41,18 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
             }
             if (!fileToPlay.equals("")) {
             	LOG.info("Responding to entrance of " + joined + " with " + fileToPlay);
-            	soundPlayer.playFile(fileToPlay);
+            	try {
+            		soundPlayer.playFileForEntrance(fileToPlay, event);
+            	} catch (Exception e) {
+            		e.printStackTrace();
+            	}
             } else {
             	LOG.info("Could not find any sound that starts with " + joined + ", so playing 'garrus'.");
-            	soundPlayer.playFile("garrus");
+            	try {
+            		soundPlayer.playFileForEntrance("garrus", event);
+            	} catch (Exception e) {
+            		e.printStackTrace();
+            	}
             }
         }
     }

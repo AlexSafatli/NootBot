@@ -13,6 +13,7 @@ import net.dv8tion.jda.audio.player.Player;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.voice.VoiceJoinEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
 import org.springframework.stereotype.Service;
@@ -101,13 +102,26 @@ public class SoundPlayerImpl implements Observer {
      *              the sound back in.
      * @throws Exception
      */
-    public void playFileForEvent(String fileName, GuildMessageReceivedEvent event) throws Exception {
+    public void playFileForChatCommand(String fileName, GuildMessageReceivedEvent event) throws Exception {
         if (event != null) {
             moveToUserIdsChannel(event);
             playFile(fileName);
         }
     }
 
+    /**
+     * Plays the fileName requested for a voice channel entrance.
+     * @param fileName - The name of the file to play.
+     * @param event -  The even that triggered the sound playing request. The event is used to find the channel to play
+     *              the sound back in.
+     * @throws Exception
+     */
+    public void playFileForEntrance(String fileName, VoiceJoinEvent event) throws Exception {
+        if (event != null && bot.getAudioManager().isConnected() && bot.getAudioManager().getConnectedChannel().equals(event.getChannel())) {
+            playFile(fileName);
+        }
+    }
+    
     /**
      * Moves to the specified voice channel.
      * @param channel - The channel specified.
