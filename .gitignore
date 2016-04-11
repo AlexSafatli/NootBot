@@ -1,4 +1,7 @@
 out/
+.settings/
+.project
+.classpath
 *.iml
 tokens.json
 .idea/
@@ -7,3 +10,4 @@ src/main/resources/app.properties
 build
 .gradle/
 sounds/*
+/bin/
