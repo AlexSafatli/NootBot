@@ -13,11 +13,13 @@ public class SoundFile {
     final String soundFileId;
     final File soundFile;
     final String category;
+    final String description; 
 
-    public SoundFile(String soundFileId, File soundFile, String category) {
+    public SoundFile(String soundFileId, File soundFile, String category, String description) {
         this.soundFileId = soundFileId;
         this.soundFile = soundFile;
         this.category = category;
+        this.description = description;
     }
 
     public String getSoundFileId() {
@@ -30,6 +32,10 @@ public class SoundFile {
 
     public String getCategory() {
         return category;
+    }
+    
+    public String getDescription() {
+    	return description;
     }
 
     @JsonIgnore

@@ -57,15 +57,10 @@ public class SoundPlayerImpl implements Observer {
         initializeDiscordBot();
         availableSounds = getFileList();
         setSoundPlayerVolume(75);
-
         initialized = false;
     }
     
-    public void addChatListener(ChatSoundBoardListener listener) {
-        bot.addEventListener(listener);
-    }
-
-    public void addEntranceListener(EntranceSoundBoardListener listener) {
+    public void addListener(Object listener) {
         bot.addEventListener(listener);
     }
     
@@ -76,7 +71,7 @@ public class SoundPlayerImpl implements Observer {
     public void setSoundPlayerVolume(int volume) {
         playerVolume = (float) volume / 100;
     }
-
+    
     /**
      * Joins the channel of the user provided and then plays a file.
      * @param fileName - The name of the file to play.
@@ -96,6 +91,20 @@ public class SoundPlayerImpl implements Observer {
     }
 
     /**
+     * Plays a random sound file.
+     */
+    public String playRandomFile(GuildMessageReceivedEvent event) throws Exception {
+        if (event != null) {
+        	Object[] fileNames = availableSounds.keySet().toArray();
+        	String toPlay = (String)fileNames[new Random().nextInt(fileNames.length)];
+    		moveToUserIdsChannel(event);
+    		playFile(toPlay);
+    		return toPlay;
+        }
+        return null;
+    }
+    
+    /**
      * Plays the fileName requested.
      * @param fileName - The name of the file to play.
      * @param event -  The even that triggered the sound playing request. The event is used to find the channel to play
@@ -103,12 +112,12 @@ public class SoundPlayerImpl implements Observer {
      * @throws Exception
      */
     public void playFileForChatCommand(String fileName, GuildMessageReceivedEvent event) throws Exception {
-        if (event != null) {
+        if (event != null && !fileName.isEmpty()) {
         	if (availableSounds.get(fileName) != null) {
         		moveToUserIdsChannel(event);
         		playFile(fileName);
         	} else {
-        		event.getChannel().sendMessage("No sound file to play with that name.");
+        		event.getChannel().sendMessage("No sound file to play with name '" + fileName + "'.");
         	}
         }
     }
@@ -123,6 +132,7 @@ public class SoundPlayerImpl implements Observer {
     public void playFileForEntrance(String fileName, VoiceJoinEvent event) throws Exception {
         if (event != null && bot.getAudioManager().isConnected() && bot.getAudioManager().getConnectedChannel().equals(event.getChannel())) {
             playFile(fileName);
+            event.getGuild().getPublicChannel().sendMessage("Welcome, " + event.getUser().getUsername() + ".");
         }
     }
     
@@ -250,9 +260,7 @@ public class SoundPlayerImpl implements Observer {
             LOG.info("Loading from " + System.getProperty("user.dir") + "/sounds");
             Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
 
-            if (!initialized) {
-                mainWatch.watchDirectoryPath(soundFilePath);
-            }
+            if (!initialized) mainWatch.watchDirectoryPath(soundFilePath);
 
             if (!soundFilePath.toFile().exists()) {
                 System.out.println("creating directory: " + soundFilePath.toFile().toString());
@@ -280,7 +288,7 @@ public class SoundPlayerImpl implements Observer {
                     LOG.info(fileName);
                     File file = filePath.toFile();
                     String parent = file.getParentFile().getName();
-                    SoundFile soundFile = new SoundFile(fileName, filePath.toFile(), parent);
+                    SoundFile soundFile = new SoundFile(fileName, filePath.toFile(), parent, "");
                     returnFiles.put(fileName, soundFile);
                 }
             });
@@ -301,11 +309,11 @@ public class SoundPlayerImpl implements Observer {
 
             if (Boolean.valueOf(appProperties.getProperty("respond_to_chat_commands"))) {
                 ChatSoundBoardListener chatListener = new ChatSoundBoardListener(this);
-                this.addChatListener(chatListener);
+                this.addListener(chatListener);
             }
             if (Boolean.valueOf(appProperties.getProperty("respond_to_user_entrances"))) {
             	EntranceSoundBoardListener entranceListener = new EntranceSoundBoardListener(this);
-            	this.addEntranceListener(entranceListener);
+            	this.addListener(entranceListener);
             }
             
             

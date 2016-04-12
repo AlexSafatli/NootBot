@@ -24,8 +24,8 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
         this.soundPlayer = soundPlayer;
     }
 
-    public void onVoiceJoin(VoiceJoinEvent event)
-    {        
+    @SuppressWarnings("rawtypes")
+	public void onVoiceJoin(VoiceJoinEvent event) {        
     	
         String joined = event.getUser().getUsername().toLowerCase();
 

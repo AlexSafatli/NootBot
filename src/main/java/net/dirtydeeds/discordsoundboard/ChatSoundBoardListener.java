@@ -17,6 +17,7 @@ import java.util.Set;
 public class ChatSoundBoardListener extends ListenerAdapter {
     
     public static final SimpleLog LOG = SimpleLog.getLog("ChatListener");
+    private static final int MAX_FILES_TO_LIST_IN_SINGLE_MESSAGE = 50;
     
     private SoundPlayerImpl soundPlayer;
 
@@ -24,25 +25,37 @@ public class ChatSoundBoardListener extends ListenerAdapter {
         this.soundPlayer = soundPlayer;
     }
 
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event)
-    {        
-        String message = event.getMessage().getContent();
-        
+    @SuppressWarnings("rawtypes")
+	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {      
+    	
+        String message = event.getMessage().getContent().toLowerCase();
         StringBuilder sb = new StringBuilder();
 
         //Respond
         if (message.startsWith("?list")) {
             Set<Map.Entry<String, SoundFile>> entrySet = soundPlayer.getAvailableSoundFiles().entrySet();
             if (entrySet.size() > 0) {
-                sb.append("```Type any of the following into the chat to play the sound: \n");
+            	int currentFileCount = 0;
+            	sb.append(entrySet.size()).append(" files found. ");
+                sb.append("Type any of the following to play the sound:\n\n```");
                 for (Map.Entry entry : entrySet) {
-                    sb.append("?").append(entry.getKey()).append("\n");
+                    ++currentFileCount;
+                	sb.append("?").append(entry.getKey()).append("\n");
+                	// Keep a maximum list of 50 files to show to avoid oversized messages.
+                    if (currentFileCount >= MAX_FILES_TO_LIST_IN_SINGLE_MESSAGE) {
+                    	sb.append("```");
+                    	event.getChannel().sendMessage(sb.toString());
+                    	sb = new StringBuilder();
+                    	currentFileCount = 0;
+                    }
                 }
-                sb.append("```");
-                LOG.info("Responding to chat request.");
-                event.getChannel().sendMessage(sb.toString());
+                if (currentFileCount > 0) {
+                	event.getChannel().sendMessage(sb.toString());
+                }
+                LOG.info("Responding to list request.");
             } else {
-                sb.append("The soundboard has no available sounds to play.");
+                sb.append("There are no available sounds to play.");
+                event.getChannel().sendMessage(sb.toString());
             }
         //If the command is not list and starts with ? try and play that "command" or sound file.
         } else if (message.startsWith("?")) {
@@ -53,6 +66,16 @@ public class ChatSoundBoardListener extends ListenerAdapter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else if (message.startsWith(".random")) {
+        	try {
+        		String fileName = soundPlayer.playRandomFile(event);
+        		event.getChannel().sendMessage("Played random sound file `" + fileName + "`.");
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
         }
+        
+        if (message.startsWith(".") || message.startsWith("?")) event.getMessage().deleteMessage();
+        
     }
 }
