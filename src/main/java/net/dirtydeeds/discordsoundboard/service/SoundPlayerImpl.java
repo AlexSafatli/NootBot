@@ -117,7 +117,7 @@ public class SoundPlayerImpl implements Observer {
         		moveToUserIdsChannel(event);
         		playFile(fileName);
         	} else {
-        		event.getChannel().sendMessage("No sound file to play with name '" + fileName + "'.");
+        		event.getChannel().sendMessage("No sound file to play with name `" + fileName + "`.");
         	}
         }
     }
