@@ -25,7 +25,7 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
         if (entrySet.size() > 0) {
         	int currentLineSize = 0;
         	sb.append(entrySet.size()).append(" files found. ");
-            sb.append("Type any of the following to play the sound:\n\n```");
+            sb.append("Type any of the following to play the sound.\n\n```");
             for (Map.Entry entry : entrySet) {
             	String name = (String)entry.getKey();
             	int lengthOfAdd = 2 + name.length();
@@ -39,6 +39,7 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
                 	event.getChannel().sendMessage(sb.toString());
                 	sb = new StringBuilder();
                 	sb.append("```");
+                	currentLineSize = sb.length();
                 }
                 currentLineSize += lengthOfAdd;
             	sb.append("?").append(name).append(" ");

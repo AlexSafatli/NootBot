@@ -159,8 +159,8 @@ public class SoundboardBot {
         }
 
         if (channel == null) {
-            event.getChannel().sendMessage("Could not move to your channel!");
-            throw new Exception("Problem moving to requested users channel" + event.getAuthor().getId());
+            event.getChannel().sendMessage("Could not move to your channel " + event.getAuthor().getAsMention() + "!");
+            throw new Exception("Problem moving to requested user " + event.getAuthor().getId());
         }
 
         moveToChannel(channel);
@@ -180,9 +180,7 @@ public class SoundboardBot {
      */
     public void playFile(String fileName) {
         SoundFile fileToPlay = availableSounds.get(fileName);
-        if (fileToPlay != null) {
-            playFile(fileToPlay.getSoundFile());
-        }
+        if (fileToPlay != null) playFile(fileToPlay.getSoundFile());
     }
     
     public Path getSoundsPath() {
@@ -212,27 +210,13 @@ public class SoundboardBot {
     private void playFile(File audioFile) {
         try {
             Player player = new FilePlayer(audioFile);
-
-            //Provide the handler to send audio.
-            //NOTE: You don't have to set the handler each time you create an audio connection with the
-            // AudioManager. Handlers persist between audio connections. Furthermore, handler playback is also
-            // paused when a connection is severed (closeAudioConnection), however it would probably be better
-            // to pause the play back yourself before severing the connection (If you are using a player class
-            // you could just call the pause() method. Otherwise, make canProvide() return false).
-            // Once again, you don't HAVE to pause before severing an audio connection,
-            // but it probably would be good to do.
             bot.getAudioManager().setSendingHandler(player);
-
-            //Start playback. This will only start after the AudioConnection has completely connected.
-            //NOTE: "completely connected" is not just joining the VoiceChannel. Think about when your Discord
-            // client joins a VoiceChannel. You appear in the channel lobby immediately, but it takes a few
-            // moments before you can start communicating.
             player.play();
             player.setVolume(playerVolume);
         }
         catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
-        }
+		}
     }
 
     //Join the users current channel.
@@ -249,6 +233,10 @@ public class SoundboardBot {
     private void initializeDiscordBot(String username, String password) {
         try {
 			bot = new JDABuilder().setEmail(username).setPassword(password).buildBlocking();
+	        ChatSoundBoardListener chatListener = new ChatSoundBoardListener(this);
+	        this.addListener(chatListener);
+	        EntranceSoundBoardListener entranceListener = new EntranceSoundBoardListener(this);
+	        this.addListener(entranceListener);
 		} catch (LoginException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -256,10 +244,6 @@ public class SoundboardBot {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-        ChatSoundBoardListener chatListener = new ChatSoundBoardListener(this);
-        this.addListener(chatListener);
-        EntranceSoundBoardListener entranceListener = new EntranceSoundBoardListener(this);
-        this.addListener(entranceListener);
         LOG.info("Initialized bot with username " + username);
     }
 

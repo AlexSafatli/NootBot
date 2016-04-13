@@ -18,7 +18,8 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	public void process(GuildMessageReceivedEvent event) {
 		if (!isApplicableCommand(event)) return;
 		handleEvent(event, event.getMessage().getContent().toLowerCase());
-		event.getMessage().deleteMessage();
+		try { event.getMessage().deleteMessage(); }
+		catch (Exception e) { e.printStackTrace(); }
 	}
 	
 	public boolean isApplicableCommand(String cmd) {
