@@ -2,7 +2,6 @@ package net.dirtydeeds.discordsoundboard.service;
 
 import net.dirtydeeds.discordsoundboard.ChatSoundBoardListener;
 import net.dirtydeeds.discordsoundboard.EntranceSoundBoardListener;
-import net.dirtydeeds.discordsoundboard.MainWatch;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dv8tion.jda.JDA;
@@ -16,18 +15,11 @@ import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.events.voice.VoiceJoinEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -37,27 +29,24 @@ import java.util.*;
  *
  * This class handles moving into channels and playing sounds. Also, it loads the available sound files.
  */
-@Service
-public class SoundPlayerImpl implements Observer {
+public class SoundboardBot {
 
-    public static final SimpleLog LOG = SimpleLog.getLog("SoundPlayerImpl");
+    public static final SimpleLog LOG = SimpleLog.getLog("SoundboardBot");
     
-    private Properties appProperties;
     private JDA bot;
-    private float playerVolume = (float) .75;
+    private String owner;
     private Map<String, SoundFile> availableSounds;
-    private final MainWatch mainWatch;
-    private boolean initialized = false;
+    private float playerVolume = (float) .75;
 
-    @Inject
-    public SoundPlayerImpl(MainWatch mainWatch) {
-        this.mainWatch = mainWatch;
-        this.mainWatch.addObserver(this);
-        loadProperties();
-        initializeDiscordBot();
-        availableSounds = getFileList();
+    public SoundboardBot(String username, String password, String owner, Map<String, SoundFile> availableSounds) {
+        this.owner = owner;
+    	this.availableSounds = availableSounds;
+    	initializeDiscordBot(username, password);
         setSoundPlayerVolume(75);
-        initialized = false;
+    }
+    
+    public String getOwner() {
+    	return this.owner;
     }
     
     public void addListener(Object listener) {
@@ -79,7 +68,7 @@ public class SoundPlayerImpl implements Observer {
      */
     public void playFileForUser(String fileName, String userName) {
         if (userName == null || userName.isEmpty()) {
-            userName = appProperties.getProperty("username_to_join_channel");
+            userName = owner;
         }
         try {
             joinCurrentChannel(userName);
@@ -195,12 +184,16 @@ public class SoundPlayerImpl implements Observer {
             playFile(fileToPlay.getSoundFile());
         }
     }
-
+    
+    public Path getSoundsPath() {
+    	return Paths.get(System.getProperty("user.dir") + "/sounds");
+    }
+    
     /**
      * Get a list of users
      */
     public List<net.dirtydeeds.discordsoundboard.beans.User> getUsers() {
-        String userNameToSelect = appProperties.getProperty("username_to_join_channel");
+        String userNameToSelect = owner;
         List<User> users = new ArrayList<>();
         for (net.dv8tion.jda.entities.User user : bot.getUsers()) {
             if (user.getOnlineStatus().equals(OnlineStatus.ONLINE)) {
@@ -252,110 +245,22 @@ public class SoundPlayerImpl implements Observer {
         }
     }
 
-    //This method loads the files. This checks if you are running from a .jar file and loads from the /sounds dir relative
-    //to the jar file. If not it assumes you are running from code and loads relative to your resource dir.
-    private Map<String,SoundFile> getFileList() {
-        Map<String,SoundFile> returnFiles = new TreeMap<>();
-        try {
-            LOG.info("Loading from " + System.getProperty("user.dir") + "/sounds");
-            Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
-
-            if (!initialized) mainWatch.watchDirectoryPath(soundFilePath);
-
-            if (!soundFilePath.toFile().exists()) {
-                System.out.println("creating directory: " + soundFilePath.toFile().toString());
-                boolean result = false;
-
-                try{
-                    soundFilePath.toFile().mkdir();
-                    result = true;
-                }
-                catch(SecurityException se){
-                    LOG.fatal("Could not create directory: " + soundFilePath.toFile().toString());
-                }
-                if(result) {
-                    LOG.info("DIR: " + soundFilePath.toFile().toString() + " created.");
-                }
-            }
-
-            mainWatch.watchDirectoryPath(soundFilePath);
-
-            Files.walk(soundFilePath).forEach(filePath -> {
-                if (Files.isRegularFile(filePath)) {
-                    String fileName = filePath.getFileName().toString();
-                    fileName = fileName.substring(fileName.indexOf("/") + 1, fileName.length());
-                    fileName = fileName.substring(0, fileName.indexOf("."));
-                    LOG.info(fileName);
-                    File file = filePath.toFile();
-                    String parent = file.getParentFile().getName();
-                    SoundFile soundFile = new SoundFile(fileName, filePath.toFile(), parent, "");
-                    returnFiles.put(fileName, soundFile);
-                }
-            });
-        } catch (IOException e) {
-            LOG.fatal(e.toString());
-            e.printStackTrace();
-        }
-        return returnFiles;
-    }
-
     //Logs the discord bot in and adds the ChatSoundBoardListener if the user configured it to be used
-    private void initializeDiscordBot() {
+    private void initializeDiscordBot(String username, String password) {
         try {
-            bot = new JDABuilder()
-                    .setEmail(appProperties.getProperty("username"))
-                    .setPassword(appProperties.getProperty("password"))
-                    .buildBlocking();
-
-            if (Boolean.valueOf(appProperties.getProperty("respond_to_chat_commands"))) {
-                ChatSoundBoardListener chatListener = new ChatSoundBoardListener(this);
-                this.addListener(chatListener);
-            }
-            if (Boolean.valueOf(appProperties.getProperty("respond_to_user_entrances"))) {
-            	EntranceSoundBoardListener entranceListener = new EntranceSoundBoardListener(this);
-            	this.addListener(entranceListener);
-            }
-            
-            
-        }
-        catch (IllegalArgumentException e) {
-            LOG.warn("The config was not populated. Please enter an email and password.");
-        }
-        catch (LoginException e) {
-            LOG.warn("The provided email / password combination was incorrect. Please provide valid details.");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+			bot = new JDABuilder().setEmail(username).setPassword(password).buildBlocking();
+		} catch (LoginException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        ChatSoundBoardListener chatListener = new ChatSoundBoardListener(this);
+        this.addListener(chatListener);
+        EntranceSoundBoardListener entranceListener = new EntranceSoundBoardListener(this);
+        this.addListener(entranceListener);
+        LOG.info("Initialized bot with username " + username);
     }
 
-    //Loads in the properties from the app.properties file
-    private void loadProperties() {
-        appProperties = new Properties();
-        InputStream stream = null;
-        try {
-            stream = new FileInputStream(System.getProperty("user.dir") + "/app.properties");
-            appProperties.load(stream);
-            stream.close();
-            return;
-        } catch (FileNotFoundException e) {
-            LOG.warn("Could not find app.properties file.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (stream == null) {
-            LOG.warn("Loading app.properties file from resources folder");
-            try {
-                stream = this.getClass().getResourceAsStream("/app.properties");
-                appProperties.load(stream);
-                stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        availableSounds = getFileList();
-    }
 }

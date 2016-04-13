@@ -1,14 +1,14 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
-import net.dirtydeeds.discordsoundboard.service.SoundPlayerImpl;
+import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
-public class PlaySoundProcessor extends ChatSoundBoardProcessor {
+public class PlaySoundProcessor extends AbstractChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("PlaySoundProcessor");
 	
-	public PlaySoundProcessor(String prefix, SoundPlayerImpl soundPlayer) {
+	public PlaySoundProcessor(String prefix, SoundboardBot soundPlayer) {
 		super(prefix, soundPlayer);
 	}
 

@@ -1,14 +1,14 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
-import net.dirtydeeds.discordsoundboard.service.SoundPlayerImpl;
+import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 
-public abstract class ChatSoundBoardProcessor {
+public abstract class AbstractChatCommandProcessor implements ChatCommandProcessor {
 
 	private final String prefix;
-	protected SoundPlayerImpl soundPlayer;
+	protected SoundboardBot soundPlayer;
 	
-	public ChatSoundBoardProcessor(String prefix, SoundPlayerImpl soundPlayer) {
+	public AbstractChatCommandProcessor(String prefix, SoundboardBot soundPlayer) {
 		this.prefix = prefix;
 		this.soundPlayer = soundPlayer;
 	}

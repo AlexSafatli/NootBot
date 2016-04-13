@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
-import net.dirtydeeds.discordsoundboard.service.SoundPlayerImpl;
+import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.events.voice.VoiceJoinEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.dv8tion.jda.utils.SimpleLog;
@@ -18,9 +18,9 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
     
     public static final SimpleLog LOG = SimpleLog.getLog("EntranceListener");
     
-    private SoundPlayerImpl soundPlayer;
+    private SoundboardBot soundPlayer;
 
-    public EntranceSoundBoardListener(SoundPlayerImpl soundPlayer) {
+    public EntranceSoundBoardListener(SoundboardBot soundPlayer) {
         this.soundPlayer = soundPlayer;
     }
 
@@ -47,12 +47,7 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
             		e.printStackTrace();
             	}
             } else {
-            	LOG.info("Could not find any sound that starts with " + joined + ", so playing 'garrus'.");
-            	try {
-            		soundPlayer.playFileForEntrance("garrus", event);
-            	} catch (Exception e) {
-            		e.printStackTrace();
-            	}
+            	LOG.info("Could not find any sound that starts with " + joined + ", so ignoring.");
             }
         }
     }

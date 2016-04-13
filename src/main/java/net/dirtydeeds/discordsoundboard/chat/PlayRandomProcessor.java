@@ -1,11 +1,11 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
-import net.dirtydeeds.discordsoundboard.service.SoundPlayerImpl;
+import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 
-public class PlayRandomProcessor extends ChatSoundBoardProcessor {
+public class PlayRandomProcessor extends AbstractChatCommandProcessor {
 
-	public PlayRandomProcessor(String prefix, SoundPlayerImpl soundPlayer) {
+	public PlayRandomProcessor(String prefix, SoundboardBot soundPlayer) {
 		super(prefix, soundPlayer);
 	}
 
