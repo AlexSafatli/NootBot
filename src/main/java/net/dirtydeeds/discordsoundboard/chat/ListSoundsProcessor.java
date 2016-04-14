@@ -39,7 +39,8 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
 		sb.append("**" + category + "**\n```");
 		int currentLineSize = 0;
 		for (SoundFile file : soundFiles) {
-			String name = file.getSoundFile().getName().substring(0, file.getSoundFile().getName().indexOf("."));
+			String filename = file.getSoundFile().getName();
+			String name = filename.substring(0, filename.indexOf("."));
         	int lengthOfAdd = 1 + name.length();
         	// Keep a maximum line size of 80 characters.
         	if (currentLineSize + lengthOfAdd > MAX_LINE_LENGTH) {
