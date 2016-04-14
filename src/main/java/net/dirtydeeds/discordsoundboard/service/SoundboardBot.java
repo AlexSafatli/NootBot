@@ -173,6 +173,14 @@ public class SoundboardBot {
     public Map<String, SoundFile> getAvailableSoundFiles() {
         return availableSounds;
     }
+    
+    public List<String> getSoundCategories() {
+    	LinkedList<String> categories = new LinkedList<String>();
+    	for (SoundFile soundFile : availableSounds.values()) {
+    		if (!categories.contains(soundFile.getCategory())) categories.add(soundFile.getCategory());
+    	}
+    	return categories;
+    }
 
     /**
      * Play file name requested. Will first try to load the file from the map of available sounds.

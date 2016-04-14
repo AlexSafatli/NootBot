@@ -23,8 +23,7 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 	
 	public boolean isApplicableCommand(String cmd) {
-		String cmp = cmd.toLowerCase();
-		return (cmp.startsWith(prefix) && cmp.length() > 1);
+		return (cmd.toLowerCase().startsWith(prefix) && cmd.length() > 1);
 	}
 	
 	public boolean isApplicableCommand(GuildMessageReceivedEvent event) {

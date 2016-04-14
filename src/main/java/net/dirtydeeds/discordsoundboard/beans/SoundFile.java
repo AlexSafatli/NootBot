@@ -31,7 +31,7 @@ public class SoundFile {
     }
 
     public String getCategory() {
-        return category;
+        return category.replace("\\", "");
     }
     
     public String getDescription() {
