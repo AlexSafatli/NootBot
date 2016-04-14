@@ -35,6 +35,7 @@ public class SoundboardBot {
     
     private JDA bot;
     private String owner;
+    private Player soundPlayer;
     private Map<String, SoundFile> availableSounds;
     private float playerVolume = (float) .75;
 
@@ -67,12 +68,9 @@ public class SoundboardBot {
      * @param userName - The name of the user to lookup what VoiceChannel they are in.
      */
     public void playFileForUser(String fileName, String userName) {
-        if (userName == null || userName.isEmpty()) {
-            userName = owner;
-        }
+        if (userName == null || userName.isEmpty()) userName = owner;
         try {
             joinCurrentChannel(userName);
-            
             playFile(fileName);
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +104,7 @@ public class SoundboardBot {
         		moveToUserIdsChannel(event);
         		playFile(fileName);
         	} else {
-        		event.getChannel().sendMessage("No sound file to play with name `" + fileName + "`.");
+        		event.getChannel().sendMessage("No sound file to play with name `" + fileName + "` " + event.getAuthor().getAsMention() + ".");
         	}
         }
     }
@@ -122,6 +120,8 @@ public class SoundboardBot {
         if (event != null && bot.getAudioManager().isConnected() && bot.getAudioManager().getConnectedChannel().equals(event.getChannel())) {
             playFile(fileName);
             event.getGuild().getPublicChannel().sendMessage("Welcome, " + event.getUser().getUsername() + ".");
+        } else {
+        	LOG.info("Was going to play file for entrance of " + event.getUser().getUsername() + " but bot was not in channel yet.");
         }
     }
     
@@ -209,10 +209,11 @@ public class SoundboardBot {
     //Play the file provided.
     private void playFile(File audioFile) {
         try {
-            Player player = new FilePlayer(audioFile);
-            bot.getAudioManager().setSendingHandler(player);
-            player.play();
-            player.setVolume(playerVolume);
+            if (soundPlayer != null) soundPlayer.pause();
+            soundPlayer = new FilePlayer(audioFile);
+            bot.getAudioManager().setSendingHandler(soundPlayer);
+            soundPlayer.play();
+            soundPlayer.setVolume(playerVolume);
         }
         catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
@@ -237,11 +238,7 @@ public class SoundboardBot {
 	        this.addListener(chatListener);
 	        EntranceSoundBoardListener entranceListener = new EntranceSoundBoardListener(this);
 	        this.addListener(entranceListener);
-		} catch (LoginException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
+		} catch (LoginException | IllegalArgumentException | InterruptedException e) {
 			e.printStackTrace();
 		}
         LOG.info("Initialized bot with username " + username);

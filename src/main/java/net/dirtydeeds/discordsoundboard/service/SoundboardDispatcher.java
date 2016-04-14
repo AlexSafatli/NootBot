@@ -43,7 +43,8 @@ public class SoundboardDispatcher implements Observer {
         this.mainWatch = mainWatch;
         this.mainWatch.addObserver(this);
         bots = new LinkedList<SoundboardBot>();
-        availableSounds = getFileList();
+        availableSounds = new TreeMap<>();
+        getFileList();
 		loadProperties();
 		startServices();
     }
@@ -99,8 +100,7 @@ public class SoundboardDispatcher implements Observer {
     
     //This method loads the files. This checks if you are running from a .jar file and loads from the /sounds dir relative
     //to the jar file. If not it assumes you are running from code and loads relative to your resource dir.
-    private Map<String,SoundFile> getFileList() {
-        Map<String,SoundFile> returnFiles = new TreeMap<>();
+    private void getFileList() {
         try {
             LOG.info("Loading from " + System.getProperty("user.dir") + "/sounds");
             Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
@@ -121,7 +121,8 @@ public class SoundboardDispatcher implements Observer {
             }
 
             mainWatch.watchDirectoryPath(soundFilePath);
-
+            availableSounds.clear();
+            
             Files.walk(soundFilePath).forEach(filePath -> {
                 if (Files.isRegularFile(filePath)) {
                     String fileName = filePath.getFileName().toString();
@@ -131,20 +132,19 @@ public class SoundboardDispatcher implements Observer {
                     File file = filePath.toFile();
                     String parent = file.getParentFile().getName();
                     SoundFile soundFile = new SoundFile(fileName, filePath.toFile(), parent, "");
-                    returnFiles.put(fileName, soundFile);
+                    availableSounds.put(fileName, soundFile);
                 }
             });
         } catch (IOException e) {
             LOG.fatal(e.toString());
             e.printStackTrace();
         }
-        return returnFiles;
     }
 
     
     @Override
     public void update(Observable o, Object arg) {
-        availableSounds = getFileList();
+        getFileList();
     }
 	
 }
