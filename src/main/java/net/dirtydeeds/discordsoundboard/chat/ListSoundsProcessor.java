@@ -69,7 +69,7 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
         if (soundFiles.size() > 0) {
         	sb.append(soundFiles.size()).append(" files found. ");
             sb.append("They are organized by category. Type any of these commands to play the sound.\n\n");
-            event.getChannel().sendMessage(sb.toString());
+            soundPlayer.sendMessageToChannel(sb.toString(), event.getChannel());
             for (String category : categories) {
             	for (String msg : getMessagesForCategory(category, categoryFiles.get(category))) {
                 	event.getChannel().sendMessage(msg);
@@ -77,7 +77,7 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
             }
             LOG.info("Responded to list request.");
         } else {
-            event.getChannel().sendMessage("There are no available sounds to play.");
+            soundPlayer.sendMessageToChannel("There are no available sounds to play.", event.getChannel());
         }
 	}
 

@@ -15,7 +15,9 @@ public class PlaySoundProcessor extends AbstractChatCommandProcessor {
 	protected void handleEvent(GuildMessageReceivedEvent event, String message) {
         try {
             String fileNameRequested = message.substring(1, message.length());
-            LOG.info("Attempting to play file: " + fileNameRequested + ".");
+            LOG.info("Attempting to play file: " + fileNameRequested + " for " + 
+            		event.getAuthor().getUsername() + " in " + event.getChannel().getName() + 
+            		"#" + event.getGuild().getName() + ".");
             soundPlayer.playFileForChatCommand(fileNameRequested, event);
         } catch (Exception e) {
             e.printStackTrace();

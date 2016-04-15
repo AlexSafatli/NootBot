@@ -12,7 +12,7 @@ public class PlayRandomProcessor extends AbstractChatCommandProcessor {
 	protected void handleEvent(GuildMessageReceivedEvent event, String message) {
     	try {
     		String fileName = soundPlayer.playRandomFile(event);
-    		event.getChannel().sendMessage("Attempted to play random sound file `" + fileName + "` " + event.getAuthor().getAsMention());
+    		soundPlayer.sendMessageToChannel("Attempted to play random sound file `" + fileName + "` " + event.getAuthor().getAsMention(), event.getChannel());
     	} catch (Exception e) {
     		e.printStackTrace();
     	}

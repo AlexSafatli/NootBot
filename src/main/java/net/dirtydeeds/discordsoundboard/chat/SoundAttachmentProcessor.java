@@ -30,7 +30,7 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 						if (soundPlayer.hasPermissionInChannel(event.getChannel(), Permission.MESSAGE_MANAGE))
 							event.getMessage().deleteMessage();
 					} else {
-						event.getChannel().sendMessage("File `" + name + "` is too large to add to library.");
+						soundPlayer.sendMessageToChannel("File `" + name + "` is too large to add to library.", event.getChannel());
 					}
 				}
 			}

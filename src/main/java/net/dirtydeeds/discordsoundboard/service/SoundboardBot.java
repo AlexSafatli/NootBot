@@ -2,6 +2,7 @@ package net.dirtydeeds.discordsoundboard.service;
 
 import net.dirtydeeds.discordsoundboard.ChatSoundBoardListener;
 import net.dirtydeeds.discordsoundboard.EntranceSoundBoardListener;
+import net.dirtydeeds.discordsoundboard.GameListener;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dv8tion.jda.JDA;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.audio.player.Player;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.VoiceChannel;
+import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.events.voice.VoiceJoinEvent;
 import net.dv8tion.jda.utils.SimpleLog;
@@ -34,16 +36,19 @@ import java.util.*;
 public class SoundboardBot {
 
     public static final SimpleLog LOG = SimpleLog.getLog("Bot");
+    private static final int MAX_PAST_MESSAGES_TO_KEEP = 10;
     
     private JDA bot;
     private String owner;
     private Player soundPlayer;
     private SoundboardDispatcher dispatcher;
+    private Queue<Message> pastMessages;
     private float playerVolume = (float) .75;
 
     public SoundboardBot(String username, String password, String owner, SoundboardDispatcher dispatcher) {
         this.owner = owner;
     	this.dispatcher = dispatcher;
+    	this.pastMessages = new LinkedList<Message>();
     	initializeDiscordBot(username, password);
         setSoundPlayerVolume(75);
     }
@@ -52,8 +57,27 @@ public class SoundboardBot {
     	return this.owner;
     }
     
-    public void addListener(Object listener) {
+    protected void addListener(Object listener) {
         bot.addEventListener(listener);
+    }
+    
+    public void sendMessageToChannel(String msg, TextChannel channel) {
+    	if (pastMessages.size() > MAX_PAST_MESSAGES_TO_KEEP) {
+    		if (hasPermissionInChannel(channel, Permission.MESSAGE_MANAGE)) {
+    			Message pastMessage = pastMessages.remove();
+    			LOG.debug("Deleted message " + pastMessage.toString());
+    			pastMessage.deleteMessage();
+    		}
+    	}
+    	Message message = channel.sendMessage(msg);
+    	LOG.info("[Message: " + channel.getGuild().getName() + "] " + msg);
+    	pastMessages.add(message);
+    }
+    
+    public void sendMessageToAllGuilds(String msg) {
+    	for (Guild guild : bot.getGuilds()) {
+    		sendMessageToChannel(msg, guild.getPublicChannel());
+    	}
     }
     
     /**
@@ -106,7 +130,7 @@ public class SoundboardBot {
         		moveToUserIdsChannel(event);
         		playFile(fileName);
         	} else {
-        		event.getChannel().sendMessage("No sound file to play with name `" + fileName + "` " + event.getAuthor().getAsMention() + ".");
+        		sendMessageToChannel("No sound file to play with name `" + fileName + "` " + event.getAuthor().getAsMention() + ".", event.getChannel());
         	}
         }
     }
@@ -121,7 +145,7 @@ public class SoundboardBot {
     public void playFileForEntrance(String fileName, VoiceJoinEvent event) throws Exception {
         if (event != null && bot.getAudioManager().isConnected() && bot.getAudioManager().getConnectedChannel().equals(event.getChannel())) {
             playFile(fileName);
-            event.getGuild().getPublicChannel().sendMessage("Welcome, " + event.getUser().getAsMention() + ".");
+            sendMessageToChannel("Welcome, " + event.getUser().getAsMention() + ".", event.getGuild().getPublicChannel());
         } else {
         	LOG.info("Was going to play file for entrance of " + event.getUser().getUsername() + " but bot was not in channel yet.");
         }
@@ -166,7 +190,7 @@ public class SoundboardBot {
         }
 
         if (channel == null) {
-            event.getChannel().sendMessage("Could not move to your channel " + event.getAuthor().getAsMention() + "!");
+            sendMessageToChannel("Could not move to your channel " + event.getAuthor().getAsMention() + "!", event.getChannel());
             throw new Exception("Problem moving to requested user " + event.getAuthor().getId());
         }
 
@@ -220,6 +244,18 @@ public class SoundboardBot {
         }
         return users;
     }
+    
+    public List<Guild> getGuilds() {
+    	return bot.getGuilds();
+    }
+    
+    public List<Guild> getGuildsWithUser(net.dv8tion.jda.entities.User user) {
+    	List<Guild> guilds = new LinkedList<>();
+    	for (Guild guild : getGuilds()) {
+    		if (guild.getUsers().contains(user)) guilds.add(guild);
+    	}
+    	return guilds;
+    }
 
     //Play the file provided.
     private void playFile(File audioFile) {
@@ -255,6 +291,8 @@ public class SoundboardBot {
 	        this.addListener(chatListener);
 	        EntranceSoundBoardListener entranceListener = new EntranceSoundBoardListener(this);
 	        this.addListener(entranceListener);
+	        GameListener gameListener = new GameListener(this);
+	        this.addListener(gameListener);
 	        LOG.info("Initialized bot with username " + username);
 		} catch (LoginException | IllegalArgumentException | InterruptedException e) {
 			e.printStackTrace();

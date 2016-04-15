@@ -146,6 +146,9 @@ public class SoundboardDispatcher implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         getFileList();
+        for (SoundboardBot bot : bots) {
+        	bot.sendMessageToAllGuilds("New sound files were added or files were removed.");
+        }
     }
 	
 }
