@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Message.Attachment;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 
@@ -26,7 +27,8 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 					if (attachment.getSize() < MAX_FILE_SIZE_IN_BYTES) {
 						attachment.download(new File(soundPlayer.getSoundsPath().toString(), name));
 						event.getChannel().sendMessage("Downloaded file `" + name + "` and added to list of sounds " + event.getAuthor().getAsMention() + ".");
-						event.getMessage().deleteMessage();
+						if (soundPlayer.hasPermissionInChannel(event.getChannel(), Permission.MESSAGE_MANAGE))
+							event.getMessage().deleteMessage();
 					} else {
 						event.getChannel().sendMessage("File `" + name + "` is too large to add to library.");
 					}

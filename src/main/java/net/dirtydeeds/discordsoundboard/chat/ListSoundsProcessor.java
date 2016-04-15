@@ -23,7 +23,7 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
 	private Map<String, List<SoundFile>> getCategoryMappings() {
 		Map<String, List<SoundFile>> categoryFiles = new TreeMap<String, List<SoundFile>>();
 		for (SoundFile file : soundPlayer.getAvailableSoundFiles().values()) {
-			String category = (file.getCategory() == null) ? "No Category" : file.getCategory();
+			String category = (file.getCategory().equalsIgnoreCase("sounds")) ? "Uncategorized" : file.getCategory();
 			if (categoryFiles.get(category) == null) {
 				categoryFiles.put(category, new LinkedList<SoundFile>()); 
 				LOG.info("Constructing list of files for category: " + category);
@@ -36,29 +36,26 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
 	private List<String> getMessagesForCategory(String category, List<SoundFile> soundFiles) {
 		List<String> strings = new LinkedList<String>();
 		StringBuilder sb = new StringBuilder();
-		sb.append("**" + category + "**\n```");
+		sb.append("**" + category + "**\n");
 		int currentLineSize = 0;
 		for (SoundFile file : soundFiles) {
 			String filename = file.getSoundFile().getName();
 			String name = filename.substring(0, filename.indexOf("."));
-        	int lengthOfAdd = 1 + name.length();
+        	int lengthOfAdd = 3 + name.length();
         	// Keep a maximum line size of 80 characters.
         	if (currentLineSize + lengthOfAdd > MAX_LINE_LENGTH) {
         		sb.append("\n"); currentLineSize = 0;
         	}
         	// Avoid oversized messages.
-            if (sb.length() + lengthOfAdd + 3 >= MAX_MESSAGE_LENGTH) {
-            	sb.append("```");
+            if (sb.length() + lengthOfAdd >= MAX_MESSAGE_LENGTH) {
             	strings.add(sb.toString());
             	sb = new StringBuilder();
-            	sb.append("```");
             	currentLineSize = sb.length();
             }
             currentLineSize += lengthOfAdd;
-        	sb.append("?").append(name).append(" ");
+        	sb.append("`?").append(name).append("` ");
 		}
-		if (sb.length() > 3) {
-			sb.append("```");
+		if (sb.length() > 0) {
 			strings.add(sb.toString());
 		}
 		return strings;
@@ -73,11 +70,6 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
         	sb.append(soundFiles.size()).append(" files found. ");
             sb.append("They are organized by category. Type any of these commands to play the sound.\n\n");
             event.getChannel().sendMessage(sb.toString());
-            if (categoryFiles.get("No Category") != null && !categoryFiles.get("No Category").isEmpty()) {
-            	for (String msg : getMessagesForCategory("No Category", categoryFiles.get("No Category"))) {
-            		event.getChannel().sendMessage(msg);
-            	}
-            }
             for (String category : categories) {
             	for (String msg : getMessagesForCategory(category, categoryFiles.get(category))) {
                 	event.getChannel().sendMessage(msg);

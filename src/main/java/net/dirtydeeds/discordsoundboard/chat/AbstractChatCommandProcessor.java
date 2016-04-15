@@ -1,6 +1,7 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 
 public abstract class AbstractChatCommandProcessor implements ChatCommandProcessor {
@@ -18,8 +19,8 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	public void process(GuildMessageReceivedEvent event) {
 		if (!isApplicableCommand(event)) return;
 		handleEvent(event, event.getMessage().getContent().toLowerCase());
-		try { event.getMessage().deleteMessage(); }
-		catch (Exception e) { e.printStackTrace(); }
+		if (soundPlayer.hasPermissionInChannel(event.getChannel(), Permission.MESSAGE_MANAGE))
+			event.getMessage().deleteMessage();
 	}
 	
 	public boolean isApplicableCommand(String cmd) {

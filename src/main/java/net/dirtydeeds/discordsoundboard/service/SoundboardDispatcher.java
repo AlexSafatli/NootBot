@@ -32,7 +32,7 @@ import net.dv8tion.jda.utils.SimpleLog;
 @Service
 public class SoundboardDispatcher implements Observer {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("SoundboardDispatcher");
+	public static final SimpleLog LOG = SimpleLog.getLog("Dispatcher");
 	private Properties appProperties;
 	private List<SoundboardBot> bots;
 	private Map<String, SoundFile> availableSounds;
@@ -64,7 +64,7 @@ public class SoundboardDispatcher implements Observer {
 				String username = appProperties.getProperty("username_" + i);
 				String password = appProperties.getProperty("password_" + i);
 				String owner    = appProperties.getProperty("owner_"    + i);
-				SoundboardBot bot = new SoundboardBot(username, password, owner, availableSounds);
+				SoundboardBot bot = new SoundboardBot(username, password, owner, this);
 				bots.add(bot);
 			} catch (IllegalArgumentException e) {
 	            LOG.warn("The config was not populated. Please enter an email and password for " + i);
@@ -101,44 +101,45 @@ public class SoundboardDispatcher implements Observer {
     //This method loads the files. This checks if you are running from a .jar file and loads from the /sounds dir relative
     //to the jar file. If not it assumes you are running from code and loads relative to your resource dir.
     private void getFileList() {
+    	
+    	Map<String, SoundFile> sounds = new TreeMap<>();
         try {
+        	
             LOG.info("Loading from " + System.getProperty("user.dir") + "/sounds");
             Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
 
             if (!soundFilePath.toFile().exists()) {
-                System.out.println("creating directory: " + soundFilePath.toFile().toString());
-                boolean result = false;
-                try{
-                    soundFilePath.toFile().mkdir();
-                    result = true;
-                }
+                LOG.debug("Creating directory: " + soundFilePath.toFile().toString());
+                try { soundFilePath.toFile().mkdir(); }
                 catch(SecurityException se){
                     LOG.fatal("Could not create directory: " + soundFilePath.toFile().toString());
-                }
-                if(result) {
-                    LOG.info("DIR: " + soundFilePath.toFile().toString() + " created.");
                 }
             }
 
             mainWatch.watchDirectoryPath(soundFilePath);
-            availableSounds.clear();
+            if (!availableSounds.isEmpty()) {
+            	LOG.info("Regenerating file list because of notification from file watch.");
+            }
             
             Files.walk(soundFilePath).forEach(filePath -> {
                 if (Files.isRegularFile(filePath)) {
                     String fileName = filePath.getFileName().toString();
                     fileName = fileName.substring(fileName.indexOf("/") + 1, fileName.length());
                     fileName = fileName.substring(0, fileName.indexOf("."));
-                    LOG.info(fileName);
                     File file = filePath.toFile();
                     String parent = file.getParentFile().getName();
                     SoundFile soundFile = new SoundFile(fileName, filePath.toFile(), parent, "");
-                    availableSounds.put(fileName, soundFile);
+                    sounds.put(fileName, soundFile);
                 }
             });
+            
+            availableSounds = sounds;
+            
         } catch (IOException e) {
             LOG.fatal(e.toString());
             e.printStackTrace();
         }
+        
     }
 
     

@@ -39,13 +39,11 @@ public class MainWatch extends Observable {
             e.printStackTrace();
         }
 
-        System.out.println("Watching path: " + path);
-
         // We obtain the file system of the Path
-        FileSystem fs = path.getFileSystem ();
+        FileSystem fs = path.getFileSystem();
 
         // We create the new WatchService using the new try() block
-        try(WatchService service = fs.newWatchService()) {
+        try (WatchService service = fs.newWatchService()) {
 
             // We register the path to the service
             // We watch for creation events
