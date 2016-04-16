@@ -17,6 +17,7 @@ import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.events.voice.VoiceJoinEvent;
+import net.dv8tion.jda.managers.AudioManager;
 import net.dv8tion.jda.utils.SimpleLog;
 
 import javax.security.auth.login.LoginException;
@@ -70,7 +71,7 @@ public class SoundboardBot {
     		}
     	}
     	Message message = channel.sendMessage(msg);
-    	LOG.info("[Message: " + channel.getGuild().getName() + "] " + msg);
+    	LOG.info("Message to " + channel.getGuild().getName() + ": '" + msg + "'.");
     	pastMessages.add(message);
     }
     
@@ -160,14 +161,16 @@ public class SoundboardBot {
      * Moves to the specified voice channel.
      * @param channel - The channel specified.
      */
-    public void moveToChannel(VoiceChannel channel){
-        if (bot.getAudioManager().isConnected()) {
-            if (bot.getAudioManager().isAttemptingToConnect()) {
-                bot.getAudioManager().closeAudioConnection();
+    public void moveToChannel(VoiceChannel channel) {
+    	AudioManager voice = bot.getAudioManager();
+        if (voice.isConnected()) {
+            if (voice.isAttemptingToConnect() || !voice.getConnectedChannel().getGuild().equals(channel.getGuild())) {
+            	voice.closeAudioConnection();
+            	voice.openAudioConnection(channel);
             }
-            bot.getAudioManager().moveAudioConnection(channel);
+            voice.moveAudioConnection(channel);
         } else {
-            bot.getAudioManager().openAudioConnection(channel);
+            voice.openAudioConnection(channel);
         }
     }
 

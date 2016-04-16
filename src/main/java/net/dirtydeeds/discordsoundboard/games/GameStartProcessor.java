@@ -12,9 +12,11 @@ public class GameStartProcessor extends AbstractGameUpdateProcessor {
 	}
 
 	protected void handleEvent(UserGameUpdateEvent event, User user) {
-		if (!event.getPreviousGameId().equals(user.getCurrentGame())) {
+		String previousGame = event.getPreviousGameId();
+		String newGame = user.getCurrentGame();
+		if (newGame != null && previousGame == null) {
 			for (Guild guild : bot.getGuildsWithUser(user)) {
-				bot.sendMessageToChannel(user.getUsername() + " just started playing " + user.getCurrentGame() + ".", guild.getPublicChannel());
+				bot.sendMessageToChannel(user.getUsername() + " just started playing " + newGame + ".", guild.getPublicChannel());
 			}
 		}
 	}
