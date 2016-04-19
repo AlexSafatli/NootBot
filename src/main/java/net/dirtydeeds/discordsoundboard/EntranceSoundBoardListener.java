@@ -18,36 +18,34 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
     
     public static final SimpleLog LOG = SimpleLog.getLog("EntranceListener");
     
-    private SoundboardBot soundPlayer;
-
-    public EntranceSoundBoardListener(SoundboardBot soundPlayer) {
-        this.soundPlayer = soundPlayer;
+    private SoundboardBot bot;
+    
+    public EntranceSoundBoardListener(SoundboardBot bot) {
+        this.bot = bot;
     }
-
+    
     @SuppressWarnings("rawtypes")
 	public void onVoiceJoin(VoiceJoinEvent event) {        
     	
         String joined = event.getUser().getUsername().toLowerCase();
+        if (!bot.isConnectedToChannel(event.getChannel())) return;
 
         //Respond
-        Set<Map.Entry<String, SoundFile>> entrySet = soundPlayer.getAvailableSoundFiles().entrySet();
+        Set<Map.Entry<String, SoundFile>> entrySet = bot.getAvailableSoundFiles().entrySet();
         if (entrySet.size() > 0) {
         	String fileToPlay = "";
             for (Map.Entry entry : entrySet) {
             	String fileEntry = (String)entry.getKey();
-                if (joined.startsWith(fileEntry) && fileEntry.length() > fileToPlay.length()) {
-                	fileToPlay = fileEntry;
-                }
+                if (joined.startsWith(fileEntry) && fileEntry.length() > fileToPlay.length()) fileToPlay = fileEntry;
             }
             if (!fileToPlay.equals("")) {
-            	LOG.info("Responding to entrance of " + joined + " with " + fileToPlay);
             	try {
-            		soundPlayer.playFileForEntrance(fileToPlay, event);
+            		bot.playFileForEntrance(fileToPlay, event);
             	} catch (Exception e) {
-            		e.printStackTrace();
+            		LOG.fatal("Could not play file for entrance of " + joined);
             	}
             } else {
-            	LOG.info("Could not find any sound that starts with " + joined + ", so ignoring.");
+            	LOG.info("Could not find any sound that starts with " + joined + ", so ignoring entrance.");
             }
         }
     }

@@ -28,14 +28,13 @@ public class GameListener extends ListenerAdapter {
     }
     
     private void initializeProcessors() {
-    	processors.add(new GameStartProcessor(bot));
     }
 
 	public void onUserGameUpdate(UserGameUpdateEvent event) {      
 		
         for (GameUpdateProcessor processor : processors) {
         	processor.process(event);
-        	LOG.info("Processed game update event with processor " + processor.getClass().getName());
+        	LOG.info("Processed game update event with processor " + processor.getClass().getSimpleName());
         }
         
     }

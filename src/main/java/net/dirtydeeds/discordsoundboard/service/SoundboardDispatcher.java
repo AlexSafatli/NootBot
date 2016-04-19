@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import net.dirtydeeds.discordsoundboard.MainWatch;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
+import net.dirtydeeds.discordsoundboard.games.LeagueOfLegendsChatEndpoint;
 import net.dv8tion.jda.utils.SimpleLog;
 
 /**
@@ -35,6 +36,7 @@ public class SoundboardDispatcher implements Observer {
 	public static final SimpleLog LOG = SimpleLog.getLog("Dispatcher");
 	private Properties appProperties;
 	private List<SoundboardBot> bots;
+	private LeagueOfLegendsChatEndpoint leagueEndpoint;
 	private Map<String, SoundFile> availableSounds;
 	private final MainWatch mainWatch;
 	
@@ -61,14 +63,19 @@ public class SoundboardDispatcher implements Observer {
 		int num = Integer.valueOf(appProperties.getProperty("number_of_users"));
 		for (int i = 1; i <= num; ++i) {
 			try {
-				String username = appProperties.getProperty("username_" + i);
-				String password = appProperties.getProperty("password_" + i);
-				String owner    = appProperties.getProperty("owner_"    + i);
-				SoundboardBot bot = new SoundboardBot(username, password, owner, this);
+				String token = appProperties.getProperty("token_" + i);
+				String owner = appProperties.getProperty("owner_" + i);
+				SoundboardBot bot = new SoundboardBot(token, owner, this);
 				bots.add(bot);
 			} catch (IllegalArgumentException e) {
-	            LOG.warn("The config was not populated. Please enter an email and password for " + i);
+	            LOG.warn("The config was not populated. Please enter an API token for " + i);
 	        }
+		}
+		try {
+			leagueEndpoint = new LeagueOfLegendsChatEndpoint(this);
+		} catch (Exception e) {
+			leagueEndpoint = null;
+			e.printStackTrace();
 		}
 	}
 	
@@ -142,6 +149,17 @@ public class SoundboardDispatcher implements Observer {
         
     }
 
+    public List<SoundboardBot> getBots() {
+    	return bots;
+    }
+    
+    public LeagueOfLegendsChatEndpoint getLeagueOfLegendsEndpoint() {
+    	return leagueEndpoint;
+    }
+    
+    public Properties getAppProperties() {
+    	return appProperties;
+    }
     
     @Override
     public void update(Observable o, Object arg) {

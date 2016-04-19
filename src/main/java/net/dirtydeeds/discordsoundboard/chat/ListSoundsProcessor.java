@@ -21,12 +21,12 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
 	}
 
 	private Map<String, List<SoundFile>> getCategoryMappings() {
+		LOG.info("Constructing list of files for categories.");
 		Map<String, List<SoundFile>> categoryFiles = new TreeMap<String, List<SoundFile>>();
-		for (SoundFile file : soundPlayer.getAvailableSoundFiles().values()) {
+		for (SoundFile file : bot.getAvailableSoundFiles().values()) {
 			String category = (file.getCategory().equalsIgnoreCase("sounds")) ? "Uncategorized" : file.getCategory();
 			if (categoryFiles.get(category) == null) {
 				categoryFiles.put(category, new LinkedList<SoundFile>()); 
-				LOG.info("Constructing list of files for category: " + category);
 			}
 			categoryFiles.get(category).add(file);
 		}
@@ -63,13 +63,13 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
 	
 	protected void handleEvent(GuildMessageReceivedEvent event, String message) {
 		StringBuilder sb = new StringBuilder();
-        Map<String, SoundFile> soundFiles = soundPlayer.getAvailableSoundFiles();
+        Map<String, SoundFile> soundFiles = bot.getAvailableSoundFiles();
         Map<String, List<SoundFile>> categoryFiles = getCategoryMappings();
-        List<String> categories = soundPlayer.getSoundCategories();
+        List<String> categories = bot.getSoundCategories();
         if (soundFiles.size() > 0) {
         	sb.append(soundFiles.size()).append(" files found. ");
             sb.append("They are organized by category. Type any of these commands to play the sound.\n\n");
-            soundPlayer.sendMessageToChannel(sb.toString(), event.getChannel());
+            bot.sendMessageToChannel(sb.toString(), event.getChannel());
             for (String category : categories) {
             	for (String msg : getMessagesForCategory(category, categoryFiles.get(category))) {
                 	event.getChannel().sendMessage(msg);
@@ -77,7 +77,7 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
             }
             LOG.info("Responded to list request.");
         } else {
-            soundPlayer.sendMessageToChannel("There are no available sounds to play.", event.getChannel());
+            bot.sendMessageToChannel("There are no available sounds to play.", event.getChannel());
         }
 	}
 

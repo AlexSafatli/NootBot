@@ -3,7 +3,7 @@ apply plugin: 'idea'
 apply plugin: 'distribution'
 apply plugin: 'spring-boot'
 
-version = '1.4.5'
+version = '1.5.5'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -30,12 +30,12 @@ repositories {
 }
 
 dependencies {
-    compile('net.dv8tion:JDA:1.3.0_188')
+    compile('net.dv8tion:JDA:2.0.0_242')
     compile("commons-io:commons-io:2.4")
-
+    compile("com.github.theholywaffle:lolchatapi:1.2.8")
+    
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-jersey")
-
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
