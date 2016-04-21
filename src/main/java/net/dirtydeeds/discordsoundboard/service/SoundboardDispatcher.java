@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import net.dirtydeeds.discordsoundboard.MainWatch;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
-import net.dirtydeeds.discordsoundboard.games.LeagueOfLegendsChatEndpoint;
+import net.dirtydeeds.discordsoundboard.games.leagueoflegends.LeagueOfLegendsChatEndpoint;
 import net.dv8tion.jda.utils.SimpleLog;
 
 /**

@@ -41,7 +41,6 @@ public class SoundboardBot {
     
     private JDA bot;
     private String owner;
-    private Player soundPlayer;
     private SoundboardDispatcher dispatcher;
     private Queue<Message> pastMessages;
     private float playerVolume = (float) .75;
@@ -77,10 +76,18 @@ public class SoundboardBot {
     	return this.owner;
     }
     
+    public String getName() {
+    	return this.bot.getSelfInfo().getUsername();
+    }
+    
     public VoiceChannel getConnectedChannel(Guild guild) {
     	if (bot.getAudioManager(guild).isConnected()) return bot.getAudioManager(guild).getConnectedChannel();
     	return null;
     }
+    
+    public void sendMessageToUser(String msg, net.dv8tion.jda.entities.User user) {
+		user.getPrivateChannel().sendMessageAsync(msg, null);
+	}
     
     public void sendMessageToChannel(String msg, TextChannel channel) {
     	if (pastMessages.size() > MAX_PAST_MESSAGES_TO_KEEP) {
@@ -158,8 +165,6 @@ public class SoundboardBot {
         	if (dispatcher.getAvailableSoundFiles().get(fileName) != null) {
         		moveToUserIdsChannel(event);
         		playFile(fileName, event.getGuild());
-        	} else {
-        		sendMessageToChannel("No sound file to play with name `" + fileName + "` " + event.getAuthor().getAsMention() + ".", event.getChannel());
         	}
         }
     }
@@ -176,10 +181,13 @@ public class SoundboardBot {
     	AudioManager voice = bot.getAudioManager(event.getGuild());
     	VoiceChannel connected = voice.getConnectedChannel();
         if (voice.isConnected() && connected.equals(event.getChannel()) || !voice.isConnected()) {
-        	LOG.info("Responding to the entrance of " + event.getUser().getUsername() + " in channel " + event.getChannel().getName() + " in guild " + event.getChannel().getGuild().getName());
+        	LOG.info("Responding to the entrance of " + event.getUser().getUsername() + 
+        			" in channel " + event.getChannel().getName() + " in guild " + 
+        			event.getChannel().getGuild().getName());
         	moveToChannel(event.getChannel());
         	playFile(fileName, event.getGuild());
-            sendMessageToChannel("Welcome, " + event.getUser().getAsMention() + ".", event.getGuild().getPublicChannel());
+            sendMessageToChannel("Welcome, " + event.getUser().getAsMention() + ".",
+            		event.getGuild().getPublicChannel());
         }
     }
     
@@ -187,12 +195,6 @@ public class SoundboardBot {
     public boolean hasPermissionInChannel(TextChannel channel, Permission permission) {
     	return channel.checkPermission(bot.getSelfInfo(), permission);
     }
-    
-    public boolean isConnectedToChannel(VoiceChannel channel) {
-    	AudioManager voice = bot.getAudioManager(channel.getGuild());
-    	return (voice != null && voice.isConnected() && voice.getConnectedChannel().equals(channel));
-    }
-    
 
     /**
      * Moves to the specified voice channel.
@@ -200,6 +202,7 @@ public class SoundboardBot {
      */
     public void moveToChannel(VoiceChannel channel) {
     	AudioManager voice = bot.getAudioManager(channel.getGuild());
+    	voice.setSendingHandler(null);
         if (voice.isConnected() || voice.isAttemptingToConnect()) {
             voice.moveAudioConnection(channel);
         } else {
@@ -226,14 +229,14 @@ public class SoundboardBot {
         }
 
         if (channel == null) {
-            sendMessageToChannel("Could not move to your channel " + event.getAuthor().getAsMention() + "!", event.getChannel());
-            throw new Exception("Problem moving to requested user " + event.getAuthor().getId());
+            sendMessageToUser("Could not move to you in " + event.getGuild().getName(), event.getAuthor());
+            LOG.fatal("Problem moving to requested user " + event.getAuthor().getId());
         }
 
         moveToChannel(channel);
     }
 
-    public boolean isASoundCategory(String category) {
+	public boolean isASoundCategory(String category) {
     	for (String c : getSoundCategories()) {
     		if (c.equalsIgnoreCase(category)) return true;
     	}
@@ -290,17 +293,14 @@ public class SoundboardBot {
 
     //Play the file provided.
     private void playFile(File audioFile, Guild guild) {
+    	bot.getAudioManager(guild).setSendingHandler(null);
         try {
-            if (soundPlayer != null && soundPlayer.isPlaying()) {
-            	soundPlayer.pause();
-            }
-            soundPlayer = new FilePlayer(audioFile);
+            Player soundPlayer = new FilePlayer(audioFile);
             bot.getAudioManager(guild).setSendingHandler(soundPlayer);
-            soundPlayer.play();
-            soundPlayer.setVolume(playerVolume);
-        }
-        catch (IOException | UnsupportedAudioFileException e) {
-            e.printStackTrace();
+            soundPlayer.play(); soundPlayer.setVolume(playerVolume);
+        } catch (IOException | UnsupportedAudioFileException e) {
+            LOG.fatal("While playing " + audioFile.getName() + ": " + e.toString());
+            bot.getAudioManager(guild).setSendingHandler(null);
 		}
     }
 

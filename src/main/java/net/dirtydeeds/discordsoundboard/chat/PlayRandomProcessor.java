@@ -21,13 +21,14 @@ public class PlayRandomProcessor extends AbstractChatCommandProcessor {
     			SoundFile played;
     			played = bot.playRandomFileForCategory(event.getAuthor().getUsername(), category, event.getGuild());
     			if (played == null) {
-    				bot.sendMessageToChannel("No category *" + category + "* was found to play a random file from.", event.getChannel());
+    				bot.sendMessageToChannel("No category *" + category + "* was found to play a random file from " + event.getAuthor().getAsMention(),
+    						event.getChannel());
     			} else {
-        			bot.sendMessageToChannel("Attempted to play random sound file from category **" + played.getCategory() + "** " + event.getAuthor().getAsMention(), event.getChannel());
+        			bot.sendMessageToChannel("Playing random sound file from **" + played.getCategory() + "**.", event.getChannel());
     			}
     		} else {
     			String fileName = bot.playRandomFile(event);
-    			bot.sendMessageToChannel("Attempted to play random sound file `" + fileName + "` " + event.getAuthor().getAsMention(), event.getChannel());
+    			bot.sendMessageToChannel("Playing random sound file `" + fileName + "`.", event.getChannel());
     		}
     	} catch (Exception e) {
     		e.printStackTrace();

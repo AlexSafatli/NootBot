@@ -13,14 +13,21 @@ public class PlaySoundProcessor extends AbstractChatCommandProcessor {
 	}
 
 	protected void handleEvent(GuildMessageReceivedEvent event, String message) {
-        try {
-            String fileNameRequested = message.substring(1, message.length());
-            LOG.info("Attempting to play file: " + fileNameRequested + " for " + 
-            		event.getAuthor().getUsername() + " in " + event.getChannel().getName() + 
-            		"#" + event.getGuild().getName() + ".");
-            bot.playFileForChatCommand(fileNameRequested, event);
-        } catch (Exception e) {
-            e.printStackTrace();
+        String fileNameRequested = message.substring(1, message.length());
+        if (bot.getAvailableSoundFiles().get(fileNameRequested) == null) {
+        	bot.sendMessageToChannel("No sound file to play with name `" + 
+        			fileNameRequested + "` " + event.getAuthor().getAsMention() + ".",
+        			event.getChannel());
+        	LOG.info("No sound file found for given string " + fileNameRequested);
+        } else {
+        	LOG.info("Playing: " + fileNameRequested + " for " + 
+            		event.getAuthor().getUsername() + " in " + 
+            		event.getGuild().getName() + ".");
+	        try {
+	            bot.playFileForChatCommand(fileNameRequested, event);
+	        } catch (Exception e) {
+	            LOG.fatal("Could not play file " + fileNameRequested + ": " + e.toString());
+	        }
         }
 	}
 

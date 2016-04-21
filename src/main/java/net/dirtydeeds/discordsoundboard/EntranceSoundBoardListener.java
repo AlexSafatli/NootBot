@@ -28,7 +28,6 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
 	public void onVoiceJoin(VoiceJoinEvent event) {        
     	
         String joined = event.getUser().getUsername().toLowerCase();
-        if (!bot.isConnectedToChannel(event.getChannel())) return;
 
         //Respond
         Set<Map.Entry<String, SoundFile>> entrySet = bot.getAvailableSoundFiles().entrySet();
@@ -36,14 +35,12 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
         	String fileToPlay = "";
             for (Map.Entry entry : entrySet) {
             	String fileEntry = (String)entry.getKey();
-                if (joined.startsWith(fileEntry) && fileEntry.length() > fileToPlay.length()) fileToPlay = fileEntry;
+                if (joined.startsWith(fileEntry) && fileEntry.length() > fileToPlay.length())
+                	fileToPlay = fileEntry;
             }
             if (!fileToPlay.equals("")) {
-            	try {
-            		bot.playFileForEntrance(fileToPlay, event);
-            	} catch (Exception e) {
-            		LOG.fatal("Could not play file for entrance of " + joined);
-            	}
+            	try { bot.playFileForEntrance(fileToPlay, event); }
+            	catch (Exception e) { LOG.fatal("Could not play file for entrance of " + joined); }
             } else {
             	LOG.info("Could not find any sound that starts with " + joined + ", so ignoring entrance.");
             }
