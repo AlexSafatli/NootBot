@@ -11,9 +11,7 @@ import net.dv8tion.jda.utils.SimpleLog;
 import com.github.theholywaffle.lolchatapi.ChatServer;
 import com.github.theholywaffle.lolchatapi.FriendRequestPolicy;
 import com.github.theholywaffle.lolchatapi.LolChat;
-import com.github.theholywaffle.lolchatapi.LolStatus.Division;
 import com.github.theholywaffle.lolchatapi.LolStatus.GameStatus;
-import com.github.theholywaffle.lolchatapi.LolStatus.Tier;
 import com.github.theholywaffle.lolchatapi.listeners.ChatListener;
 import com.github.theholywaffle.lolchatapi.listeners.ConnectionListener;
 import com.github.theholywaffle.lolchatapi.listeners.FriendListener;
@@ -66,12 +64,24 @@ public class LeagueOfLegendsChatEndpoint {
 				LOG.info("Accepted a friend request from " + friend.getName());
 				friend.sendMessage("Hello.");
 			}
-			public void onFriendAvailable(Friend friend) { }
-			public void onFriendAway(Friend friend) { }
-			public void onFriendBusy(Friend friend) { }
-			public void onFriendJoin(Friend friend) { }
-			public void onFriendLeave(Friend friend) { }
-			public void onFriendStatusChange(Friend friend) { }
+			public void onFriendAvailable(Friend friend) {
+				LOG.info("Friend " + friend.getName() + " now available.");
+			}
+			public void onFriendAway(Friend friend) {
+				LOG.info("Friend " + friend.getName() + " now away.");
+			}
+			public void onFriendBusy(Friend friend) {
+				LOG.info("Friend " + friend.getName() + " now busy.");
+			}
+			public void onFriendJoin(Friend friend) {
+				LOG.info("Friend " + friend.getName() + " joined.");
+			}
+			public void onFriendLeave(Friend friend) {
+				LOG.info("Friend " + friend.getName() + " left.");
+			}
+			public void onFriendStatusChange(Friend friend) { 
+				LOG.info("Friend " + friend.getName() + " changed status to " + friend.getStatus().getGameStatus());
+			}
 			public void onRemoveFriend(String userId, String name) {
 				LOG.info("Removed from friends list: " + name);
 			}

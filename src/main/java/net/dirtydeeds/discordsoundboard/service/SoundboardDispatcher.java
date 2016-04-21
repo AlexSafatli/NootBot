@@ -68,7 +68,7 @@ public class SoundboardDispatcher implements Observer {
 				SoundboardBot bot = new SoundboardBot(token, owner, this);
 				bots.add(bot);
 			} catch (IllegalArgumentException e) {
-	            LOG.warn("The config was not populated. Please enter an API token for " + i);
+	            LOG.fatal("The config was not populated. Please enter an API token and owner for bot " + i);
 	        }
 		}
 		try {
@@ -90,18 +90,14 @@ public class SoundboardDispatcher implements Observer {
             return;
         } catch (FileNotFoundException e) {
             LOG.warn("Could not find app.properties file.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
         if (stream == null) {
             LOG.warn("Loading app.properties file from resources folder");
             try {
                 stream = this.getClass().getResourceAsStream("/app.properties");
                 appProperties.load(stream);
                 stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException e) { e.printStackTrace(); }
         }
     }
     
@@ -112,7 +108,6 @@ public class SoundboardDispatcher implements Observer {
     	Map<String, SoundFile> sounds = new TreeMap<>();
         try {
         	
-            LOG.info("Loading from " + System.getProperty("user.dir") + "/sounds");
             Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
 
             if (!soundFilePath.toFile().exists()) {
@@ -124,9 +119,6 @@ public class SoundboardDispatcher implements Observer {
             }
 
             mainWatch.watchDirectoryPath(soundFilePath);
-            if (!availableSounds.isEmpty()) {
-            	LOG.info("Regenerating file list because of notification from file watch.");
-            }
             
             Files.walk(soundFilePath).forEach(filePath -> {
                 if (Files.isRegularFile(filePath)) {
@@ -144,7 +136,6 @@ public class SoundboardDispatcher implements Observer {
             
         } catch (IOException e) {
             LOG.fatal(e.toString());
-            e.printStackTrace();
         }
         
     }

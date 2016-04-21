@@ -37,7 +37,7 @@ import java.util.*;
 public class SoundboardBot {
 
     public static final SimpleLog LOG = SimpleLog.getLog("Bot");
-    private static final int MAX_PAST_MESSAGES_TO_KEEP = 10;
+    private static final int MAX_PAST_MESSAGES_TO_KEEP = 5;
     
     private JDA bot;
     private String owner;
@@ -97,8 +97,7 @@ public class SoundboardBot {
     			pastMessage.deleteMessage();
     		}
     	}
-    	Message message = channel.sendMessage(msg);
-    	pastMessages.add(message);
+    	channel.sendMessageAsync(msg, (message) -> pastMessages.add(message));
     }
     
     public void sendMessageToAllGuilds(String msg) {

@@ -72,7 +72,7 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
             bot.sendMessageToChannel(sb.toString(), event.getChannel());
             for (String category : categories) {
             	for (String msg : getMessagesForCategory(category, categoryFiles.get(category))) {
-                	event.getChannel().sendMessage(msg);
+                	event.getChannel().sendMessageAsync(msg, null);
             	}
             }
             LOG.info("Responded to list request.");
