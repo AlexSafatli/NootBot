@@ -1,8 +1,25 @@
 package net.dirtydeeds.discordsoundboard.games;
 
-public interface GameChatEventAdapter {
+import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.JDA;
+import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
-	public abstract void process(String message, GameContext context);
-	public abstract boolean isApplicableCommand(String message, GameContext context);
+public class GameChatEventAdapter {
+
+	private SoundboardBot bot;
+	private JDA api;
 	
+	public GameChatEventAdapter(SoundboardBot bot) {
+		this.bot = bot;
+		this.api = bot.getAPI();
+	}
+	
+	public void process(MessageChannel channel, String message, GameContext context) {
+		Message msg = new GameChatMessage(channel, message, context);
+		MessageReceivedEvent event = new GameChatMessageReceivedEvent(api, 0, msg);
+		bot.getChatListener().onMessageReceived(event);
+	}
+
 }

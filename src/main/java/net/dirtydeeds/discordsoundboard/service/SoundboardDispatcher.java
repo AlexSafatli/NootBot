@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 
 import net.dirtydeeds.discordsoundboard.MainWatch;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
+import net.dirtydeeds.discordsoundboard.dao.UserRepository;
 import net.dirtydeeds.discordsoundboard.games.leagueoflegends.LeagueOfLegendsChatEndpoint;
+import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.utils.SimpleLog;
 
 /**
@@ -34,6 +36,9 @@ import net.dv8tion.jda.utils.SimpleLog;
 public class SoundboardDispatcher implements Observer {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("Dispatcher");
+
+	private final UserRepository userDao;
+	
 	private Properties appProperties;
 	private List<SoundboardBot> bots;
 	private LeagueOfLegendsChatEndpoint leagueEndpoint;
@@ -41,10 +46,11 @@ public class SoundboardDispatcher implements Observer {
 	private final MainWatch mainWatch;
 	
     @Inject
-    public SoundboardDispatcher(MainWatch mainWatch) {
+    public SoundboardDispatcher(MainWatch mainWatch, UserRepository userDao) {
         this.mainWatch = mainWatch;
         this.mainWatch.addObserver(this);
-        bots = new LinkedList<SoundboardBot>();
+        this.userDao = userDao;
+        bots = new LinkedList<>();
         availableSounds = new TreeMap<>();
         getFileList();
 		loadProperties();
@@ -63,9 +69,11 @@ public class SoundboardDispatcher implements Observer {
 		int num = Integer.valueOf(appProperties.getProperty("number_of_users"));
 		for (int i = 1; i <= num; ++i) {
 			try {
-				String token = appProperties.getProperty("token_" + i);
-				String owner = appProperties.getProperty("owner_" + i);
+				String token = appProperties.getProperty("token_"   + i);
+				String owner = appProperties.getProperty("owner_"   + i);
+				String vol   = appProperties.getProperty("volume_" + i);
 				SoundboardBot bot = new SoundboardBot(token, owner, this);
+				if (vol != null) bot.setVolume(Float.valueOf(vol));
 				bots.add(bot);
 			} catch (IllegalArgumentException e) {
 	            LOG.fatal("The config was not populated. Please enter an API token and owner for bot " + i);
@@ -144,6 +152,10 @@ public class SoundboardDispatcher implements Observer {
     	return bots;
     }
     
+    public List<net.dirtydeeds.discordsoundboard.beans.User> getUserById(String userid) {
+    	return userDao.findByUserid(userid);
+    }
+    
     public LeagueOfLegendsChatEndpoint getLeagueOfLegendsEndpoint() {
     	return leagueEndpoint;
     }
@@ -152,9 +164,25 @@ public class SoundboardDispatcher implements Observer {
     	return appProperties;
     }
     
+    public net.dirtydeeds.discordsoundboard.beans.User registerUser(User user, boolean disallowed, boolean throttled) {
+    	net.dirtydeeds.discordsoundboard.beans.User u = new net.dirtydeeds.discordsoundboard.beans.User(user.getUsername(), user.getId());
+    	u.setDisallowed(disallowed);
+    	u.setThrottled(throttled);
+    	saveUser(u);
+    	return u;
+    }
+    
+    public void saveUser(net.dirtydeeds.discordsoundboard.beans.User user) {
+    	userDao.save(user);
+    }
+    	
     @Override
     public void update(Observable o, Object arg) {
         getFileList();
+    }
+    
+    public void updateFileList() {
+    	getFileList();
     }
 	
 }

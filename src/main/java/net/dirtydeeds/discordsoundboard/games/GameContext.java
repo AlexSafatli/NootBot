@@ -1,17 +1,25 @@
 package net.dirtydeeds.discordsoundboard.games;
 
+import net.dv8tion.jda.entities.User;
+
 public class GameContext {
 
+	private User user;
 	private String gameName;
 	private boolean ingame = false;
 	
-	public GameContext(String gameName) {
+	public GameContext(User user, String gameName) {
+		this.user = user;
 		this.gameName = gameName;
 	}
 	
-	public GameContext(String gameName, boolean ingame) {
-		this(gameName);
+	public GameContext(User user, String gameName, boolean ingame) {
+		this(user, gameName);
 		this.ingame = ingame;
+	}
+	
+	public User getUser() {
+		return this.user;
 	}
 	
 	public String getName() {

@@ -62,17 +62,13 @@ public class MainWatch extends Observable {
                     if (OVERFLOW == kind) {
                         continue; //loop
                     } else if (ENTRY_CREATE == kind || ENTRY_DELETE == kind || ENTRY_MODIFY == kind) {
-
                         //Mark the observable object as changed.
                         this.setChanged();
-                        
                         notifyObservers();
                     }
                 }
 
-                if(!key.reset()) {
-                    break; //loop
-                }
+                if(!key.reset()) break; //loop
             }
         } catch(IOException ioe) {
             ioe.printStackTrace();

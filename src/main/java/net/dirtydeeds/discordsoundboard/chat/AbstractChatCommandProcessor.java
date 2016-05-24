@@ -2,7 +2,7 @@ package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 public abstract class AbstractChatCommandProcessor implements ChatCommandProcessor {
 
@@ -14,25 +14,38 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		this.bot = bot;
 	}
 	
-	protected abstract void handleEvent(GuildMessageReceivedEvent event, String message);
-	
-	public void process(GuildMessageReceivedEvent event) {
+	public void process(MessageReceivedEvent event) {
 		if (!isApplicableCommand(event)) return;
-		handleEvent(event, event.getMessage().getContent().toLowerCase());
-		if (bot.hasPermissionInChannel(event.getChannel(), Permission.MESSAGE_MANAGE))
+		String message = event.getMessage().getContent().toLowerCase();
+		handleEvent(event, message);
+		if (!event.isPrivate() && bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
 			event.getMessage().deleteMessage();
 	}
+
+	protected abstract void handleEvent(MessageReceivedEvent event, String message);
 	
-	public boolean isApplicableCommand(String cmd) {
+	private boolean isApplicableCommand(String cmd) {
 		return (cmd.toLowerCase().startsWith(prefix) && cmd.length() > 1);
 	}
 	
-	public boolean isApplicableCommand(GuildMessageReceivedEvent event) {
+	public boolean isApplicableCommand(MessageReceivedEvent event) {
 		return isApplicableCommand(event.getMessage().getContent());
 	}
 	
-	public String getPrefix() {
-		return prefix;
+	public boolean canBeRunByAnyone() {
+		return true;
 	}
 	
+	public String getPrefix() {
+		return this.prefix;
+	}
+	
+	public void pm(MessageReceivedEvent event, String message) {
+		bot.sendMessageToUser(message, event.getAuthor());
+	}
+	
+	public String getCommandHelpString() {
+		return "`" + getPrefix() + "`"; 
+	}
+
 }

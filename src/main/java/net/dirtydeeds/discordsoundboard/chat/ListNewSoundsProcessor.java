@@ -6,7 +6,7 @@ import java.util.Map;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
 public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
@@ -18,6 +18,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	}
 	
 	private String getNewSounds(Collection<SoundFile> soundFiles) {
+		if (soundFiles.isEmpty()) return null;
+		boolean foundNewSound = false;
 		StringBuilder sb = new StringBuilder();
 		for (SoundFile file : soundFiles) {
 			Date lastModified = new Date(file.getSoundFile().lastModified());
@@ -26,19 +28,26 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 			String filename = file.getSoundFile().getName();
 			String name = filename.substring(0, filename.indexOf("."));
         	sb.append("`?").append(name).append("` ");
+        	foundNewSound = true;
 		}
+		if (!foundNewSound) return null;
 		return sb.toString();
 	}
 	
-	protected void handleEvent(GuildMessageReceivedEvent event, String message) {
+	protected void handleEvent(MessageReceivedEvent event, String message) {
         Map<String, SoundFile> soundFiles = bot.getAvailableSoundFiles();
-        if (soundFiles.size() > 0) {
-            bot.sendMessageToChannel("The newest sound files added (in the last 48h) were:\n\n", event.getChannel());
-            bot.sendMessageToChannel(getNewSounds(soundFiles.values()), event.getChannel());
-            LOG.info("Responded to list new sounds request.");
+        String newSounds = getNewSounds(soundFiles.values());
+        if (soundFiles.size() > 0 && newSounds != null) {
+        	event.getChannel().sendMessageAsync("The **newest sound files** added (in the last 48h) were:\n\n" + newSounds, null);
+            LOG.info("Listed new sounds for user " + event.getAuthor().getUsername());
         } else {
-            bot.sendMessageToChannel("There are no available sounds to play.", event.getChannel());
+        	event.getChannel().sendMessageAsync("There were no **new sounds** found (from the last 48h).", null);
         }
+	}
+	
+	@Override
+	public String getCommandHelpString() {
+		return "`" + getPrefix() + "` - lists all new sound files from last 48h";
 	}
 
 }

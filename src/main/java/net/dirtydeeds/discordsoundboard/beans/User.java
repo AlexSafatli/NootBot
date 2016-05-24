@@ -1,34 +1,92 @@
 package net.dirtydeeds.discordsoundboard.beans;
 
-/**
- * @author dfurrer.
- */
-public class User {
-    String id;
-    String username;
-    boolean selected;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-    public User(String id, String username) {
-        this.id = id;
+@Entity
+public class User {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long id;
+    private String userid;
+    private String username;
+    private String entrancefilename;
+    private Boolean disallowed;
+	private Boolean throttled;
+	
+	protected User() { }
+	
+    public User(String userid, String username) {
+        this.userid = userid;
         this.username = username;
-        this.selected = false;
+        this.entrancefilename = null;
+        this.disallowed = false;
+        this.throttled = false;
     }
     
-    public User(String id, String username, boolean selected) {
-        this.id = id;
-        this.username = username;
-        this.selected = selected;
+    public User(String userid, String username, String entrancefilename) {
+    	this.userid = userid;
+    	this.username = username;
+    	this.entrancefilename = entrancefilename;
+    	this.disallowed = false;
+    	this.throttled = false;
     }
-
+    
+    public User(String userid, String username, String entrancefilename, boolean disallowed, boolean throttled) {
+    	this.userid = userid;
+    	this.username = username;
+    	this.entrancefilename = entrancefilename;
+    	this.disallowed = disallowed;
+    	this.throttled = throttled;
+    }
+    
     public String getId() {
-        return id;
+        return userid;
     }
+    
+	public void setId(String id) {
+		this.userid = id;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public boolean isSelected() {
-        return selected;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public String getEntrance() {
+		return entrancefilename;
+	}
+	
+	public void setEntrance(String soundFile) {
+		this.entrancefilename = soundFile;
+	}
+
+	public boolean isDisallowed() {
+		return disallowed;
+	}
+
+	public void setDisallowed(boolean disallowed) {
+		this.disallowed = disallowed;
+	}
+
+	public boolean isThrottled() {
+		return throttled;
+	}
+
+	public void setThrottled(boolean throttled) {
+		this.throttled = throttled;
+	}
+
+	public String toString() {
+		return String.format("User[id=%d, name=%s, disallowed=%b, throttled=%b]", 
+				userid, username, disallowed, throttled);
+	}
+	
+
 }

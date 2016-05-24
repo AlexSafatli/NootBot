@@ -3,7 +3,7 @@ apply plugin: 'idea'
 apply plugin: 'distribution'
 apply plugin: 'spring-boot'
 
-version = '1.5.7'
+version = '1.7.5'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -17,8 +17,8 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
         classpath("org.springframework.boot:spring-boot-starter-jersey:${springBootVersion}")
+        classpath("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
     }
 }
 
@@ -33,9 +33,10 @@ dependencies {
     compile('net.dv8tion:JDA:2.0.0_242')
     compile("commons-io:commons-io:2.4")
     compile("com.github.theholywaffle:lolchatapi:1.2.8")
+    compile("com.h2database:h2")
     
-    compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-jersey")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
@@ -46,9 +47,6 @@ jar {
         'Implementation-Version': version
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    jar.into('static') {
-        from('src/main/webapp')
-    }
     exclude('/src/main/java/**')
     exclude('/src/main/resources/**')
 }

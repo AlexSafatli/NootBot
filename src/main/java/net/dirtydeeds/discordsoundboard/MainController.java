@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
- * @author dfurrer.
- *
  * This is the MainController for the SpringBoot application
  */
 @SpringBootApplication
@@ -19,4 +17,5 @@ public class MainController {
     public static void main(String[] args) {
         SpringApplication.run(MainController.class, args);
     }
+    
 }

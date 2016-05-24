@@ -1,10 +1,7 @@
 package net.dirtydeeds.discordsoundboard;
 
-import java.util.Map;
-import java.util.Set;
-
-import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.voice.VoiceJoinEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.dv8tion.jda.utils.SimpleLog;
@@ -16,7 +13,7 @@ import net.dv8tion.jda.utils.SimpleLog;
  */
 public class EntranceSoundBoardListener extends ListenerAdapter {
     
-    public static final SimpleLog LOG = SimpleLog.getLog("EntranceListener");
+    public static final SimpleLog LOG = SimpleLog.getLog("Entrance");
     
     private SoundboardBot bot;
     
@@ -24,26 +21,30 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
         this.bot = bot;
     }
     
-    @SuppressWarnings("rawtypes")
-	public void onVoiceJoin(VoiceJoinEvent event) {        
-    	
-        String joined = event.getUser().getUsername().toLowerCase();
+	public void onVoiceJoin(VoiceJoinEvent event) {
 
-        //Respond
-        Set<Map.Entry<String, SoundFile>> entrySet = bot.getAvailableSoundFiles().entrySet();
-        if (entrySet.size() > 0) {
-        	String fileToPlay = "";
-            for (Map.Entry entry : entrySet) {
-            	String fileEntry = (String)entry.getKey();
-                if (joined.startsWith(fileEntry) && fileEntry.length() > fileToPlay.length())
-                	fileToPlay = fileEntry;
-            }
-            if (!fileToPlay.equals("")) {
-            	try { bot.playFileForEntrance(fileToPlay, event); }
-            	catch (Exception e) { LOG.fatal("Could not play file for entrance of " + joined); }
-            } else {
-            	LOG.info("Could not find any sound that starts with " + joined + ", so ignoring entrance.");
-            }
+		User user = event.getUser();
+    	if (bot.isUser(user)) return; // Ignore if it is just the bot.
+    	
+    	LOG.info(user.getUsername() + " joined " + event.getChannel().getName() + 
+    			" in " + event.getGuild().getName());
+    	
+        
+        if (!bot.isAllowedToPlaySound(user)) {
+        	LOG.info("User " + user.getUsername() + 
+        			" is not allowed to play sounds and so ignoring their entrance.");
+        	return;
         }
+        String fileToPlay = bot.getEntranceForUser(user);
+        if (fileToPlay != null && !fileToPlay.equals("") && 
+        		bot.getAvailableSoundFiles().get(fileToPlay) != null) {
+        	try {
+        		bot.playFileForEntrance(fileToPlay, event);
+        	} catch (Exception e) {
+        		LOG.fatal("Could not play file for entrance of " + user.getUsername() + 
+        				" because: " + e.toString());
+        	}
+        }
+        
     }
 }

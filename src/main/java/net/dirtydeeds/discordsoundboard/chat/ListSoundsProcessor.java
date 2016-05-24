@@ -7,13 +7,12 @@ import java.util.TreeMap;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
-public class ListSoundsProcessor extends AbstractChatCommandProcessor {
+public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ListSoundsProcessor");
-	private static final int MAX_LINE_LENGTH    = 50;
     private static final int MAX_MESSAGE_LENGTH = 2000;
 	
 	public ListSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
@@ -37,48 +36,59 @@ public class ListSoundsProcessor extends AbstractChatCommandProcessor {
 		List<String> strings = new LinkedList<String>();
 		StringBuilder sb = new StringBuilder();
 		sb.append("**" + category + "**\n");
-		int currentLineSize = 0;
 		for (SoundFile file : soundFiles) {
 			String filename = file.getSoundFile().getName();
 			String name = filename.substring(0, filename.indexOf("."));
         	int lengthOfAdd = 3 + name.length();
-        	// Keep a maximum line size of 80 characters.
-        	if (currentLineSize + lengthOfAdd > MAX_LINE_LENGTH) {
-        		sb.append("\n"); currentLineSize = 0;
-        	}
         	// Avoid oversized messages.
             if (sb.length() + lengthOfAdd >= MAX_MESSAGE_LENGTH) {
             	strings.add(sb.toString());
             	sb = new StringBuilder();
-            	currentLineSize = sb.length();
             }
-            currentLineSize += lengthOfAdd;
         	sb.append("`?").append(name).append("` ");
 		}
-		if (sb.length() > 0) {
-			strings.add(sb.toString());
-		}
+		if (sb.length() > 0) strings.add(sb.toString());
 		return strings;
 	}
 	
-	protected void handleEvent(GuildMessageReceivedEvent event, String message) {
-		StringBuilder sb = new StringBuilder();
+	protected void handleEvent(MessageReceivedEvent event, String message) {
+		String cat = getArgument();
         Map<String, SoundFile> soundFiles = bot.getAvailableSoundFiles();
         Map<String, List<SoundFile>> categoryFiles = getCategoryMappings();
         List<String> categories = bot.getSoundCategories();
         if (soundFiles.size() > 0) {
-        	sb.append(soundFiles.size()).append(" files found. ");
-            sb.append("They are organized by category. Type any of these commands to play the sound.\n\n");
-            bot.sendMessageToChannel(sb.toString(), event.getChannel());
-            for (String category : categories) {
-            	for (String msg : getMessagesForCategory(category, categoryFiles.get(category))) {
-                	event.getChannel().sendMessageAsync(msg, null);
-            	}
-            }
-            LOG.info("Responded to list request.");
-        } else {
-            bot.sendMessageToChannel("There are no available sounds to play.", event.getChannel());
-        }
+        	if (cat == null) {
+        		StringBuilder sb = new StringBuilder();
+	        	sb.append(soundFiles.size()).append(" files found. ");
+	            sb.append("They are organized by category. Type any of these commands to play the sound.\n\n");
+	            event.getChannel().sendMessageAsync(sb.toString(), null);
+	            for (String category : categories) {
+	            	for (String msg : getMessagesForCategory(category, categoryFiles.get(category))) {
+	                	event.getChannel().sendMessageAsync(msg, null);
+	            	}
+	            }
+        	} else {
+        		if (bot.isASoundCategory(cat)) {
+        			for (String category : categories) {
+        				if (category.equalsIgnoreCase(cat)) {
+        					LOG.info("Listing sounds for category " + category + " in " + event.getGuild());
+        					for (String msg : getMessagesForCategory(category, categoryFiles.get(category))) {
+        						event.getChannel().sendMessageAsync(msg, null);
+        					}
+        					break;
+        				}
+        			}
+        		} else {
+        			event.getChannel().sendMessageAsync("No category `" + cat + "` was found to list sounds for.", null);
+        			LOG.info(event.getAuthor() + " requested a list for category " + cat + " but it wasn't found.");
+        		}
+        	}
+        } else event.getChannel().sendMessageAsync("There are no available sounds to play.", null);
 	}
 
+	@Override
+	public String getCommandHelpString() {
+		return super.getCommandHelpString() + " - lists all files or all those for a category";
+	}
+	
 }

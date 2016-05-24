@@ -13,6 +13,7 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 	}
 	
 	protected abstract void handleEvent(UserGameUpdateEvent event, User user);
+	public abstract boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user);
 	
 	public void process(UserGameUpdateEvent event) {
 		handleEvent(event, event.getUser());
