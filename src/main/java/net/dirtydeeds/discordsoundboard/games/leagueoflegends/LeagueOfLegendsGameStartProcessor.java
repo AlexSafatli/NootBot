@@ -47,13 +47,12 @@ public class LeagueOfLegendsGameStartProcessor extends
 	
 	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
 		if (endpoint == null) endpoint = dispatcher.getLeagueOfLegendsEndpoint();
-		return (user.getCurrentGame() != null && user.getCurrentGame().equals(LOL) && 
+		return (user.getCurrentGame() != null && user.getCurrentGame().getName().equals(LOL) && 
 				endpoint != null);
 	}
 	
 	protected void handleEvent(UserGameUpdateEvent event, User user) {
-		if (endpoint == null)
-			endpoint = dispatcher.getLeagueOfLegendsEndpoint();
+		if (endpoint == null) endpoint = dispatcher.getLeagueOfLegendsEndpoint();
 		int numLOLPlayers = 0;
 		String category = (bot.isASoundCategory(LOL)) ? LOL : null;
 		if (category == null && bot.isASoundCategory("Games")) category = "Games";
@@ -81,7 +80,7 @@ public class LeagueOfLegendsGameStartProcessor extends
 					LOG.info("Found user " + name + " and identified as LoL friend " + friend.getName());
 					ingame = endpoint.isIngame(friend);
 				}
-				if (u.getCurrentGame() != null && u.getCurrentGame().equals(LOL)) {
+				if (u.getCurrentGame() != null && u.getCurrentGame().getName().equals(LOL)) {
 					if (friend != null && ingame) continue;
 					else if (friend != null && !ingame) {
 						LOG.info("Friend " + friend.getName() + " registered as being in-game.");
@@ -101,7 +100,7 @@ public class LeagueOfLegendsGameStartProcessor extends
 			    	}
 				}
 				if (userAsFriend != null && !userAsFriend.getStatus().getGameStatus().equals(GameStatus.SPECTATING)) {
-					LOG.info("Chat bot shows mapped user is spectating on League of Legends. Stopping.");
+					LOG.info("Chat bot shows mapped user is spectating. Stopping.");
 					return;
 				}
 				pastEvent = new LeagueOfLegendsGameStartEvent(channel, now);
@@ -113,8 +112,8 @@ public class LeagueOfLegendsGameStartProcessor extends
 					if (pastMessage != null && bot.hasPermissionInChannel((TextChannel)pastMessage.getChannel(),
 							Permission.MESSAGE_MANAGE)) pastMessage.deleteMessage();
 					channel.getGuild().getPublicChannel().sendMessageAsync(
-							String.format("Played random sound `%s` because you started a game of **%s** with multiple people ",filePlayed,LOL) + 
-							user.getAsMention() + " et al.!",
+							String.format("Played random sound `%s` - you started a game of **%s** with multiple people ",filePlayed,LOL) + 
+							user.getAsMention() + "!",
 							(Message m) -> pastMessage = m);
 					LOG.info("Played random sound in channel: \"" + filePlayed + "\".");
 				} catch (Exception e) {
@@ -123,6 +122,10 @@ public class LeagueOfLegendsGameStartProcessor extends
 				return;
 			}
 		}
+	}
+
+	public boolean isMutuallyExclusive() {
+		return true;
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
@@ -13,17 +14,20 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ListNewSoundsProcessor");
 	
+	private static final int MIN_NUMBER_OF_HOURS = 48; // 2 days
+	private static final int MAX_NUMBER_OF_HOURS = 336; // 2 weeks
+	private static final int NUM_HOURS_FOR_DAY_TRANSFORM = 72; // 3 days
+	
 	public ListNewSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
 		super(prefix, soundPlayer);
 	}
 	
-	private String getNewSounds(Collection<SoundFile> soundFiles) {
-		if (soundFiles.isEmpty()) return null;
+	private String getNewSounds(Collection<SoundFile> soundFiles, int numHours) {
 		boolean foundNewSound = false;
 		StringBuilder sb = new StringBuilder();
 		for (SoundFile file : soundFiles) {
 			Date lastModified = new Date(file.getSoundFile().lastModified());
-			if (!lastModified.after(new Date(System.currentTimeMillis()-48*60*60*1000)))
+			if (!lastModified.after(new Date(System.currentTimeMillis()-numHours*60*60*1000)))
 				continue;
 			String filename = file.getSoundFile().getName();
 			String name = filename.substring(0, filename.indexOf("."));
@@ -35,19 +39,45 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	}
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
+		MessageChannel channel = event.getChannel();
         Map<String, SoundFile> soundFiles = bot.getAvailableSoundFiles();
-        String newSounds = getNewSounds(soundFiles.values());
-        if (soundFiles.size() > 0 && newSounds != null) {
-        	event.getChannel().sendMessageAsync("The **newest sound files** added (in the last 48h) were:\n\n" + newSounds, null);
-            LOG.info("Listed new sounds for user " + event.getAuthor().getUsername());
-        } else {
-        	event.getChannel().sendMessageAsync("There were no **new sounds** found (from the last 48h).", null);
+        if (soundFiles.isEmpty()) {
+        	channel.sendMessage("There are **no sound files** at all!");
+        	return;
+        }
+    	String timeType = "hours";
+        int numHours = MIN_NUMBER_OF_HOURS;
+        String newSounds = null;
+        while (numHours <= MAX_NUMBER_OF_HOURS && newSounds == null) {
+	        newSounds = getNewSounds(soundFiles.values(), numHours);
+	        if (newSounds != null) {
+	        	int numTime = numHours;
+	        	if (numHours > NUM_HOURS_FOR_DAY_TRANSFORM) {
+	        		numTime /= 24;
+	        		timeType = "days";
+	        	}
+	        	channel.sendMessageAsync("The **newest sound files** added (in the last " + numTime + 
+	        			" " + timeType + ") were:\n\n" + newSounds, null);
+	            LOG.info("Listed new sounds in last " + numHours + " hours for user " + 
+	        			event.getAuthor().getUsername());
+	        } else {
+	        	numHours += 48; // Add 2 days.
+	        }
+        }
+        if (newSounds == null) {
+        	int numTime = numHours;
+        	if (numHours > NUM_HOURS_FOR_DAY_TRANSFORM) {
+        		numTime /= 24;
+        		timeType = "days";
+        	}
+	        channel.sendMessageAsync("There were no **new sounds** found (from the last " + 
+	        		numTime + " " + timeType + ").", null);
         }
 	}
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` - lists all new sound files from last 48h";
+		return "`" + getPrefix() + "` - lists the newest sound files";
 	}
 
 }

@@ -34,7 +34,7 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 			pm(event, "Asked to change entrance for `" + username + "` to filename `" + fileName + "` but could not "
 					+ "find user with that name.");
 		} else {
-			pm(event, "Need two arguments: a username and filename.");			
+			pm(event, "Need two arguments: a **username** and a **filename**.");			
 		}
 	}
 

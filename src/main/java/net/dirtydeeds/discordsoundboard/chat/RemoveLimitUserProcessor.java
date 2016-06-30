@@ -16,10 +16,9 @@ public class RemoveLimitUserProcessor extends AuthenticatedSingleArgumentChatCom
 		if (getArgument() != null) {
 			String username = getArgument();
 			if (bot.unthrottleUser(username)) {
-				pm(event, "Successfully stopped throttling user `" + username + "`.");
+				pm(event, "Stopped throttling user `" + username + "`.");
 			} else {
-				pm(event, "No throttled user found to stop throttling with username `" + 
-						username + "`.");
+				pm(event, "No throttled user found to stop throttling with username `" + username + "`.");
 				LOG.info("No throttled user to unthrottle with username " + username);
 			}
 		}
@@ -27,7 +26,7 @@ public class RemoveLimitUserProcessor extends AuthenticatedSingleArgumentChatCom
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - stops throttling a user";
+		return super.getCommandHelpString() + " - stop throttling a user";
 	}
 	
 }

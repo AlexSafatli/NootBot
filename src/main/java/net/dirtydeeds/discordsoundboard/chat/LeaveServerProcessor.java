@@ -22,8 +22,8 @@ public class LeaveServerProcessor extends AuthenticatedSingleArgumentChatCommand
 				}
 			}
 			if (toLeave != null) {
-				pm(event, "Leaving server **" + toLeave.getName() + "**.");
 				bot.leaveServer(toLeave);
+				pm(event, "Left server **" + toLeave.getName() + "** successfully.");
 			} else pm(event, "No server found with name `" + serverName + "`.");
 		}
 	}

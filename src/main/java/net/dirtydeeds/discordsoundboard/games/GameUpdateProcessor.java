@@ -7,5 +7,6 @@ public interface GameUpdateProcessor {
 
 	public abstract boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user);
 	public abstract void process(UserGameUpdateEvent event);
+	public abstract boolean isMutuallyExclusive();
 	
 }

@@ -16,19 +16,19 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
         List<String> categories = bot.getSoundCategories();
-        StringBuilder sb = new StringBuilder();
         if (categories.size() > 0) {
+        	StringBuilder sb = new StringBuilder();
         	int i = 0;
         	for (String category : categories) {
         		sb.append("**" + category + "** ");
         		++i;
         		if (i != categories.size()) sb.append(" / ");
         	}
-        	event.getChannel().sendMessageAsync("Here is a list of the *categories*:\n\n" + 
+        	event.getChannel().sendMessageAsync("Here is a list of categories:\n\n" + 
         			sb.toString(), null);
             LOG.info("Listed categories for user " + event.getAuthor().getUsername());
         } else {
-        	event.getChannel().sendMessageAsync("There are no *categories* found.", null);
+        	event.getChannel().sendMessageAsync("There are no categories found.", null);
         }
 	}
 	

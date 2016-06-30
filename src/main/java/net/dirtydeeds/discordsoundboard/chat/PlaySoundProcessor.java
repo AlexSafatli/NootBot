@@ -17,15 +17,20 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 		User user = event.getAuthor();
         String file = message.substring(1, message.length());
         if (!bot.isAllowedToPlaySound(user)) {
-        	pm(event, "You are explicitly forbidden to "
+        	pm(event, "You are forbidden to "
         			+ "play sounds using this bot by its owner **" + bot.getOwner() + "**.");
-        	LOG.info(String.format("%s tried to play sound file %s but is not allowed.", user, file));
+        	LOG.info(String.format("%s tried to play \"%s\" but is not allowed.", user.getUsername(), file));
 		} else if (bot.getAvailableSoundFiles().get(file) == null) {
-        	event.getChannel().sendMessageAsync("The sound `" + file + "` was not found. "
-        			+ "*Check your spelling.* " + user.getAsMention(), null);
-        	LOG.info(String.format("%s tried to play sound file %s but it was not found.", user, file));
+			String suggestion = "Check your spelling.", possibleName = bot.getClosestMatchingSoundName(file);
+			if (possibleName != null) {
+				LOG.info("Closest matching sound name is: " + possibleName);
+				suggestion = "Did you mean `" + possibleName + "`?";
+			}
+        	event.getChannel().sendMessageAsync("The sound `" + file + "` was not found. *"
+        			+ suggestion + "* " + user.getAsMention(), null);
+        	LOG.info(String.format("%s tried to play \"%s\" but it was not found.", user.getUsername(), file));
         } else {
-        	LOG.info(String.format("%s is playing sound file %s.", user, file));
+        	LOG.info(String.format("%s wants to play \"%s\".", user.getUsername(), file));
 	        try {
 	            bot.playFileForChatCommand(file, event);
 	        } catch (Exception e) {

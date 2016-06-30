@@ -15,15 +15,22 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
+import net.dirtydeeds.discordsoundboard.AsyncService;
 import net.dirtydeeds.discordsoundboard.MainWatch;
+import net.dirtydeeds.discordsoundboard.async.CleanBotMessagesJob;
+import net.dirtydeeds.discordsoundboard.async.RelatedRedditSubmissionsJob;
+import net.dirtydeeds.discordsoundboard.async.TopRedditSubmissionsJob;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.dao.UserRepository;
 import net.dirtydeeds.discordsoundboard.games.leagueoflegends.LeagueOfLegendsChatEndpoint;
+import net.dirtydeeds.discordsoundboard.trie.LowercaseTrie;
+import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.utils.SimpleLog;
 
@@ -40,21 +47,27 @@ public class SoundboardDispatcher implements Observer {
 	private final UserRepository userDao;
 	
 	private Properties appProperties;
-	private List<SoundboardBot> bots;
+	private SoundboardBot[] bots;
 	private LeagueOfLegendsChatEndpoint leagueEndpoint;
 	private Map<String, SoundFile> availableSounds;
+	private LowercaseTrie soundNameTrie;
 	private final MainWatch mainWatch;
+	private final AsyncService asyncService;
+	private final Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
 	
     @Inject
-    public SoundboardDispatcher(MainWatch mainWatch, UserRepository userDao) {
+    public SoundboardDispatcher(MainWatch mainWatch, UserRepository userDao, AsyncService asyncService) {
         this.mainWatch = mainWatch;
         this.mainWatch.addObserver(this);
+        this.asyncService = asyncService;
         this.userDao = userDao;
-        bots = new LinkedList<>();
         availableSounds = new TreeMap<>();
+        soundNameTrie = new LowercaseTrie();
+        this.mainWatch.watchDirectoryPath(soundFilePath);
         getFileList();
 		loadProperties();
 		startServices();
+		this.asyncService.maintain(this);
     }
 	
     /**
@@ -65,26 +78,48 @@ public class SoundboardDispatcher implements Observer {
         return availableSounds;
     }
     
+    public LowercaseTrie getSoundNameTrie() {
+    	return soundNameTrie;
+    }
+    
+    private void startBot(int i) {
+    	int index = i-1;
+    	if (bots[index] != null) {
+    		bots[index].getAPI().shutdown(false);
+    		bots[index] = null;
+    	}
+		String token = appProperties.getProperty("token_"  + i);
+		String owner = appProperties.getProperty("owner_"  + i);
+		String vol   = appProperties.getProperty("volume_" + i);
+		if (token == null || owner == null) {
+            LOG.fatal("The config was not populated! Please enter both an API token and owner for bot " + i);
+            return;
+		} else {
+			LOG.info("Initializing bot " + i);
+		}
+		SoundboardBot bot = new SoundboardBot(token, owner, this);
+		if (vol != null) bot.setVolume(Float.valueOf(vol));
+		bots[index] = bot;
+    }
+    
 	private void startServices() {
 		int num = Integer.valueOf(appProperties.getProperty("number_of_users"));
+		// Bots
+		bots = new SoundboardBot[num];
 		for (int i = 1; i <= num; ++i) {
-			try {
-				String token = appProperties.getProperty("token_"   + i);
-				String owner = appProperties.getProperty("owner_"   + i);
-				String vol   = appProperties.getProperty("volume_" + i);
-				SoundboardBot bot = new SoundboardBot(token, owner, this);
-				if (vol != null) bot.setVolume(Float.valueOf(vol));
-				bots.add(bot);
-			} catch (IllegalArgumentException e) {
-	            LOG.fatal("The config was not populated. Please enter an API token and owner for bot " + i);
-	        }
+			startBot(i);
 		}
+		// League of Legends endpoint
 		try {
 			leagueEndpoint = new LeagueOfLegendsChatEndpoint(this);
 		} catch (Exception e) {
 			leagueEndpoint = null;
 			e.printStackTrace();
 		}
+		// Async jobs
+		asyncService.addJob(new CleanBotMessagesJob());
+		asyncService.addJob(new TopRedditSubmissionsJob());
+		asyncService.addJob(new RelatedRedditSubmissionsJob());
 	}
 	
     //Loads in the properties from the app.properties file
@@ -115,8 +150,6 @@ public class SoundboardDispatcher implements Observer {
     	
     	Map<String, SoundFile> sounds = new TreeMap<>();
         try {
-        	
-            Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
 
             if (!soundFilePath.toFile().exists()) {
                 LOG.debug("Creating directory: " + soundFilePath.toFile().toString());
@@ -125,8 +158,6 @@ public class SoundboardDispatcher implements Observer {
                     LOG.fatal("Could not create directory: " + soundFilePath.toFile().toString());
                 }
             }
-
-            mainWatch.watchDirectoryPath(soundFilePath);
             
             Files.walk(soundFilePath).forEach(filePath -> {
                 if (Files.isRegularFile(filePath)) {
@@ -141,6 +172,12 @@ public class SoundboardDispatcher implements Observer {
             });
             
             availableSounds = sounds;
+            try {
+            	soundNameTrie = new LowercaseTrie(sounds.keySet());
+            } catch (Exception e) {
+            	LOG.fatal("Could not instantiate trie.");
+            	soundNameTrie = new LowercaseTrie();
+            }
             
         } catch (IOException e) {
             LOG.fatal(e.toString());
@@ -149,7 +186,37 @@ public class SoundboardDispatcher implements Observer {
     }
 
     public List<SoundboardBot> getBots() {
+    	LinkedList<SoundboardBot> bots = new LinkedList<>();
+    	for (int i = 0; i < this.bots.length; ++i) {
+    		if (this.bots[i] != null) {
+    			bots.add(this.bots[i]);
+    		}
+    	}
     	return bots;
+    }
+    
+    public void restartBot(SoundboardBot bot) {
+    	LOG.info("Restarting bot " + bot.getName());
+    	for (int i = 0; i < bots.length; ++i) {
+    		if (bots[i] != null && bots[i].equals(bot)) {
+    			startBot(i);
+    		}
+    	}
+    }
+    
+    public void sendMessageToAll(String message) {
+    	List<Guild> guilds = new LinkedList<Guild>();
+    	for (SoundboardBot bot : getBots()) {
+    		for (Guild g : bot.getGuilds()) if (!guilds.contains(g)) guilds.add(g);
+    	}
+    	for (Guild guild : guilds) {
+    		guild.getPublicChannel().sendMessageAsync(message, null);
+    	}
+    }
+    
+    public void sendMessageToAll(String message, Consumer<Integer> callback) {
+    	sendMessageToAll(message);
+    	callback.accept(bots.length);
     }
     
     public List<net.dirtydeeds.discordsoundboard.beans.User> getUserById(String userid) {

@@ -51,7 +51,7 @@ public class LeagueOfLegendsChatEndpoint {
 		loadListeners();
 		if (!api.login(user, pw))
 			LOG.fatal("Could not initialize League of Legends chat endpoint.");
-		else LOG.info("Logged into League of Legends NA server with username \"" + 
+		else LOG.info("Logged into LoL NA server with username \"" + 
 				user + "\" and summoner name: \"" + summonerName + "\".");
 	}
 	
@@ -79,18 +79,6 @@ public class LeagueOfLegendsChatEndpoint {
 			}
 		}
 		return found;
-	}
-	
-	public boolean isAFriend(String name) {
-		for (Friend friend : api.getFriends()) {
-			try {
-				if (friend.getName().contains(name) || (name.length() >= 5 && name.contains(friend.getName())))
-					return true;
-			} catch (Exception e) {
-				LOG.fatal("Received an improper response for League of Legends API while verifying friends.");
-			}
-		}
-		return false;
 	}
 	
 	public boolean isIngame(Friend f) {
@@ -169,17 +157,18 @@ public class LeagueOfLegendsChatEndpoint {
 					GameChatEventAdapter adapter = new GameChatEventAdapter(bot);
 					List<VoiceChannel> channelsWithLeaguePlayers = new LinkedList<>();
 					for (Guild guild : bot.getGuilds()) {
+						// Find the matching user with this bot.
 						VoiceChannel channel = bot.getConnectedChannel(guild);
 						if (channel == null) continue;
 						for (User user : channel.getUsers()) {
-							if (user.getCurrentGame() != null && user.getCurrentGame().equals(LOL) && 
+							if (user.getCurrentGame() != null && user.getCurrentGame().getName().equals(LOL) && 
 									!channelsWithLeaguePlayers.contains(channel))
 								channelsWithLeaguePlayers.add(channel);
 							String name = user.getUsername();
 							if (friend.getName().contains(name) || (name.length() >= 5 && name.contains(friend.getName()))) {
 								userFound = true;
-								LeagueOfLegendsChatChannel c = new LeagueOfLegendsChatChannel(friend, user);
-								adapter.process(c, message, c.getContext());
+								LeagueOfLegendsChatChannel lolChat = new LeagueOfLegendsChatChannel(friend, user);
+								adapter.process(lolChat, message, lolChat.getContext());
 								if (message.startsWith("?")) friend.sendMessage("Desu~");
 								return;
 							}

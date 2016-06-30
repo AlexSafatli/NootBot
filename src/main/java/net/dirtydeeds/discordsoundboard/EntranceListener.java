@@ -11,13 +11,13 @@ import net.dv8tion.jda.utils.SimpleLog;
  *
  * This class handles waiting for people to enter a discord voice channel and responding to their entrance.
  */
-public class EntranceSoundBoardListener extends ListenerAdapter {
+public class EntranceListener extends ListenerAdapter {
     
     public static final SimpleLog LOG = SimpleLog.getLog("Entrance");
     
     private SoundboardBot bot;
     
-    public EntranceSoundBoardListener(SoundboardBot bot) {
+    public EntranceListener(SoundboardBot bot) {
         this.bot = bot;
     }
     
@@ -31,20 +31,26 @@ public class EntranceSoundBoardListener extends ListenerAdapter {
     	
         
         if (!bot.isAllowedToPlaySound(user)) {
-        	LOG.info("User " + user.getUsername() + 
-        			" is not allowed to play sounds and so ignoring their entrance.");
+        	LOG.info("User " + user.getUsername() + " cannot play sounds so ignoring entrance.");
         	return;
         }
+        
         String fileToPlay = bot.getEntranceForUser(user);
-        if (fileToPlay != null && !fileToPlay.equals("") && 
-        		bot.getAvailableSoundFiles().get(fileToPlay) != null) {
-        	try {
-        		bot.playFileForEntrance(fileToPlay, event);
-        	} catch (Exception e) {
-        		LOG.fatal("Could not play file for entrance of " + user.getUsername() + 
-        				" because: " + e.toString());
+        if (fileToPlay != null && !fileToPlay.equals("")) {
+        	if (bot.getAvailableSoundFiles().get(fileToPlay) == null) {
+        		user.getPrivateChannel().sendMessageAsync("**Uh oh!** Your entrance `" + fileToPlay + 
+        				"` does not seem to exist anymore. You should update it!", null);
+        		LOG.info("User " + user.getUsername() + " seems to have a stale entrance. Alerted them.");
+        	} else {
+	        	try {
+	        		bot.playFileForEntrance(fileToPlay, event);
+	        	} catch (Exception e) {
+	        		e.printStackTrace();
+	        		LOG.fatal("Could not play file for entrance.");
+	        	}
         	}
         }
         
     }
+	
 }

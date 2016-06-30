@@ -9,6 +9,7 @@ import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.MessageEmbed;
+import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 
@@ -109,6 +110,14 @@ public class GameChatMessage implements Message {
 
 	public JDA getJDA() {
 		return null;
+	}
+
+	public boolean isMentioned(User user) {
+		return false;
+	}
+
+	public List<Role> getMentionedRoles() {
+		return new LinkedList<Role>();
 	}
 
 }

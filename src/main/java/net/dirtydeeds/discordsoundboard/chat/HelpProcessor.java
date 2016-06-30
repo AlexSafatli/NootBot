@@ -21,7 +21,7 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 		if (processors == null) return;
 		boolean isOwner = (event.getAuthor().getUsername().equalsIgnoreCase(bot.getOwner()));
 		StringBuilder sb = new StringBuilder();
-		sb.append("The following commands are available:\n\n");
+		sb.append("Type **any of the following commands** in this channel, another one, or in a PM to me:\n\n");
 		for (ChatCommandProcessor processor : processors) {
 			if (processor.canBeRunByAnyone() || (!processor.canBeRunByAnyone() && isOwner))
 				sb.append(processor.getCommandHelpString()).append("\n");
@@ -32,7 +32,7 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 		}
 		event.getChannel().sendMessageAsync(sb.toString(), null);
 		LOG.info("Responded to help command from " + event.getAuthor().getUsername() + 
-				" - isOwner: " + isOwner);
+				" ** isOwner: " + isOwner);
 	}
 	
 	@Override

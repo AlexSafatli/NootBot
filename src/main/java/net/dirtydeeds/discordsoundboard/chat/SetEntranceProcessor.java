@@ -14,8 +14,11 @@ public class SetEntranceProcessor extends
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String fileName = getArgument();
-		if (bot.isAllowedToPlaySound(event.getAuthor()) && fileName != null) {
-			if (bot.getAvailableSoundFiles().get(fileName) != null) {
+		if (bot.isAllowedToPlaySound(event.getAuthor())) {
+			if (fileName == null) {
+				bot.setEntranceForUser(event.getAuthor(), null);
+				pm(event, "Cleared your entrance.");
+			} else if (bot.getAvailableSoundFiles().get(fileName) != null) {
 				bot.setEntranceForUser(event.getAuthor(), fileName);
 				pm(event, "Updated your entrance to sound file `" + fileName + "`.");
 				if (bot.getAvailableSoundFiles().get(fileName).getSoundFile().length() 
