@@ -23,6 +23,7 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 			List<Attachment> attachments = event.getMessage().getAttachments();
 			for (Attachment attachment : attachments) {
 				String name = attachment.getFileName();
+				String shortName = name.substring(0, name.indexOf("."));
 				String extension = name.substring(name.indexOf(".") + 1);
 				String category = event.getMessage().getContent();
 				if (extension.equals("wav") || extension.equals("mp3")) {
@@ -33,18 +34,20 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 						} else downloadPath = bot.getSoundsPath();
 						if (attachment.download(new File(downloadPath.toString(), name))) {
 							event.getAuthor().getPrivateChannel().sendMessage(
-									"Downloaded file `" + name + "` and added to list of sounds.");
+									"Downloaded file `" + name + "` and added to list of sounds.\n" + 
+									"**Category**: `" + category + "` / **File Size**: " + attachment.getSize() + " bytes");
+							if (!event.isPrivate())
+								event.getChannel().sendMessageAsync("New file `" + shortName + 
+										"` added!", null);
 							bot.getDispatcher().updateFileList();
 						} else {
-							event.getAuthor().getPrivateChannel().sendMessage(
-									"Download of file `" + name + "` failed.");
+							event.getAuthor().getPrivateChannel().sendMessage("Download of file `" + name + "` failed.");
 						}
-						if (!event.isPrivate() && bot.hasPermissionInChannel(
-								event.getTextChannel(), Permission.MESSAGE_MANAGE))
+						if (!event.isPrivate() && bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
 							event.getMessage().deleteMessage();
 					} else {
-						event.getChannel().sendMessageAsync(
-								"File `" + name + "` is too large to add to library.", null);
+						event.getAuthor().getPrivateChannel().sendMessage(
+								"File `" + name + "` is too large to add to library.");
 					}
 				}
 			}
@@ -58,11 +61,11 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 	}
 	
 	public boolean canBeRunByAnyone() {
-		return false;
+		return false; // Only bot owner.
 	}
 	
 	public String getCommandHelpString() {
-		return "**Upload** an `.mp3` or `.wav` file if you are the bot owner to add it to list of sounds.";
+		return "**Upload** an `.mp3` or `.wav` file to add it to list of sounds.";
 	}
 
 }

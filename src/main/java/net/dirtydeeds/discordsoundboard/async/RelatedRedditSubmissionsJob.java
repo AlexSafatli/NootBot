@@ -9,6 +9,7 @@ import net.dean.jraw.models.Submission;
 import net.dirtydeeds.discordsoundboard.reddit.Reddit;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.entities.Game;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
@@ -17,11 +18,12 @@ import net.dv8tion.jda.utils.SimpleLog;
 public class RelatedRedditSubmissionsJob extends AbstractAsyncJob {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("RelatedRedditJob");
-	private static final long HIGH_UPVOTES = 4250;
+	private static final long HIGH_UPVOTES = 5000;
+	private static final int TITLE_TRUNCATE_LENGTH = 128;
 	private List<String> pastPosts;
 	
 	public RelatedRedditSubmissionsJob() {
-		NUMBER_HOURS_BETWEEN = 1;
+		NUMBER_HOURS_BETWEEN = 1; // Check every hour.
 		pastPosts = new LinkedList<>();
 	}
 	
@@ -43,20 +45,22 @@ public class RelatedRedditSubmissionsJob extends AbstractAsyncJob {
 						if (!possibleSubreddits.isEmpty()) {
 							String subreddit = possibleSubreddits.get(0);
 							List<Submission> gamePosts = r.getSubredditTop(subreddit);
-							LOG.info("Looking through posts in subreddit " + subreddit);
+							LOG.info("Looking through posts in subreddit /r/" + subreddit);
 							for (Submission post : gamePosts) {
 								if (post.getScore() > HIGH_UPVOTES) {
-									if (!pastPosts.contains(post.getUrl())) {
+									if (!newPosts.contains(post.getFullName())) {
+										newPosts.add(post.getFullName());
+									}
+									if (!pastPosts.contains(post.getFullName())) {
 										if (games.get(game) == null) {
 											games.put(game, new LinkedList<User>());
 											posts.put(game, post);
 										}
 										games.get(game).add(user);
-										LOG.info("Found post with score " + post.getScore() + " that seems relevant to " + 
+										LOG.info("Post with score " + post.getScore() + " relevant to " + 
 												user.getUsername());
 										continue userloop;
 									}
-									if (!newPosts.contains(post.getUrl())) newPosts.add(post.getUrl());
 								}
 							}
 						}
@@ -65,12 +69,11 @@ public class RelatedRedditSubmissionsJob extends AbstractAsyncJob {
 				for (String g : games.keySet()) {
 					// Go through all of the games and group the users together.
 					Submission post = posts.get(g);
-					String msgToSend = "I found this on `/r/" + post.getSubredditName() + "` ";
+					String msgToSend = "I found this on `/r/" + post.getSubredditName() + "`\n*" + 
+							StringUtils.truncate(post.getTitle(), TITLE_TRUNCATE_LENGTH) + 
+							"* (" + post.getScore() + ") ";
 					for (User user : games.get(g)) {
-						List<net.dirtydeeds.discordsoundboard.beans.User> beans = dispatcher.getUserById(user.getId());
-						if (beans != null && !beans.isEmpty() && !beans.get(0).hasOptedOutOfMentions()) {
-							msgToSend += user.getAsMention() + " ";
-						}
+						msgToSend += user.getAsMention() + " ";
 					}
 					msgToSend += "\n" + post.getUrl();
 					guild.getPublicChannel().sendMessageAsync(msgToSend, null);

@@ -27,8 +27,8 @@ import net.dirtydeeds.discordsoundboard.async.CleanBotMessagesJob;
 import net.dirtydeeds.discordsoundboard.async.RelatedRedditSubmissionsJob;
 import net.dirtydeeds.discordsoundboard.async.TopRedditSubmissionsJob;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
+import net.dirtydeeds.discordsoundboard.dao.SoundFileRepository;
 import net.dirtydeeds.discordsoundboard.dao.UserRepository;
-import net.dirtydeeds.discordsoundboard.games.leagueoflegends.LeagueOfLegendsChatEndpoint;
 import net.dirtydeeds.discordsoundboard.trie.LowercaseTrie;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
@@ -45,10 +45,10 @@ public class SoundboardDispatcher implements Observer {
 	public static final SimpleLog LOG = SimpleLog.getLog("Dispatcher");
 
 	private final UserRepository userDao;
+	private final SoundFileRepository soundDao;
 	
 	private Properties appProperties;
 	private SoundboardBot[] bots;
-	private LeagueOfLegendsChatEndpoint leagueEndpoint;
 	private Map<String, SoundFile> availableSounds;
 	private LowercaseTrie soundNameTrie;
 	private final MainWatch mainWatch;
@@ -56,11 +56,12 @@ public class SoundboardDispatcher implements Observer {
 	private final Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
 	
     @Inject
-    public SoundboardDispatcher(MainWatch mainWatch, UserRepository userDao, AsyncService asyncService) {
+    public SoundboardDispatcher(MainWatch mainWatch, UserRepository userDao, SoundFileRepository soundDao, AsyncService asyncService) {
         this.mainWatch = mainWatch;
         this.mainWatch.addObserver(this);
         this.asyncService = asyncService;
         this.userDao = userDao;
+        this.soundDao = soundDao;
         availableSounds = new TreeMap<>();
         soundNameTrie = new LowercaseTrie();
         this.mainWatch.watchDirectoryPath(soundFilePath);
@@ -85,6 +86,10 @@ public class SoundboardDispatcher implements Observer {
     private void startBot(int i) {
     	int index = i-1;
     	if (bots[index] != null) {
+    		List<Object> listeners = bots[index].getAPI().getRegisteredListeners();
+    		for (Object listener : listeners) {
+    			bots[index].getAPI().removeEventListener(listener);
+    		}
     		bots[index].getAPI().shutdown(false);
     		bots[index] = null;
     	}
@@ -108,13 +113,6 @@ public class SoundboardDispatcher implements Observer {
 		bots = new SoundboardBot[num];
 		for (int i = 1; i <= num; ++i) {
 			startBot(i);
-		}
-		// League of Legends endpoint
-		try {
-			leagueEndpoint = new LeagueOfLegendsChatEndpoint(this);
-		} catch (Exception e) {
-			leagueEndpoint = null;
-			e.printStackTrace();
 		}
 		// Async jobs
 		asyncService.addJob(new CleanBotMessagesJob());
@@ -154,7 +152,7 @@ public class SoundboardDispatcher implements Observer {
             if (!soundFilePath.toFile().exists()) {
                 LOG.debug("Creating directory: " + soundFilePath.toFile().toString());
                 try { soundFilePath.toFile().mkdir(); }
-                catch(SecurityException se){
+                catch (SecurityException se) {
                     LOG.fatal("Could not create directory: " + soundFilePath.toFile().toString());
                 }
             }
@@ -167,12 +165,20 @@ public class SoundboardDispatcher implements Observer {
                     File file = filePath.toFile();
                     String parent = file.getParentFile().getName();
                     SoundFile soundFile = new SoundFile(fileName, filePath.toFile(), parent, "");
+                    SoundFile _soundFile = soundDao.findOne(fileName);
+                    if (_soundFile != null) {
+                    	// Resolve conflicts between persistence object and new object.
+                    	soundFile.setDescription(_soundFile.getDescription());
+                    	soundFile.setNumberOfPlays(_soundFile.getNumberOfPlays());
+                    }
+                    soundDao.save(soundFile);
                     sounds.put(fileName, soundFile);
                 }
             });
             
             availableSounds = sounds;
             try {
+            	LOG.info("Instantiating trie with " + availableSounds.size() + " sound file names.");
             	soundNameTrie = new LowercaseTrie(sounds.keySet());
             } catch (Exception e) {
             	LOG.fatal("Could not instantiate trie.");
@@ -185,6 +191,10 @@ public class SoundboardDispatcher implements Observer {
         
     }
 
+    public AsyncService getAsyncService() {
+    	return this.asyncService;
+    }
+    
     public List<SoundboardBot> getBots() {
     	LinkedList<SoundboardBot> bots = new LinkedList<>();
     	for (int i = 0; i < this.bots.length; ++i) {
@@ -196,7 +206,7 @@ public class SoundboardDispatcher implements Observer {
     }
     
     public void restartBot(SoundboardBot bot) {
-    	LOG.info("Restarting bot " + bot.getName());
+    	LOG.info("Restarting bot " + bot.getBotName());
     	for (int i = 0; i < bots.length; ++i) {
     		if (bots[i] != null && bots[i].equals(bot)) {
     			startBot(i);
@@ -223,8 +233,12 @@ public class SoundboardDispatcher implements Observer {
     	return userDao.findByUserid(userid);
     }
     
-    public LeagueOfLegendsChatEndpoint getLeagueOfLegendsEndpoint() {
-    	return leagueEndpoint;
+    public List<SoundFile> getSoundFilesOrderedByNumberOfPlays() {
+    	return soundDao.findAllByOrderByNumberPlaysDesc();
+    }
+    
+    public SoundFile getSoundFileByName(String name) {
+    	return soundDao.findOne(name);
     }
     
     public Properties getAppProperties() {
@@ -241,6 +255,10 @@ public class SoundboardDispatcher implements Observer {
     
     public void saveUser(net.dirtydeeds.discordsoundboard.beans.User user) {
     	userDao.save(user);
+    }
+    
+    public void saveSound(SoundFile soundFile) {
+    	soundDao.save(soundFile);
     }
     	
     @Override

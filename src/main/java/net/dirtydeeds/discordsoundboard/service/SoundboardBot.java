@@ -8,10 +8,13 @@ import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.MessageHistory;
 import net.dv8tion.jda.OnlineStatus;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.audio.player.FilePlayer;
 import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.entities.VoiceStatus;
@@ -37,7 +40,8 @@ import java.util.*;
 public class SoundboardBot {
 
     public static final SimpleLog LOG = SimpleLog.getLog("Bot");
-    private static long CHANNEL_CONNECTION_TIMEOUT = 5000;
+    private static int CHANNEL_CONNECTION_TIMEOUT = 5000;
+    private static int TOP_PLAYED_SOUND_THRESHOLD = 20;
     
     private long startTime;
     private JDA bot;
@@ -67,12 +71,24 @@ public class SoundboardBot {
      * Gets a Map of the loaded sound files.
      * @return Map of sound files that have been loaded.
      */
-    public Map<String, SoundFile> getAvailableSoundFiles() {
+    public Map<String, SoundFile> getSoundMap() {
         return dispatcher.getAvailableSoundFiles();
+    }
+    
+    public SoundboardDispatcher getDispatcher() {
+    	return this.dispatcher;
     }
     
     public String getClosestMatchingSoundName(String str) {
     	return dispatcher.getSoundNameTrie().getWordWithPrefix(str);
+    }
+    
+    public String getRandomTopPlayedSoundName() {
+    	List<SoundFile> sounds = dispatcher.getSoundFilesOrderedByNumberOfPlays();
+    	if (sounds == null || sounds.isEmpty()) return null;
+    	Random rng = new Random();
+    	int index = rng.nextInt(Math.min(TOP_PLAYED_SOUND_THRESHOLD,sounds.size()));
+    	return sounds.get(index).getSoundFileId();
     }
     
     public List<String> getSoundCategories() {
@@ -81,10 +97,6 @@ public class SoundboardBot {
     		if (!categories.contains(soundFile.getCategory())) categories.add(soundFile.getCategory());
     	}
     	return categories;
-    }
-    
-    public SoundboardDispatcher getDispatcher() {
-    	return this.dispatcher;
     }
     
     public User getUser(net.dv8tion.jda.entities.User user) {
@@ -96,7 +108,7 @@ public class SoundboardBot {
     	return this.owner;
     }
     
-    public String getName() {
+    public String getBotName() {
     	return this.bot.getSelfInfo().getUsername();
     }
     
@@ -124,7 +136,7 @@ public class SoundboardBot {
 	
 	public void setEntranceForUser(net.dv8tion.jda.entities.User user, String filename) {
 		if (filename != null)
-			LOG.info("New entrance sound file " + filename + " set for user " + user);
+			LOG.info("New entrance sound file \"" + filename + "\" set for user " + user);
 		else
 			LOG.info("Removing any entrance sound file associated with user " + user);
 		List<User> users = dispatcher.getUserById(user.getId());
@@ -453,6 +465,21 @@ public class SoundboardBot {
     	}
     	return false;
     }
+	
+	public void deleteHistoryForChannel(MessageChannel channel) {
+		if (hasPermissionInChannel((TextChannel)channel, Permission.MESSAGE_MANAGE)) {
+			MessageHistory history = new MessageHistory(channel);
+			for (Message message : history.retrieveAll()) {
+				if (message.getAuthor() != null) {
+					try {
+						message.deleteMessage();
+					} catch (Exception e) {
+						LOG.warn("Could not delete message " + message);
+					}
+				}
+			}
+		}
+	}
 
     /**
      * Play file name requested. Will first try to load the file from the map of available sounds.
@@ -460,7 +487,11 @@ public class SoundboardBot {
      */
     public void playFile(String fileName, Guild guild) {
         SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
-        if (fileToPlay != null && guild != null) playFile(fileToPlay.getSoundFile(), guild);
+        if (fileToPlay != null && guild != null) {
+        	playFile(fileToPlay.getSoundFile(), guild);
+        	fileToPlay.addOneToNumberOfPlays();
+        	dispatcher.saveSound(fileToPlay);
+        }
     }
     
     public Path getSoundsPath() {

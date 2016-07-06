@@ -6,7 +6,7 @@ import net.dv8tion.jda.events.message.MessageReceivedEvent;
 public class SetEntranceProcessor extends
 		SingleArgumentChatCommandProcessor {
 
-	private static final int WARNING_FILE_SIZE_IN_BYTES = 500000;
+	private static final int WARNING_FILE_SIZE_IN_BYTES = 750000;
 	
 	public SetEntranceProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, bot);
@@ -18,10 +18,10 @@ public class SetEntranceProcessor extends
 			if (fileName == null) {
 				bot.setEntranceForUser(event.getAuthor(), null);
 				pm(event, "Cleared your entrance.");
-			} else if (bot.getAvailableSoundFiles().get(fileName) != null) {
+			} else if (bot.getSoundMap().get(fileName) != null) {
 				bot.setEntranceForUser(event.getAuthor(), fileName);
-				pm(event, "Updated your entrance to sound file `" + fileName + "`.");
-				if (bot.getAvailableSoundFiles().get(fileName).getSoundFile().length() 
+				pm(event, "Updated your entrance to sound file `" + fileName + "`!");
+				if (bot.getSoundMap().get(fileName).getSoundFile().length() 
 						> WARNING_FILE_SIZE_IN_BYTES) {
 					pm(event, "The file `" + fileName + "` may be a bit large. "
 							+ "*Be careful of setting very long entrances!*");
@@ -34,7 +34,7 @@ public class SetEntranceProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` - sets a sound file as your entrance sound when you join a channel";
+		return "`" + getPrefix() + " <soundfile>` - set a sound as your entrance for when you join a channel";
 	}
 
 }

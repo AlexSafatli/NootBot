@@ -16,8 +16,6 @@ public class User {
     private String entrancefilename;
     private Boolean disallowed;
 	private Boolean throttled;
-	private Boolean optedoutofmentions;
-	private String battletag;
 	
 	protected User() { }
 	
@@ -27,8 +25,6 @@ public class User {
         this.entrancefilename = null;
         this.disallowed = false;
         this.throttled = false;
-        this.battletag = null;
-        this.optedoutofmentions = false;
     }
     
     public User(String userid, String username, String entrancefilename) {
@@ -37,7 +33,6 @@ public class User {
     	this.entrancefilename = entrancefilename;
     	this.disallowed = false;
     	this.throttled = false;
-        this.optedoutofmentions = false;
     }
     
     public User(String userid, String username, String entrancefilename, boolean disallowed, boolean throttled) {
@@ -46,16 +41,6 @@ public class User {
     	this.entrancefilename = entrancefilename;
     	this.disallowed = disallowed;
     	this.throttled = throttled;
-        this.optedoutofmentions = false;
-    }
-    
-    public User(String userid, String username, String entrancefilename, boolean disallowed, boolean throttled, boolean optedoutofmentions) {
-    	this.userid = userid;
-    	this.username = username;
-    	this.entrancefilename = entrancefilename;
-    	this.disallowed = disallowed;
-    	this.throttled = throttled;
-        this.optedoutofmentions = optedoutofmentions;
     }
     
     public String getId() {
@@ -81,14 +66,6 @@ public class User {
 	public void setEntrance(String soundFile) {
 		this.entrancefilename = soundFile;
 	}
-
-	public String getBattleTag() {
-		return battletag;
-	}
-	
-	public void setBattleTag(String battletag) {
-		this.battletag = battletag;
-	}
 	
 	public boolean isDisallowed() {
 		return disallowed;
@@ -107,17 +84,6 @@ public class User {
 
 	public void setThrottled(boolean throttled) {
 		this.throttled = throttled;
-	}
-	
-	public boolean hasOptedOutOfMentions() {
-		if (this.optedoutofmentions == null) {
-			this.optedoutofmentions = false;
-		}
-		return this.optedoutofmentions;
-	}
-	
-	public void setOptedOutOfMentions(boolean optedout) {
-		this.optedoutofmentions = optedout;
 	}
 
 	public String toString() {

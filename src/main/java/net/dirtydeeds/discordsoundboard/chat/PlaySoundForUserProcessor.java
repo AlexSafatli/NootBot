@@ -24,22 +24,22 @@ public class PlaySoundForUserProcessor extends
         if (username != null) recipient = bot.getUserByName(username);
         if (!bot.isAllowedToPlaySound(user)) {
         	pm(event, "You are not allowed to play sounds using this bot.");
-        	LOG.info(String.format("%s tried to play sound file %s but is not allowed.", user, filename));
-		} else if (bot.getAvailableSoundFiles().get(filename) == null) {
+        	LOG.info(String.format("%s tried to play sound file \"%s\" but is not allowed.", user, filename));
+		} else if (bot.getSoundMap().get(filename) == null) {
 			String suggestion = "Check your spelling.", possibleName = bot.getClosestMatchingSoundName(filename);
 			if (possibleName != null) {
 				LOG.info("Closest matching sound name is: " + possibleName);
 				suggestion = "Did you mean `" + possibleName + "`?";
 			}
         	pm(event, "The sound `" + filename + "` was not found. *" + suggestion + "* " + user.getAsMention());
-        	LOG.info(String.format("%s tried to play sound file %s but it was not found.", 
+        	LOG.info(String.format("%s tried to play sound file \"%s\" but it was not found.", 
         			user.getUsername(), filename));
 		} else if (recipient == null) {
         	pm(event, "The username was not found. *Is he/she visible to this bot?*");
-        	LOG.info(String.format("%s tried to play sound file %s for username %s but user was not found.", 
+        	LOG.info(String.format("%s tried to play sound file \"%s\" for username %s but user not found.", 
         			user.getUsername(), filename, username));			
 		} else {
-        	LOG.info(String.format("%s is playing sound file %s for user \"%s\".", user.getUsername(), 
+        	LOG.info(String.format("%s is playing sound file \"%s\" for user %s.", user.getUsername(), 
         			filename, recipient.getUsername()));
 	        try {
 	            String played = bot.playFileForUser(filename, recipient);

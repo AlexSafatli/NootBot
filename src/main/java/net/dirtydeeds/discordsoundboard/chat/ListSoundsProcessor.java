@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -19,7 +20,6 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ListSoundsProcessor");
 	private Map<MessageChannel,List<Message>> pastMessages;
-	private static final int MAX_MESSAGE_LENGTH = 2000;
 	
 	public ListSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
 		super(prefix, soundPlayer);
@@ -28,40 +28,31 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
 	private Map<String, List<SoundFile>> getCategoryMappings() {
 		Map<String, List<SoundFile>> categoryFiles = new TreeMap<String, List<SoundFile>>();
-		for (SoundFile file : bot.getAvailableSoundFiles().values()) {
+		for (SoundFile file : bot.getSoundMap().values()) {
 			String category = (file.getCategory().equalsIgnoreCase("sounds")) ? "Uncategorized" : file.getCategory();
 			if (categoryFiles.get(category) == null) {
 				categoryFiles.put(category, new LinkedList<SoundFile>()); 
 			}
 			categoryFiles.get(category).add(file);
 		}
-		LOG.info("Found " + categoryFiles.size() + " categories.");
 		return categoryFiles;
 	}
 	
 	private List<String> getMessagesForCategory(String category, List<SoundFile> soundFiles) {
-		List<String> strings = new LinkedList<String>();
-		StringBuilder sb = new StringBuilder();
-		sb.append("**" + category + "** (" + soundFiles.size() + ")\n");
+		MessageBuilder b = new MessageBuilder();
+		b.append("**" + category + "** (" + soundFiles.size() + ")\n");
 		for (SoundFile file : soundFiles) {
 			String filename = file.getSoundFile().getName();
 			String name = filename.substring(0, filename.indexOf("."));
-        	int lengthOfAdd = 3 + name.length();
-        	// Avoid oversized messages.
-            if (sb.length() + lengthOfAdd >= MAX_MESSAGE_LENGTH) {
-            	strings.add(sb.toString());
-            	sb = new StringBuilder();
-            }
-        	sb.append("`?").append(name).append("` ");
+        	b.append("`?" + name + "` ");
 		}
-		if (sb.length() > 0) strings.add(sb.toString());
-		return strings;
+		return b.getStrings();
 	}
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String cat = getArgument();
 		MessageChannel channel = event.getChannel();
-        Map<String, SoundFile> soundFiles = bot.getAvailableSoundFiles();
+        Map<String, SoundFile> soundFiles = bot.getSoundMap();
         Map<String, List<SoundFile>> categoryFiles = getCategoryMappings();
         List<String> categories = bot.getSoundCategories();
         // Clear past list message.
@@ -76,10 +67,9 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         if (soundFiles.size() > 0) {
         	if (pastMessages.get(channel) == null) pastMessages.put(channel, new LinkedList<Message>());
         	if (cat == null) {
-        		StringBuilder sb = new StringBuilder();
-	        	sb.append(soundFiles.size()).append(" files found. ");
-	            sb.append("They are organized by category. Type any of these commands to play the sound.\n\n");
-	            channel.sendMessageAsync(sb.toString(), (Message m)-> pastMessages.get(channel).add(m));
+	        	String s = "**" + soundFiles.size() + " files are stored**. They are organized in **" + 
+	        			categories.size() + "** categories. Type any of these to play them.\n\n";
+	            channel.sendMessageAsync(s, (Message m)-> pastMessages.get(channel).add(m));
 	            for (String category : categories) {
 	            	for (String msg : getMessagesForCategory(category, categoryFiles.get(category))) {
 	                	channel.sendMessageAsync(msg, (Message m)-> pastMessages.get(channel).add(m));
@@ -97,7 +87,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         				}
         			}
         		} else {
-        			channel.sendMessageAsync("No category `" + cat + "` was found to list sounds for.", null);
+        			channel.sendMessageAsync("No category `" + cat + "` was found.", null);
         			LOG.info(event.getAuthor() + " requested a list for category " + cat + " but it wasn't found.");
         		}
         	}
@@ -106,7 +96,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " [category]` - lists all files or all those for a category";
+		return "`" + getPrefix() + " [category]` - list all files or all those for a category";
 	}
 	
 }

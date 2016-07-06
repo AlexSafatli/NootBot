@@ -19,10 +19,10 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 		User user = null;
 		if (username != null) user = bot.getUserByName(username);
 		if (fileName != null && user != null) {
-			if (bot.getAvailableSoundFiles().get(fileName) != null) {
+			if (bot.getSoundMap().get(fileName) != null) {
 				bot.setEntranceForUser(user, fileName);
-				pm(event, "User **" + user.getUsername() + "** had their entrance updated" +
-						" to sound file `" + fileName + "`.");
+				pm(event, "User **" + user.getUsername() + "** had entrance updated" +
+						" to sound `" + fileName + "`.");
 			} else {
 				pm(event, "That sound file does not exist. *Check your spelling.*");
 			}
@@ -31,7 +31,7 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 			pm(event, "User **" + user.getUsername() + "** had their entrance updated" +
 					" to no longer have a sound file.");
 		} else if (user == null) {
-			pm(event, "Asked to change entrance for `" + username + "` to filename `" + fileName + "` but could not "
+			pm(event, "Asked to change entrance for `" + username + "` but could not "
 					+ "find user with that name.");
 		} else {
 			pm(event, "Need two arguments: a **username** and a **filename**.");			
@@ -40,7 +40,7 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <username>, <soundfile>` (`*`) - sets a sound file for a user "
+		return "`" + getPrefix() + " <username>, <soundfile>` (`*`) - set a sound file for a user "
 				+ "as their entrance sound when they join a channel";
 	}
 

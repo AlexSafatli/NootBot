@@ -2,18 +2,41 @@ package net.dirtydeeds.discordsoundboard.beans;
 
 import java.io.File;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+@Entity
 public class SoundFile {
     
+	@Id
     private final String soundFileId;
-    private final File soundFile;
+    @Transient
+    private File soundFile;
     private final String category;
-    private final String description; 
+    private String description;
+    private Long numberPlays;
 
+	protected SoundFile() { 
+		this.soundFileId = null;
+		this.category = null;
+		this.numberPlays = 0L;
+	}
+    
+    public SoundFile(String soundFileId, String category, String description) {
+    	this.soundFileId = soundFileId;
+    	this.category = category;
+    	this.description = description;
+    	this.soundFile = null;
+    	this.numberPlays = 0L;
+    }
+    
     public SoundFile(String soundFileId, File soundFile, String category, String description) {
         this.soundFileId = soundFileId;
         this.soundFile = soundFile;
         this.category = category;
         this.description = description;
+        this.numberPlays = 0L;
     }
 
     public String getSoundFileId() {
@@ -30,6 +53,26 @@ public class SoundFile {
     
     public File getSoundFile() {
         return soundFile;
+    }
+    
+    public void setSoundFile(File file) {
+    	this.soundFile = file;
+    }
+    
+    public void setDescription(String desc) {
+    	this.description = desc;
+    }
+    
+    public Long getNumberOfPlays() {
+    	return numberPlays;
+    }
+    
+    public void setNumberOfPlays(Long plays) {
+    	numberPlays = plays;
+    }
+    
+    public void addOneToNumberOfPlays() {
+    	++numberPlays;
     }
 
     @Override

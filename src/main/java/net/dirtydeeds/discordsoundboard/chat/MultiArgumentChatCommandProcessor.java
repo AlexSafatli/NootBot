@@ -28,6 +28,17 @@ public abstract class MultiArgumentChatCommandProcessor extends AbstractChatComm
 		return this.args;
 	}
 	
+	public String[] getArgumentsCased(MessageReceivedEvent event) {
+		String[] argsCased = null;
+		String message = event.getMessage().getContent();
+		if (!message.endsWith(getPrefix())) {
+			// Get arguments. Comma-delimited.
+			String noPrefix = message.substring(getPrefix().length() + 1);
+			argsCased = noPrefix.split(",\\s?");
+		}
+		return argsCased;
+	}
+	
 	@Override
 	public String getCommandHelpString() {
 		return "`" + getPrefix() + " [argument1],[argument2],...`"; 

@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.chat;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Message;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.utils.SimpleLog;
 public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("RandomSoundProcessor");
+	private static final String MESSAGE_PREFIX = "Played random sound file ";
 	private Map<MessageChannel,Message> pastMessages;
 	
 	public PlayRandomProcessor(String prefix, SoundboardBot soundPlayer) {
@@ -22,7 +24,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		String category = getArgument();
+		String category = getArgument(), filePlayed = null;
 		if (!bot.isAllowedToPlaySound(event.getAuthor())) {
         	pm(event, "You are not allowed to play sounds using this bot.");
         	LOG.info(event.getAuthor() + " tried to play a sound file but is not allowed.");
@@ -37,31 +39,31 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
     				past.deleteMessage();
     		}
     		if (category != null) {
-    			String played = bot.playRandomFileForCategory(event.getAuthor(), category);
-    			if (played == null && bot.getUsersVoiceChannel(event.getAuthor()) != null) {
-    				channel.sendMessageAsync("No category `" + category + 
-    						"` was found to play a random file from " + 
-    						event.getAuthor().getAsMention(),
-    						(Message m)-> pastMessages.put(channel, m));
-    			} else if (played != null) {
-    				channel.sendMessageAsync("Played random sound file `" + 
-    						played + "` from **" + category + "** " + event.getAuthor().getAsMention(),
-    						(Message m)-> pastMessages.put(channel, m));
-    			}
+    			filePlayed = bot.playRandomFileForCategory(event.getAuthor(), category);
     		} else {
-    			String fileName = bot.playRandomFile(event.getAuthor());
-    			channel.sendMessageAsync("Played random sound file `" + 
-    					fileName + "` " + event.getAuthor().getAsMention(),
-    					(Message m)-> pastMessages.put(channel, m));
+    			filePlayed = bot.playRandomFile(event.getAuthor());
+    		}
+    		if (filePlayed != null && bot.getUsersVoiceChannel(event.getAuthor()) != null) {
+    			// Build an output string and send it to the channel.
+    			SoundFile file = bot.getDispatcher().getSoundFileByName(filePlayed);
+	    		String codedFileName = "`" + filePlayed + "`", desc = file.getDescription();
+	    		String output = MESSAGE_PREFIX + codedFileName + " ";
+	    		long numPlays = file.getNumberOfPlays() - 1; // Just got played.
+	    		if (category != null) output += "from **" + file.getCategory() + "** ";
+	    		if (desc != null && !desc.isEmpty()) output += "(" + desc + ") ";
+	    		if (numPlays > 0)
+	    			output += "which has been played **" + numPlays + "** times already ";
+	    		output += event.getAuthor().getAsMention();
+	    		channel.sendMessageAsync(output, (Message m)-> pastMessages.put(channel, m));
     		}
     	} catch (Exception e) {
-    		LOG.warn("Unable to play a random sound file because: " + e.toString());
+    		LOG.warn("When playing random sound: " + e.toString() + " => " + e.getMessage());
     	}
 	}
 	
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - plays a random file (if given, from a category)";
+		return super.getCommandHelpString() + " - play a random sound (from a category, if one is given)";
 	}
 
 }

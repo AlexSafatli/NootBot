@@ -29,7 +29,7 @@ public class ListServersProcessor extends AuthenticatedSingleArgumentChatCommand
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` - lists all servers currently connected to";
+		return "`" + getPrefix() + "` - list all servers connected to";
 	}
 	
 

@@ -1,7 +1,6 @@
 package net.dirtydeeds.discordsoundboard;
 
 import net.dirtydeeds.discordsoundboard.games.*;
-import net.dirtydeeds.discordsoundboard.games.leagueoflegends.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.entities.Game;
 import net.dv8tion.jda.entities.User;
@@ -31,8 +30,7 @@ public class GameListener extends ListenerAdapter {
     }
     
     private void initializeProcessors() {
-    	processors.add(new LeagueOfLegendsGameStartProcessor(bot, bot.getDispatcher()));
-    	processors.add(new GenericGameStartProcessor        (bot));
+    	processors.add(new GenericGameStartProcessor(bot));
     }
 
 	public void onUserGameUpdate(UserGameUpdateEvent event) {      
@@ -52,7 +50,7 @@ public class GameListener extends ListenerAdapter {
         		processor.process(event);
             	LOG.info("Processed game update event with processor " + processor.getClass().getSimpleName());
             	if (processor.isMutuallyExclusive()) {
-            		LOG.info("This processor is mutually exclusive. Stopping now.");
+            		LOG.info("That processor cannot be run with others. Stopping.");
             		return;
             	}
         	}

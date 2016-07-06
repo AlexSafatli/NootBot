@@ -16,7 +16,7 @@ public class DownloadSoundProcessor extends
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String filename = getArgument();
 		if (filename != null) {
-			SoundFile file = bot.getAvailableSoundFiles().get(filename);
+			SoundFile file = bot.getSoundMap().get(filename);
 			if (file == null) {
 				pm(event, "No sound file exists by that name.");
 			} else {
@@ -28,7 +28,7 @@ public class DownloadSoundProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - downloads a sound from the file system";
+		return super.getCommandHelpString() + " - download a sound from the file system";
 	}
 	
 }

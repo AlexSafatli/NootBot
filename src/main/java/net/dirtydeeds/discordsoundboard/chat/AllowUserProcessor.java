@@ -20,7 +20,7 @@ public class AllowUserProcessor extends AuthenticatedSingleArgumentChatCommandPr
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - allows a disallowed user to play sounds again";
+		return super.getCommandHelpString() + " - allow a disallowed user to play sounds again";
 	}
 	
 }

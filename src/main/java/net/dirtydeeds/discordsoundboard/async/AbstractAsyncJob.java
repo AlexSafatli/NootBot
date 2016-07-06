@@ -7,7 +7,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 public abstract class AbstractAsyncJob implements SoundboardJob {
 
 	protected AbstractAsyncEvent pastEvent;
-	protected static long NUMBER_HOURS_BETWEEN = 6;
+	protected long NUMBER_HOURS_BETWEEN = 12;
 	
 	protected class AbstractAsyncEvent {
 		public Date time;

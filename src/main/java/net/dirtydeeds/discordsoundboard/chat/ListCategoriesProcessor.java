@@ -34,7 +34,7 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` - lists all sound file categories";
+		return "`" + getPrefix() + "` - list the **" + bot.getSoundCategories().size() + "** categories";
 	}
 	
 }

@@ -18,7 +18,7 @@ public class RestartBotProcessor extends AuthenticatedSingleArgumentChatCommandP
 	}
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		pm(event, "Restarting this bot instance.");
+		pm(event, "Restarting this bot instance. *This is a soft restart. This might break things. Hard restart if it does.*");
 		bot.getDispatcher().restartBot(bot);
 	}
 

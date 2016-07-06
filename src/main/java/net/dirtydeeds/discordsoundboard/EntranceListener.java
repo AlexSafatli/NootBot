@@ -37,7 +37,7 @@ public class EntranceListener extends ListenerAdapter {
         
         String fileToPlay = bot.getEntranceForUser(user);
         if (fileToPlay != null && !fileToPlay.equals("")) {
-        	if (bot.getAvailableSoundFiles().get(fileToPlay) == null) {
+        	if (bot.getSoundMap().get(fileToPlay) == null) {
         		user.getPrivateChannel().sendMessageAsync("**Uh oh!** Your entrance `" + fileToPlay + 
         				"` does not seem to exist anymore. You should update it!", null);
         		LOG.info("User " + user.getUsername() + " seems to have a stale entrance. Alerted them.");

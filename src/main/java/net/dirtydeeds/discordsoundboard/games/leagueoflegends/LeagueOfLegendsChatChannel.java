@@ -3,9 +3,6 @@ package net.dirtydeeds.discordsoundboard.games.leagueoflegends;
 import java.io.File;
 import java.util.function.Consumer;
 
-import com.github.theholywaffle.lolchatapi.LolStatus.GameStatus;
-import com.github.theholywaffle.lolchatapi.wrapper.Friend;
-
 import net.dirtydeeds.discordsoundboard.games.GameChatMessage;
 import net.dirtydeeds.discordsoundboard.games.GameContext;
 import net.dv8tion.jda.entities.Message;
@@ -14,17 +11,18 @@ import net.dv8tion.jda.entities.User;
 
 public class LeagueOfLegendsChatChannel implements MessageChannel {
 
-	private Friend recipient;
+	//private Friend recipient;
 	private GameContext context;
 	
-	public LeagueOfLegendsChatChannel(Friend friend, User user) {
-		recipient = friend;
-		context = new GameContext(user, "League of Legends", friend.getStatus().getGameStatus().equals(GameStatus.IN_GAME));
+	public LeagueOfLegendsChatChannel(User user) {
+		//recipient = friend;
+		//friend.getStatus().getGameStatus().equals(GameStatus.IN_GAME)
+		context = new GameContext(user, "League of Legends", true);
 	}
 	
 	public Message sendMessage(String text) {
 		Message msg = new GameChatMessage(this, text, context);
-		recipient.sendMessage(text.replace("\n", " ").replace("**", "*"));
+		//recipient.sendMessage(text.replace("\n", " ").replace("**", "*"));
 		return msg;
 	}
 

@@ -2,6 +2,7 @@ package net.dirtydeeds.discordsoundboard;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import net.dirtydeeds.discordsoundboard.async.SoundboardJob;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
@@ -12,22 +13,32 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
- * @author asafatli.
+ * @author asafatli
+ * Independent server thread that ticks periodically to perform asynchronous tasks.
  */
 @Service
 public class AsyncService {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("Jobs");
-	private static final float TICK_RATE_PER_MINUTE = 1;
+	private static final float TICK_RATE_PER_MINUTE = 10;
 	private List<SoundboardJob> jobs;
+	private Stack<SoundboardJob> tasks;
 	
 	public AsyncService() {
 		jobs = new LinkedList<>();
+		tasks = new Stack<>();
 	}
 	
+	// Adds to a job to be run periodically.
 	public void addJob(SoundboardJob job) {
 		LOG.info("Adding job " + job.getClass().getSimpleName());
 		jobs.add(job);
+	}
+	
+	// Runs a job only once as a "task".
+	public void runJob(SoundboardJob job) {
+		LOG.info("Adding task " + job.getClass().getSimpleName());
+		tasks.push(job);
 	}
 	
     @Async
@@ -43,7 +54,21 @@ public class AsyncService {
 				LOG.fatal("Thread sleep failed for ms waiting time: " + 
 						millisecondsToWait);
 			}
-    		// Perform the action(s).
+    		// See if there are any tasks.
+    		while (!tasks.isEmpty()) {
+    			SoundboardJob task = tasks.pop();
+    			if (task.isApplicable(dispatcher)) {
+	    			try {
+	    				task.run(dispatcher);
+	    			} catch (Exception e) {
+	    				LOG.fatal("Exception when running task " + task.getClass().getSimpleName() + 
+	    						": " + e.toString() + " => " + e.getMessage());
+	    				continue;
+	    			}
+	    			LOG.info("Finished running task " + task.getClass().getSimpleName());
+    			}
+    		}
+    		// Perform any async job(s).
     		for (SoundboardJob job : jobs) {
     			if (job.isApplicable(dispatcher)) {
     				try {

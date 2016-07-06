@@ -27,33 +27,33 @@ public class ExitListener extends ListenerAdapter {
 	public void onVoiceLeave(VoiceLeaveEvent event) {
 
 		User user = event.getUser();
-    	if (bot.isUser(user) || bot.getConnectedChannel(event.getGuild()) == null) return; // Ignore if it is just the bot or not even connected.
+    	if (bot.isUser(user) || bot.getConnectedChannel(event.getGuild()) == null)
+    		return; // Ignore if it is just the bot or not even connected.
     	VoiceChannel channel = event.getOldChannel();
     	Guild guild = channel.getGuild();
     	AudioManager voice = bot.getAPI().getAudioManager(guild);
     	VoiceChannel botsChannel = voice.getConnectedChannel();
     	
+    	LOG.info(user.getUsername() + " left " + channel.getName() + 
+    			" in " + guild.getName());
+    	
     	if (botsChannel != null && botsChannel.equals(channel)) {
     		if (channel.getUsers().size() > 1) return;
     	} else if (channel.getUsers().size() > 0) {
-    		if (botsChannel != null && botsChannel.getUsers().size() == 1)
-    			bot.moveToChannel(channel);
+    		if (botsChannel != null && botsChannel.getUsers().size() == 1) bot.moveToChannel(channel);
     		return;
     	}
-    	LOG.info("Looking for other users in voice channels for server " + guild.getName());
         for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
         	if (voiceChannel.equals(channel)) continue;
         	if (botsChannel != null && botsChannel.equals(voiceChannel)) {
         		if (voiceChannel.getUsers().size() > 1) return;
         	} else if (voiceChannel.getUsers().size() > 0 && !voiceChannel.getId().equals(guild.getAfkChannelId())) {
-        		if (botsChannel != null && botsChannel.getUsers().size() == 1)
-        			bot.moveToChannel(voiceChannel);
+        		if (botsChannel != null && botsChannel.getUsers().size() == 1) bot.moveToChannel(voiceChannel);
         		return;
         	}
         }
         
-        LOG.info("No more users found!");
-        LOG.debug("Closing voice connection. Connected channel: " + botsChannel);
+        LOG.info("No more users found! Leaving voice channel in server " + guild.getName());
         voice.closeAudioConnection();
         
     }

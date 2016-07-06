@@ -40,7 +40,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		MessageChannel channel = event.getChannel();
-        Map<String, SoundFile> soundFiles = bot.getAvailableSoundFiles();
+        Map<String, SoundFile> soundFiles = bot.getSoundMap();
         if (soundFiles.isEmpty()) {
         	channel.sendMessage("There are **no sound files** at all!");
         	return;
@@ -77,7 +77,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` - lists the newest sound files";
+		return "`" + getPrefix() + "` - list the newest sound files at least **" + 
+				MIN_NUMBER_OF_HOURS + "** hours old";
 	}
 
 }

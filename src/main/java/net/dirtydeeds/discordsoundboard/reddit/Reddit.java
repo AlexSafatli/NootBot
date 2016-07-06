@@ -17,7 +17,7 @@ import net.dean.jraw.http.oauth.OAuthException;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Subreddit;
 import net.dean.jraw.paginators.SubredditPaginator;
-import net.dirtydeeds.discordsoundboard.chat.VersionProcessor;
+import net.dirtydeeds.discordsoundboard.Version;
 
 public class Reddit {
 
@@ -29,7 +29,7 @@ public class Reddit {
 	public Reddit() {
 		useragent = UserAgent.of(
 				"desktop", "net.dirtydeeds.discordsoundboard",
-				"v" + VersionProcessor.VERSION, "Asaph");
+				"v" + Version.VERSION, "Asaph");
 		reddit = new RedditClient(useragent);
 		loadProperties();
 		String username = appProperties.getProperty("reddit_username");

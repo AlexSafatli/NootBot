@@ -16,7 +16,7 @@ public class LimitUserProcessor extends AuthenticatedSingleArgumentChatCommandPr
 		if (getArgument() != null) {
 			String username = getArgument();
 			if (username.equalsIgnoreCase(bot.getOwner())) {
-				pm(event, "You cannot throttle yourself!");
+				pm(event, "You cannot throttle a bot owner/yourself!");
 			} else if (bot.throttleUser(username)) {
 				pm(event, "Successfully throttled user `" + username + "`.");
 				LOG.info("Throttled username " + username);

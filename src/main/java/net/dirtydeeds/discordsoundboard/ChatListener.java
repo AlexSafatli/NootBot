@@ -2,7 +2,9 @@ package net.dirtydeeds.discordsoundboard;
 
 import net.dirtydeeds.discordsoundboard.chat.AllowUserProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ChatCommandProcessor;
+import net.dirtydeeds.discordsoundboard.chat.ClearChatMessagesProcessor;
 import net.dirtydeeds.discordsoundboard.chat.DeleteSoundProcessor;
+import net.dirtydeeds.discordsoundboard.chat.DescribeSoundProcessor;
 import net.dirtydeeds.discordsoundboard.chat.DisallowUserProcessor;
 import net.dirtydeeds.discordsoundboard.chat.DownloadSoundProcessor;
 import net.dirtydeeds.discordsoundboard.chat.HelpProcessor;
@@ -12,19 +14,20 @@ import net.dirtydeeds.discordsoundboard.chat.ListCategoriesProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ListNewSoundsProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ListServersProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ListSoundsProcessor;
-import net.dirtydeeds.discordsoundboard.chat.OptOutOfMentionsProcessor;
+import net.dirtydeeds.discordsoundboard.chat.ListTopSoundsProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlayRandomProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlaySoundForUserProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlaySoundProcessor;
 import net.dirtydeeds.discordsoundboard.chat.RemoveLimitUserProcessor;
+import net.dirtydeeds.discordsoundboard.chat.RenameSoundProcessor;
 import net.dirtydeeds.discordsoundboard.chat.RestartBotProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ServerMessageProcessor;
 import net.dirtydeeds.discordsoundboard.chat.SetEntranceForUserProcessor;
 import net.dirtydeeds.discordsoundboard.chat.SetEntranceProcessor;
+import net.dirtydeeds.discordsoundboard.chat.SetSoundDescriptionProcessor;
 import net.dirtydeeds.discordsoundboard.chat.SoundAttachmentProcessor;
 import net.dirtydeeds.discordsoundboard.chat.StatsProcessor;
-import net.dirtydeeds.discordsoundboard.chat.StatusProcessor;
-import net.dirtydeeds.discordsoundboard.chat.VersionProcessor;
+import net.dirtydeeds.discordsoundboard.chat.UserInfoProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
@@ -38,7 +41,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class handles listening to commands in discord text channels and responding to them.
+ * @author asafatli
+ * Listens to commands in Discord text channels and responds to them if a processors
+ * exists to handle a particular message.
  */
 public class ChatListener extends ListenerAdapter {
     
@@ -66,26 +71,29 @@ public class ChatListener extends ListenerAdapter {
     	
     	processors.add(new PlaySoundProcessor ("?",                       bot));
     	processors.add(new ListSoundsProcessor(".list",                   bot));
+    	processors.add(new DescribeSoundProcessor(".whatis",              bot));
     	processors.add(new ListCategoriesProcessor(".categories",         bot));
     	processors.add(new ListNewSoundsProcessor(".new",                 bot));
+    	processors.add(new ListTopSoundsProcessor(".top",                 bot));
     	processors.add(new PlayRandomProcessor(".random",                 bot));
+    	processors.add(new ClearChatMessagesProcessor(".clear",           bot));
     	processors.add(new DisallowUserProcessor(".disallow",             bot));
     	processors.add(new AllowUserProcessor(".allow",                   bot));
     	processors.add(new LimitUserProcessor(".throttle",                bot));
     	processors.add(new RemoveLimitUserProcessor(".unthrottle",        bot));
+    	processors.add(new SetSoundDescriptionProcessor(".setinfo",       bot));
     	processors.add(new DeleteSoundProcessor(".rm",                    bot));
+    	processors.add(new RenameSoundProcessor(".rename",                bot));
     	processors.add(new DownloadSoundProcessor(".dl",                  bot));
     	processors.add(new SetEntranceForUserProcessor(".setentrancefor", bot));
     	processors.add(new SetEntranceProcessor(".setentrance",           bot));
     	processors.add(new PlaySoundForUserProcessor(".playfor",          bot));
-    	processors.add(new OptOutOfMentionsProcessor(".optout",           bot));
     	processors.add(new ServerMessageProcessor(".all",                 bot));
     	processors.add(new LeaveServerProcessor(".leave",                 bot));
     	processors.add(new RestartBotProcessor(".restart",                bot));
     	processors.add(new ListServersProcessor(".servers",               bot));
-    	processors.add(new StatusProcessor(".status",                     bot));
+    	processors.add(new UserInfoProcessor(".user",                     bot));
     	processors.add(new StatsProcessor(".stats",                       bot));
-    	processors.add(new VersionProcessor(".version",                   bot));
     	processors.add(new SoundAttachmentProcessor(                      bot));
     	
     	this.helpProcessor = new HelpProcessor(".help", bot, processors);
@@ -97,8 +105,10 @@ public class ChatListener extends ListenerAdapter {
     	long minutesSince = (now.getTime() - tick.getTime())/(1000*60);
     	if (minutesSince >= THROTTLE_TIME_IN_MINUTES) {
     		this.tick = now;
+    		if (requests.size() > 0) {
+    			LOG.info(minutesSince + " minutes have passed since last clear. Clearing request counts.");
+    		}
     		requests.clear();
-    		LOG.info(minutesSince + " minutes have passed since last clear. Cleared request counts.");
     	}
     }
     
@@ -127,9 +137,11 @@ public class ChatListener extends ListenerAdapter {
         		} else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME && !bot.isOwner(event.getAuthor())) {
         			LOG.info("Throttling user " + event.getAuthor() + " because they sent too many requests.");
         			bot.throttleUser(event.getAuthor());
+        			bot.sendMessageToUser("Throttling **" + event.getAuthor().getUsername() + 
+        					"** automatically because of too many requests.", bot.getOwner());
         		} else {
         			processor.process(event);
-	        		requests.put(event.getAuthor(), numRequests + 1);
+	        		requests.put(event.getAuthor(), numRequests + 1); // Increment number of requests.
 	        		LOG.info("Processed chat message event with processor " + processor.getClass().getSimpleName());
         		}
         		return;

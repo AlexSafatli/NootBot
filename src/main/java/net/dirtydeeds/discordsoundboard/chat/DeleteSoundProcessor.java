@@ -14,7 +14,7 @@ public class DeleteSoundProcessor extends
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String filename = getArgument();
 		if (filename != null) {
-			SoundFile file = bot.getAvailableSoundFiles().get(filename);
+			SoundFile file = bot.getSoundMap().get(filename);
 			if (file == null) {
 				pm(event, "No sound file exists by that name.");
 			} else {
@@ -30,7 +30,7 @@ public class DeleteSoundProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - removes a sound from the file system";
+		return super.getCommandHelpString() + " - remove a sound from the file system";
 	}
 	
 }
