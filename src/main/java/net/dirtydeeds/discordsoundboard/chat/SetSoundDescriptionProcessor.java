@@ -34,7 +34,7 @@ public class SetSoundDescriptionProcessor extends MultiArgumentChatCommandProces
 			sound.setDescription(desc);
 			bot.getDispatcher().saveSound(sound);
 			event.getChannel().sendMessageAsync("Okay! The description for `" + name + 
-					"` has been set to `" + desc + "`.", null);
+					"` has been set to: " + desc, null);
 		} else if (desc != null) {
 			event.getChannel().sendMessageAsync("Oops! I couldn't find that sound `" + name + "` " +
 					user.getAsMention(), null);

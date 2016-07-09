@@ -69,7 +69,7 @@ public class TopRedditSubmissionsJob extends AbstractAsyncJob {
 					int numUsers = gameMap.get(game);
 					if (numUsers >= MIN_USERS_RELEVANT_TO_PER_GUILD) {
 						Submission post = postMap.get(game);
-						guild.getPublicChannel().sendMessageAsync(msgIntro + "This is related to game **" + game + "**\n*" + 
+						guild.getPublicChannel().sendMessageAsync(msgIntro + "*This is related to game* **" + game + "**\n*" + 
 								StringUtils.truncate(post.getTitle(), TITLE_TRUNCATE_LENGTH) + "* (" + post.getScore() + 
 								")\n" + post.getUrl(), null);
 					}

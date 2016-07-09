@@ -1,4 +1,4 @@
-package net.dirtydeeds.discordsoundboard;
+package net.dirtydeeds.discordsoundboard.listeners;
 
 import net.dirtydeeds.discordsoundboard.chat.AllowUserProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ChatCommandProcessor;
@@ -15,9 +15,11 @@ import net.dirtydeeds.discordsoundboard.chat.ListNewSoundsProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ListServersProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ListSoundsProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ListTopSoundsProcessor;
+import net.dirtydeeds.discordsoundboard.chat.ModifySoundPlayCountProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlayRandomProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlaySoundForUserProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlaySoundProcessor;
+import net.dirtydeeds.discordsoundboard.chat.RecategorizeSoundProcessor;
 import net.dirtydeeds.discordsoundboard.chat.RemoveLimitUserProcessor;
 import net.dirtydeeds.discordsoundboard.chat.RenameSoundProcessor;
 import net.dirtydeeds.discordsoundboard.chat.RestartBotProcessor;
@@ -84,7 +86,9 @@ public class ChatListener extends ListenerAdapter {
     	processors.add(new SetSoundDescriptionProcessor(".setinfo",       bot));
     	processors.add(new DeleteSoundProcessor(".rm",                    bot));
     	processors.add(new RenameSoundProcessor(".rename",                bot));
+    	processors.add(new RecategorizeSoundProcessor(".mv",              bot));
     	processors.add(new DownloadSoundProcessor(".dl",                  bot));
+    	processors.add(new ModifySoundPlayCountProcessor(".count",        bot));
     	processors.add(new SetEntranceForUserProcessor(".setentrancefor", bot));
     	processors.add(new SetEntranceProcessor(".setentrance",           bot));
     	processors.add(new PlaySoundForUserProcessor(".playfor",          bot));

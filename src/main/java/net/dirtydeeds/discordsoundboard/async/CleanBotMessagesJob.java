@@ -21,6 +21,10 @@ public class CleanBotMessagesJob extends AbstractAsyncJob {
     private static final long MINUTES = 60000; // 1 minute in ms
     private static final String SERVER_MESSAGE_PREFIX = "**FYI**";
 	
+    public CleanBotMessagesJob() {
+    	NUMBER_HOURS_BETWEEN = 6; // Check every 6 hours.
+    }
+    
 	public void handle(SoundboardDispatcher dispatcher) {
 		MessageHistory history;
 		List<Message> messages;

@@ -14,9 +14,10 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ListNewSoundsProcessor");
 	
-	private static final int MIN_NUMBER_OF_HOURS = 48; // 2 days
-	private static final int MAX_NUMBER_OF_HOURS = 336; // 2 weeks
+	private static final int MIN_NUMBER_OF_HOURS = 168; // 7 days
+	private static final int MAX_NUMBER_OF_HOURS = 504; // 3 weeks
 	private static final int NUM_HOURS_FOR_DAY_TRANSFORM = 72; // 3 days
+	private static final int DAYS = 24;
 	
 	public ListNewSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
 		super(prefix, soundPlayer);
@@ -53,7 +54,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	        if (newSounds != null) {
 	        	int numTime = numHours;
 	        	if (numHours > NUM_HOURS_FOR_DAY_TRANSFORM) {
-	        		numTime /= 24;
+	        		numTime /= DAYS;
 	        		timeType = "days";
 	        	}
 	        	channel.sendMessageAsync("The **newest sound files** added (in the last " + numTime + 
@@ -67,7 +68,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
         if (newSounds == null) {
         	int numTime = numHours;
         	if (numHours > NUM_HOURS_FOR_DAY_TRANSFORM) {
-        		numTime /= 24;
+        		numTime /= DAYS;
         		timeType = "days";
         	}
 	        channel.sendMessageAsync("There were no **new sounds** found (from the last " + 
@@ -78,7 +79,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	@Override
 	public String getCommandHelpString() {
 		return "`" + getPrefix() + "` - list the newest sound files at least **" + 
-				MIN_NUMBER_OF_HOURS + "** hours old";
+				MIN_NUMBER_OF_HOURS/DAYS + "** days old";
 	}
 
 }

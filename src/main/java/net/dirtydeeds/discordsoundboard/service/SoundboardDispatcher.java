@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import net.dirtydeeds.discordsoundboard.AsyncService;
 import net.dirtydeeds.discordsoundboard.MainWatch;
 import net.dirtydeeds.discordsoundboard.async.CleanBotMessagesJob;
 import net.dirtydeeds.discordsoundboard.async.RelatedRedditSubmissionsJob;

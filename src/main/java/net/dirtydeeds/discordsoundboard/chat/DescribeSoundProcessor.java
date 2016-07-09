@@ -30,14 +30,15 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
         			+ suggestion + "* " + user.getAsMention(), null);
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
-			String desc = file.getDescription();
+			String desc = file.getDescription(), cat = file.getCategory();
+			if (cat.equals("sounds")) cat = "Uncategorized";
 			Long plays = file.getNumberOfPlays();
 			if (desc == null || desc.isEmpty()) {
-				event.getChannel().sendMessageAsync("`" + name + "` (**" + plays + 
-						"** plays) had *no information*; add some yourself.", null);
+				event.getChannel().sendMessageAsync("`" + name + "` from category **" + cat + 
+						"** (**" + plays + "** plays) had *no information*; add some yourself.", null);
 			} else {
-				event.getChannel().sendMessageAsync("`" + name + "` (**" + plays + 
-						"** plays) - " + desc, null);
+				event.getChannel().sendMessageAsync("`" + name + "` from category **" + cat + 
+						"** (**" + plays + "** plays) - " + desc, null);
 			}
 		}
 	}

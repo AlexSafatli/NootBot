@@ -29,7 +29,7 @@ public class LimitUserProcessor extends AuthenticatedSingleArgumentChatCommandPr
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - throttles a user from using bot every five minutes";
+		return super.getCommandHelpString() + " - throttle a user from using bot every **5** minutes";
 	}
 	
 }

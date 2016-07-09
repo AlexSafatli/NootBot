@@ -44,7 +44,8 @@ public class PlaySoundForUserProcessor extends
 	        try {
 	            String played = bot.playFileForUser(filename, recipient);
 	            if (played != null)
-	            	pm(event, "Played sound `" + played + "` for user **" + recipient.getUsername() + "**.");
+	            	pm(event, "Played sound `" + played + "` for user **" + recipient.getUsername() + 
+	            			"** in server **" + bot.getUsersVoiceChannel(recipient).getGuild().getName() + "**.");
 	            else pm(event, "Could not play sound `" + filename + "` for that user. *Is he/she in a channel?*");
 	        } catch (Exception e) {
 	        	LOG.fatal("Could not play file " + filename + " because: " + e.toString());

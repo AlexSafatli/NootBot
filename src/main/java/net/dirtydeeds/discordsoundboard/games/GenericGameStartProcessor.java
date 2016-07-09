@@ -77,7 +77,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				if (filePlayed != null) {
 					bot.playFileForUser(filePlayed, user);
 					publicChannel.sendMessageAsync(String.format("Played popular sound `%s` randomly. "
-							+ "Others in the channel are playing *%s* too ",filePlayed,game) + 
+							+ "Others in the channel are playing **%s** too ",filePlayed,game) + 
 							user.getAsMention() + "!" + POST_SCRIPT, (Message m)-> pastEvent.message = m);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
 				}

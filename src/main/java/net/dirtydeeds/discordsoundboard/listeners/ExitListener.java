@@ -1,4 +1,4 @@
-package net.dirtydeeds.discordsoundboard;
+package net.dirtydeeds.discordsoundboard.listeners;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.entities.Guild;
@@ -53,7 +53,7 @@ public class ExitListener extends ListenerAdapter {
         	}
         }
         
-        LOG.info("No more users found! Leaving voice channel in server " + guild.getName());
+        LOG.info("No more users! Leaving voice channel in server " + guild.getName());
         voice.closeAudioConnection();
         
     }

@@ -53,6 +53,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 	    		if (desc != null && !desc.isEmpty()) output += "(" + desc + ") ";
 	    		if (numPlays > 0)
 	    			output += "which has been played **" + numPlays + "** times already ";
+	    		LOG.info("Played \"" + filePlayed + "\" in server " + event.getGuild().getName());
 	    		output += event.getAuthor().getAsMention();
 	    		channel.sendMessageAsync(output, (Message m)-> pastMessages.put(channel, m));
     		}

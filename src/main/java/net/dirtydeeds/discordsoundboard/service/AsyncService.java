@@ -1,12 +1,10 @@
-package net.dirtydeeds.discordsoundboard;
+package net.dirtydeeds.discordsoundboard.service;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
 import net.dirtydeeds.discordsoundboard.async.SoundboardJob;
-import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 import net.dv8tion.jda.utils.SimpleLog;
 
 import org.springframework.scheduling.annotation.Async;

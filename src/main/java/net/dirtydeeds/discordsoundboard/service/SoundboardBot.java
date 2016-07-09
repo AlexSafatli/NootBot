@@ -1,11 +1,11 @@
 package net.dirtydeeds.discordsoundboard.service;
 
-import net.dirtydeeds.discordsoundboard.ChatListener;
-import net.dirtydeeds.discordsoundboard.EntranceListener;
-import net.dirtydeeds.discordsoundboard.ExitListener;
-import net.dirtydeeds.discordsoundboard.GameListener;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
+import net.dirtydeeds.discordsoundboard.listeners.ChatListener;
+import net.dirtydeeds.discordsoundboard.listeners.EntranceListener;
+import net.dirtydeeds.discordsoundboard.listeners.ExitListener;
+import net.dirtydeeds.discordsoundboard.listeners.GameListener;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.MessageHistory;
@@ -41,7 +41,8 @@ public class SoundboardBot {
 
     public static final SimpleLog LOG = SimpleLog.getLog("Bot");
     private static int CHANNEL_CONNECTION_TIMEOUT = 5000;
-    private static int TOP_PLAYED_SOUND_THRESHOLD = 20;
+    private static int TOP_PLAYED_SOUND_THRESHOLD = 32;
+    private static String NOT_IN_VOICE_CHANNEL_MESSAGE = "Are you in a voice channel? Could not find you!";
     
     private long startTime;
     private JDA bot;
@@ -136,9 +137,9 @@ public class SoundboardBot {
 	
 	public void setEntranceForUser(net.dv8tion.jda.entities.User user, String filename) {
 		if (filename != null)
-			LOG.info("New entrance sound file \"" + filename + "\" set for user " + user);
+			LOG.info("New entrance \"" + filename + "\" set for " + user);
 		else
-			LOG.info("Removing any entrance sound file associated with user " + user);
+			LOG.info("Cleared entrance associated with " + user);
 		List<User> users = dispatcher.getUserById(user.getId());
 		if (users != null && !users.isEmpty()) {
 			users.get(0).setEntrance(filename);
@@ -262,7 +263,7 @@ public class SoundboardBot {
         	String toPlay = (String)fileNames[new Random().nextInt(fileNames.length)];
         	VoiceChannel toJoin = getUsersVoiceChannel(user);
         	if (toJoin == null) {
-                sendMessageToUser("Are you in a voice channel? Could not find you!", user);
+                sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, user);
         	} else {
         		moveToChannel(toJoin);
         		playFile(toPlay, toJoin.getGuild());
@@ -278,12 +279,12 @@ public class SoundboardBot {
     public String playRandomFileForCategory(net.dv8tion.jda.entities.User user, String category) throws Exception {
         if (user != null && isAllowedToPlaySound(user)) {
         	if (!isASoundCategory(category)) {
-        		LOG.info(category + " not found when playing random file from a category.");
+        		LOG.info("Category " + category + " not found when playing random file.");
         		return null;
         	}
         	VoiceChannel toJoin = getUsersVoiceChannel(user);
         	if (toJoin == null) {
-                sendMessageToUser("Are you in a voice channel? Could not find you!", user);
+                sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, user);
         	} else {
             	Random rng = new Random();
             	SoundFile file = null;
@@ -314,16 +315,14 @@ public class SoundboardBot {
         	if (dispatcher.getAvailableSoundFiles().get(fileName) != null) {
             	VoiceChannel toJoin = getUsersVoiceChannel(event.getAuthor());
             	if (toJoin == null) {
-                    sendMessageToUser("Are you in a voice channel? Could not find you!",
-                    		event.getAuthor());
+                    sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, event.getAuthor());
             	} else if (event.getGuild() != null && toJoin.getGuild() != event.getGuild()) {
             		sendMessageToUser("You are in a voice channel that is not in "
             				+ "the server you sent the message in!", event.getAuthor());
             	} else {
             		moveToChannel(toJoin);
             		playFile(fileName, toJoin.getGuild());
-            		LOG.info("Played sound \"" + fileName + "\" in voice channel " + 
-            				toJoin.getName() + " of server " + toJoin.getGuild().getName());
+            		LOG.info("Played sound \"" + fileName + "\" in server " + toJoin.getGuild().getName());
             	}
         	}
         }
@@ -366,8 +365,8 @@ public class SoundboardBot {
      *              the sound back in.
      * @throws Exception
      */
-    public void playFileForEntrance(String fileName, VoiceJoinEvent event) throws Exception {
-    	if (event == null || fileName == null) return;
+    public boolean playFileForEntrance(String fileName, VoiceJoinEvent event) throws Exception {
+    	if (event == null || fileName == null) return false;
     	AudioManager voice = bot.getAudioManager(event.getGuild());
     	VoiceChannel connected = voice.getConnectedChannel();
         if ((voice.isConnected() || voice.isAttemptingToConnect()) && connected != null && 
@@ -375,15 +374,16 @@ public class SoundboardBot {
         		!voice.isConnected()) {
         	if (event.getChannel().getId().equals(event.getGuild().getAfkChannelId())) {
         		LOG.info("User joined AFK channel so will not follow him to play entrance.");
-        		return;
+        		return false;
         	}
         	LOG.info("Playing entrance for user " + event.getUser().getUsername() + 
         			" with filename " + fileName);
         	if (connected == null || !connected.equals(event.getChannel()))
         		moveToChannel(event.getChannel());
         	playFile(fileName, event.getGuild());
-        	event.getGuild().getPublicChannel().sendMessageAsync("Welcome, " + event.getUser().getAsMention(), null);
+        	return true;
         }
+        return false;
     }
     
     
@@ -435,7 +435,7 @@ public class SoundboardBot {
 	        }
     	} catch (IllegalStateException e) {
     		e.printStackTrace();
-    		channel.getGuild().getPublicChannel().sendMessageAsync("This is a little awkward, guys. I'm having problems joining a channel.", null);
+    		channel.getGuild().getPublicChannel().sendMessageAsync("*This is a little awkward, guys.* I'm having problems joining a channel.", null);
     		voice.closeAudioConnection();
     	}
     }
@@ -565,7 +565,7 @@ public class SoundboardBot {
 	        this.addListener(exitListener);
 	        GameListener gameListener = new GameListener(this);
 	        this.addListener(gameListener);
-	        LOG.info("Finished initializing bot with token " + token);
+	        LOG.info("Finished initializing bot with name " + getBotName());
 		} catch (LoginException | IllegalArgumentException | InterruptedException e) {
 			e.printStackTrace();
 		}

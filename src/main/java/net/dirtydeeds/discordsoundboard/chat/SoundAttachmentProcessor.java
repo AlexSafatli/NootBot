@@ -36,9 +36,10 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 							event.getAuthor().getPrivateChannel().sendMessage(
 									"Downloaded file `" + name + "` and added to list of sounds.\n" + 
 									"**Category**: `" + category + "` / **File Size**: " + attachment.getSize() + " bytes");
-							if (!event.isPrivate())
-								event.getChannel().sendMessageAsync("New file `" + shortName + 
-										"` added!", null);
+							if (!event.isPrivate()) {
+								String end = (category != null && !category.isEmpty()) ? " to **" + category + "**" : "";
+								event.getChannel().sendMessageAsync("New sound `" + shortName + "` added" + end + "!", null);
+							}
 							bot.getDispatcher().updateFileList();
 						} else {
 							event.getAuthor().getPrivateChannel().sendMessage("Download of file `" + name + "` failed.");

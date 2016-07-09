@@ -28,7 +28,7 @@ public class DownloadSoundProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - download a sound from the file system";
+		return super.getCommandHelpString() + " - download a sound";
 	}
 	
 }

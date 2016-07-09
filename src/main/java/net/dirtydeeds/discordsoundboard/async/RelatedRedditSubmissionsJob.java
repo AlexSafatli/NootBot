@@ -18,7 +18,7 @@ import net.dv8tion.jda.utils.SimpleLog;
 public class RelatedRedditSubmissionsJob extends AbstractAsyncJob {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("RelatedRedditJob");
-	private static final long HIGH_UPVOTES = 5000;
+	private static final long HIGH_UPVOTES = 4750;
 	private static final int TITLE_TRUNCATE_LENGTH = 128;
 	private List<String> pastPosts;
 	
