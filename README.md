@@ -1,36 +1,10 @@
-# DiscordSoundboard
+# NootBot
 
-Simple soundboard for discord. You can trigger sounds by commands typed in discord chat or you can choose the sound from the local UI. You will need to create an account that the bot will use to join and play sounds. The bot can only play sounds/respond to commands for servers it has been given access to. Requires java 8 or higher. This bot uses the [DiscordJDA](https://github.com/DV8FromTheWorld/JDA) library.
+Needs some documentation love.
 
-##Current Release
-[discordSoundboard-v1.1.2.zip](https://github.com/Darkside138/DiscordSoundboard/releases/download/v1.1.2/DiscordSoundboard-1.1.2.zip). Download the zip file and extract it's contents in a directory. If you have an existing install do not overwrite the "app.proerties" file. In that same directory you will need a directory called "sounds". Put all the clips you want to play in the sounds directory. In the app.properties file you should fill in the login information for your bot (you should create a new discord account for your bot). Once you've created your new bot you must invite it to any server you want to use it on. The property "username_to_join_channel" is your username on discord. When you click a sound file to play in the soundboard the app will look for this username and join the voice channel that user is in. If you don't have this configured properly the bot will not work. Also, the bot can respond to text channel commands. See below for information on those commands. Once this is complete execute the .jar file or the .bat file. You should see a bunch of logging and eventually something like "Started MainController in 6.383 seconds (JVM running for 6.939)". Now you should be able to access the UI by opening a browser and navigating to "http://localhost:8080". In this release I've added a feature that allows you to filter the sounds displayed based on the folder they are in so if you would like you can separate your sounds into folders and a dropdown should apear in the UI to allow filtering. Also, I've implemented a "watch" on the sounds directory so that if you add or remove sounds all you have to do is refresh your broswer to see the changes, no need to restart the app.
+## Changelog
 
-##app.properties file
-The contents of the app.properties file are below with sample values:
-```
-#Your bots username and password
-username=yourbotsemail@email.com
-password=password
-#The username to look for and join their channel when a sound is played from the UI
-username_to_join_channel=yourDiscordUsername
-#The title to be used for the app
-app_title=Sound Board
-#The window width/height in pixels
-app_width=400
-app_height=400
-#If the bot should respond to chat commands (true|false)
-respond_to_chat_commands=true
+### 2.0.0
 
-#Spring boot configuration
-server.port = 8080
-```
-
-## Usage
-Running locally from an IDE: Update the app.properties file with the login information for your "bot". Property "username_to_join_channel" is used by the application when a button in the UI is clicked. Before playing the sound file the bot will look for the username specifiedin all the servers the bot account has access to and join that channel, then play the sound that was clicked. For local usage sounds can be placed in src/main/resources/sounds/.
-
-###Executing the jar file
-Once you've compiled the jar file you will need to place the .jar file, the app.properties file, and your sounds/ directory in a folder
-then simple execute the .jar file.
-
-###Playing sounds by text commands
-Type ?list to get a list of sounds file commands the soundboard has available. The name of the commands will be the name of the sound file minus extension. When a user types one of the sound file commands listed the bot will join that users channel and then play the requested sound file. The bot remains in that channel unless the bot is requested to play sound in a different channel.
+- Added permission system for uploading sounds and authenticated commands. Currently based on roles (Administrator, Server Management permissions).
+- Entrances no longer add to play count.
