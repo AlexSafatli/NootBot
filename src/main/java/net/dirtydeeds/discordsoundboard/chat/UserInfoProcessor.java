@@ -16,13 +16,14 @@ public class UserInfoProcessor extends AuthenticatedSingleArgumentChatCommandPro
 			pm(event, "Did not find a user with username `" + getArgument() + "`. *Can I see him/her?*");
 			return;
 		}
-		pm(event, String.format("**Username**: %s / **Entrance**: `%s` / **Can Play Sounds**: %b / **Throttled**: %b",
-				user.getUsername(), bot.getEntranceForUser(user), bot.isAllowedToPlaySound(user), bot.isThrottled(user)));
+		pm(event, String.format("**%s**\n*Entrance*: `%s` / *Can Play Sounds*: %b / *Throttled*: %b / *Moderator*: ",
+				user.getUsername(), bot.getEntranceForUser(user), bot.isAllowedToPlaySound(user), bot.isThrottled(user),
+				bot.isAuthenticated(user, event.getGuild())));
 	}
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " [username]` (`*`) - get info about a user (or self)";
+		return "`" + getPrefix() + " [username]` (`*`) - get info about a user (self if no `username` specified)";
 	}
 	
 }

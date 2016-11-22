@@ -1,7 +1,9 @@
+NootBot/
 out/
 .settings/
 .project
 .classpath
+.metadata
 *.iml
 tokens.json
 .idea/

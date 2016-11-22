@@ -13,7 +13,7 @@ public class AllowUserProcessor extends AuthenticatedSingleArgumentChatCommandPr
 		if (getArgument() != null) {
 			String username = getArgument();
 			if (bot.allowUser(username))
-				pm(event, "Allowing user `" + username + "` to play sounds (again).");
+				pm(event, "Allowing user `" + username + "` to play sounds again.");
 			else pm(event, "No user found disallowed with username **" + username + "**.");
 		}
 	}

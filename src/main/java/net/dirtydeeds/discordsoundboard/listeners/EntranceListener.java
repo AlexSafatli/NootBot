@@ -89,7 +89,8 @@ public class EntranceListener extends ListenerAdapter {
 		        				desc = "(" + desc + ") ";
 		        			} else desc = "";
 		        			soundInfo = " Your entrance `" + fileToPlay + "` " + desc + 
-		        					"has now played **" + sound.getNumberOfPlays() + "** times.";
+		        					"was just played again - it has been requested **" + sound.getNumberOfPlays() + 
+		        					"** times before.";
 		        		}
 		        	} catch (Exception e) {
 		        		e.printStackTrace();

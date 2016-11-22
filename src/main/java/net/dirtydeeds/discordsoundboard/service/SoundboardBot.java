@@ -15,6 +15,7 @@ import net.dv8tion.jda.audio.player.FilePlayer;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.entities.VoiceStatus;
@@ -107,6 +108,22 @@ public class SoundboardBot {
     
     public String getOwner() {
     	return this.owner;
+    }
+    
+    public boolean isAuthenticated(net.dv8tion.jda.entities.User user, Guild guild) {
+    	if (guild != null) {
+	    	List<Role> roles = guild.getRolesForUser(user);
+	    	for (Role role : roles) {
+	    		if (role.hasPermission(Permission.ADMINISTRATOR) || role.hasPermission(Permission.MANAGE_SERVER))
+	    			return true;
+	    	}
+	    	if (user.getUsername().equals(getOwner())) return true;
+    	} else {
+    		for (Guild guild_ : getGuildsWithUser(user)) {
+    			if (isAuthenticated(user, guild_)) return true;
+    		}
+    	}
+    	return false;
     }
     
     public String getBotName() {
@@ -380,7 +397,8 @@ public class SoundboardBot {
         			" with filename " + fileName);
         	if (connected == null || !connected.equals(event.getChannel()))
         		moveToChannel(event.getChannel());
-        	playFile(fileName, event.getGuild());
+        	SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
+            playFile(fileToPlay, event.getGuild(), false); // Do not add to count for entrances.
         	return true;
         }
         return false;
@@ -487,10 +505,16 @@ public class SoundboardBot {
      */
     public void playFile(String fileName, Guild guild) {
         SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
+        playFile(fileToPlay, guild, true);
+    }
+    
+    private void playFile(SoundFile fileToPlay, Guild guild, boolean addToCount) {
         if (fileToPlay != null && guild != null) {
         	playFile(fileToPlay.getSoundFile(), guild);
-        	fileToPlay.addOneToNumberOfPlays();
-        	dispatcher.saveSound(fileToPlay);
+        	if (addToCount) {
+        		fileToPlay.addOneToNumberOfPlays();
+        		dispatcher.saveSound(fileToPlay);
+        	}
         }
     }
     

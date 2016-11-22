@@ -5,10 +5,10 @@ import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
-public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
-		SingleArgumentChatCommandProcessor {
+public abstract class OwnerMultiArgumentChatCommandProcessor extends
+		MultiArgumentChatCommandProcessor {
 
-	public AuthenticatedSingleArgumentChatCommandProcessor(String prefix, SoundboardBot bot) {
+	public OwnerMultiArgumentChatCommandProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, bot);
 	}
 	
@@ -17,8 +17,9 @@ public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 		if (super.isApplicableCommand(event)) {
 			if (canBeRunBy(event.getAuthor(), event.getGuild())) return true;
 			else {
-				pm(event, "This command is only intended for moderators! The bot owner has been notified of your action.");
-				bot.sendMessageToUser("User **" + event.getAuthor().getUsername() + "** just ran `" + event.getMessage().getContent() + "` without permission.", bot.getOwner());
+				pm(event, "This command is only intended for the bot owner! The owner has been notified of your action.");
+				bot.sendMessageToUser("User **" + event.getAuthor().getUsername() + "** just ran `" + 
+						event.getMessage().getContent() + "` without permission.", bot.getOwner());
 				return false;
 			}
 		}
@@ -34,7 +35,7 @@ public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 	
 	@Override
 	public boolean canBeRunBy(User user, Guild guild) {
-		return bot.isAuthenticated(user, guild);
+		return bot.getOwner().equals(user.getUsername());
 	}
 	
 	@Override

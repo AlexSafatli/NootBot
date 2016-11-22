@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 
 import net.dirtydeeds.discordsoundboard.MainWatch;
 import net.dirtydeeds.discordsoundboard.async.CleanBotMessagesJob;
-import net.dirtydeeds.discordsoundboard.async.RelatedRedditSubmissionsJob;
-import net.dirtydeeds.discordsoundboard.async.TopRedditSubmissionsJob;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.dao.SoundFileRepository;
 import net.dirtydeeds.discordsoundboard.dao.UserRepository;
@@ -115,8 +113,6 @@ public class SoundboardDispatcher implements Observer {
 		}
 		// Async jobs
 		asyncService.addJob(new CleanBotMessagesJob());
-		asyncService.addJob(new TopRedditSubmissionsJob());
-		asyncService.addJob(new RelatedRedditSubmissionsJob());
 	}
 	
     //Loads in the properties from the app.properties file
@@ -208,7 +204,7 @@ public class SoundboardDispatcher implements Observer {
     	LOG.info("Restarting bot " + bot.getBotName());
     	for (int i = 0; i < bots.length; ++i) {
     		if (bots[i] != null && bots[i].equals(bot)) {
-    			startBot(i);
+    			startBot(i+1);
     		}
     	}
     }

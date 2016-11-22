@@ -5,7 +5,7 @@ import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
-public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
+public class SetEntranceForUserProcessor extends OwnerMultiArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("SetEntranceForUserProcessor");
 	

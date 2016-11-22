@@ -5,7 +5,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 public class DeleteSoundProcessor extends
-		AuthenticatedSingleArgumentChatCommandProcessor {
+		OwnerSingleArgumentChatCommandProcessor {
 
 	public DeleteSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, bot);
