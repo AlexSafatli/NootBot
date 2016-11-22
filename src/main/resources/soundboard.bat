@@ -1,1 +1,1 @@
-java -jar DiscordSoundboard.jar net.dirtydeeds.discordsoundboard.MainController
+java -jar NootBot.jar
