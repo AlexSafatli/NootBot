@@ -1,1 +1,15 @@
-NO_USER_FOUND_DISALLOWED_WITH_USERNAME=No user found disallowed with username **%s**.
+USER_MUTED=User **%s** can no longer play sounds.
+USER_NOT_FOUND_DISALLOWED=No user found disallowed with username **%s**.
+USER_NOT_FOUND_UNTHROTTLED=Not user found with username **%s** that can be throttled.
+USER_ALLOW_DISALLOWED=Allowing user **%s** to play sounds again.
+USER_THROTTLE_UNTHROTTLED=Throttled user **%s**!
+NOT_TO_SELF=You cannot do that to yourself.
+NOT_FOR_YOU=This command is not intended for you! The bot owner has been notified of your action.
+USER_WITHOUT_PERMISSION=User **%s** just ran `%s` without permission.
+SERVER_ONLY=You need to perform this message in a server channel.
+SOUND_NOT_FOUND=No sound file was found with that name.
+SOUND_DESC=`%s` from category **%s** (**%d** plays)
+NOT_FOUND=Could not find `%s`.
+DELETED_SUCCESS=Deleted `%s` successfully.
+DELETED_FAILURE=Could not delete `%s`.
+NEED_NAME=You need to provide a name. For example: `%s`.

@@ -31,15 +31,22 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 				String category = event.getMessage().getContent();
 				if (extension.equals("wav") || extension.equals("mp3")) {
 					if (attachment.getSize() < MAX_FILE_SIZE_IN_BYTES) {
-						Path downloadPath;
+						Path downloadPath = bot.getSoundsPath();;
 						if (bot.getSoundCategories().contains(category)) {
 							downloadPath = bot.getSoundsPath().resolve(category);
 						} else {
-							downloadPath = bot.getSoundsPath();
-							if (bot.getSoundCategories().size() > 1)
+							boolean notFound = true;
+							for (String _category : bot.getSoundCategories()) {
+								if (category.equalsIgnoreCase(_category)) {
+									downloadPath = bot.getSoundsPath().resolve(_category);
+									category = _category; notFound = false; break;
+								}
+							}
+							if (notFound && bot.getSoundCategories().size() > 1) {
 								event.getAuthor().getPrivateChannel().sendMessageAsync("*No category was provided " +
 										"(or it did not match an existing one)!* " +
 										"You can use the **Comment** field when you attach a file to specify a category.",null);
+							}
 						}
 						if (attachment.download(new File(downloadPath.toString(), name))) {
 							event.getAuthor().getPrivateChannel().sendMessage(

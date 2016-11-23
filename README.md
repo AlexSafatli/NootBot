@@ -4,6 +4,11 @@ A soundboard Discord bot written in Java able to be deployed to multiple servers
 
 ## Changelog
 
+### 2.1.5
+
+- Added more string literals and reflected this in code.
+- Minor fix for sound uploading when category fuzzy matches.
+
 ### 2.1.0
 
 - Improve sound attachment processing by making it clear to the user how it works. Ensure lowercase names.

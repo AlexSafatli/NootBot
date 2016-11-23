@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 public class StringService {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("Strings");
-	private static final float TICK_RATE_PER_MINUTE = 1;
+	private static final float TICK_RATE_PER_HOUR = 1;
 	private List<File> files;
 	private Map<String,String> strings;
 	
@@ -63,7 +63,7 @@ public class StringService {
 	
     @Async
     public void maintain() {
-    	LOG.info("Starting service with tick rate per minute: " + TICK_RATE_PER_MINUTE);
+    	LOG.info("Starting service with tick rate per hour: " + TICK_RATE_PER_HOUR);
     	while (true) {
     		// Check all file(s).
     		for (File file : files) {
@@ -83,7 +83,7 @@ public class StringService {
     			}
     		}
     		// Only fire a certain amount of times a minute.
-    		long millisecondsToWait = (long)(1/TICK_RATE_PER_MINUTE) * 60000;
+    		long millisecondsToWait = (long)(1/TICK_RATE_PER_HOUR) * 3600000;
     		try {
 				Thread.sleep(millisecondsToWait);
 			} catch (InterruptedException e) {

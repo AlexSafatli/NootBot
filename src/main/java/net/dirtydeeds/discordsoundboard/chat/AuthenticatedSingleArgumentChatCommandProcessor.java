@@ -1,13 +1,14 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 		SingleArgumentChatCommandProcessor {
-
+	
 	public AuthenticatedSingleArgumentChatCommandProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, bot);
 	}
@@ -17,8 +18,10 @@ public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 		if (super.isApplicableCommand(event)) {
 			if (canBeRunBy(event.getAuthor(), event.getGuild())) return true;
 			else {
-				pm(event, "This command is only intended for moderators! The bot owner has been notified of your action.");
-				bot.sendMessageToUser("User **" + event.getAuthor().getUsername() + "** just ran `" + event.getMessage().getContent() + "` without permission.", bot.getOwner());
+				pm(event, lookupString(Strings.NOT_FOR_YOU));
+				bot.sendMessageToUser(formatString(Strings.USER_WITHOUT_PERMISSION,
+						event.getAuthor().getUsername(), event.getMessage().getContent()),
+						bot.getOwner());
 				return false;
 			}
 		}
