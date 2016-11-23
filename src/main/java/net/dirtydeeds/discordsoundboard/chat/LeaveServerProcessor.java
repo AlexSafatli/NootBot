@@ -4,7 +4,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
-public class LeaveServerProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
+public class LeaveServerProcessor extends OwnerSingleArgumentChatCommandProcessor {
 
 	public LeaveServerProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, bot);

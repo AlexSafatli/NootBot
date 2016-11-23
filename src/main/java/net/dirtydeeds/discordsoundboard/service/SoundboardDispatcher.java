@@ -50,13 +50,15 @@ public class SoundboardDispatcher implements Observer {
 	private LowercaseTrie soundNameTrie;
 	private final MainWatch mainWatch;
 	private final AsyncService asyncService;
+	private final StringService stringService;
 	private final Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
 	
     @Inject
-    public SoundboardDispatcher(MainWatch mainWatch, UserRepository userDao, SoundFileRepository soundDao, AsyncService asyncService) {
+    public SoundboardDispatcher(MainWatch mainWatch, UserRepository userDao, SoundFileRepository soundDao, AsyncService asyncService, StringService stringService) {
         this.mainWatch = mainWatch;
         this.mainWatch.addObserver(this);
         this.asyncService = asyncService;
+        this.stringService = stringService;
         this.userDao = userDao;
         this.soundDao = soundDao;
         availableSounds = new TreeMap<>();
@@ -66,6 +68,7 @@ public class SoundboardDispatcher implements Observer {
 		loadProperties();
 		startServices();
 		this.asyncService.maintain(this);
+		this.stringService.maintain();
     }
 	
     /**
@@ -107,12 +110,17 @@ public class SoundboardDispatcher implements Observer {
 	private void startServices() {
 		int num = Integer.valueOf(appProperties.getProperty("number_of_users"));
 		// Bots
+		LOG.info("Starting bots.");
 		bots = new SoundboardBot[num];
 		for (int i = 1; i <= num; ++i) {
 			startBot(i);
 		}
 		// Async jobs
+		LOG.info("Starting async jobs.");
 		asyncService.addJob(new CleanBotMessagesJob());
+		// String files.
+		LOG.info("Reading string files.");
+		stringService.addFile(Paths.get(System.getProperty("user.dir") + "/strings.txt"));
 	}
 	
     //Loads in the properties from the app.properties file
@@ -238,6 +246,10 @@ public class SoundboardDispatcher implements Observer {
     
     public Properties getAppProperties() {
     	return appProperties;
+    }
+    
+    public StringService getStringService() {
+    	return this.stringService;
     }
     
     public net.dirtydeeds.discordsoundboard.beans.User registerUser(User user, boolean disallowed, boolean throttled) {

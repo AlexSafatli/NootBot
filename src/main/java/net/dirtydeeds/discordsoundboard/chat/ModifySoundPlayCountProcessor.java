@@ -5,7 +5,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 public class ModifySoundPlayCountProcessor extends
-		AuthenticatedMultiArgumentChatCommandProcessor {
+		OwnerMultiArgumentChatCommandProcessor {
 
 	public ModifySoundPlayCountProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, bot);

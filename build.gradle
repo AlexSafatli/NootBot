@@ -3,7 +3,7 @@ apply plugin: 'idea'
 apply plugin: 'distribution'
 apply plugin: 'spring-boot'
 
-version = '2.0.1'
+version = '2.1.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -58,6 +58,7 @@ def distributionsCopySpec = copySpec {
     from file("$buildDir/resources/main")
     include "**/app.properties.example"
     include "soundboard.bat"
+    include "strings.txt"
     include "${fileName}.jar"
     rename ("app.properties.example", "app.properties")
     rename "${fileName}.jar", "${baseName}.jar"

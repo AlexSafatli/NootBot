@@ -16,7 +16,7 @@ public class UserInfoProcessor extends AuthenticatedSingleArgumentChatCommandPro
 			pm(event, "Did not find a user with username `" + getArgument() + "`. *Can I see him/her?*");
 			return;
 		}
-		pm(event, String.format("**%s**\n*Entrance*: `%s` / *Can Play Sounds*: %b / *Throttled*: %b / *Moderator*: ",
+		pm(event, String.format("**%s**\n*Entrance*: `%s` / *Can Play Sounds*: %b / *Throttled*: %b / *Moderator*: %b",
 				user.getUsername(), bot.getEntranceForUser(user), bot.isAllowedToPlaySound(user), bot.isThrottled(user),
 				bot.isAuthenticated(user, event.getGuild())));
 	}

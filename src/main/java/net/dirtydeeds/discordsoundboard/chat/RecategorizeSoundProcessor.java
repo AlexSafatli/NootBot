@@ -29,10 +29,18 @@ public class RecategorizeSoundProcessor extends AuthenticatedMultiArgumentChatCo
 			pm(event, "The sound file `" + name + "` does not exist.");
 			return;
 		} else if (!bot.getSoundCategories().contains(cat)) {
-			pm(event, "The category `" + cat + "` does not exist. *Will make it!*");
-			Path newCat = bot.getSoundsPath().resolve(cat);
-			LOG.info("Creating directory: " + newCat);
-			newCat.toFile().mkdir();
+			boolean notFound = true;
+			for (String _cat : bot.getSoundCategories()) {
+				if (cat.equalsIgnoreCase(_cat)) {
+					cat = _cat; notFound = false; break;
+				}
+			}
+			if (notFound) {
+				pm(event, "The category `" + cat + "` does not exist. *Will make it!*");
+				Path newCat = bot.getSoundsPath().resolve(cat);
+				LOG.info("Creating directory: " + newCat);
+				newCat.toFile().mkdir();
+			}
 		}
 		try {
 			File file = bot.getSoundMap().get(name).getSoundFile();
