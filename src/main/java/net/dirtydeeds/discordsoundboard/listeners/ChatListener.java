@@ -48,7 +48,7 @@ import java.util.Map;
  * Listens to commands in Discord text channels and responds to them if a processors
  * exists to handle a particular message.
  */
-public class ChatListener extends ListenerAdapter {
+public class ChatListener extends AbstractListener {
     
     public static final SimpleLog LOG = SimpleLog.getLog("Chat");
     
@@ -56,7 +56,6 @@ public class ChatListener extends ListenerAdapter {
     private static final int MAX_NUMBER_OF_REQUESTS_PER_TIME = 5;
     private static final int EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME = 75;
     
-    private SoundboardBot bot;
     private Date tick;
     private Map<User,Integer> requests;
     private List<ChatCommandProcessor> processors;

@@ -1,6 +1,7 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 public class SetEntranceProcessor extends
@@ -23,11 +24,11 @@ public class SetEntranceProcessor extends
 				pm(event, "Updated your entrance to sound file `" + fileName + "`!");
 				if (bot.getSoundMap().get(fileName).getSoundFile().length() 
 						> WARNING_FILE_SIZE_IN_BYTES) {
-					pm(event, "The file `" + fileName + "` may be a bit large. "
+					pm(event, "The file `" + fileName + "` may be a bit **large**. "
 							+ "*Be careful of setting very long entrances!*");
 				}
 			} else {
-				pm(event, "That sound does not exist. *Check your spelling.*");
+				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			}
 		}
 	}

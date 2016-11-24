@@ -5,6 +5,7 @@ import java.util.Set;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
@@ -36,8 +37,8 @@ public class SetSoundDescriptionProcessor extends MultiArgumentChatCommandProces
 			event.getChannel().sendMessageAsync("Okay! The description for `" + name + 
 					"` has been set to: " + desc, null);
 		} else if (desc != null) {
-			event.getChannel().sendMessageAsync("Oops! I couldn't find that sound `" + name + "` " +
-					user.getAsMention(), null);
+			event.getChannel().sendMessageAsync(formatString(Strings.SOUND_NOT_FOUND_SUGGESTION, 
+					name, "Check your spelling.", user.getAsMention()), null);
 		} else {
 			event.getChannel().sendMessageAsync("Oops! You didn't provide a description " + 
 					user.getAsMention(), null);

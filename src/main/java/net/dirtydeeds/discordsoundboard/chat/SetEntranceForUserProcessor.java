@@ -1,6 +1,7 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
@@ -24,7 +25,7 @@ public class SetEntranceForUserProcessor extends OwnerMultiArgumentChatCommandPr
 				pm(event, "User **" + user.getUsername() + "** had entrance updated" +
 						" to sound `" + fileName + "`.");
 			} else {
-				pm(event, "That sound file does not exist. *Check your spelling.*");
+				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			}
 		} else if (fileName == null) {
 			bot.setEntranceForUser(user, null);

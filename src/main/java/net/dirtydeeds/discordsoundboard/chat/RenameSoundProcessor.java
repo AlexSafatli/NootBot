@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import com.google.common.io.Files;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
@@ -26,7 +27,7 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 		}
 		String oldName = getArguments()[0], newName = getArguments()[1];
 		if (bot.getSoundMap().get(oldName) == null) {
-			pm(event, "The sound file `" + oldName + "` does not exist.");
+			pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			return;
 		}
 		try {
@@ -39,11 +40,11 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 			File newFile = source.resolveSibling(newName + ext).toFile();
 			LOG.info("Moving file to: " + newFile.getPath());
 			Files.move(oldFile, newFile);
-			pm(event, "File renamed from `" + oldName + "` to `" + newName + "`.");
+			pm(event, formatString(Strings.SOUND_RENAME_SUCCESS, oldName, newName));
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.fatal("While renaming a file: " + e.toString() + " => " + e.getMessage());
-			pm(event, "While renaming this file, I ran into a problem.");
+			pm(event, formatString(Strings.SOUND_RENAME_FAILURE, oldName, newName));
 		}
 		bot.getDispatcher().updateFileList();
 	}

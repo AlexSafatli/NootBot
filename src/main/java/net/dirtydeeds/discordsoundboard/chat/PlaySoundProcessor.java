@@ -5,6 +5,7 @@ import java.util.Set;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
@@ -23,8 +24,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
         String name = message.substring(1, message.length());
     	LOG.info(String.format("%s wants to play \"%s\".", user.getUsername(), name));
         if (!bot.isAllowedToPlaySound(user)) {
-        	pm(event, "You were prevented from "
-        			+ "playing sounds using this bot by its owner **" + bot.getOwner() + "**.");
+        	pm(event, lookupString(Strings.NOT_ALLOWED));
         	LOG.info(String.format("%s isn't allowed to play sounds.", user.getUsername()));
         } else if (StringUtils.containsAny(name, '?')) {
         	return; // File names cannot contain question marks.
@@ -34,21 +34,20 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 				LOG.info("Closest matching sound name is: " + possibleName);
 				suggestion = "Did you mean `" + possibleName + "`?";
 			}
-        	event.getChannel().sendMessageAsync("The sound `" + name + "` was not found. *"
-        			+ suggestion + "* " + user.getAsMention(), null);
-        	LOG.info("That sound was not found.");
+			event.getChannel().sendMessageAsync(formatString(Strings.SOUND_NOT_FOUND_SUGGESTION,
+					name, suggestion, user.getAsMention()), null);
+        	LOG.info("Sound was not found.");
         } else {
 	        try {
 	            bot.playFileForChatCommand(name, event);
 	            SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
 	            if (sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
 	            	// Make an announcement every 100 plays.
-	            	event.getChannel().sendMessageAsync("**Wow!** `" + name + "` has now been played **" + 
-	            			sound.getNumberOfPlays() + "** times!", null);
+	            	event.getChannel().sendMessageAsync(formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT,
+	            			name, sound.getNumberOfPlays()), null);
 	            }
 	        } catch (Exception e) {
-	        	e.printStackTrace();
-	            LOG.fatal("Could not play file!");
+	            LOG.fatal("Could not play file => " + e.toString());
 	        }
         }
 	}

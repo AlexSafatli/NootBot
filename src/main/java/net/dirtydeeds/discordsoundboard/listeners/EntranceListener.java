@@ -7,6 +7,7 @@ import java.util.Queue;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.VoiceUtils;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
@@ -20,11 +21,10 @@ import net.dv8tion.jda.utils.SimpleLog;
  *
  * This class handles waiting for people to enter a discord voice channel and responding to their entrance.
  */
-public class EntranceListener extends ListenerAdapter {
+public class EntranceListener extends AbstractListener {
     
     public static final SimpleLog LOG = SimpleLog.getLog("Entrance");
     
-    private SoundboardBot bot;
     private Map<Guild,Queue<EntranceEvent>> pastEntrances;
     
     public EntranceListener(SoundboardBot bot) {
@@ -86,11 +86,10 @@ public class EntranceListener extends ListenerAdapter {
 		        			SoundFile sound = bot.getDispatcher().getSoundFileByName(fileToPlay);
 		        			String desc = sound.getDescription();
 		        			if (desc != null && !desc.isEmpty()) {
-		        				desc = "(" + desc + ") ";
+		        				desc = " [" + desc + "].";
 		        			} else desc = "";
-		        			soundInfo = " Your entrance `" + fileToPlay + "` " + desc + 
-		        					"was just played again - it has been requested **" + sound.getNumberOfPlays() + 
-		        					"** times before.";
+		        			soundInfo = " Played sound " + formatString(Strings.SOUND_DESC, fileToPlay, sound.getCategory(),
+		        					sound.getNumberOfPlays()) + desc;
 		        		}
 		        	} catch (Exception e) {
 		        		e.printStackTrace();
@@ -101,7 +100,7 @@ public class EntranceListener extends ListenerAdapter {
     			}
     			// Send a message greeting them into the server.
     			guild.getPublicChannel().sendMessageAsync(
-    					"**Welcome, " + user.getAsMention() + "**!" + soundInfo,
+    					formatString(Strings.USER_ENTRANCE_MESSAGE, user.getAsMention(), soundInfo),
     						(Message m)-> pastEntrances.get(guild).add(new EntranceEvent(m, user)));
         	}
         }

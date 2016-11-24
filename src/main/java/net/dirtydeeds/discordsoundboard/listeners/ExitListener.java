@@ -14,11 +14,9 @@ import net.dv8tion.jda.utils.SimpleLog;
  *
  * This class handles waiting for people to exit a discord voice channel.
  */
-public class ExitListener extends ListenerAdapter {
+public class ExitListener extends AbstractListener {
     
     public static final SimpleLog LOG = SimpleLog.getLog("Exit");
-    
-    private SoundboardBot bot;
     
     public ExitListener(SoundboardBot bot) {
         this.bot = bot;

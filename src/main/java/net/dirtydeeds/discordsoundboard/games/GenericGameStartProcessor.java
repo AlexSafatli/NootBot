@@ -4,6 +4,7 @@ import java.util.Date;
 
 import net.dirtydeeds.discordsoundboard.games.AbstractGameUpdateProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
@@ -17,7 +18,6 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	
 	private static final int MIN_NUM_PLAYERS = 3;
 	private static final int NUMBER_SEC_BETWEEN = 3;
-	private static final String POST_SCRIPT = "\nTo see other popular sounds, type `.top` into this channel.";
 	
 	private GameStartEvent pastEvent;
 	
@@ -76,9 +76,8 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				String filePlayed = bot.getRandomTopPlayedSoundName();
 				if (filePlayed != null) {
 					bot.playFileForUser(filePlayed, user);
-					publicChannel.sendMessageAsync(String.format("Played popular sound `%s` randomly. "
-							+ "Others in the channel are playing **%s** too ",filePlayed,game) + 
-							user.getAsMention() + "!" + POST_SCRIPT, (Message m)-> pastEvent.message = m);
+					publicChannel.sendMessageAsync(formatString(Strings.GAME_START_MESSAGE,
+							filePlayed, game, user.getAsMention()), (Message m)-> pastEvent.message = m);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
 				}
 			} catch (Exception e) { LOG.fatal("While playing sound for game start: " + e.toString()); }

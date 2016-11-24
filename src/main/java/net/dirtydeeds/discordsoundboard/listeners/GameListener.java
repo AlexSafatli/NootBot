@@ -16,11 +16,10 @@ import java.util.List;
  *
  * This class handles listening to game events.
  */
-public class GameListener extends ListenerAdapter {
+public class GameListener extends AbstractListener {
     
     public static final SimpleLog LOG = SimpleLog.getLog("Game");
     
-    private SoundboardBot bot;
     private List<GameUpdateProcessor> processors;
 
     public GameListener(SoundboardBot bot) {

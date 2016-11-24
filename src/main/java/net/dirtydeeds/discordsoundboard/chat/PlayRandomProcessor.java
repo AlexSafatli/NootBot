@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.MessageChannel;
@@ -26,7 +27,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String category = getArgument(), filePlayed = null;
 		if (!bot.isAllowedToPlaySound(event.getAuthor())) {
-        	pm(event, "You are not allowed to play sounds using this bot.");
+        	pm(event, lookupString(Strings.NOT_ALLOWED));
         	LOG.info(event.getAuthor() + " tried to play a sound file but is not allowed.");
         	return;
 		}
@@ -64,7 +65,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - play a random sound (from a category, if one is given)";
+		return "`" + getPrefix() + " [category]` - play a random sound (from category if specified)";
 	}
 
 }

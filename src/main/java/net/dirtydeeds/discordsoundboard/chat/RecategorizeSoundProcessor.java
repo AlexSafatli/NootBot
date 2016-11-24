@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import com.google.common.io.Files;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.utils.SimpleLog;
 
@@ -26,7 +27,7 @@ public class RecategorizeSoundProcessor extends AuthenticatedMultiArgumentChatCo
 		}
 		String name = getArguments()[0], cat = getArgumentsCased(event)[1];
 		if (bot.getSoundMap().get(name) == null) {
-			pm(event, "The sound file `" + name + "` does not exist.");
+			pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			return;
 		} else if (!bot.getSoundCategories().contains(cat)) {
 			boolean notFound = true;
@@ -52,11 +53,11 @@ public class RecategorizeSoundProcessor extends AuthenticatedMultiArgumentChatCo
 			File destination = bot.getSoundsPath().resolve(cat).resolve(name + ext).toFile();
 			LOG.info("Moving file to: " + destination.getPath());
 			Files.move(file, destination);
-			pm(event, "File moved from **" + bot.getSoundMap().get(name).getCategory() + "** to **" + cat + "**.");
+			pm(event, formatString(Strings.SOUND_MOVE_SUCCESS, file.getName(), bot.getSoundMap().get(name).getCategory(), cat));
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.fatal("While renaming a file: " + e.toString() + " => " + e.getMessage());
-			pm(event, "While moving this file, I ran into a problem.");
+			pm(event, formatString(Strings.SOUND_MOVE_FAILURE, name));
 		}
 		bot.getDispatcher().updateFileList();
 	}
