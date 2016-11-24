@@ -89,7 +89,7 @@ public class EntranceListener extends AbstractListener {
 		        				desc = " [" + desc + "].";
 		        			} else desc = "";
 		        			soundInfo = " Played sound " + formatString(Strings.SOUND_DESC, fileToPlay, sound.getCategory(),
-		        					sound.getNumberOfPlays()) + desc;
+		        					sound.getNumberOfPlays()) + desc + ".";
 		        		}
 		        	} catch (Exception e) {
 		        		e.printStackTrace();
