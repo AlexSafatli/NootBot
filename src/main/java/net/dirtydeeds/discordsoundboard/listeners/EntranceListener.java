@@ -12,6 +12,7 @@ import net.dirtydeeds.discordsoundboard.utils.VoiceUtils;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.events.voice.VoiceJoinEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.dv8tion.jda.utils.SimpleLog;
@@ -47,10 +48,12 @@ public class EntranceListener extends AbstractListener {
     	
     	LOG.info(user.getUsername() + " joined " + event.getChannel().getName() + 
     			" in " + event.getGuild().getName());
-    	
         
         if (!bot.isAllowedToPlaySound(user)) {
-        	LOG.info("User " + user.getUsername() + " cannot play sounds so ignoring entrance.");
+        	LOG.info("User " + user.getUsername() + " cannot play sounds. Ignoring.");
+        	return;
+        } else if (event.getGuild().getAfkChannelId().equals(event.getChannel().getId())) {
+        	LOG.info("User " + user.getUsername() + " joined an AFK channel. Ignoring.");
         	return;
         }
         
@@ -86,7 +89,7 @@ public class EntranceListener extends AbstractListener {
 		        			SoundFile sound = bot.getDispatcher().getSoundFileByName(fileToPlay);
 		        			String desc = sound.getDescription();
 		        			if (desc != null && !desc.isEmpty()) {
-		        				desc = " [" + desc + "].";
+		        				desc = " [" + desc + "]";
 		        			} else desc = "";
 		        			soundInfo = " Played sound " + formatString(Strings.SOUND_DESC, fileToPlay, sound.getCategory(),
 		        					sound.getNumberOfPlays()) + desc + ".";
@@ -99,9 +102,11 @@ public class EntranceListener extends AbstractListener {
     				bot.moveToChannel(event.getChannel()); // Move to channel otherwise.
     			}
     			// Send a message greeting them into the server.
-    			guild.getPublicChannel().sendMessageAsync(
-    					formatString(Strings.USER_ENTRANCE_MESSAGE, user.getAsMention(), soundInfo),
-    						(Message m)-> pastEntrances.get(guild).add(new EntranceEvent(m, user)));
+    			if (bot.getConnectedChannel(guild) == null || bot.getConnectedChannel(guild).equals(event.getChannel())) {
+	    			guild.getPublicChannel().sendMessageAsync(
+	    					formatString(Strings.USER_ENTRANCE_MESSAGE, user.getAsMention(), soundInfo),
+	    						(Message m)-> pastEntrances.get(guild).add(new EntranceEvent(m, user)));
+    			}
         	}
         }
         

@@ -19,6 +19,7 @@ import net.dirtydeeds.discordsoundboard.chat.ModifyAllSoundPlayCountProcessor;
 import net.dirtydeeds.discordsoundboard.chat.ModifySoundPlayCountProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlayRandomProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlaySoundForUserProcessor;
+import net.dirtydeeds.discordsoundboard.chat.PlaySoundLoopedProcessor;
 import net.dirtydeeds.discordsoundboard.chat.PlaySoundProcessor;
 import net.dirtydeeds.discordsoundboard.chat.RecategorizeSoundProcessor;
 import net.dirtydeeds.discordsoundboard.chat.RemoveLimitUserProcessor;
@@ -93,6 +94,7 @@ public class ChatListener extends AbstractListener {
     	processors.add(new SetEntranceForUserProcessor(".setentrancefor", bot));
     	processors.add(new SetEntranceProcessor(".setentrance",           bot));
     	processors.add(new PlaySoundForUserProcessor(".playfor",          bot));
+    	processors.add(new PlaySoundLoopedProcessor(".loop",              bot));
     	processors.add(new ServerMessageProcessor(".all",                 bot));
     	processors.add(new LeaveServerProcessor(".leave",                 bot));
     	processors.add(new RestartBotProcessor(".restart",                bot));

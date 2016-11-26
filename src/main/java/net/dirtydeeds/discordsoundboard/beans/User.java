@@ -1,9 +1,12 @@
 package net.dirtydeeds.discordsoundboard.beans;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class User {
@@ -16,6 +19,8 @@ public class User {
     private String entrancefilename;
     private Boolean disallowed;
 	private Boolean throttled;
+    @OneToMany
+    private List<SoundFile> soundFiles;
 	
 	protected User() { }
 	
@@ -84,6 +89,14 @@ public class User {
 
 	public void setThrottled(boolean throttled) {
 		this.throttled = throttled;
+	}
+	
+	public void setSoundFiles(List<SoundFile> files) {
+		this.soundFiles = files;
+	}
+	
+	public List<SoundFile> getSoundFiles() {
+		return this.soundFiles;
 	}
 
 	public String toString() {

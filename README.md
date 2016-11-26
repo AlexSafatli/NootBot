@@ -6,6 +6,13 @@ Much of the foundation code was taken from an early commit of [Darkside138/Disco
 
 ## Changelog
 
+### 2.1.6
+
+- Fixed entrance logic so bot does not follow people into AFK channels.
+- Added record of uploader to sound file bean. Will not affect existing records.
+- Implemented a looping play command.
+- Removed watch service in lieu of manual file list updating.
+
 ### 2.1.5
 
 - Added more string literals and reflected this in code.

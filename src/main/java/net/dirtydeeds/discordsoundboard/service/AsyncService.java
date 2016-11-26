@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class AsyncService {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("Jobs");
-	private static final float TICK_RATE_PER_MINUTE = 10;
+	private static final float TICK_RATE_PER_MINUTE = 60;
 	private List<SoundboardJob> jobs;
 	private Stack<SoundboardJob> tasks;
 	

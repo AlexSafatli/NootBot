@@ -4,17 +4,21 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.Message.Attachment;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.utils.SimpleLog;
 
 public class SoundAttachmentProcessor implements ChatCommandProcessor {
 
 	protected SoundboardBot bot;
+	public static final SimpleLog LOG = SimpleLog.getLog("SoundAttachmentProcessor");
 	private static final int MAX_FILE_SIZE_IN_BYTES = 1500000; // 1.5 MB
 	
 	public SoundAttachmentProcessor(SoundboardBot bot) {
@@ -23,15 +27,28 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 	
 	public void process(MessageReceivedEvent event) {
 		if (isApplicableCommand(event)) {
+			
+			// Get all attachments from the message.
 			List<Attachment> attachments = event.getMessage().getAttachments();
+			// Get the category to upload to.
+			String category = event.getMessage().getContent();
+			// Get the user bean to associate with all uploaded files.
+			net.dirtydeeds.discordsoundboard.beans.User user = bot.getUser(event.getAuthor());
+			if (user == null) {
+				LOG.warn("Could not get user bean for user " + event.getAuthor());
+			}
+			
 			for (Attachment attachment : attachments) {
+			
+				// Get the name of the file.
 				String name = attachment.getFileName().toLowerCase(); // Ensure is lowercase.
 				String shortName = name.substring(0, name.indexOf("."));
 				String extension = name.substring(name.indexOf(".") + 1);
-				String category = event.getMessage().getContent();
+				
+				// Only allow wav/mp3 uploads.
 				if (extension.equals("wav") || extension.equals("mp3")) {
 					if (attachment.getSize() < MAX_FILE_SIZE_IN_BYTES) {
-						Path downloadPath = bot.getSoundsPath();;
+						Path downloadPath = bot.getSoundsPath();
 						if (bot.getSoundCategories().contains(category)) {
 							downloadPath = bot.getSoundsPath().resolve(category);
 						} else {
@@ -43,15 +60,25 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 								}
 							}
 							if (notFound && bot.getSoundCategories().size() > 1) {
-								event.getAuthor().getPrivateChannel().sendMessageAsync("*No category was provided " +
-										"(or it did not match an existing one)!* " +
-										"You can use the **Comment** field when you attach a file to specify a category.",null);
+								event.getAuthor().getPrivateChannel().sendMessage("No category was provided " +
+										"(*or it did not match an existing one*)! " +
+										"You can use the **Comment** field **when you attach a file** to specify a category.");
 							}
 						}
+						
+						// Download the file and put it in the proper folder/category.
 						if (attachment.download(new File(downloadPath.toString(), name))) {
+							// Update bean for the sound file with who uploaded this file.
+							SoundboardDispatcher dispatcher = bot.getDispatcher();
+							dispatcher.updateFileList();
+							SoundFile soundFile = dispatcher.getSoundFileByName(shortName);
+							soundFile.setUser(user);
+							dispatcher.saveSound(soundFile);
+							// Send message(s).
+							if (category == null || category.isEmpty()) category = "Uncategorized";
 							event.getAuthor().getPrivateChannel().sendMessage(
 									"`" + name + "` downloaded and added to list of sounds. Play it with `?" + shortName + "`.\n" + 
-									"**Category**: `" + category + "` / **File Size**: " + attachment.getSize() + " bytes");
+									"**Category**: *" + category + "* / **File Size**: " + attachment.getSize() + " bytes");
 							String publishMessage = "";
 							if (!event.isPrivate()) {
 								publishMessage = sendPublishMessage(category, shortName, event.getAuthor(), event.getTextChannel());
@@ -61,7 +88,6 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 							}
 							if (!event.getAuthor().getUsername().equals(bot.getOwner())) // Alert bot owner as well.
 								bot.sendMessageToUser(publishMessage, bot.getOwner());
-							bot.getDispatcher().updateFileList(); // Updates file list.
 						} else {
 							event.getAuthor().getPrivateChannel().sendMessage("Download of file `" + name + "` **failed**!");
 						}
@@ -98,7 +124,7 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 	}
 	
 	public String getCommandHelpString() {
-		return "**Upload** an `.mp3` or `.wav` file to add it to list of sounds. *Use the Comment field to specify a category.*";
+		return "**Upload** an (or multiple) `.mp3` or `.wav` file(s) to add to sounds. *Use the Comment field to specify category.*";
 	}
 
 }

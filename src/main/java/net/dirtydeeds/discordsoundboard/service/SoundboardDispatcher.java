@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
-import net.dirtydeeds.discordsoundboard.MainWatch;
 import net.dirtydeeds.discordsoundboard.async.CleanBotMessagesJob;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.dao.SoundFileRepository;
@@ -37,7 +36,7 @@ import net.dv8tion.jda.utils.SimpleLog;
  * Allows for multiple copies of this service across >= 1 Discord accounts.
  */
 @Service
-public class SoundboardDispatcher implements Observer {
+public class SoundboardDispatcher {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("Dispatcher");
 
@@ -48,22 +47,18 @@ public class SoundboardDispatcher implements Observer {
 	private SoundboardBot[] bots;
 	private Map<String, SoundFile> availableSounds;
 	private LowercaseTrie soundNameTrie;
-	private final MainWatch mainWatch;
 	private final AsyncService asyncService;
 	private final StringService stringService;
 	private final Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
 	
     @Inject
-    public SoundboardDispatcher(MainWatch mainWatch, UserRepository userDao, SoundFileRepository soundDao, AsyncService asyncService, StringService stringService) {
-        this.mainWatch = mainWatch;
-        this.mainWatch.addObserver(this);
+    public SoundboardDispatcher(UserRepository userDao, SoundFileRepository soundDao, AsyncService asyncService, StringService stringService) {
         this.asyncService = asyncService;
         this.stringService = stringService;
         this.userDao = userDao;
         this.soundDao = soundDao;
         availableSounds = new TreeMap<>();
         soundNameTrie = new LowercaseTrie();
-        this.mainWatch.watchDirectoryPath(soundFilePath);
         getFileList();
 		loadProperties();
 		startServices();
@@ -173,6 +168,7 @@ public class SoundboardDispatcher implements Observer {
                     	// Resolve conflicts between persistence object and new object.
                     	soundFile.setDescription(_soundFile.getDescription());
                     	soundFile.setNumberOfPlays(_soundFile.getNumberOfPlays());
+                    	soundFile.setUser(_soundFile.getUser());
                     }
                     soundDao.save(soundFile);
                     sounds.put(fileName, soundFile);
@@ -266,11 +262,6 @@ public class SoundboardDispatcher implements Observer {
     
     public void saveSound(SoundFile soundFile) {
     	soundDao.save(soundFile);
-    }
-    	
-    @Override
-    public void update(Observable o, Object arg) {
-        getFileList();
     }
     
     public void updateFileList() {

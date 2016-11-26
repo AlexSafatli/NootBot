@@ -27,23 +27,28 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 				suggestion = "Did you mean `" + possibleName + "`?";
 			}
         	event.getChannel().sendMessageAsync(formatString(Strings.NOT_FOUND, name) + 
-        			suggestion + "* " + user.getAsMention(), null);
+        			" *" + suggestion + "* " + user.getAsMention(), null);
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
-			String desc = file.getDescription(), cat = file.getCategory();
+			String desc = file.getDescription(), cat = file.getCategory(), uploader = "";
+			net.dirtydeeds.discordsoundboard.beans.User blame = file.getUser();
 			if (cat.equals("sounds")) cat = "Uncategorized";
+			if (blame != null) uploader = blame.getUsername();
 			Long plays = file.getNumberOfPlays();
+			String strToSend;
 			if (desc == null || desc.isEmpty()) {
-				event.getChannel().sendMessageAsync(formatString(Strings.SOUND_DESC, name, cat, plays) + ".", null);
+				strToSend = formatString(Strings.SOUND_DESC, name, cat, plays) + ".";
 			} else {
-				event.getChannel().sendMessageAsync(formatString(Strings.SOUND_DESC, name, cat, plays) + " - " + desc + ".", null);
+				strToSend = formatString(Strings.SOUND_DESC, name, cat, plays) + " with description: " + desc + ".";
 			}
+			if (!uploader.isEmpty()) strToSend += " *This file was uploaded by* **" + uploader + "**.";
+			event.getChannel().sendMessageAsync(strToSend, null);
 		}
 	}
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` - get a source/description for a sound file";
+		return "`" + getPrefix() + " <soundfile>` - get a source/description and uploader for a sound file";
 	}
 	
 }

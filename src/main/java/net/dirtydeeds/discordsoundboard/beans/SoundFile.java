@@ -2,8 +2,10 @@ package net.dirtydeeds.discordsoundboard.beans;
 
 import java.io.File;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 @Entity
@@ -16,6 +18,8 @@ public class SoundFile {
     private final String category;
     private String description;
     private Long numberPlays;
+    @OneToOne(cascade = {CascadeType.ALL})
+    private User user;
 
 	protected SoundFile() { 
 		this.soundFileId = null;
@@ -73,6 +77,14 @@ public class SoundFile {
     
     public void addOneToNumberOfPlays() {
     	++numberPlays;
+    }
+    
+    public User getUser() {
+    	return this.user;
+    }
+    
+    public void setUser(User user) {
+    	this.user = user;
     }
 
     @Override

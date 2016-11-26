@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * @author dfurrer.
@@ -103,7 +104,13 @@ public class SoundboardBot {
     
     public User getUser(net.dv8tion.jda.entities.User user) {
 		List<User> users = dispatcher.getUserById(user.getId());
-		return (users != null && !users.isEmpty()) ? users.get(0) : null;
+		if (users != null && !users.isEmpty()) {
+			return users.get(0);
+		} else {
+			User u = new User(user.getId(), user.getUsername());
+			dispatcher.saveUser(u);
+			return u;
+		}
     }
     
     public String getOwner() {

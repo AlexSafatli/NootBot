@@ -20,6 +20,7 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
         	StringBuilder sb = new StringBuilder();
         	int i = 0;
         	for (String category : categories) {
+        		if (category.equals("sounds")) continue;
         		sb.append("**" + category + "** ");
         		++i;
         		if (i != categories.size()) sb.append(" / ");
