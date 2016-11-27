@@ -29,3 +29,11 @@ Much of the foundation code was taken from an early commit of [Darkside138/Disco
 - Added permission system for uploading sounds and authenticated commands. Currently based on roles (Administrator, Server Management permissions).
 - Entrances no longer add to play count.
 - Removed Reddit integration due to lack of popularity.
+
+## Planned Milestones
+
+### 2.2.0
+
+- *Search* functionality leveraging trie data structure
+- *Subcategories* that would act identical to *categories* but also function as children
+- Update to newest version of [JDA](https://github.com/DV8FromTheWorld/JDA)
