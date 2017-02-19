@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

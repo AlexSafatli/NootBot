@@ -1,38 +1,36 @@
 package net.dirtydeeds.discordsoundboard.service;
 
+import net.dirtydeeds.discordsoundboard.audio.AudioHandler;
+import net.dirtydeeds.discordsoundboard.audio.AudioPlayerSendHandler;
+import net.dirtydeeds.discordsoundboard.audio.AudioTrackScheduler;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.listeners.ChatListener;
-import net.dirtydeeds.discordsoundboard.listeners.EntranceListener;
-import net.dirtydeeds.discordsoundboard.listeners.ExitListener;
+import net.dirtydeeds.discordsoundboard.listeners.MoveListener;
 import net.dirtydeeds.discordsoundboard.listeners.GameListener;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.MessageHistory;
-import net.dv8tion.jda.OnlineStatus;
-import net.dv8tion.jda.Permission;
-import net.dv8tion.jda.audio.player.FilePlayer;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.Role;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.VoiceChannel;
-import net.dv8tion.jda.entities.VoiceStatus;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.events.voice.VoiceJoinEvent;
-import net.dv8tion.jda.managers.AudioManager;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dirtydeeds.discordsoundboard.org.Category;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.managers.AudioManager;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 import javax.security.auth.login.LoginException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * @author dfurrer.
@@ -43,7 +41,8 @@ public class SoundboardBot {
 
     public static final SimpleLog LOG = SimpleLog.getLog("Bot");
     private static int CHANNEL_CONNECTION_TIMEOUT = 5000;
-    private static int TOP_PLAYED_SOUND_THRESHOLD = 32;
+    private static int TOP_PLAYED_SOUND_THRESHOLD = 50;
+    private static int MAX_DURATION_FOR_RANDOM = 12;
     private static String NOT_IN_VOICE_CHANNEL_MESSAGE = "Are you in a voice channel? Could not find you!";
     
     private long startTime;
@@ -51,12 +50,13 @@ public class SoundboardBot {
     private ChatListener chatListener;
     private String owner;
     private SoundboardDispatcher dispatcher;
-    private float playerVolume = (float) .75;
+    private Map<Guild, AudioTrackScheduler> audioSchedulers;
 
     public SoundboardBot(String token, String owner, SoundboardDispatcher dispatcher) {
     	this.startTime = System.currentTimeMillis();
         this.owner = owner;
     	this.dispatcher = dispatcher;
+    	this.audioSchedulers = new Hashtable<>();
     	initializeDiscordBot(token);
     }
     
@@ -82,32 +82,64 @@ public class SoundboardBot {
     	return this.dispatcher;
     }
     
+    public AudioTrackScheduler getSchedulerForGuild(Guild guild) {
+    	if (this.audioSchedulers.get(guild) == null) {
+    		AudioManager audio = guild.getAudioManager();
+    		AudioPlayer player = dispatcher.getAudioManager().createPlayer();
+    		audio.setSendingHandler(new AudioPlayerSendHandler(audio, player));
+    		AudioTrackScheduler scheduler = new AudioTrackScheduler(dispatcher.getAudioManager(), player);
+    		player.addListener(scheduler);
+    		audioSchedulers.put(guild, scheduler);
+    	}
+    	return this.audioSchedulers.get(guild);
+    }
+    
     public String getClosestMatchingSoundName(String str) {
     	return dispatcher.getSoundNameTrie().getWordWithPrefix(str);
+    }
+
+    public String getRandomSoundName() {
+    	Random rng = new Random();
+    	SoundFile file = null;
+    	Object[] files = dispatcher.getAvailableSoundFiles().values().toArray();
+    	while (file == null || file.isExcludedFromRandom() || file.getDuration() > MAX_DURATION_FOR_RANDOM) {
+    		file = (SoundFile)files[rng.nextInt(files.length)];
+    	}
+    	return file.getSoundFileId();
+    }
+    
+    public String getRandomSoundNameForCategory(String category) {
+    	Random rng = new Random();
+    	Map<String, Boolean> seen = new HashMap<>();
+    	SoundFile file = null;
+    	Object[] files = dispatcher.getAvailableSoundFiles().values().toArray();
+    	while (file == null || !dispatcher.isASubCategory(file.getCategory(), category) ||
+    			file.isExcludedFromRandom() || file.getDuration() > MAX_DURATION_FOR_RANDOM) {
+    		if (seen.size() == files.length) return null; // No sounds that can actually be played.
+    		file = (SoundFile)files[rng.nextInt(files.length)];
+    		if (seen.get(file.getSoundFileId()) == null) seen.put(file.getSoundFileId(), true);
+    	}
+    	return file.getSoundFileId();
     }
     
     public String getRandomTopPlayedSoundName() {
     	List<SoundFile> sounds = dispatcher.getSoundFilesOrderedByNumberOfPlays();
     	if (sounds == null || sounds.isEmpty()) return null;
     	Random rng = new Random();
-    	int index = rng.nextInt(Math.min(TOP_PLAYED_SOUND_THRESHOLD,sounds.size()));
+    	int index = rng.nextInt(Math.min(TOP_PLAYED_SOUND_THRESHOLD,sounds.size())), ceiling = TOP_PLAYED_SOUND_THRESHOLD;
+    	while (sounds.get(index).isExcludedFromRandom() && !sounds.get(index).getSoundFile().exists()) {
+    		index = rng.nextInt(Math.min(ceiling,sounds.size()));
+    		if (ceiling + 1 < sounds.size()) ++ceiling;
+    	}
     	return sounds.get(index).getSoundFileId();
     }
     
-    public List<String> getSoundCategories() {
-    	LinkedList<String> categories = new LinkedList<String>();
-    	for (SoundFile soundFile : dispatcher.getAvailableSoundFiles().values()) {
-    		if (!categories.contains(soundFile.getCategory())) categories.add(soundFile.getCategory());
-    	}
-    	return categories;
-    }
-    
-    public User getUser(net.dv8tion.jda.entities.User user) {
+    public User getUser(net.dv8tion.jda.core.entities.User user) {
 		List<User> users = dispatcher.getUserById(user.getId());
 		if (users != null && !users.isEmpty()) {
 			return users.get(0);
 		} else {
-			User u = new User(user.getId(), user.getUsername());
+			User u = new User(user.getId(), user.getName());
 			dispatcher.saveUser(u);
 			return u;
 		}
@@ -117,14 +149,16 @@ public class SoundboardBot {
     	return this.owner;
     }
     
-    public boolean isAuthenticated(net.dv8tion.jda.entities.User user, Guild guild) {
+    public boolean isAuthenticated(net.dv8tion.jda.core.entities.User user, Guild guild) {
+    	if (getUser(user).isPrivileged()) return true;
     	if (guild != null) {
-	    	List<Role> roles = guild.getRolesForUser(user);
+	    	List<Role> roles = guild.getMember(user).getRoles();
 	    	for (Role role : roles) {
-	    		if (role.hasPermission(Permission.ADMINISTRATOR) || role.hasPermission(Permission.MANAGE_SERVER))
+	    		if (role.hasPermission(Permission.ADMINISTRATOR) || 
+	    				role.hasPermission(Permission.MANAGE_SERVER))
 	    			return true;
 	    	}
-	    	if (user.getUsername().equals(getOwner())) return true;
+	    	if (user.getName().equals(getOwner())) return true;
     	} else {
     		for (Guild guild_ : getGuildsWithUser(user)) {
     			if (isAuthenticated(user, guild_)) return true;
@@ -133,33 +167,36 @@ public class SoundboardBot {
     	return false;
     }
     
+	public boolean hasPermissionInChannel(TextChannel textChannel, Permission p) {
+		if (textChannel == null || textChannel.getGuild() == null) return false;
+		String id = bot.getSelfUser().getId();
+		Member self = textChannel.getGuild().getMemberById(id);
+		return self.hasPermission(p);
+	}
+    
     public String getBotName() {
-    	return this.bot.getSelfInfo().getUsername();
+    	return this.bot.getSelfUser().getName();
     }
     
     public VoiceChannel getConnectedChannel(Guild guild) {
-    	return (bot.getAudioManager(guild).isConnected()) ? bot.getAudioManager(guild).getConnectedChannel() : null;
+    	return (guild.getAudioManager().isConnected()) ? guild.getAudioManager().getConnectedChannel() : null;
     }
     
-    public void setVolume(float volume) {
-    	if (volume <= 1 && volume >= 0) this.playerVolume = volume;
-    }
-    
-	public net.dv8tion.jda.entities.User getUserByName(String username) {
-    	for (net.dv8tion.jda.entities.User user : bot.getUsers()) {
-    		if (user.getUsername().equalsIgnoreCase(username)) {
+	public net.dv8tion.jda.core.entities.User getUserByName(String username) {
+    	for (net.dv8tion.jda.core.entities.User user : bot.getUsers()) {
+    		if (user.getName().equalsIgnoreCase(username)) {
     			return user;
     		}
     	}
     	return null;
 	}
 
-	public String getEntranceForUser(net.dv8tion.jda.entities.User user) {
+	public String getEntranceForUser(net.dv8tion.jda.core.entities.User user) {
 		List<User> users = dispatcher.getUserById(user.getId());
 		return (users != null && !users.isEmpty()) ? users.get(0).getEntrance() : null;
 	}
 	
-	public void setEntranceForUser(net.dv8tion.jda.entities.User user, String filename) {
+	public void setEntranceForUser(net.dv8tion.jda.core.entities.User user, String filename) {
 		if (filename != null)
 			LOG.info("New entrance \"" + filename + "\" set for " + user);
 		else
@@ -169,13 +206,13 @@ public class SoundboardBot {
 			users.get(0).setEntrance(filename);
 			dispatcher.saveUser(users.get(0));
 		} else {
-			User u = new User(user.getId(), user.getUsername());
+			User u = new User(user.getId(), user.getName());
 			u.setEntrance(filename);
 			dispatcher.saveUser(u);
 		}
 	}
     
-    public boolean disallowUser(net.dv8tion.jda.entities.User user) {
+    public boolean disallowUser(net.dv8tion.jda.core.entities.User user) {
     	List<User> users = dispatcher.getUserById(user.getId());
     	if (users != null && !users.isEmpty() && users.get(0).isDisallowed()) {
     		return true; // Already disallowed.
@@ -192,11 +229,11 @@ public class SoundboardBot {
     }
     
     public boolean disallowUser(String username) {
-    	net.dv8tion.jda.entities.User user = getUserByName(username);
+    	net.dv8tion.jda.core.entities.User user = getUserByName(username);
     	return (user != null) ? disallowUser(user) : false;
     }
     
-    public boolean allowUser(net.dv8tion.jda.entities.User user) {
+    public boolean allowUser(net.dv8tion.jda.core.entities.User user) {
     	List<User> users = dispatcher.getUserById(user.getId());
     	if (users != null && !users.isEmpty()) {
     		users.get(0).setDisallowed(false);
@@ -206,11 +243,11 @@ public class SoundboardBot {
     }
     
     public boolean allowUser(String username) {
-    	net.dv8tion.jda.entities.User user = getUserByName(username);
+    	net.dv8tion.jda.core.entities.User user = getUserByName(username);
     	return (user != null) ? allowUser(user) : false;
     }
     
-    public boolean throttleUser(net.dv8tion.jda.entities.User user) {
+    public boolean throttleUser(net.dv8tion.jda.core.entities.User user) {
     	List<User> users = dispatcher.getUserById(user.getId());
     	if (users != null && !users.isEmpty() && users.get(0).isThrottled()) {
     		return true; // Already throttled.
@@ -222,26 +259,24 @@ public class SoundboardBot {
     			users.get(0).setThrottled(true);
     			dispatcher.saveUser(users.get(0));
     		}
-    		if (user.getOnlineStatus().equals(OnlineStatus.ONLINE))
-	    		sendMessageToUser("You have been **throttled** from sending"
-	    				+ " me commands. You will only be able to send me limited requests in a"
-	    				+ " period of time. Contact the bot owner to dispute this action.", user);
+    		sendMessageToUser("You have been **throttled** from sending"
+    				+ " me commands. You will only be able to send me limited requests in a"
+    				+ " period of time. Contact the bot owner to dispute this action.", user);
     		return true;
     	}
     }
     
 	public boolean throttleUser(String username) {
-    	net.dv8tion.jda.entities.User user = getUserByName(username);
+    	net.dv8tion.jda.core.entities.User user = getUserByName(username);
     	return (user != null) ? throttleUser(user) : false;
 	}
 	
-    public boolean unthrottleUser(net.dv8tion.jda.entities.User user) {
+    public boolean unthrottleUser(net.dv8tion.jda.core.entities.User user) {
     	List<User> users = dispatcher.getUserById(user.getId());
     	if (users != null && !users.isEmpty()) {
-    		if (users.get(0).isThrottled() && user.getOnlineStatus().equals(OnlineStatus.ONLINE)) {
+    		if (users.get(0).isThrottled()) {
         		sendMessageToUser("You are no longer "
-        				+ "**throttled** from sending me commands. You have "
-        				+ "no more chat restriction.", user);
+        				+ "**throttled** from sending me commands.", user);
     		}
     		users.get(0).setThrottled(false);
     		dispatcher.saveUser(users.get(0));
@@ -250,41 +285,53 @@ public class SoundboardBot {
     }
     
 	public boolean unthrottleUser(String username) {
-    	net.dv8tion.jda.entities.User user = getUserByName(username);
+    	net.dv8tion.jda.core.entities.User user = getUserByName(username);
     	return (user != null) ? unthrottleUser(user) : false;
 	}
     
     public void leaveServer(Guild guild) {
     	if (guild != null && getGuilds().contains(guild)) {
     		guild.getAudioManager().closeAudioConnection();
-    		guild.getManager().leave();
+    		guild.leave();
     	}
     }
     
-    public void sendMessageToUser(String msg, net.dv8tion.jda.entities.User user) {
-		user.getPrivateChannel().sendMessageAsync(msg, null);
+    public void sendMessageToUser(String msg, net.dv8tion.jda.core.entities.User user) {
+		if (!user.hasPrivateChannel())
+			try {
+				user.openPrivateChannel().block();
+			} catch (RateLimitedException e) { return; }
+    	user.getPrivateChannel().sendMessage(msg).queue();
 	}
     
 
 	public void sendMessageToUser(String msg, String username) {
-    	net.dv8tion.jda.entities.User user = getUserByName(username);
+    	net.dv8tion.jda.core.entities.User user = getUserByName(username);
     	if (user != null) sendMessageToUser(msg, user);
     	else LOG.warn("Tried to send message \"" + msg + "\" to username " + username + " but could not find user.");
 	}
     
     public void sendMessageToAllGuilds(String msg) {
     	for (Guild guild : bot.getGuilds()) {
-    		guild.getPublicChannel().sendMessageAsync(msg, null);
+    		guild.getPublicChannel().sendMessage(msg).queue();
     	}
+    }
+    
+    public void stopPlayingSound(Guild guild) {
+    	AudioManager audio = guild.getAudioManager();
+    	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
+    	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
+		player.stopTrack();
+		scheduler.clear();
+		LOG.info("Sending stop request to AudioManager");
     }
     
     /**
      * Plays a random sound file.
      */
-    public String playRandomFile(net.dv8tion.jda.entities.User user) throws Exception {
+    public String playRandomFile(net.dv8tion.jda.core.entities.User user) throws Exception {
         if (user != null && isAllowedToPlaySound(user)) {
-        	Object[] fileNames = dispatcher.getAvailableSoundFiles().keySet().toArray();
-        	String toPlay = (String)fileNames[new Random().nextInt(fileNames.length)];
+        	String toPlay = getRandomSoundName();
         	VoiceChannel toJoin = getUsersVoiceChannel(user);
         	if (toJoin == null) {
                 sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, user);
@@ -300,25 +347,15 @@ public class SoundboardBot {
     /**
      * Plays a random sound file from a category.
      */
-    public String playRandomFileForCategory(net.dv8tion.jda.entities.User user, String category) throws Exception {
+    public String playRandomFileForCategory(net.dv8tion.jda.core.entities.User user, String category) throws Exception {
         if (user != null && isAllowedToPlaySound(user)) {
-        	if (!isASoundCategory(category)) {
-        		LOG.info("Category " + category + " not found when playing random file.");
-        		return null;
-        	}
+        	if (!isASoundCategory(category)) return null;
         	VoiceChannel toJoin = getUsersVoiceChannel(user);
         	if (toJoin == null) {
                 sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, user);
         	} else {
-            	Random rng = new Random();
-            	SoundFile file = null;
-            	Object[] files = dispatcher.getAvailableSoundFiles().values().toArray();
-            	while (file == null || !file.getCategory().equalsIgnoreCase(category)) {
-            		file = (SoundFile)files[rng.nextInt(files.length)];
-            		LOG.debug("Randomed file " + file.getSoundFileId() + 
-            				" with category " + file.getCategory());
-            	}
-            	String toPlay = file.getSoundFileId();
+            	String toPlay = getRandomSoundNameForCategory(category);
+            	if (toPlay == null) return null;
         		moveToChannel(toJoin);
         		playFile(toPlay, toJoin.getGuild());
         		return toPlay;
@@ -340,14 +377,24 @@ public class SoundboardBot {
             	VoiceChannel toJoin = getUsersVoiceChannel(event.getAuthor());
             	if (toJoin == null) {
                     sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, event.getAuthor());
-            	} else if (event.getGuild() != null && toJoin.getGuild() != event.getGuild()) {
-            		sendMessageToUser("You are in a voice channel that is not in "
-            				+ "the server you sent the message in!", event.getAuthor());
             	} else {
             		moveToChannel(toJoin);
             		playFile(fileName, toJoin.getGuild());
             		LOG.info("Played sound \"" + fileName + "\" in server " + toJoin.getGuild().getName());
             	}
+        	}
+        }
+    }
+    
+    public void playURLForChatCommand(String url, MessageReceivedEvent event) throws Exception {
+        if (event != null && !url.isEmpty() && isAllowedToPlaySound(event.getAuthor())) {
+        	VoiceChannel toJoin = getUsersVoiceChannel(event.getAuthor());
+        	if (toJoin == null) {
+                sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, event.getAuthor());
+        	} else {
+        		moveToChannel(toJoin);
+        		playURL(url, toJoin.getGuild());
+        		LOG.info("Played url \"" + url + "\" in server " + toJoin.getGuild().getName());
         	}
         }
     }
@@ -359,7 +406,7 @@ public class SoundboardBot {
 	 * @return 
      * @throws Exception
      */
-	public String playFileForUser(String fileName, net.dv8tion.jda.entities.User user) {
+	public String playFileForUser(String fileName, net.dv8tion.jda.core.entities.User user) {
         if (user != null && !fileName.isEmpty()) {
         	if (dispatcher.getAvailableSoundFiles().get(fileName) != null) {
         		VoiceChannel channel = null;
@@ -389,23 +436,24 @@ public class SoundboardBot {
      *              the sound back in.
      * @throws Exception
      */
-    public boolean playFileForEntrance(String fileName, VoiceJoinEvent event) throws Exception {
-    	if (event == null || fileName == null) return false;
-    	AudioManager voice = bot.getAudioManager(event.getGuild());
+	
+    public boolean playFileForEntrance(String fileName, net.dv8tion.jda.core.entities.User user, VoiceChannel joined) throws Exception {
+    	if (fileName == null) return false;
+    	AudioManager voice = joined.getGuild().getAudioManager();
     	VoiceChannel connected = voice.getConnectedChannel();
         if ((voice.isConnected() || voice.isAttemptingToConnect()) && connected != null && 
-        		(connected.equals(event.getChannel()) || connected.getUsers().size() == 1) || 
+        		(connected.equals(joined) || connected.getMembers().size() == 1) || 
         		!voice.isConnected()) {
-        	if (event.getChannel().getId().equals(event.getGuild().getAfkChannelId())) {
+        	if (joined.getGuild().getAfkChannel() != null && joined.getId().equals(joined.getGuild().getAfkChannel().getId())) {
         		LOG.info("User joined AFK channel so will not follow him to play entrance.");
         		return false;
         	}
-        	LOG.info("Playing entrance for user " + event.getUser().getUsername() + 
+        	LOG.info("Playing entrance for user " + user.getName() + 
         			" with filename " + fileName);
-        	if (connected == null || !connected.equals(event.getChannel()))
-        		moveToChannel(event.getChannel());
+        	if (connected == null || !connected.equals(joined))
+        		moveToChannel(joined);
         	SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
-            playFile(fileToPlay, event.getGuild(), false); // Do not add to count for entrances.
+            playFile(fileToPlay, joined.getGuild(), false); // Do not add to count for entrances.
         	return true;
         }
         return false;
@@ -413,31 +461,27 @@ public class SoundboardBot {
     
     
     public boolean isAllowedToPlaySound(String username) {
-    	net.dv8tion.jda.entities.User user = getUserByName(username);
+    	net.dv8tion.jda.core.entities.User user = getUserByName(username);
     	return (user != null) ? isAllowedToPlaySound(user) : true;
 	}
     
-    public boolean isAllowedToPlaySound(net.dv8tion.jda.entities.User user) {
+    public boolean isAllowedToPlaySound(net.dv8tion.jda.core.entities.User user) {
 		List<User> users = dispatcher.getUserById(user.getId());
 		return !(users != null && !users.isEmpty() && users.get(0).isDisallowed());
 	}
     
     public boolean isThrottled(String username) {
-    	net.dv8tion.jda.entities.User user = getUserByName(username);
+    	net.dv8tion.jda.core.entities.User user = getUserByName(username);
     	return (user != null) ? isThrottled(user) : false;
 	}
     
-    public boolean isThrottled(net.dv8tion.jda.entities.User user) {
+    public boolean isThrottled(net.dv8tion.jda.core.entities.User user) {
 		List<User> users = dispatcher.getUserById(user.getId());
 		return (users != null && !users.isEmpty() && users.get(0).isThrottled());
 	}
     
-    public boolean isOwner(net.dv8tion.jda.entities.User user) {
-    	return (user.getUsername().equals(owner));
-    }
-    
-    public boolean hasPermissionInChannel(TextChannel channel, Permission permission) {
-    	return channel.checkPermission(bot.getSelfInfo(), permission);
+    public boolean isOwner(net.dv8tion.jda.core.entities.User user) {
+    	return (user.getName().equals(owner));
     }
 
     /**
@@ -448,19 +492,16 @@ public class SoundboardBot {
     	if (channel == null) {
     		LOG.warn("Cannot move to a null voice channel."); return;
     	}
-    	AudioManager voice = bot.getAudioManager(channel.getGuild());
-    	voice.setSendingHandler(null);
+    	AudioManager voice = channel.getGuild().getAudioManager();
     	try {
-	        if (voice.isConnected()) voice.moveAudioConnection(channel);
+	        if (voice.isConnected()) voice.openAudioConnection(channel);
 	        else if (voice.isAttemptingToConnect())
 	        	LOG.info("Still waiting to connect to channel " + voice.getQueuedAudioConnection().getName());
 	        else {
 	        	voice.openAudioConnection(channel);
 	        	voice.setConnectTimeout(CHANNEL_CONNECTION_TIMEOUT);
 	        }
-    	} catch (IllegalStateException e) {
-    		e.printStackTrace();
-    		channel.getGuild().getPublicChannel().sendMessageAsync("*This is a little awkward, guys.* I'm having problems joining a channel.", null);
+    	} catch (Exception e) {
     		voice.closeAudioConnection();
     	}
     }
@@ -469,42 +510,27 @@ public class SoundboardBot {
      * Gets a user's current voice channel.
      * @throws Exception
      */
-    public VoiceChannel getUsersVoiceChannel(net.dv8tion.jda.entities.User user) throws Exception {
-        
+    public VoiceChannel getUsersVoiceChannel(net.dv8tion.jda.core.entities.User user) throws Exception {
+    	
     	for (Guild guild : getGuildsWithUser(user)) {
-    		VoiceStatus v = guild.getVoiceStatusOfUser(user);
-    		if (v.getChannel() != null) return v.getChannel();
+    		Member member = guild.getMemberById(user.getId());
+    		if (member != null && member.getVoiceState().getChannel() != null) return member.getVoiceState().getChannel();
     	}
     	return null; // Could not find this user in a voice channel.
         
     }
 
-	public boolean isUser(net.dv8tion.jda.entities.User user) {
-		net.dv8tion.jda.entities.User self = (net.dv8tion.jda.entities.User)bot.getSelfInfo();
-		return (self.equals(user) || self.getUsername().equals(user.getUsername()));
+	public boolean isUser(net.dv8tion.jda.core.entities.User user) {
+		net.dv8tion.jda.core.entities.User self = (net.dv8tion.jda.core.entities.User)bot.getSelfUser();
+		return (self.equals(user) || self.getName().equals(user.getName()));
 	}
     
 	public boolean isASoundCategory(String category) {
-    	for (String c : getSoundCategories()) {
-    		if (c.equalsIgnoreCase(category)) return true;
+    	for (Category c : dispatcher.getCategories()) {
+    		if (c.getName().equalsIgnoreCase(category)) return true;
     	}
     	return false;
     }
-	
-	public void deleteHistoryForChannel(MessageChannel channel) {
-		if (hasPermissionInChannel((TextChannel)channel, Permission.MESSAGE_MANAGE)) {
-			MessageHistory history = new MessageHistory(channel);
-			for (Message message : history.retrieveAll()) {
-				if (message.getAuthor() != null) {
-					try {
-						message.deleteMessage();
-					} catch (Exception e) {
-						LOG.warn("Could not delete message " + message);
-					}
-				}
-			}
-		}
-	}
 
     /**
      * Play file name requested. Will first try to load the file from the map of available sounds.
@@ -514,7 +540,7 @@ public class SoundboardBot {
         SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
         playFile(fileToPlay, guild, true);
     }
-    
+   
     private void playFile(SoundFile fileToPlay, Guild guild, boolean addToCount) {
         if (fileToPlay != null && guild != null) {
         	playFile(fileToPlay.getSoundFile(), guild);
@@ -529,16 +555,18 @@ public class SoundboardBot {
     	return Paths.get(System.getProperty("user.dir") + "/sounds");
     }
     
+    public Path getTempPath() {
+    	return Paths.get(System.getProperty("user.dir") + "/tmp");
+    }
+    
     /**
      * Get a list of users
      */
     public List<net.dirtydeeds.discordsoundboard.beans.User> getUsers() {
         List<User> users = new ArrayList<>();
-        for (net.dv8tion.jda.entities.User user : bot.getUsers()) {
-            if (user.getOnlineStatus().equals(OnlineStatus.ONLINE)) {
-                String username = user.getUsername();
-                users.add(new net.dirtydeeds.discordsoundboard.beans.User(user.getId(), username));
-            }
+        for (net.dv8tion.jda.core.entities.User user : bot.getUsers()) {
+            String username = user.getName();
+            users.add(new net.dirtydeeds.discordsoundboard.beans.User(user.getId(), username));
         }
         return users;
     }
@@ -547,10 +575,11 @@ public class SoundboardBot {
     	return bot.getGuilds();
     }
     
-    public List<Guild> getGuildsWithUser(net.dv8tion.jda.entities.User user) {
+    public List<Guild> getGuildsWithUser(net.dv8tion.jda.core.entities.User user) {
     	List<Guild> guilds = new LinkedList<>();
     	for (Guild guild : getGuilds()) {
-    		if (guild.getUsers().contains(user)) guilds.add(guild);
+    		List<Member> members = guild.getMembersByName(user.getName(), false);
+    		if (members != null && !members.isEmpty()) guilds.add(guild);
     	}
     	return guilds;
     }
@@ -569,35 +598,34 @@ public class SoundboardBot {
 
     //Play the file provided.
     private void playFile(File audioFile, Guild guild) {
-    	AudioManager audio = bot.getAudioManager(guild);
-        try {
-        	FilePlayer player = (FilePlayer)audio.getSendingHandler();
-        	if (player != null) player.stop();
-        	audio.setSendingHandler(null);
-            player = new FilePlayer(audioFile);
-            audio.setSendingHandler(player);
-            player.play(); player.setVolume(playerVolume);
-        } catch (IOException | UnsupportedAudioFileException e) {
-            LOG.fatal("While playing " + audioFile.getName() + ": " + e.toString());
-            audio.setSendingHandler(null);
-		}
+    	AudioManager audio = guild.getAudioManager();
+    	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
+    	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
+		String path = audioFile.getPath();
+		LOG.info("Sending request for '" + path + "' to AudioManager");
+		scheduler.load(path, new AudioHandler(player, audio));
+    }
+    
+    private void playURL(String url, Guild guild) {
+    	AudioManager audio = guild.getAudioManager();
+    	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
+    	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
+		LOG.info("Sending request for '" + url + "' to AudioManager");
+		scheduler.load(url, new AudioHandler(player, audio));
     }
 
-    //Logs the discord bot in and adds the ChatSoundBoardListener if the user configured it to be used
     private void initializeDiscordBot(String token) {
         try {
-			bot = new JDABuilder().setBotToken(token).buildBlocking();
+			bot = new JDABuilder(AccountType.BOT).setToken(token).buildBlocking();
 	        ChatListener chatListener = new ChatListener(this);
 	        this.chatListener = chatListener;
 	        this.addListener(chatListener);
-	        EntranceListener entranceListener = new EntranceListener(this);
-	        this.addListener(entranceListener);
-	        ExitListener exitListener = new ExitListener(this);
-	        this.addListener(exitListener);
+	        MoveListener moveListener = new MoveListener(this);
+	        this.addListener(moveListener);
 	        GameListener gameListener = new GameListener(this);
 	        this.addListener(gameListener);
 	        LOG.info("Finished initializing bot with name " + getBotName());
-		} catch (LoginException | IllegalArgumentException | InterruptedException e) {
+		} catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException e) {
 			e.printStackTrace();
 		}
     }

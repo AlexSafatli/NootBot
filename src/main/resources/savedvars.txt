@@ -1,0 +1,3 @@
+PLAY_SOUNDS_ON_GAME_LAUNCH=1
+
+    compile('com.robrua:orianna:2.4.6')

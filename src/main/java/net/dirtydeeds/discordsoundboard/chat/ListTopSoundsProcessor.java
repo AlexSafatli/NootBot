@@ -6,47 +6,47 @@ import java.util.Set;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ListTopSoundsProcessor");
 	
-	private static final int NUMBER_OF_TOP_TO_SHOW = 15;
+	private static final int NUMBER_OF_TOP_TO_SHOW = 25;
 	
 	public ListTopSoundsProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, bot);
+		super(prefix, "Top Sounds", bot);
 	}
 	
-	private String getTopSounds() {
+	private List<String> getTopSounds() {
 		int numberOfSoundFiles = 0;
-		StringBuilder sb = new StringBuilder();
+		MessageBuilder sb = new MessageBuilder();
 		List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByNumberOfPlays();
 		Set<String> activeFileNames = bot.getSoundMap().keySet();
 		for (SoundFile file : soundFiles) {
 			if (numberOfSoundFiles >= NUMBER_OF_TOP_TO_SHOW) break;
 			String name = file.getSoundFileId();
 			if (activeFileNames.contains(name)) {
-				sb.append("`?").append(name).append("` (" + file.getNumberOfPlays() + ") ");
+				sb.append("`?" + name + "` (" + file.getNumberOfPlays() + ") ");
         		++numberOfSoundFiles;
 			}
 		}
-		return sb.toString();
+		return sb.getStrings();
 	}
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		MessageChannel channel = event.getChannel();
         Map<String, SoundFile> soundFiles = bot.getSoundMap();
         if (soundFiles.isEmpty()) {
-        	channel.sendMessage("There are **no sound files** at all!");
+        	m(event, "There are **no sound files** at all!");
         	return;
         }
-        String topSounds = getTopSounds();
-    	channel.sendMessageAsync("The **" + NUMBER_OF_TOP_TO_SHOW + 
-    			" top played sound files** are, in descending order:\n\n" + topSounds, null);
-        LOG.info("Listed the " + NUMBER_OF_TOP_TO_SHOW + " top sounds for user " + event.getAuthor().getUsername());
+        List<String> topSounds = getTopSounds();
+    	m(event, "The **" + NUMBER_OF_TOP_TO_SHOW + 
+    			" top played sound files** are, in descending order:\n\n");
+    	for (String s : topSounds) m(event, s);
+        LOG.info("Listed the " + NUMBER_OF_TOP_TO_SHOW + " top sounds for user " + event.getAuthor().getName());
 	}
 	
 	@Override

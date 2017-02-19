@@ -1,11 +1,13 @@
 package net.dirtydeeds.discordsoundboard.service;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
 import net.dirtydeeds.discordsoundboard.async.SoundboardJob;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,13 +30,13 @@ public class AsyncService {
 	}
 	
 	// Adds to a job to be run periodically.
-	public void addJob(SoundboardJob job) {
+	public synchronized void addJob(SoundboardJob job) {
 		LOG.info("Adding job " + job.getClass().getSimpleName());
 		jobs.add(job);
 	}
 	
 	// Runs a job only once as a "task".
-	public void runJob(SoundboardJob job) {
+	public synchronized void runJob(SoundboardJob job) {
 		LOG.info("Adding task " + job.getClass().getSimpleName());
 		tasks.push(job);
 	}
@@ -53,6 +55,7 @@ public class AsyncService {
 						millisecondsToWait);
 			}
     		// See if there are any tasks.
+    		Collection<SoundboardJob> unrunTasks = new LinkedList<>();
     		while (!tasks.isEmpty()) {
     			SoundboardJob task = tasks.pop();
     			if (task.isApplicable(dispatcher)) {
@@ -64,10 +67,15 @@ public class AsyncService {
 	    				continue;
 	    			}
 	    			LOG.info("Finished running task " + task.getClass().getSimpleName());
+    			} else {
+    				unrunTasks.add(task);
     			}
     		}
+    		for (SoundboardJob task : unrunTasks) tasks.push(task);
     		// Perform any async job(s).
-    		for (SoundboardJob job : jobs) {
+    		Iterator<SoundboardJob> jobsIterator = jobs.iterator();
+    		while (jobsIterator.hasNext()) {
+    			SoundboardJob job = jobsIterator.next();
     			if (job.isApplicable(dispatcher)) {
     				try {
         				job.run(dispatcher);

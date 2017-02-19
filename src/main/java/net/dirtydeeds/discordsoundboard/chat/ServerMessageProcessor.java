@@ -1,15 +1,15 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ServerMessageProcessor extends OwnerSingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ServerMessage");
 	
 	public ServerMessageProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, bot);
+		super(prefix, "Server Message", bot);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {

@@ -2,16 +2,16 @@ package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class SetEntranceForUserProcessor extends OwnerMultiArgumentChatCommandProcessor {
+public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("SetEntranceForUserProcessor");
 	
 	public SetEntranceForUserProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, bot);
+		super(prefix, "Entrance for User", bot);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -22,15 +22,14 @@ public class SetEntranceForUserProcessor extends OwnerMultiArgumentChatCommandPr
 		if (fileName != null && user != null) {
 			if (bot.getSoundMap().get(fileName) != null) {
 				bot.setEntranceForUser(user, fileName);
-				pm(event, "User **" + user.getUsername() + "** had entrance updated" +
+				pm(event, "User **" + user.getName() + "** had entrance updated" +
 						" to sound `" + fileName + "`.");
 			} else {
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			}
 		} else if (fileName == null) {
 			bot.setEntranceForUser(user, null);
-			pm(event, "User **" + user.getUsername() + "** had their entrance updated" +
-					" to no longer have a sound file.");
+			pm(event, "User **" + user.getName() + "** had their entrance cleared.");
 		} else if (user == null) {
 			pm(event, "Asked to change entrance for `" + username + "` but could not "
 					+ "find user with that name.");

@@ -6,17 +6,18 @@ import java.nio.file.Paths;
 
 import com.google.common.io.Files;
 
+import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class RecategorizeSoundProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("RecategorizeSoundProcessor");
 	
 	public RecategorizeSoundProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, bot);
+		super(prefix, "Recategorize", bot);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -29,31 +30,31 @@ public class RecategorizeSoundProcessor extends AuthenticatedMultiArgumentChatCo
 		if (bot.getSoundMap().get(name) == null) {
 			pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			return;
-		} else if (!bot.getSoundCategories().contains(cat)) {
-			boolean notFound = true;
-			for (String _cat : bot.getSoundCategories()) {
-				if (cat.equalsIgnoreCase(_cat)) {
-					cat = _cat; notFound = false; break;
-				}
-			}
-			if (notFound) {
-				pm(event, "The category `" + cat + "` does not exist. *Will make it!*");
-				Path newCat = bot.getSoundsPath().resolve(cat);
-				LOG.info("Creating directory: " + newCat);
-				newCat.toFile().mkdir();
-			}
+		} else if (!bot.isASoundCategory(cat)) {
+			pm(event, "The category `" + cat + "` does not exist. *Will make it as a new primary category!*");
+			Path newCat = bot.getSoundsPath().resolve(cat);
+			LOG.info("Creating directory: " + newCat);
+			newCat.toFile().mkdir();
+			bot.getDispatcher().updateFileList();
 		}
 		try {
+			boolean success = false;
 			File file = bot.getSoundMap().get(name).getSoundFile();
 			Path source = Paths.get(file.getPath());
 			LOG.info("Identified path of file: " + source);
 			int extIndex = file.getName().lastIndexOf(".");
 			String ext = (extIndex != -1) ? file.getName().substring(extIndex) : "";
 			LOG.info("Identified extension of file: " + ext);
-			File destination = bot.getSoundsPath().resolve(cat).resolve(name + ext).toFile();
-			LOG.info("Moving file to: " + destination.getPath());
-			Files.move(file, destination);
-			pm(event, formatString(Strings.SOUND_MOVE_SUCCESS, file.getName(), bot.getSoundMap().get(name).getCategory(), cat));
+			for (Category category : bot.getDispatcher().getCategories()) {
+				if (category.getName().equalsIgnoreCase(cat)) {
+					File destination = category.getFolderPath().resolve(name + ext).toFile();
+					LOG.info("Moving file to: " + destination.getPath());
+					Files.move(file, destination);
+					success = true;
+					pm(event, formatString(Strings.SOUND_MOVE_SUCCESS, file.getName(), bot.getSoundMap().get(name).getCategory(), cat));
+				}
+			}
+			if (!success) pm(event, formatString(Strings.SOUND_MOVE_FAILURE, name));
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.fatal("While renaming a file: " + e.toString() + " => " + e.getMessage());

@@ -1,15 +1,15 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public abstract class SingleArgumentChatCommandProcessor extends AbstractChatCommandProcessor {
 
 	private String arg;
 	private String msg;
 	
-	public SingleArgumentChatCommandProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, bot);
+	public SingleArgumentChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
+		super(prefix, title, bot);
 	}
 	
 	protected abstract void handleEvent(MessageReceivedEvent event, String message);

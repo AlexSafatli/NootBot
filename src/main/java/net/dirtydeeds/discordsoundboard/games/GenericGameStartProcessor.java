@@ -5,19 +5,22 @@ import java.util.Date;
 import net.dirtydeeds.discordsoundboard.games.AbstractGameUpdateProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.entities.VoiceChannel;
-import net.dv8tion.jda.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 	
 	private static final int MIN_NUM_PLAYERS = 3;
-	private static final int NUMBER_SEC_BETWEEN = 3;
+	private static final int NUMBER_SEC_BETWEEN = 5;
 	
 	private GameStartEvent pastEvent;
 	
@@ -43,24 +46,25 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		} catch (Exception e) {
 			LOG.fatal("Problem retrieving voice channel for user.");
 		}
-		return (user.getCurrentGame() != null && event.getPreviousGame() == null // started a game
-				&& channel != null && channel.getUsers().size() >= MIN_NUM_PLAYERS);
+		Game game = event.getGuild().getMemberById(user.getId()).getGame();
+		return (game != null && channel != null && channel.getMembers().size() >= MIN_NUM_PLAYERS);
 	}
 	
 	protected void handleEvent(UserGameUpdateEvent event, User user) {
 		int numPlayers = 0;
-		String game = user.getCurrentGame().getName();
+		Game currentGame = event.getGuild().getMemberById(user.getId()).getGame();
+		String game = currentGame.getName();
 		VoiceChannel channel = null;
 		try { channel = bot.getUsersVoiceChannel(user); } catch (Exception e) { return; }
 		// See if there have been multiple people that started playing the game in a channel.
 		// If so: play a sound randomly from top played sounds.
-		for (User u : channel.getUsers()) {
-			if (u.getCurrentGame() != null && u.getCurrentGame().getName().equals(game)) {
+		for (Member m : channel.getMembers()) {
+			if (m.getGame() != null && m.getGame().getName().equals(game)) {
 				++numPlayers;
 			}
 		}
 		if (numPlayers >= MIN_NUM_PLAYERS) {
-			LOG.info("Found " + user.getUsername() + " and " + numPlayers + 
+			LOG.info("Found " + user.getName() + " and " + numPlayers + 
 					" other users playing " + game + " in channel " + channel);
 			Date now = new Date(System.currentTimeMillis());
 			if (pastEvent != null && pastEvent.channel != null && pastEvent.channel.equals(channel)) {
@@ -70,20 +74,29 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		    	}
 			}
 			TextChannel publicChannel = channel.getGuild().getPublicChannel();
-			if (pastEvent != null && pastEvent.message != null) pastEvent.message.deleteMessage();
+			if (pastEvent != null && pastEvent.message != null) pastEvent.message.deleteMessage().queue();
 			pastEvent = new GameStartEvent(channel, now, null);
-			try {
-				String filePlayed = bot.getRandomTopPlayedSoundName();
-				if (filePlayed != null) {
+			String filePlayed = bot.getRandomTopPlayedSoundName();
+			if (filePlayed != null) {
+				try {				
 					bot.playFileForUser(filePlayed, user);
-					publicChannel.sendMessageAsync(formatString(Strings.GAME_START_MESSAGE,
-							filePlayed, game, user.getAsMention()), (Message m)-> pastEvent.message = m);
+					publicChannel.sendMessage(announcement(filePlayed, game, user, numPlayers).getMessage()).queue((Message m)-> pastEvent.message = m);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
-				}
-			} catch (Exception e) { LOG.fatal("While playing sound for game start: " + e.toString()); }
+				} catch (Exception e) { LOG.fatal("While playing sound for game start: " + e.toString()); e.printStackTrace(); }
+			}
 		}
 	}
 
+	public StyledEmbedMessage announcement(String soundPlayed, String game, User user, int numPlaying) {
+		StyledEmbedMessage m = new StyledEmbedMessage("Whoa! You're all playing a game.");
+		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, game, user.getAsMention()));
+		String playing = "There are " + (numPlaying-1) + " others in your channel playing that game.";
+		m.addContent("How Many Are Playing?", playing, true);
+		m.addContent("Annoying?", lookupString(Strings.SOUND_REPORT_INFO), false);
+		return m;
+	}
+
+	
 	public boolean isMutuallyExclusive() {
 		return false;
 	}

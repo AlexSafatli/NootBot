@@ -1,42 +1,10 @@
 package net.dirtydeeds.discordsoundboard.listeners;
 
-import net.dirtydeeds.discordsoundboard.chat.AllowUserProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ChatCommandProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ClearChatMessagesProcessor;
-import net.dirtydeeds.discordsoundboard.chat.DeleteSoundProcessor;
-import net.dirtydeeds.discordsoundboard.chat.DescribeSoundProcessor;
-import net.dirtydeeds.discordsoundboard.chat.DisallowUserProcessor;
-import net.dirtydeeds.discordsoundboard.chat.DownloadSoundProcessor;
-import net.dirtydeeds.discordsoundboard.chat.HelpProcessor;
-import net.dirtydeeds.discordsoundboard.chat.LeaveServerProcessor;
-import net.dirtydeeds.discordsoundboard.chat.LimitUserProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ListCategoriesProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ListNewSoundsProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ListServersProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ListSoundsProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ListTopSoundsProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ModifyAllSoundPlayCountProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ModifySoundPlayCountProcessor;
-import net.dirtydeeds.discordsoundboard.chat.PlayRandomProcessor;
-import net.dirtydeeds.discordsoundboard.chat.PlaySoundForUserProcessor;
-import net.dirtydeeds.discordsoundboard.chat.PlaySoundLoopedProcessor;
-import net.dirtydeeds.discordsoundboard.chat.PlaySoundProcessor;
-import net.dirtydeeds.discordsoundboard.chat.RecategorizeSoundProcessor;
-import net.dirtydeeds.discordsoundboard.chat.RemoveLimitUserProcessor;
-import net.dirtydeeds.discordsoundboard.chat.RenameSoundProcessor;
-import net.dirtydeeds.discordsoundboard.chat.RestartBotProcessor;
-import net.dirtydeeds.discordsoundboard.chat.ServerMessageProcessor;
-import net.dirtydeeds.discordsoundboard.chat.SetEntranceForUserProcessor;
-import net.dirtydeeds.discordsoundboard.chat.SetEntranceProcessor;
-import net.dirtydeeds.discordsoundboard.chat.SetSoundDescriptionProcessor;
-import net.dirtydeeds.discordsoundboard.chat.SoundAttachmentProcessor;
-import net.dirtydeeds.discordsoundboard.chat.StatsProcessor;
-import net.dirtydeeds.discordsoundboard.chat.UserInfoProcessor;
+import net.dirtydeeds.discordsoundboard.chat.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.hooks.ListenerAdapter;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -74,33 +42,43 @@ public class ChatListener extends AbstractListener {
     	
     	processors.add(new PlaySoundProcessor ("?",                       bot));
     	processors.add(new ListSoundsProcessor(".list",                   bot));
+    	processors.add(new SearchProcessor(".search",                     bot));
     	processors.add(new DescribeSoundProcessor(".whatis",              bot));
     	processors.add(new ListCategoriesProcessor(".categories",         bot));
     	processors.add(new ListNewSoundsProcessor(".new",                 bot));
     	processors.add(new ListTopSoundsProcessor(".top",                 bot));
+    	processors.add(new ListLongestSoundsProcessor(".longest",         bot));
+    	processors.add(new PlayRandomSoundLoopedProcessor(".randomloop",  bot));
     	processors.add(new PlayRandomProcessor(".random",                 bot));
-    	processors.add(new ClearChatMessagesProcessor(".clear",           bot));
+    	processors.add(new SetNicknameProcessor(".nickname",              bot));
+    	processors.add(new AuthenticateUserProcessor(".privilege",        bot));
+    	processors.add(new DeleteBotMessagesProcessor(".clear",           bot));
     	processors.add(new DisallowUserProcessor(".disallow",             bot));
     	processors.add(new AllowUserProcessor(".allow",                   bot));
     	processors.add(new LimitUserProcessor(".throttle",                bot));
     	processors.add(new RemoveLimitUserProcessor(".unthrottle",        bot));
-    	processors.add(new SetSoundDescriptionProcessor(".setinfo",       bot));
     	processors.add(new DeleteSoundProcessor(".rm",                    bot));
+    	processors.add(new ReportSoundProcessor(".report",                bot));
     	processors.add(new RenameSoundProcessor(".rename",                bot));
     	processors.add(new RecategorizeSoundProcessor(".mv",              bot));
     	processors.add(new DownloadSoundProcessor(".dl",                  bot));
+    	processors.add(new ExcludeSoundFromRandomProcessor(".exclude",    bot));
     	processors.add(new ModifyAllSoundPlayCountProcessor(".countall",  bot));
     	processors.add(new ModifySoundPlayCountProcessor(".count",        bot));
-    	processors.add(new SetEntranceForUserProcessor(".setentrancefor", bot));
-    	processors.add(new SetEntranceProcessor(".setentrance",           bot));
+    	processors.add(new SetEntranceForUserProcessor(".entrancefor",    bot));
+    	processors.add(new SetEntranceProcessor(".entrance",              bot));
     	processors.add(new PlaySoundForUserProcessor(".playfor",          bot));
+    	processors.add(new PlaySoundSequenceProcessor(".play",            bot));
+    	processors.add(new StopSoundProcessor(".stop",                    bot));
     	processors.add(new PlaySoundLoopedProcessor(".loop",              bot));
     	processors.add(new ServerMessageProcessor(".all",                 bot));
     	processors.add(new LeaveServerProcessor(".leave",                 bot));
     	processors.add(new RestartBotProcessor(".restart",                bot));
+    	processors.add(new UpdateSoundsProcessor(".update",               bot));
     	processors.add(new ListServersProcessor(".servers",               bot));
     	processors.add(new UserInfoProcessor(".user",                     bot));
-    	processors.add(new StatsProcessor(".stats",                       bot));
+    	processors.add(new AlternateHandleProcessor(".alt",               bot));
+    	processors.add(new StatsProcessor(".about",                       bot));
     	processors.add(new SoundAttachmentProcessor(                      bot));
     	
     	this.helpProcessor = new HelpProcessor(".help", bot, processors);
@@ -113,7 +91,7 @@ public class ChatListener extends AbstractListener {
     	if (minutesSince >= THROTTLE_TIME_IN_MINUTES) {
     		this.tick = now;
     		if (requests.size() > 0) {
-    			LOG.info(minutesSince + " minutes have passed since last clear. Clearing request counts.");
+    			LOG.info(minutesSince + " minutes have passed since last clear. Clearing request counts for " + requests.size() + " users.");
     		}
     		requests.clear();
     	}
@@ -140,11 +118,11 @@ public class ChatListener extends AbstractListener {
         			LOG.info("Throttled user " + event.getAuthor() + " trying to send too many requests.");
         			event.getAuthor().getPrivateChannel().sendMessage("You have been throttled "
         					+ "from sending too many requests. Please wait a little before sending "
-        					+ "another command.");
+        					+ "another command.").queue();
         		} else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME && !bot.isOwner(event.getAuthor())) {
         			LOG.info("Throttling user " + event.getAuthor() + " because they sent too many requests.");
         			bot.throttleUser(event.getAuthor());
-        			bot.sendMessageToUser("Throttling **" + event.getAuthor().getUsername() + 
+        			bot.sendMessageToUser("Throttling **" + event.getAuthor().getName() + 
         					"** automatically because of too many requests.", bot.getOwner());
         		} else {
         			processor.process(event);

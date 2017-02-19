@@ -1,12 +1,16 @@
 package net.dirtydeeds.discordsoundboard.beans;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class User {
@@ -17,10 +21,20 @@ public class User {
     private String userid;
     private String username;
     private String entrancefilename;
+    @ElementCollection
+    @CollectionTable(name="AlternateHandles", joinColumns=@JoinColumn(name="user_id"))
+    @Column(name="handle")
+    private List<String> alternateHandles;
     private Boolean disallowed;
 	private Boolean throttled;
-    @OneToMany
-    private List<SoundFile> soundFiles;
+	private Boolean askedAboutAlternateHandles;
+	
+	/* Privilege Levels
+	 * 0 - No privileges
+	 * 1 - Can upload sounds and perform all typical authenticated command even if not a moderator of a server
+	 * 2 - Can upload sounds without restriction of length, duration, or size
+	 */
+	private Integer privilegeLevel;
 	
 	protected User() { }
 	
@@ -28,24 +42,66 @@ public class User {
         this.userid = userid;
         this.username = username;
         this.entrancefilename = null;
+        this.alternateHandles = new LinkedList<>();
         this.disallowed = false;
         this.throttled = false;
+        this.askedAboutAlternateHandles = false;
+        this.privilegeLevel = 0;
     }
     
     public User(String userid, String username, String entrancefilename) {
     	this.userid = userid;
     	this.username = username;
     	this.entrancefilename = entrancefilename;
+    	this.alternateHandles = new LinkedList<>();
     	this.disallowed = false;
     	this.throttled = false;
+        this.askedAboutAlternateHandles = false;
+    	this.privilegeLevel = 0;
     }
     
     public User(String userid, String username, String entrancefilename, boolean disallowed, boolean throttled) {
     	this.userid = userid;
     	this.username = username;
     	this.entrancefilename = entrancefilename;
+    	this.alternateHandles = new LinkedList<>();
     	this.disallowed = disallowed;
     	this.throttled = throttled;
+        this.askedAboutAlternateHandles = false;
+    	this.privilegeLevel = 0;
+    }
+    
+    public User(String userid, String username, String entrancefilename, boolean disallowed, boolean throttled, int privilegeLevel) {
+    	this.userid = userid;
+    	this.username = username;
+    	this.entrancefilename = entrancefilename;
+    	this.alternateHandles = new LinkedList<>();
+    	this.disallowed = disallowed;
+    	this.throttled = throttled;
+        this.askedAboutAlternateHandles = false;
+    	this.privilegeLevel = privilegeLevel;
+    }
+    
+    public User(String userid, String username, String entrancefilename, List<String> alternateHandles, boolean disallowed, boolean throttled, int privilegeLevel) {
+    	this.userid = userid;
+    	this.username = username;
+    	this.entrancefilename = entrancefilename;
+    	this.alternateHandles = alternateHandles;
+    	this.disallowed = disallowed;
+    	this.throttled = throttled;
+        this.askedAboutAlternateHandles = false;
+    	this.privilegeLevel = privilegeLevel;
+    }
+    
+    public User(String userid, String username, String entrancefilename, List<String> alternateHandles, boolean disallowed, boolean throttled, boolean askedAboutAlternateHandles, int privilegeLevel) {
+    	this.userid = userid;
+    	this.username = username;
+    	this.entrancefilename = entrancefilename;
+    	this.alternateHandles = alternateHandles;
+    	this.disallowed = disallowed;
+    	this.throttled = throttled;
+        this.askedAboutAlternateHandles = askedAboutAlternateHandles;
+    	this.privilegeLevel = privilegeLevel;
     }
     
     public String getId() {
@@ -72,6 +128,14 @@ public class User {
 		this.entrancefilename = soundFile;
 	}
 	
+	public List<String> getAlternateHandles() {
+		return alternateHandles;
+	}
+	
+	public void addAlternateHandle(String handle) {
+		alternateHandles.add(handle);
+	}
+	
 	public boolean isDisallowed() {
 		return disallowed;
 	}
@@ -91,17 +155,30 @@ public class User {
 		this.throttled = throttled;
 	}
 	
-	public void setSoundFiles(List<SoundFile> files) {
-		this.soundFiles = files;
+	public boolean wasAskedAboutAlternateHandles() {
+		return this.askedAboutAlternateHandles;
 	}
 	
-	public List<SoundFile> getSoundFiles() {
-		return this.soundFiles;
+	public void setAskedAboutAlternateHandles(boolean asked) { 
+		this.askedAboutAlternateHandles = asked;
+	}
+	
+	public void setPrivilegeLevel(Integer level) {
+		if (level >= 0) this.privilegeLevel = level;
+		else this.privilegeLevel = 0;
+	}
+	
+	public Integer getPrivilegeLevel() {
+		return (this.privilegeLevel != null) ? this.privilegeLevel : 0;
+	}
+	
+	public boolean isPrivileged() {
+		return this.privilegeLevel != null && this.privilegeLevel > 0;
 	}
 
 	public String toString() {
-		return String.format("User[id=%d, name=%s, disallowed=%b, throttled=%b]", 
-				userid, username, disallowed, throttled);
+		return String.format("User[id=%s, name=%s, disallowed=%b, throttled=%b, level=%d]", 
+				userid, username, disallowed, throttled, privilegeLevel);
 	}
 	
 

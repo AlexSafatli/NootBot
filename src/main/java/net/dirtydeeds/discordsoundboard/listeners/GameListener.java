@@ -2,11 +2,11 @@ package net.dirtydeeds.discordsoundboard.listeners;
 
 import net.dirtydeeds.discordsoundboard.games.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.entities.Game;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.hooks.ListenerAdapter;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,19 +30,24 @@ public class GameListener extends AbstractListener {
     
     private void initializeProcessors() {
     	processors.add(new GenericGameStartProcessor(bot));
+    	processors.add(new LeagueOfLegendsGameStartProcessor(bot));
     }
 
 	public void onUserGameUpdate(UserGameUpdateEvent event) {      
 		
 		User user = event.getUser();
-		String name = user.getUsername();
+		Member member = event.getGuild().getMemberById(user.getId());
+		if (user.isBot()) return; // Ignore bots.
+		
+		String name = user.getName();
 		Game previousGame = event.getPreviousGame();
-		if (user.getCurrentGame() == null && previousGame != null)
+		
+		if (member.getGame() == null && previousGame != null)
 			LOG.info(name + " stopped playing " + previousGame.getName() + ".");
 		else if (previousGame == null)
-			LOG.info(name + " started playing " + user.getCurrentGame().getName() + ".");
+			LOG.info(name + " started playing " + member.getGame().getName() + ".");
 		else
-			LOG.info(name + " changed to " + user.getCurrentGame().getName() + " from " + previousGame.getName() + ".");
+			LOG.info(name + " changed to " + member.getGame().getName() + " from " + previousGame.getName() + ".");
         
 		for (GameUpdateProcessor processor : processors) {
         	if (processor.isApplicableUpdateEvent(event, user)) {

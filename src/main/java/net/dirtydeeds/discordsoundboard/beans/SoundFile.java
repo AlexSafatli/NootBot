@@ -1,12 +1,16 @@
 package net.dirtydeeds.discordsoundboard.beans;
 
 import java.io.File;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+
+import org.tritonus.share.sampled.file.TAudioFileFormat;
 
 @Entity
 public class SoundFile {
@@ -16,33 +20,58 @@ public class SoundFile {
     @Transient
     private File soundFile;
     private final String category;
-    private String description;
+    private final Long duration;
     private Long numberPlays;
-    @OneToOne(cascade = {CascadeType.ALL})
-    private User user;
+    private Integer numberReports;
+    private Boolean excludedFromRandom;
 
 	protected SoundFile() { 
 		this.soundFileId = null;
 		this.category = null;
+		this.duration = 0L;
 		this.numberPlays = 0L;
+		this.numberReports = 0;
+		this.excludedFromRandom = false;
 	}
     
-    public SoundFile(String soundFileId, String category, String description) {
+    public SoundFile(String soundFileId, String category) {
     	this.soundFileId = soundFileId;
     	this.category = category;
-    	this.description = description;
+    	this.duration = 0L;
     	this.soundFile = null;
     	this.numberPlays = 0L;
+		this.numberReports = 0;
+    	this.excludedFromRandom = false;
     }
     
-    public SoundFile(String soundFileId, File soundFile, String category, String description) {
+    public SoundFile(String soundFileId, File soundFile, String category) {
         this.soundFileId = soundFileId;
         this.soundFile = soundFile;
         this.category = category;
-        this.description = description;
+        this.duration = readDuration();
         this.numberPlays = 0L;
+		this.numberReports = 0;
+        this.excludedFromRandom = false;
     }
 
+    private Long readDuration() {
+    	String extension = soundFile.getName().substring(soundFile.getName().indexOf(".") + 1).toLowerCase();
+    	try {
+    		if (extension.equals("wav")) {
+				AudioInputStream audio = AudioSystem.getAudioInputStream(soundFile);
+				AudioFormat format = audio.getFormat();
+				return (long) ((audio.getFrameLength())/format.getFrameRate());
+    		} else if (extension.equals("mp3")) {
+    			Map<?, ?> props = ((TAudioFileFormat)AudioSystem.getAudioFileFormat(soundFile)).properties();
+    			Long micros = (Long)props.get("duration");
+    			return (micros)/1000000;
+    		} else return 0L;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0L;
+		}
+    }
+    
     public String getSoundFileId() {
         return soundFileId;
     }
@@ -51,8 +80,8 @@ public class SoundFile {
         return category.replace("\\", "");
     }
     
-    public String getDescription() {
-    	return description;
+    public Long getDuration() {
+    	return duration;
     }
     
     public File getSoundFile() {
@@ -63,12 +92,12 @@ public class SoundFile {
     	this.soundFile = file;
     }
     
-    public void setDescription(String desc) {
-    	this.description = desc;
-    }
-    
     public Long getNumberOfPlays() {
     	return numberPlays;
+    }
+    
+    public int getNumberOfReports() {
+    	return numberReports;
     }
     
     public void setNumberOfPlays(Long plays) {
@@ -79,12 +108,20 @@ public class SoundFile {
     	++numberPlays;
     }
     
-    public User getUser() {
-    	return this.user;
+    public void addOneToNumberOfReports() {
+    	++numberReports;
+    }
+	
+    public void setNumberOfReports(int numberReports) {
+		this.numberReports = numberReports;
+	}
+        
+    public Boolean isExcludedFromRandom() {
+    	return this.excludedFromRandom;
     }
     
-    public void setUser(User user) {
-    	this.user = user;
+    public void setExcludedFromRandom(Boolean excluded) {
+    	this.excludedFromRandom = excluded;
     }
 
     @Override
@@ -99,5 +136,6 @@ public class SoundFile {
     public int hashCode() {
         return soundFileId.hashCode();
     }
-    
+
+
 }

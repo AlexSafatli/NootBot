@@ -6,48 +6,68 @@ import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("SoundProcessor");
-	private static final long PLAY_COUNT_FOR_ANNOUNCEMENT = 100;
+	private static final long PLAY_COUNT_FOR_ANNOUNCEMENT = 50;
 	
 	public PlaySoundProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, bot);
+		super(prefix, "Play Sound", bot);
 	}
 
+	private void sendFailureMessage(MessageReceivedEvent event, String name, String suggestion, User user) {
+		StyledEmbedMessage msg = new StyledEmbedMessage("Could Not Find Sound `" + name + "`");
+		if (suggestion != null && !suggestion.isEmpty()) {
+			msg.addDescription(suggestion);
+		} else {
+			msg.addDescription("Do you even know what you're looking for?");
+		}
+		msg.addContent("You Could Search For It", "*Use `.search` with a keyword to find sounds.*", false);
+		embed(event, msg);
+	}
+	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		User user = event.getAuthor();
         String name = message.substring(1, message.length());
-    	LOG.info(String.format("%s wants to play \"%s\".", user.getUsername(), name));
+    	LOG.info(String.format("%s wants to play \"%s\" in %s.", user.getName(), name, event.getGuild()));
         if (!bot.isAllowedToPlaySound(user)) {
         	pm(event, lookupString(Strings.NOT_ALLOWED));
-        	LOG.info(String.format("%s isn't allowed to play sounds.", user.getUsername()));
+        	LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
         } else if (StringUtils.containsAny(name, '?')) {
         	return; // File names cannot contain question marks.
         } else if (bot.getSoundMap().get(name) == null) {
+        	LOG.info("Sound was not found.");
 			String suggestion = "Check your spelling.", possibleName = bot.getClosestMatchingSoundName(name);
-			if (possibleName != null) {
+			if (name.equals("help")) {
+				suggestion = "Were you trying to access the `.help` command?";
+			} else if (possibleName != null) {
 				LOG.info("Closest matching sound name is: " + possibleName);
 				suggestion = "Did you mean `" + possibleName + "`?";
+			} else {
+				// Do a naive search to see if something contains this name. Take first match.
+				for (String s : bot.getSoundMap().keySet()) {
+					if (s.contains(name)) {
+						suggestion = "Did you mean `" + s + "`?"; break;
+					}
+				}
 			}
-			event.getChannel().sendMessageAsync(formatString(Strings.SOUND_NOT_FOUND_SUGGESTION,
-					name, suggestion, user.getAsMention()), null);
-        	LOG.info("Sound was not found.");
+			sendFailureMessage(event, name, suggestion, user);
         } else {
 	        try {
 	            bot.playFileForChatCommand(name, event);
 	            SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
 	            if (sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
-	            	// Make an announcement every 100 plays.
-	            	event.getChannel().sendMessageAsync(formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT,
-	            			name, sound.getNumberOfPlays()), null);
+	            	// Make an announcement every so many plays.
+	            	m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name, sound.getNumberOfPlays()));
 	            }
 	        } catch (Exception e) {
 	            LOG.fatal("Could not play file => " + e.toString());
+	        	e.printStackTrace();
 	        }
         }
 	}

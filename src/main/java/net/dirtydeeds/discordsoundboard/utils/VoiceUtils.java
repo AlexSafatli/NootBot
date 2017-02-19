@@ -1,8 +1,8 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class VoiceUtils {
 
@@ -10,12 +10,12 @@ public class VoiceUtils {
 		// Does not count bots or users in voice channels.
     	long numUsers = 0;
     	for (VoiceChannel channel : guild.getVoiceChannels()) {
-    		if (channel.getId().equals(guild.getAfkChannelId())) continue;
-    		for (User user : channel.getUsers()) {
-    			if (!user.isBot()) ++numUsers;
+    		if (guild.getAfkChannel() != null && channel.getId().equals(guild.getAfkChannel().getId())) continue;
+    		for (Member m : channel.getMembers()) {
+    			if (!m.getUser().isBot()) ++numUsers;
     		}
     	}
     	return numUsers;
 	}
-	
+
 }

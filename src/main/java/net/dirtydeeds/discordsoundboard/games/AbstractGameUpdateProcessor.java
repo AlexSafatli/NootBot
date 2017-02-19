@@ -1,8 +1,14 @@
 package net.dirtydeeds.discordsoundboard.games;
 
+import java.util.function.Consumer;
+
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.user.UserGameUpdateEvent;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.core.requests.RestAction;
 
 public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor {
 
@@ -26,6 +32,15 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 	
 	protected String formatString(String key, Object... args) {
 		return String.format(lookupString(key),args);
+	}
+	
+	protected void embed(TextChannel channel, StyledEmbedMessage embed) {
+		channel.sendMessage(embed.getMessage()).queue();
+	}
+	
+	protected void embed(TextChannel channel, StyledEmbedMessage embed, Consumer<Message> m) {
+		RestAction<Message> ra = channel.sendMessage(embed.getMessage());
+		ra.queue(m);
 	}
 	
 }

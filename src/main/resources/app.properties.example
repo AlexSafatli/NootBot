@@ -2,10 +2,7 @@ number_of_users=1
 token_1=yadaadadadadadad.daydyadyadyadya
 owner_1=Username
 # League of Legends
-lol_summoner_name=BotSummonerName
-lol_riot_api_key=blahajdkkahdjk98283
-lol_username=BotUsername
-lol_password=botpassw0rd
+riot_api_key=blahajdkkahdjk98283
 # Spring database/persistence
 spring.datasource.url=jdbc:mysql://localhost:3306/discord
 spring.datasource.username=root

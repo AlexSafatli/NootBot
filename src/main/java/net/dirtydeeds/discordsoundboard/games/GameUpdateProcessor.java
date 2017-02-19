@@ -1,7 +1,7 @@
 package net.dirtydeeds.discordsoundboard.games;
 
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 
 public interface GameUpdateProcessor {
 

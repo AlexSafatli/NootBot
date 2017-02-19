@@ -1,41 +1,42 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
-import java.util.List;
-
+import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ListCategoriesProcessor");
 	
 	public ListCategoriesProcessor(String prefix, SoundboardBot soundPlayer) {
-		super(prefix, soundPlayer);
+		super(prefix, "Categories", soundPlayer);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-        List<String> categories = bot.getSoundCategories();
-        if (categories.size() > 0) {
-        	StringBuilder sb = new StringBuilder();
-        	int i = 0;
-        	for (String category : categories) {
-        		if (category.equals("sounds")) continue;
-        		sb.append("**" + category + "** ");
-        		++i;
-        		if (i != categories.size()) sb.append(" / ");
-        	}
-        	event.getChannel().sendMessageAsync("Here is a list of categories:\n\n" + 
-        			sb.toString(), null);
-            LOG.info("Listed categories for user " + event.getAuthor().getUsername());
+        Category root = bot.getDispatcher().getCategoryTree();
+        if (root.getChildren().size() > 0) {
+        	m(event, "Here is a list of categories and subcategories:\n\n" + 
+        			listCategories(root));
+            LOG.info("Listed categories for user " + event.getAuthor().getName());
         } else {
-        	event.getChannel().sendMessageAsync("There are no categories found.", null);
+        	m(event, "There were no categories found.");
         }
+	}
+	
+	private String listCategories(Category root) {
+		StringBuilder sb = new StringBuilder();
+		for (Category category : root.getChildren()) {
+			sb.append("**" + category.getName() + "** / ");
+			if (!category.getChildren().isEmpty())
+				sb.append(listCategories(category));
+		}
+		return sb.toString();
 	}
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` - list the **" + bot.getSoundCategories().size() + "** categories";
+		return "`" + getPrefix() + "` - list all sound categories";
 	}
 	
 }

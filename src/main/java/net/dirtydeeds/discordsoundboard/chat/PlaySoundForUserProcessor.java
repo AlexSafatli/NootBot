@@ -2,17 +2,16 @@ package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class PlaySoundForUserProcessor extends
-		MultiArgumentChatCommandProcessor {
+public class PlaySoundForUserProcessor extends MultiArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("SoundForUserProcessor");
 	
 	public PlaySoundForUserProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, bot);
+		super(prefix, "Sound for User", bot);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -34,19 +33,22 @@ public class PlaySoundForUserProcessor extends
 			}
         	pm(event, "The sound `" + filename + "` was not found. *" + suggestion + "* " + user.getAsMention());
         	LOG.info(String.format("%s tried to play sound file \"%s\" but it was not found.", 
-        			user.getUsername(), filename));
+        			user.getName(), filename));
 		} else if (recipient == null) {
         	pm(event, lookupString(Strings.USER_NOT_FOUND));
         	LOG.info(String.format("%s tried to play sound file \"%s\" for username %s but user not found.", 
-        			user.getUsername(), filename, username));			
+        			user.getName(), filename, username));			
 		} else {
-        	LOG.info(String.format("%s is playing sound file \"%s\" for user %s.", user.getUsername(), 
-        			filename, recipient.getUsername()));
+        	LOG.info(String.format("%s is playing sound file \"%s\" for user %s.", user.getName(), 
+        			filename, recipient.getName()));
 	        try {
 	            String played = bot.playFileForUser(filename, recipient);
-	            if (played != null)
-	            	pm(event, formatString(Strings.USER_PLAY_SOUND_SUCCESS, played, recipient.getUsername(), 
+	            if (played != null) {
+	            	pm(event, formatString(Strings.USER_PLAY_SOUND_SUCCESS, played, recipient.getName(), 
 	            			bot.getUsersVoiceChannel(recipient).getGuild().getName()));
+	            	recipient.getPrivateChannel().sendMessage(formatString(Strings.USER_PLAY_SOUND_RECIPIENT, played, 
+	            			user.getName())).queue();
+	            }
 	            else pm(event, formatString(Strings.USER_PLAY_SOUND_FAILURE, filename));
 	        } catch (Exception e) {
 	        	LOG.fatal("Could not play file " + filename + " because: " + e.toString());
@@ -57,7 +59,7 @@ public class PlaySoundForUserProcessor extends
 	@Override
 	public String getCommandHelpString() {
 		return "`" + getPrefix() + " <username>, <soundfile>` - plays a file by name "
-				+ "for a particular user; will move to their channel";
+				+ "for a particular user; will move to their channel - can be used anywhere";
 	}
 
 }

@@ -10,9 +10,8 @@ import java.util.TreeMap;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.utils.SimpleLog;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 
@@ -24,7 +23,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	private static final int DAYS = 24;
 	
 	public ListNewSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
-		super(prefix, soundPlayer);
+		super(prefix, "Newest Sounds", soundPlayer);
 	}
 	
 	private Map<String, List<SoundFile>> getCategoryMappings(Collection<SoundFile> newSounds) {
@@ -62,10 +61,9 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	}
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		MessageChannel channel = event.getChannel();
         Map<String, SoundFile> soundFiles = bot.getSoundMap();
         if (soundFiles.isEmpty()) {
-        	channel.sendMessage("There are **no sound files** at all!");
+        	m(event, "There are **no sound files** at all!");
         	return;
         }
     	String timeType = "hours";
@@ -79,16 +77,16 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	        		numTime /= DAYS;
 	        		timeType = "days";
 	        	}
-	        	channel.sendMessageAsync("The **newest sound files** added (in the last " + numTime + 
-	        			" " + timeType + ") were:\n\n", null);
+	        	m(event, "The **newest sound files** added (in the last " + numTime + 
+	        			" " + timeType + ") were:\n\n");
 	        	Map<String, List<SoundFile>> catMap = getCategoryMappings(newSounds);
 	        	for (String category : catMap.keySet()) {
 	            	for (String msg : getMessagesForCategory(category, catMap.get(category))) {
-	                	channel.sendMessageAsync(msg, null);
+	                	m(event, msg);
 	            	}
 	            }
 	            LOG.info("Listed new sounds in last " + numHours + " hours for user " + 
-	        			event.getAuthor().getUsername());
+	        			event.getAuthor().getName());
 	        } else {
 	        	numHours += 48; // Add 2 days.
 	        }
@@ -99,8 +97,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
         		numTime /= DAYS;
         		timeType = "days";
         	}
-	        channel.sendMessageAsync("There were no **new sounds** found (from the last " + 
-	        		numTime + " " + timeType + ").", null);
+	        m(event, "There were no **new sounds** found (from the last " + 
+	        		numTime + " " + timeType + ").");
         }
 	}
 	
