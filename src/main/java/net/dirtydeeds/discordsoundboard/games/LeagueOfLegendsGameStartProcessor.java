@@ -92,7 +92,8 @@ public class LeagueOfLegendsGameStartProcessor extends AbstractGameUpdateProcess
 			// Check API.
 			Summoner summoner = RiotAPI.getSummonerByName(user.getName());
 			if (summoner == null || summoner.getName() == null || summoner.getName().isEmpty()) {
-				for (String handle : bot.getUser(user).getAlternateHandles()) {
+				net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(user);
+				for (String handle : u.getAlternateHandles()) {
 					if (summoner == null) summoner = RiotAPI.getSummonerByName(handle);
 				}
 				if (summoner == null) {

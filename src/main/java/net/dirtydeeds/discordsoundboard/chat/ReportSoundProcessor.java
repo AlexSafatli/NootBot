@@ -38,6 +38,17 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 			}
         	m(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
 		} else {
+			// See if already reported it.
+			if (bot.getUser(user).getSoundsReported().contains(name)) {
+				LOG.info("User already reported on sound.");
+				pm(event, "You already reported this sound."); return;
+			} else {
+				LOG.info("Adding " + name + " to sounds that the user " + user.getName() + " reported on.");
+				net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(user);
+				u.addSoundReported(name);
+				bot.getDispatcher().saveUser(u);
+			}
+			// Continue with report.
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			file.addOneToNumberOfReports();
 			bot.getDispatcher().saveSound(file);

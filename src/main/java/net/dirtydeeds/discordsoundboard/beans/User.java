@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,10 +22,14 @@ public class User {
     private String userid;
     private String username;
     private String entrancefilename;
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="AlternateHandles", joinColumns=@JoinColumn(name="user_id"))
     @Column(name="handle")
     private List<String> alternateHandles;
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="SoundsReported", joinColumns=@JoinColumn(name="user_id"))
+    @Column(name="sound")
+    private List<String> soundsReported;
     private Boolean disallowed;
 	private Boolean throttled;
 	private Boolean askedAboutAlternateHandles;
@@ -43,6 +48,7 @@ public class User {
         this.username = username;
         this.entrancefilename = null;
         this.alternateHandles = new LinkedList<>();
+        this.soundsReported = new LinkedList<>();
         this.disallowed = false;
         this.throttled = false;
         this.askedAboutAlternateHandles = false;
@@ -54,6 +60,7 @@ public class User {
     	this.username = username;
     	this.entrancefilename = entrancefilename;
     	this.alternateHandles = new LinkedList<>();
+        this.soundsReported = new LinkedList<>();
     	this.disallowed = false;
     	this.throttled = false;
         this.askedAboutAlternateHandles = false;
@@ -65,6 +72,7 @@ public class User {
     	this.username = username;
     	this.entrancefilename = entrancefilename;
     	this.alternateHandles = new LinkedList<>();
+        this.soundsReported = new LinkedList<>();
     	this.disallowed = disallowed;
     	this.throttled = throttled;
         this.askedAboutAlternateHandles = false;
@@ -76,6 +84,7 @@ public class User {
     	this.username = username;
     	this.entrancefilename = entrancefilename;
     	this.alternateHandles = new LinkedList<>();
+        this.soundsReported = new LinkedList<>();
     	this.disallowed = disallowed;
     	this.throttled = throttled;
         this.askedAboutAlternateHandles = false;
@@ -87,6 +96,7 @@ public class User {
     	this.username = username;
     	this.entrancefilename = entrancefilename;
     	this.alternateHandles = alternateHandles;
+        this.soundsReported = new LinkedList<>();
     	this.disallowed = disallowed;
     	this.throttled = throttled;
         this.askedAboutAlternateHandles = false;
@@ -98,6 +108,7 @@ public class User {
     	this.username = username;
     	this.entrancefilename = entrancefilename;
     	this.alternateHandles = alternateHandles;
+        this.soundsReported = new LinkedList<>();
     	this.disallowed = disallowed;
     	this.throttled = throttled;
         this.askedAboutAlternateHandles = askedAboutAlternateHandles;
@@ -133,7 +144,15 @@ public class User {
 	}
 	
 	public void addAlternateHandle(String handle) {
-		alternateHandles.add(handle);
+		if (!alternateHandles.contains(handle)) alternateHandles.add(handle);
+	}
+	
+	public List<String> getSoundsReported() {
+		return soundsReported;
+	}
+	
+	public void addSoundReported(String sound) {
+		if (!soundsReported.contains(sound)) soundsReported.add(sound);
 	}
 	
 	public boolean isDisallowed() {

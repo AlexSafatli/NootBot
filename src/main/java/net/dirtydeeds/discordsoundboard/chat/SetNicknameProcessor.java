@@ -13,8 +13,7 @@ public class SetNicknameProcessor extends
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		String m = event.getMessage().getContent().toLowerCase(), newNickName = null;
-		if (!m.endsWith(getPrefix())) newNickName = message.substring(getPrefix().length() + 1);
+		String m = event.getMessage().getContent(), newNickName = m.substring(getPrefix().length() + 1).trim();
 		if (event.getGuild() == null) { pm(event, lookupString(Strings.NOT_ALLOWED)); return; }
 		Member botAsMember = event.getGuild().getMemberById(bot.getAPI().getSelfUser().getId());
 		event.getGuild().getController().setNickname(botAsMember, newNickName);

@@ -1,6 +1,7 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 public class StringUtils {
@@ -37,6 +38,17 @@ public class StringUtils {
 			++k;
 		}
 		return null;
+	}
+
+	public static <T> String listToString(List<T> list) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < list.size(); ++i) {
+			T t = list.get(i);
+			sb.append("\"" + t.toString() + "\"");
+			if (i + 1 < list.size() - 1) sb.append(", ");
+			else if (i + 1 == list.size() - 1) sb.append(", and ");
+		}
+		return sb.toString();
 	}
 	
 }

@@ -20,6 +20,7 @@ import java.util.Map;
 public class ChatListener extends AbstractListener {
     
     public static final SimpleLog LOG = SimpleLog.getLog("Chat");
+    public static final char CommonPrefix = '.';
     
     private static final int THROTTLE_TIME_IN_MINUTES = 5;
     private static final int MAX_NUMBER_OF_REQUESTS_PER_TIME = 5;
@@ -29,6 +30,7 @@ public class ChatListener extends AbstractListener {
     private Map<User,Integer> requests;
     private List<ChatCommandProcessor> processors;
     private HelpProcessor helpProcessor;
+    private NoOpProcessor noOpProcessor;
 
     public ChatListener(SoundboardBot soundPlayer) {
         this.bot = soundPlayer;
@@ -37,6 +39,10 @@ public class ChatListener extends AbstractListener {
         this.processors = new LinkedList<ChatCommandProcessor>();
         initializeProcessors();
     }
+    
+//    private ChatCommandProcessor WithCommonPrefix(Class<ChatCommandProcessor> c, String prefix) {
+//    	return c.newInstance(CommonPrefix + prefix, bot);
+//    }
     
     private void initializeProcessors() {
     	
@@ -82,6 +88,7 @@ public class ChatListener extends AbstractListener {
     	processors.add(new SoundAttachmentProcessor(                      bot));
     	
     	this.helpProcessor = new HelpProcessor(".help", bot, processors);
+    	this.noOpProcessor = new NoOpProcessor(bot);
     	
     }
 
@@ -133,5 +140,17 @@ public class ChatListener extends AbstractListener {
         	}
         }
         
+        // Handle typo commands with common prefix.
+        if (isTypoCommand(event)) {
+        	bot.sendMessageToUser("That's not one of my commands! *Check your spelling*.", event.getAuthor());
+        	noOpProcessor.process(event); // Do nothing - deletes the message.
+        }
+        
     }
+	
+	private boolean isTypoCommand(MessageReceivedEvent event) {
+		String content = event.getMessage().getContent();
+		return (content.startsWith(CommonPrefix + "") && !content.substring(1).contains(CommonPrefix + ""));
+	}
+	
 }

@@ -96,25 +96,25 @@ public class SoundFile {
     	return numberPlays;
     }
     
-    public int getNumberOfReports() {
-    	return numberReports;
+    public Integer getNumberOfReports() {
+    	return (numberReports != null) ? numberReports : 0;
     }
+
+    public void addOneToNumberOfReports() {
+    	++numberReports;
+    }
+	
+    public void setNumberOfReports(Integer numberReports) {
+		this.numberReports = (numberReports != null) ? numberReports : 0;
+	}
     
     public void setNumberOfPlays(Long plays) {
-    	numberPlays = plays;
+    	numberPlays = (plays != null) ? plays : 0;
     }
     
     public void addOneToNumberOfPlays() {
     	++numberPlays;
     }
-    
-    public void addOneToNumberOfReports() {
-    	++numberReports;
-    }
-	
-    public void setNumberOfReports(int numberReports) {
-		this.numberReports = numberReports;
-	}
         
     public Boolean isExcludedFromRandom() {
     	return this.excludedFromRandom;
@@ -137,5 +137,8 @@ public class SoundFile {
         return soundFileId.hashCode();
     }
 
+    public String toString() {
+    	return "`" + soundFileId + "`";
+    }
 
 }

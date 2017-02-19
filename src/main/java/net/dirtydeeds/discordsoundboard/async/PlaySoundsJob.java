@@ -9,6 +9,7 @@ import net.dirtydeeds.discordsoundboard.audio.AudioTrackScheduler;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
@@ -95,8 +96,8 @@ public class PlaySoundsJob implements SoundboardJob {
 			else if (randomed) end += " *some of which were randomed*";
 			if (guild != null) {
 				RestAction<Message> m = null;
-				if (!same || sounds.length == 1) m = guild.getPublicChannel().sendMessage("Queueing sound(s) " + sb.toString() + end + " " + user.getAsMention() + ".");
-				else m = guild.getPublicChannel().sendMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".");
+				if (!same || sounds.length == 1) m = guild.getPublicChannel().sendMessage(embedMessage("Queued sound(s) " + end + " " + user.getAsMention() + ".", user, sb));
+				else m = guild.getPublicChannel().sendMessage(embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null));
 				if (m != null) {
 					try {
 						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), 120));
@@ -108,4 +109,11 @@ public class PlaySoundsJob implements SoundboardJob {
 		}
 	}
 
+	private Message embedMessage(String description, User user, StringBuilder sb) {
+		StyledEmbedMessage msg = new StyledEmbedMessage("Playing Multiple Sounds");
+		msg.addDescription(description);
+		if (sb != null) msg.addContent("Sounds Queued", sb.toString(), false);
+		return msg.getMessage();
+	}
+	
 }
