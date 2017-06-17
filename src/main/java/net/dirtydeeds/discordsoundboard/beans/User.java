@@ -175,7 +175,7 @@ public class User {
 	}
 	
 	public boolean wasAskedAboutAlternateHandles() {
-		return this.askedAboutAlternateHandles;
+		return (this.askedAboutAlternateHandles != null) ? this.askedAboutAlternateHandles : false;
 	}
 	
 	public void setAskedAboutAlternateHandles(boolean asked) { 

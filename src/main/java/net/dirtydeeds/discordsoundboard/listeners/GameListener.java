@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class GameListener extends AbstractListener {
     public static final SimpleLog LOG = SimpleLog.getLog("Game");
     
     private List<GameUpdateProcessor> processors;
-
+	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "Hearthstone", "PUBG"});
+    
     public GameListener(SoundboardBot bot) {
         this.bot = bot;
         this.processors = new LinkedList<>();
@@ -29,8 +31,10 @@ public class GameListener extends AbstractListener {
     }
     
     private void initializeProcessors() {
-    	processors.add(new GenericGameStartProcessor(bot));
-    	processors.add(new LeagueOfLegendsGameStartProcessor(bot));
+    	for (String game : MONITORED_GAMES) {
+    		LOG.info("Initializing game launch processor for " + game);
+        	processors.add(new SpecificGameStartProcessor(bot, game));
+    	}
     }
 
 	public void onUserGameUpdate(UserGameUpdateEvent event) {      

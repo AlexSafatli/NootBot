@@ -1,6 +1,8 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -49,6 +51,16 @@ public class StringUtils {
 			else if (i + 1 == list.size() - 1) sb.append(", and ");
 		}
 		return sb.toString();
+	}
+
+	public static String humanize(String s) {
+		if (s.length() == 1) return s.toUpperCase();
+		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	}
+	
+	public static String dayTimeStamp(Date date) {
+		String f = new SimpleDateFormat("yyyy-MM-dd").format(date);
+		return (f != null) ? f : "";
 	}
 	
 }

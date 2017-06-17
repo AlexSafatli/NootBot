@@ -16,8 +16,8 @@ public class SetNicknameProcessor extends
 		String m = event.getMessage().getContent(), newNickName = m.substring(getPrefix().length() + 1).trim();
 		if (event.getGuild() == null) { pm(event, lookupString(Strings.NOT_ALLOWED)); return; }
 		Member botAsMember = event.getGuild().getMemberById(bot.getAPI().getSelfUser().getId());
-		event.getGuild().getController().setNickname(botAsMember, newNickName);
-		pm(event, "Changed nickname in server **" + event.getGuild().getName() + "** to **" + newNickName + "** successfully.");
+		event.getGuild().getController().setNickname(botAsMember, newNickName).queue();
+		pm(event, "Sent request to change nickname in server **" + event.getGuild().getName() + "** to **" + newNickName + "** successfully.");
 	}
 
 	@Override

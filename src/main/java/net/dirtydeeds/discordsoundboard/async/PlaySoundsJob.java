@@ -9,6 +9,7 @@ import net.dirtydeeds.discordsoundboard.audio.AudioTrackScheduler;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -41,6 +42,8 @@ public class PlaySoundsJob implements SoundboardJob {
 
 	private void play(SoundboardDispatcher dispatcher, AudioTrackScheduler scheduler, String name) throws InterruptedException, ExecutionException, TimeoutException {
 		SoundFile f = bot.getSoundMap().get(name);
+		f.addOneToNumberOfPlays();
+		bot.getDispatcher().saveSound(f);
 	    scheduler.load(f.getSoundFile().getPath(), new AudioScheduler(scheduler)).get(5, TimeUnit.SECONDS);
 	}
 	
@@ -61,37 +64,30 @@ public class PlaySoundsJob implements SoundboardJob {
 				String sound = sounds[i];
 				if (sound == null || sound.equals("*")) {
 					if (category == null) try {
-						sounds[i] = bot.getRandomSoundName();
-						if (sounds[i] != null) {
-							play(dispatcher, scheduler, sounds[i]);
-						}
+						sound = bot.getRandomSoundName();
+						if (sound != null) play(dispatcher, scheduler, sound);
 					} catch (Exception e) { e.printStackTrace(); continue; }
 					else try {
-						sounds[i] = bot.getRandomSoundNameForCategory(category);
-						if (sounds[i] != null) {
-							play(dispatcher, scheduler, sounds[i]);
-						}
+						sound = bot.getRandomSoundNameForCategory(category);
+						if (sound != null) play(dispatcher, scheduler, sound);
 					} catch (Exception e) { e.printStackTrace(); continue; }
 					randomed = true;
 				} else {
 					if (allRandomed) allRandomed = false;
 					try {
-						if (sound != null) {
-							play(dispatcher, scheduler, sounds[i]);
-						}
+						if (sound != null) play(dispatcher, scheduler, sound);
 					} catch (Exception e) { e.printStackTrace(); continue; }
 				}
-				if (sounds[i] != null) {
-					if (sound == null) sound = sounds[i];
+				if (sound != null) { try {
 					if (firstSound == null) firstSound = sound;
 					if (!sound.equals(firstSound)) same = false;
 					sb.append("`" + sound + "` (**" + dispatcher.getSoundFileByName(sound).getNumberOfPlays() + "** plays)");
 					if (i == sounds.length-2 && sounds.length > 1) sb.append(", and ");
 					else if (i < sounds.length-1) sb.append(", ");
-				}
+				} catch (Exception e) { e.printStackTrace(); continue; } }
 			}
 			String end = "";
-			if (category != null) end += " from category **" + category + "**";
+			if (category != null) end += " from category **" + StringUtils.humanize(category) + "**";
 			if (allRandomed) end += " *all of which were randomed*";
 			else if (randomed) end += " *some of which were randomed*";
 			if (guild != null) {

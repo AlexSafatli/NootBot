@@ -25,7 +25,7 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
         List<String> possibilities = new LinkedList<>();
     	LOG.info(String.format("%s wants to search for \"%s\" in %s.", user.getName(), query, event.getGuild()));
         if (StringUtils.containsAny(query, '?')) {
-        	pm(event, "No sound file contains question marks `?`."); return;
+        	pm(event, "No sound file contains question marks `?`. *Baka*."); return;
         }
     	// Leverage trie first.
 		String possibleName = bot.getClosestMatchingSoundName(query);
@@ -38,10 +38,10 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 			if (name.contains(query) && !name.equals(possibleName)) possibilities.add(name);
 		}
 		MessageBuilder mb = new MessageBuilder();
+		mb.append("Found **" + possibilities.size() + "** possible sound files for query `" + query + "` " + 
+				user.getAsMention() + ":\n\n");
 		for (String possibility : possibilities) mb.append("`?" + possibility + "` ");
 		if (!possibilities.isEmpty()) {
-			m(event, "Found **" + possibilities.size() + "** possible sound files for query `" + query + "` " + 
-					user.getAsMention() + ":\n\n");
 			for (String m : mb) m(event, m);
 		} else m(event, "No results found for query `" + query + "` " + user.getAsMention() + ".");
 	}

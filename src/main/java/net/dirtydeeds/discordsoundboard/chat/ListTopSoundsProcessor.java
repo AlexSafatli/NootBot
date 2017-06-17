@@ -23,6 +23,8 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
 	private List<String> getTopSounds() {
 		int numberOfSoundFiles = 0;
 		MessageBuilder sb = new MessageBuilder();
+    	sb.append("The **" + NUMBER_OF_TOP_TO_SHOW + 
+    			" top played sound files** are, in descending order:\n\n");
 		List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByNumberOfPlays();
 		Set<String> activeFileNames = bot.getSoundMap().keySet();
 		for (SoundFile file : soundFiles) {
@@ -43,8 +45,6 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
         	return;
         }
         List<String> topSounds = getTopSounds();
-    	m(event, "The **" + NUMBER_OF_TOP_TO_SHOW + 
-    			" top played sound files** are, in descending order:\n\n");
     	for (String s : topSounds) m(event, s);
         LOG.info("Listed the " + NUMBER_OF_TOP_TO_SHOW + " top sounds for user " + event.getAuthor().getName());
 	}

@@ -142,7 +142,7 @@ public class MoveListener extends AbstractListener {
     	} else if (botsChannel != null && botsChannel.getMembers().size() == 1) {
             for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
             	if (botsChannel != null && botsChannel.equals(voiceChannel)) continue;
-            	else if (voiceChannel.getMembers().size() > 0 && !voiceChannel.getId().equals(guild.getAfkChannel().getId())) {
+            	else if (voiceChannel.getMembers().size() > 0 && (guild.getAfkChannel() == null || !voiceChannel.getId().equals(guild.getAfkChannel().getId()))) {
         			if (voiceChannel.getMembers().size() == 1 && voiceChannel.getMembers().get(0).getUser().isBot()) {
         				continue;
         			}

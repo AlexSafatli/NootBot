@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.service;
 import net.dirtydeeds.discordsoundboard.audio.AudioHandler;
 import net.dirtydeeds.discordsoundboard.audio.AudioPlayerSendHandler;
 import net.dirtydeeds.discordsoundboard.audio.AudioTrackScheduler;
+import net.dirtydeeds.discordsoundboard.beans.Setting;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.listeners.ChatListener;
@@ -50,12 +51,14 @@ public class SoundboardBot {
     private ChatListener chatListener;
     private String owner;
     private SoundboardDispatcher dispatcher;
+    private Map<String, Setting> settings;
     private Map<Guild, AudioTrackScheduler> audioSchedulers;
 
     public SoundboardBot(String token, String owner, SoundboardDispatcher dispatcher) {
     	this.startTime = System.currentTimeMillis();
         this.owner = owner;
     	this.dispatcher = dispatcher;
+    	this.settings = new Hashtable<>();
     	this.audioSchedulers = new Hashtable<>();
     	initializeDiscordBot(token);
     }
@@ -80,6 +83,10 @@ public class SoundboardBot {
     
     public SoundboardDispatcher getDispatcher() {
     	return this.dispatcher;
+    }
+    
+    public Setting getSetting(String key) {
+    	return this.settings.get(key);
     }
     
     public AudioTrackScheduler getSchedulerForGuild(Guild guild) {
@@ -126,8 +133,8 @@ public class SoundboardBot {
     	List<SoundFile> sounds = dispatcher.getSoundFilesOrderedByNumberOfPlays();
     	if (sounds == null || sounds.isEmpty()) return null;
     	Random rng = new Random();
-    	int index = rng.nextInt(Math.min(TOP_PLAYED_SOUND_THRESHOLD,sounds.size())), ceiling = TOP_PLAYED_SOUND_THRESHOLD;
-    	while (sounds.get(index).isExcludedFromRandom() && !sounds.get(index).getSoundFile().exists()) {
+    	int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size()/10), index = rng.nextInt(Math.min(top,sounds.size())), ceiling = top;
+    	while (sounds.get(index) == null || sounds.get(index).isExcludedFromRandom() && !sounds.get(index).getSoundFile().exists() && sounds.get(index).getDuration() > MAX_DURATION_FOR_RANDOM) {
     		index = rng.nextInt(Math.min(ceiling,sounds.size()));
     		if (ceiling + 1 < sounds.size()) ++ceiling;
     	}
@@ -173,6 +180,13 @@ public class SoundboardBot {
 		Member self = textChannel.getGuild().getMemberById(id);
 		return self.hasPermission(p);
 	}
+	
+	public boolean hasPermissionInVoiceChannel(VoiceChannel voiceChannel, Permission p) {
+		if (voiceChannel == null || voiceChannel.getGuild() == null) return false;
+		String id = bot.getSelfUser().getId();
+		Member self = voiceChannel.getGuild().getMemberById(id);
+		return self.hasPermission(p);
+	}
     
     public String getBotName() {
     	return this.bot.getSelfUser().getName();
@@ -197,7 +211,7 @@ public class SoundboardBot {
 	}
 	
 	public void setEntranceForUser(net.dv8tion.jda.core.entities.User user, String filename) {
-		if (filename != null)
+		if (filename != null && !filename.isEmpty())
 			LOG.info("New entrance \"" + filename + "\" set for " + user);
 		else
 			LOG.info("Cleared entrance associated with " + user);
@@ -292,7 +306,7 @@ public class SoundboardBot {
     public void leaveServer(Guild guild) {
     	if (guild != null && getGuilds().contains(guild)) {
     		guild.getAudioManager().closeAudioConnection();
-    		guild.leave();
+    		guild.leave().queue();
     	}
     }
     
@@ -451,7 +465,7 @@ public class SoundboardBot {
         	LOG.info("Playing entrance for user " + user.getName() + 
         			" with filename " + fileName);
         	if (connected == null || !connected.equals(joined))
-        		moveToChannel(joined);
+        		if (!moveToChannel(joined)) return false;
         	SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
             playFile(fileToPlay, joined.getGuild(), false); // Do not add to count for entrances.
         	return true;
@@ -485,16 +499,20 @@ public class SoundboardBot {
     }
 
     /**
-     * Moves to the specified voice channel.
+     * Moves to the specified voice channel and blocks until moved.
      * @param channel - The channel specified.
      */
-    public void moveToChannel(VoiceChannel channel) {
-    	if (channel == null) {
-    		LOG.warn("Cannot move to a null voice channel."); return;
-    	}
+    public boolean moveToChannel(VoiceChannel channel) {
+    	if (channel == null) return false;
     	AudioManager voice = channel.getGuild().getAudioManager();
+    	if (voice.isConnected() && voice.getConnectedChannel() != null && voice.getConnectedChannel().equals(channel)) return false;
+    	if (!hasPermissionInVoiceChannel(channel, Permission.VOICE_CONNECT)) {
+    		LOG.debug("Could not move to channel " + channel + " because no permission to join.");
+    		return false;
+    	}
+		LOG.info("Moving to channel " + channel);
     	try {
-	        if (voice.isConnected()) voice.openAudioConnection(channel);
+	        if (voice.isConnected() && !voice.isAttemptingToConnect()) voice.openAudioConnection(channel);
 	        else if (voice.isAttemptingToConnect())
 	        	LOG.info("Still waiting to connect to channel " + voice.getQueuedAudioConnection().getName());
 	        else {
@@ -503,7 +521,10 @@ public class SoundboardBot {
 	        }
     	} catch (Exception e) {
     		voice.closeAudioConnection();
+    		LOG.warn("Closed audio connection because of an error.");
+    		e.printStackTrace();
     	}
+    	return true;
     }
     
     /**
@@ -603,7 +624,7 @@ public class SoundboardBot {
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
 		String path = audioFile.getPath();
 		LOG.info("Sending request for '" + path + "' to AudioManager");
-		scheduler.load(path, new AudioHandler(player, audio));
+		scheduler.load(path, new AudioHandler(player));
     }
     
     private void playURL(String url, Guild guild) {
@@ -611,7 +632,7 @@ public class SoundboardBot {
     	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
 		LOG.info("Sending request for '" + url + "' to AudioManager");
-		scheduler.load(url, new AudioHandler(player, audio));
+		scheduler.load(url, new AudioHandler(player));
     }
 
     private void initializeDiscordBot(String token) {

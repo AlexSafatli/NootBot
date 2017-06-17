@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'distribution'
 apply plugin: 'spring-boot'
 
-version = '2.3.1'
+version = '2.3.7'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -35,9 +35,9 @@ dependencies {
     compile("commons-io:commons-io:2.4")
     compile("com.h2database:h2")
  	compile("com.googlecode.soundlibs:mp3spi:1.9.5-1")
+ 	compile("com.github.theholywaffle:lolchatapi:1.2.8")
     compile group: "com.google.guava", name: "guava", version: "r05"
     compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.robrua:orianna:2.4.6'
     compile("org.springframework.boot:spring-boot-starter-jersey")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     testCompile('org.springframework.boot:spring-boot-starter-test')

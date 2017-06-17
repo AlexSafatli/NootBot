@@ -20,7 +20,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 	
 	private static final int MIN_NUM_PLAYERS = 3;
-	private static final int NUMBER_SEC_BETWEEN = 5;
+	private static final int NUMBER_SEC_BETWEEN = 60;
 	
 	private GameStartEvent pastEvent;
 	
@@ -40,14 +40,11 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	}
 	
 	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
-		VoiceChannel channel = null;
-		try {
-			channel = bot.getUsersVoiceChannel(user);
-		} catch (Exception e) {
-			LOG.fatal("Problem retrieving voice channel for user.");
-		}
+		VoiceChannel userChannel = null, botChannel = bot.getConnectedChannel(event.getGuild());
+		try { userChannel = bot.getUsersVoiceChannel(user); } catch (Exception e) { LOG.fatal("Problem retrieving voice channel for user."); return false; }
+		if (userChannel == null || botChannel != null && !userChannel.equals(botChannel)) return false;
 		Game game = event.getGuild().getMemberById(user.getId()).getGame();
-		return (game != null && channel != null && channel.getMembers().size() >= MIN_NUM_PLAYERS);
+		return (game != null && userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
 	}
 	
 	protected void handleEvent(UserGameUpdateEvent event, User user) {
@@ -64,21 +61,18 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			}
 		}
 		if (numPlayers >= MIN_NUM_PLAYERS) {
-			LOG.info("Found " + user.getName() + " and " + numPlayers + 
-					" other users playing " + game + " in channel " + channel);
+			LOG.info("Found " + user.getName() + " and " + numPlayers + " other users playing " + game + " in channel " + channel);
 			Date now = new Date(System.currentTimeMillis());
 			if (pastEvent != null && pastEvent.channel != null && pastEvent.channel.equals(channel)) {
 		    	long secSince = (now.getTime() - pastEvent.time.getTime())/1000;
-		    	if (secSince < NUMBER_SEC_BETWEEN) {
-		    		LOG.info("Not enough time since last event in this channel."); return;
-		    	}
+		    	if (secSince < NUMBER_SEC_BETWEEN) { LOG.info("Not enough time since last event in this channel."); return; }
 			}
 			TextChannel publicChannel = channel.getGuild().getPublicChannel();
 			if (pastEvent != null && pastEvent.message != null) pastEvent.message.deleteMessage().queue();
 			pastEvent = new GameStartEvent(channel, now, null);
 			String filePlayed = bot.getRandomTopPlayedSoundName();
 			if (filePlayed != null) {
-				try {				
+				try {
 					bot.playFileForUser(filePlayed, user);
 					publicChannel.sendMessage(announcement(filePlayed, game, user, numPlayers).getMessage()).queue((Message m)-> pastEvent.message = m);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");

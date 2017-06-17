@@ -1,6 +1,7 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
 import java.awt.Color;
+import java.util.Date;
 
 import net.dirtydeeds.discordsoundboard.Version;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
@@ -59,6 +60,11 @@ public class StyledEmbedMessage {
 		msg.addContent("Name", "`" + file.getSoundFileId() + "`", true);
 		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		msg.addContent("Played", file.getNumberOfPlays() + " times", true);
+		if (file.getSoundFile() != null) {
+			Date modified = new Date(file.getSoundFile().lastModified());
+			String stamp = StringUtils.dayTimeStamp(modified);
+			if (!stamp.isEmpty()) msg.addContent("Added", stamp, true);
+		}
 		return msg;
 	}
 	

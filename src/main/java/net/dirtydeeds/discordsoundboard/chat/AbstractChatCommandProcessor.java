@@ -94,7 +94,11 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		if (event.isFromType(ChannelType.PRIVATE)) {
 			pm(event, message);
 		} else {
-			event.getChannel().sendMessage(message).queue((Message msg)-> buffer.add(msg));
+			StyledEmbedMessage em = new StyledEmbedMessage(getTitle());
+			em.addDescription(message);
+			event.getChannel().sendMessage(em.getMessage()).queue((Message msg)-> {
+				buffer.add(msg);
+			});
 		}
 	}
 	

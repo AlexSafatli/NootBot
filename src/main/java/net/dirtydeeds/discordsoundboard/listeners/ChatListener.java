@@ -12,11 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author asafatli
- * Listens to commands in Discord text channels and responds to them if a processors
- * exists to handle a particular message.
- */
 public class ChatListener extends AbstractListener {
     
     public static final SimpleLog LOG = SimpleLog.getLog("Chat");
@@ -56,6 +51,7 @@ public class ChatListener extends AbstractListener {
     	processors.add(new ListLongestSoundsProcessor(".longest",         bot));
     	processors.add(new PlayRandomSoundLoopedProcessor(".randomloop",  bot));
     	processors.add(new PlayRandomProcessor(".random",                 bot));
+    	processors.add(new PlayRandomTopProcessor(".randomtop",           bot));
     	processors.add(new SetNicknameProcessor(".nickname",              bot));
     	processors.add(new AuthenticateUserProcessor(".privilege",        bot));
     	processors.add(new DeleteBotMessagesProcessor(".clear",           bot));
@@ -69,7 +65,7 @@ public class ChatListener extends AbstractListener {
     	processors.add(new RecategorizeSoundProcessor(".mv",              bot));
     	processors.add(new DownloadSoundProcessor(".dl",                  bot));
     	processors.add(new ExcludeSoundFromRandomProcessor(".exclude",    bot));
-    	processors.add(new ModifyAllSoundPlayCountProcessor(".countall",  bot));
+    	//processors.add(new ModifyAllSoundPlayCountProcessor(".countall",  bot));
     	processors.add(new ModifySoundPlayCountProcessor(".count",        bot));
     	processors.add(new SetEntranceForUserProcessor(".entrancefor",    bot));
     	processors.add(new SetEntranceProcessor(".entrance",              bot));
@@ -80,7 +76,7 @@ public class ChatListener extends AbstractListener {
     	processors.add(new ServerMessageProcessor(".all",                 bot));
     	processors.add(new LeaveServerProcessor(".leave",                 bot));
     	processors.add(new RestartBotProcessor(".restart",                bot));
-    	processors.add(new UpdateSoundsProcessor(".update",               bot));
+    	processors.add(new UpdateSoundsProcessor(".refresh",              bot));
     	processors.add(new ListServersProcessor(".servers",               bot));
     	processors.add(new UserInfoProcessor(".user",                     bot));
     	processors.add(new AlternateHandleProcessor(".alt",               bot));
@@ -149,8 +145,8 @@ public class ChatListener extends AbstractListener {
     }
 	
 	private boolean isTypoCommand(MessageReceivedEvent event) {
-		String content = event.getMessage().getContent();
-		return (content.startsWith(CommonPrefix + "") && !content.substring(1).contains(CommonPrefix + ""));
+		String content = event.getMessage().getContent(), prefix = CommonPrefix + "";
+		return (content.length() > 1 && content.startsWith(prefix) && !content.substring(1).contains(prefix));
 	}
 	
 }

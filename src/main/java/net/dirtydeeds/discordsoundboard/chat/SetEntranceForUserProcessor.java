@@ -15,8 +15,13 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		String username = getArguments()[0];
-		String fileName = getArguments()[1];
+		String[] args = getArguments();
+		if (args.length != 2) {
+			pm(event, "Need two arguments: a **username** and **filename**"); return;
+		}
+		String username = args[0];
+		String fileName = args[1];
+		if (fileName.isEmpty()) fileName = null; // Too lazy to change logic.
 		User user = null;
 		if (username != null) user = bot.getUserByName(username);
 		if (fileName != null && user != null) {
@@ -33,8 +38,6 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 		} else if (user == null) {
 			pm(event, "Asked to change entrance for `" + username + "` but could not "
 					+ "find user with that name.");
-		} else {
-			pm(event, "Need two arguments: a **username** and a **filename**.");			
 		}
 	}
 

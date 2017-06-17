@@ -15,7 +15,6 @@ public class StopSoundProcessor extends SingleArgumentChatCommandProcessor {
 			return;
 		}
 		bot.stopPlayingSound(event.getGuild());
-		m(event, "Stopping all sounds!");
 	}
 
 	@Override

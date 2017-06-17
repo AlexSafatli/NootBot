@@ -10,6 +10,7 @@ import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
@@ -33,16 +34,9 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 		return categoryFiles;
 	}
 	
-	private List<String> getMessagesForCategory(String category, List<SoundFile> soundFiles, int indentLevel) {
-		String indent = "", catIndent = "*";
-		for (int i = 0; i < indentLevel; ++i) {
-			indent += "  ";
-			catIndent += ">";
-		}
-		if (indentLevel == 0) catIndent = ""; else catIndent += "* ";
+	private List<String> getStringsForCategory(String category, List<SoundFile> soundFiles) {
 		MessageBuilder b = new MessageBuilder();
 		if (soundFiles != null && !soundFiles.isEmpty()) {
-			b.append(catIndent + "**" + category + "** (" + soundFiles.size() + ")\n" + indent);
 			for (SoundFile file : soundFiles) {
 				String filename = file.getSoundFile().getName();
 				String name = filename.substring(0, filename.indexOf("."));
@@ -59,25 +53,24 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         Map<String, List<SoundFile>> categoryFiles = getCategoryMappings();
         if (soundFiles.size() > 0) {
         	if (cat == null) {
-	        	String s = "**" + soundFiles.size() + " files are stored**. They are organized in **" + 
-	        			bot.getDispatcher().getNumberOfCategories() + "** categories. Type any of these to play them.\n\n";
-	            m(event, s);
+	            m(event, "**" + soundFiles.size() + " files are stored**. They are organized in **" + 
+	        			bot.getDispatcher().getNumberOfCategories() + "** categories. Type any of these to play them.\n\n");
 	            // List everything uncategorized.
 	            if (categoryFiles.get("Uncategorized") != null && categoryFiles.get("Uncategorized").size() > 0) {
-		            for (String msg : getMessagesForCategory("Uncategorized", categoryFiles.get("Uncategorized"), 0)) {
-		            	m(event, msg);
-		        	}
+		    		for (String s : getStringsForCategory("Uncategorized", categoryFiles.get("Uncategorized"))) {
+		    			m(event, s);
+		    		}
 	            }
 	            // Traverse category tree.
 	            for (Category category : bot.getDispatcher().getCategoryTree().getChildren()) {
-	            	listByCategory(category, categoryFiles, 0, event);
+	            	listByCategory(category, null, categoryFiles, event);
 	            }
         	} else {
         		if (bot.isASoundCategory(cat)) {
         			for (Category category : bot.getDispatcher().getCategories()) {
         				if (category.getName().equalsIgnoreCase(cat)) {
         					LOG.info("Listing sounds for category " + category.getName() + " in " + event.getGuild());
-        					listByCategory(category, categoryFiles, 0, event);
+        					listByCategory(category, null, categoryFiles, event);
         					return;
         				}
         			}
@@ -89,12 +82,18 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         } else m(event, "There are no sounds that can be played.");
 	}
 
-	private void listByCategory(Category category, Map<String, List<SoundFile>> categoryFiles, int indentLevel, MessageReceivedEvent event) {
-		for (String msg : getMessagesForCategory(category.getName(), categoryFiles.get(category.getName()), indentLevel)) {
-        	m(event, msg);
-    	}
+	private void listByCategory(Category category, Category parent, Map<String, List<SoundFile>> categoryFiles, MessageReceivedEvent event) {
+		List<SoundFile> sounds = categoryFiles.get(category.getName());
+		List<String> strings = getStringsForCategory(category.getName(), sounds);
+		String title = category.getName() + " (" + sounds.size() + ")";
+		if (parent != null) title += " \u2014 subcategory of " + parent.getName();
+		for (String s : strings) {
+			StyledEmbedMessage em = new StyledEmbedMessage(title);
+			em.addDescription(s);
+			embed(event, em);
+		}
 		if (!category.getChildren().isEmpty()) {
-			for (Category child : category.getChildren()) listByCategory(child, categoryFiles, indentLevel+1, event);
+			for (Category child : category.getChildren()) listByCategory(child, category, categoryFiles, event);
 		}
 	}
 	

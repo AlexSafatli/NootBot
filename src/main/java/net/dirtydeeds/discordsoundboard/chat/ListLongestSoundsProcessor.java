@@ -23,6 +23,8 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
 	private List<String> getTopSounds() {
 		int numberOfSoundFiles = 0;
 		MessageBuilder sb = new MessageBuilder();
+		sb.append("The **" + NUMBER_OF_TOP_TO_SHOW + 
+    			" longest sound files** are, in descending order:\n\n");
 		List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByDuration();
 		Set<String> activeFileNames = bot.getSoundMap().keySet();
 		for (SoundFile file : soundFiles) {
@@ -43,8 +45,6 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
         	return;
         }
         List<String> topSounds = getTopSounds();
-    	m(event, "The **" + NUMBER_OF_TOP_TO_SHOW + 
-    			" longest sound files** are, in descending order:\n\n");
     	for (String msg : topSounds) m(event, msg);
         LOG.info("Listed the " + NUMBER_OF_TOP_TO_SHOW + " longest sounds for user " + event.getAuthor().getName());
 	}

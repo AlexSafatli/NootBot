@@ -1,6 +1,5 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
-import java.io.File;
 import java.io.IOException;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
@@ -22,9 +21,8 @@ public class DownloadSoundProcessor extends
 			if (file == null) {
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			} else {
-				File f = file.getSoundFile();
 				try {
-					event.getAuthor().getPrivateChannel().sendFile(f, null);
+					event.getAuthor().getPrivateChannel().sendFile(file.getSoundFile(), null).queue();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

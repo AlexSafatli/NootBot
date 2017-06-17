@@ -24,6 +24,7 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
   @Override
   public boolean canProvide() {
 	if (!voice.isConnected()) return false;
+	if (voice.getQueuedAudioConnection() != null) return false;
 	lastFrame = audioPlayer.provide();
     return lastFrame != null;
   }

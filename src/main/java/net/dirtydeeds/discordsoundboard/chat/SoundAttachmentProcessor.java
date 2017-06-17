@@ -133,7 +133,7 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 	
 	private StyledEmbedMessage getDownloadedMessage(String name, String category, SoundFile file, long size) {
 		StyledEmbedMessage msg = new StyledEmbedMessage("New Sound Added Successfully");
-		msg.addDescription("`" + name + "` downloaded and added to list of sounds. Play it with `?" + name + "`.");
+		msg.addDescription("`" + name + "` downloaded and added to list of sounds. Play it with `?" + file.getSoundFileId() + "`.");
 		if (category != null && !category.isEmpty() && !category.equals("Uncategorized")) msg.addContent("Category", category, true);
 		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		msg.addContent("File Size", size/1000 + " kB", true);

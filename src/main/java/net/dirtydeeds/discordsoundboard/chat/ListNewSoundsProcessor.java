@@ -40,7 +40,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	
 	private List<String> getMessagesForCategory(String category, Collection<SoundFile> soundFiles) {
 		MessageBuilder b = new MessageBuilder();
-		b.append("**" + category + "** (" + soundFiles.size() + ")\n");
+		b.append("**" + category + "** (" + soundFiles.size() + ") \u2014 ");
 		for (SoundFile file : soundFiles) {
 			String filename = file.getSoundFile().getName();
 			String name = filename.substring(0, filename.indexOf("."));
@@ -77,14 +77,16 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	        		numTime /= DAYS;
 	        		timeType = "days";
 	        	}
-	        	m(event, "The **newest sound files** added (in the last " + numTime + 
+	        	MessageBuilder mb = new MessageBuilder();
+	        	mb.append("The **newest sound files** added (in the last " + numTime + 
 	        			" " + timeType + ") were:\n\n");
 	        	Map<String, List<SoundFile>> catMap = getCategoryMappings(newSounds);
 	        	for (String category : catMap.keySet()) {
 	            	for (String msg : getMessagesForCategory(category, catMap.get(category))) {
-	                	m(event, msg);
+	                	mb.append(msg);
 	            	}
 	            }
+	        	for (String msg : mb.getStrings()) m(event, msg);
 	            LOG.info("Listed new sounds in last " + numHours + " hours for user " + 
 	        			event.getAuthor().getName());
 	        } else {

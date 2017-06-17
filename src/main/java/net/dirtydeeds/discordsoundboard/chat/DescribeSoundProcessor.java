@@ -31,7 +31,7 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			embed(event, StyledEmbedMessage.forSoundFile(file, "Information for Sound `" + file.getSoundFileId() + "`", 
-					"You requested information for a sound called `" + file.getSoundFileId() + "`."));
+					"You requested information for a sound " + user.getAsMention()));
 		}
 	}
 
