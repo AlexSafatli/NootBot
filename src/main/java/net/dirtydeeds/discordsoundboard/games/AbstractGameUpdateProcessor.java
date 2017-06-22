@@ -42,5 +42,9 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 		RestAction<Message> ra = channel.sendMessage(embed.getMessage());
 		ra.queue(m);
 	}
+
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
 	
 }

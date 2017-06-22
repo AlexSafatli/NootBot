@@ -22,7 +22,7 @@ public class GameListener extends AbstractListener {
     public static final SimpleLog LOG = SimpleLog.getLog("Game");
     
     private List<GameUpdateProcessor> processors;
-	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "Hearthstone", "PUBG"});
+	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "Hearthstone", "PUBG", "Endless Space 2", "Mass Effect: Andromeda"});
     
     public GameListener(SoundboardBot bot) {
         this.bot = bot;
@@ -47,16 +47,16 @@ public class GameListener extends AbstractListener {
 		Game previousGame = event.getPreviousGame();
 		
 		if (member.getGame() == null && previousGame != null)
-			LOG.info(name + " stopped playing " + previousGame.getName() + ".");
+			LOG.info(name + " stopped playing " + previousGame.getName() + " in " + event.getGuild() + ".");
 		else if (previousGame == null)
-			LOG.info(name + " started playing " + member.getGame().getName() + ".");
+			LOG.info(name + " started playing " + member.getGame().getName() + " in " + event.getGuild() + ".");
 		else
-			LOG.info(name + " changed to " + member.getGame().getName() + " from " + previousGame.getName() + ".");
+			LOG.info(name + " changed to " + member.getGame().getName() + " from " + previousGame.getName() + " in " + event.getGuild() + ".");
         
 		for (GameUpdateProcessor processor : processors) {
         	if (processor.isApplicableUpdateEvent(event, user)) {
         		processor.process(event);
-            	LOG.info("Processed game update event with processor " + processor.getClass().getSimpleName());
+            	LOG.info("Processed game update event with processor " + processor);
             	if (processor.isMutuallyExclusive()) {
             		LOG.info("That processor cannot be run with others. Stopping.");
             		return;

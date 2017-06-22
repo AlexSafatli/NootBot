@@ -16,8 +16,14 @@ public class SpecificGameStartProcessor extends GenericGameStartProcessor {
 
 	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
 		Game currentGame = event.getGuild().getMemberById(user.getId()).getGame();
+		if (currentGame == null) return false;
 		String game = currentGame.getName();
 		return super.isApplicableUpdateEvent(event, user) && game.equals(gameName);
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "[" + gameName + "]";
 	}
 	
 }

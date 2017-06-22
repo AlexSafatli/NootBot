@@ -2,6 +2,7 @@ package net.dirtydeeds.discordsoundboard.utils;
 
 import java.awt.Color;
 import java.util.Date;
+import java.util.Random;
 
 import net.dirtydeeds.discordsoundboard.Version;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
@@ -17,7 +18,8 @@ public class StyledEmbedMessage {
 	
 	public StyledEmbedMessage() {
 		builder = new EmbedBuilder();
-		builder.setColor(NOOT_BOT_EMBED_COLOR);
+		Random rand = new Random();
+		builder.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
 	}
 	
 	public StyledEmbedMessage(String title) {
