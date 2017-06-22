@@ -77,9 +77,8 @@ public class MoveListener extends AbstractListener {
         String fileToPlay = bot.getEntranceForUser(user);
         if (fileToPlay != null && !fileToPlay.isEmpty()) {
         	if (bot.getSoundMap().get(fileToPlay) == null) {
-        		if (!bot.isUser(user))
-        			user.getPrivateChannel().sendMessage("**Uh oh!** Your entrance `" + fileToPlay + 
-        					"` doesn't exist anymore. *Update it!*");
+    			bot.sendMessageToUser("**Uh oh!** Your entrance `" + fileToPlay + 
+    					"` doesn't exist anymore. *Update it!*", user);
         		LOG.info(user.getName() + " has stale entrance. Alerted and clearing.");
         		bot.setEntranceForUser(user, null);
         	} else {
@@ -108,8 +107,8 @@ public class MoveListener extends AbstractListener {
 		        					sound.getNumberOfPlays()) + ".";
 		        		}
 		        	} catch (Exception e) {
+                        LOG.fatal("Could not play entrance.");
 		        		e.printStackTrace();
-		        		LOG.fatal("Could not play entrance.");
 		        	}
     			} else if (bot.getConnectedChannel(guild) == null) {
     				bot.moveToChannel(voiceChannel); // Move to channel otherwise.
@@ -166,8 +165,6 @@ public class MoveListener extends AbstractListener {
 		StyledEmbedMessage m = new StyledEmbedMessage("Welcome, " + user.getName() + "!");
 		if (!soundInfo.isEmpty()) {
 			m.addDescription(soundInfo + " \u2014 " + user.getAsMention());
-		} else {
-			m.addDescription("I am " + bot.getBotName() + " and I am here to serve your whims.");
 		}
 		m.addContent("How Do I Use This Bot?", "Start by typing `.help`. That will give you a list of commands!", false);
 		return m;
