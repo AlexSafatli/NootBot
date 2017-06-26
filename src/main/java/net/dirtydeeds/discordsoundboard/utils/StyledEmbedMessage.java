@@ -18,8 +18,7 @@ public class StyledEmbedMessage {
 	
 	public StyledEmbedMessage() {
 		builder = new EmbedBuilder();
-		Random rand = new Random();
-		builder.setColor(new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()));
+		builder.setColor(NOOT_BOT_EMBED_COLOR);
 	}
 	
 	public StyledEmbedMessage(String title) {
