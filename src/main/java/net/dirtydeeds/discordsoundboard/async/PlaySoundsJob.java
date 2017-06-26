@@ -44,7 +44,7 @@ public class PlaySoundsJob implements SoundboardJob {
 		SoundFile f = bot.getSoundMap().get(name);
 		f.addOneToNumberOfPlays();
 		bot.getDispatcher().saveSound(f);
-	    scheduler.load(f.getSoundFile().getPath(), new AudioScheduler(scheduler)).get(5, TimeUnit.SECONDS);
+	  scheduler.load(f.getSoundFile().getPath(), new AudioScheduler(scheduler)).get(5, TimeUnit.SECONDS);
 	}
 	
 	public void run(SoundboardDispatcher dispatcher) {
@@ -96,7 +96,7 @@ public class PlaySoundsJob implements SoundboardJob {
 				else m = guild.getPublicChannel().sendMessage(embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null));
 				if (m != null) {
 					try {
-						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), 120));
+						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), 1800));
 					} catch (RateLimitedException e) {
 						e.printStackTrace();
 					}

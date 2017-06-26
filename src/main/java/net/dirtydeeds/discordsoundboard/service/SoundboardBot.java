@@ -100,7 +100,7 @@ public class SoundboardBot {
     	}
     	return this.audioSchedulers.get(guild);
     }
-    
+
     public String getClosestMatchingSoundName(String str) {
     	return dispatcher.getSoundNameTrie().getWordWithPrefix(str);
     }
@@ -337,7 +337,6 @@ public class SoundboardBot {
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
 		player.stopTrack();
 		scheduler.clear();
-		LOG.info("Sending stop request to AudioManager");
     }
     
     /**

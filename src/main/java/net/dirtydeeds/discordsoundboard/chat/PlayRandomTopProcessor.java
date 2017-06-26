@@ -35,7 +35,7 @@ public class PlayRandomTopProcessor extends SingleArgumentChatCommandProcessor {
 	    		embed(event, msg);
 			}
     	} catch (Exception e) {
-    		LOG.warn("When playing random sound: " + e.toString() + " => " + e.getMessage());
+        ;
     	}
 	}
 	

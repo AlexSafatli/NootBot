@@ -20,6 +20,7 @@ public class PlayRandomSoundLoopedProcessor extends MultiArgumentChatCommandProc
 		User user = event.getAuthor();
         String cat = (getArguments().length > 1) ? getArguments()[1] : null;
         int numTimesToPlay = (getArguments().length > 0) ? Integer.valueOf(getArguments()[0]) : 0;
+        boolean privileged = bot.getUser(user).isPrivileged();
         if (cat != null && !cat.isEmpty() && !bot.isASoundCategory(cat)) {
         	pm(event, formatString(Strings.NOT_FOUND, cat));
         	cat = null;
@@ -27,8 +28,8 @@ public class PlayRandomSoundLoopedProcessor extends MultiArgumentChatCommandProc
         if (!bot.isAllowedToPlaySound(user)) {
         	pm(event, lookupString(Strings.NOT_ALLOWED));
         	LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
-        } else if (numTimesToPlay <= 0 || numTimesToPlay > MAX_NUMBER_OF_LOOPED_PLAYS) {
-        	pm(event, "Need to be <= **" + MAX_NUMBER_OF_LOOPED_PLAYS + "** for number of plays."); return;
+        } else if (numTimesToPlay <= 0 || (numTimesToPlay > MAX_NUMBER_OF_LOOPED_PLAYS && !privileged)) {
+        	pm(event, "Need to be positive and <= **" + MAX_NUMBER_OF_LOOPED_PLAYS + "** for #/plays."); return;
         } else {
         	String[] sounds = new String[numTimesToPlay];
     		bot.getDispatcher().getAsyncService().runJob(new PlaySoundsJob(sounds, bot, user, cat));

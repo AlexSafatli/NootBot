@@ -57,6 +57,7 @@ public class AudioTrackScheduler extends AudioEventAdapter {
 
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+		// TODO have + to numberOfPlays for a sound done here
 		super.onTrackEnd(player, track, endReason);
 	    if (endReason.mayStartNext && !tracks.isEmpty()) {
 	        player.playTrack(tracks.poll());

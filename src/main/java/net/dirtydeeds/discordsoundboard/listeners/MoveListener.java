@@ -44,7 +44,13 @@ public class MoveListener extends AbstractListener {
     		message = m; user = u;
     	}
     }
-    
+
+    private void leaveGuild(Guild guild) {
+        if (guild.getAudioManager() != null) {
+            guild.getAudioManager().closeAudioConnection();
+        }
+    }
+
 	public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
 		onJoin(event.getChannelJoined(), event.getMember().getUser());
     }
@@ -56,7 +62,7 @@ public class MoveListener extends AbstractListener {
 		if (bot.isUser(user)) {
 			if (voiceChannel.getMembers().size() == 1) {
 				LOG.info("Moved to an empty channel. Closing audio connection.");
-				guild.getAudioManager().closeAudioConnection();
+				leaveGuild(guild);
 			}
 			return;
 		} else if (user.isBot()) {
@@ -130,14 +136,13 @@ public class MoveListener extends AbstractListener {
     	if (bot.isUser(user) || bot.getConnectedChannel(channel.getGuild()) == null)
     		return; // Ignore if it is just the bot or not even connected.
     	Guild guild = channel.getGuild();
-    	AudioManager voice = guild.getAudioManager();
-    	VoiceChannel botsChannel = voice.getConnectedChannel();
+    	VoiceChannel botsChannel = guild.getAudioManager().getConnectedChannel();
     	LOG.info(user.getName() + " left " + channel.getName() + 
     			" in " + guild.getName());
     	
     	if (botsChannel != null && VoiceUtils.numUsersInVoiceChannels(guild) == 0) {
             LOG.info("No more users! Leaving voice channel in server " + guild.getName());
-            voice.closeAudioConnection();
+            leaveGuild(guild);
     	} else if (botsChannel != null && botsChannel.getMembers().size() == 1) {
             for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
             	if (botsChannel != null && botsChannel.equals(voiceChannel)) continue;

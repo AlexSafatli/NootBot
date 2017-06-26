@@ -16,29 +16,30 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		String category = getArgument(), filePlayed = null;
+		String category = getArgument(), filePlayed = null, desc = "Played a random sound ";
 		if (!bot.isAllowedToPlaySound(event.getAuthor())) {
-        	pm(event, lookupString(Strings.NOT_ALLOWED));
-        	LOG.info(event.getAuthor() + " tried to play a sound file but is not allowed.");
-        	return;
+    	pm(event, lookupString(Strings.NOT_ALLOWED));
+    	LOG.info(event.getAuthor() + " tried to play a sound file but is not allowed.");
+    	return;
 		}
-    	try {
-    		if (category != null) {
-    			filePlayed = bot.playRandomFileForCategory(event.getAuthor(), category);
-    		} else {
-    			filePlayed = bot.playRandomFile(event.getAuthor());
-    		}
-    		if (filePlayed != null && bot.getUsersVoiceChannel(event.getAuthor()) != null) {
-    			SoundFile file = bot.getDispatcher().getSoundFileByName(filePlayed);
-	    		LOG.info("Played \"" + filePlayed + "\" in server " + event.getGuild().getName());
-	    		StyledEmbedMessage msg = StyledEmbedMessage.forSoundFile(file, "You've Played a Random Sound",
-	    				"Played a random sound " + event.getAuthor().getAsMention());
-	    		msg.addContent("You Can Report It", lookupString(Strings.SOUND_REPORT_INFO), false);
-	    		embed(event, msg);
-    		}
-    	} catch (Exception e) {
-    		LOG.warn("When playing random sound: " + e.toString() + " => " + e.getMessage());
-    	}
+  	try {
+  		if (category != null && bot.isASoundCategory(category)) {
+        desc += " from category **" + category + "** ";
+  			filePlayed = bot.playRandomFileForCategory(event.getAuthor(), category);
+  		} else {
+  			filePlayed = bot.playRandomFile(event.getAuthor());
+  		}
+  		if (filePlayed != null && bot.getUsersVoiceChannel(event.getAuthor()) != null) {
+  			SoundFile file = bot.getDispatcher().getSoundFileByName(filePlayed);
+    		LOG.info("Played \"" + filePlayed + "\" in server " + event.getGuild().getName());
+    		StyledEmbedMessage msg = StyledEmbedMessage.forSoundFile(file, "You've Played a Random Sound",
+    				desc + event.getAuthor().getAsMention());
+    		msg.addContent("You Can Report It", lookupString(Strings.SOUND_REPORT_INFO), false);
+    		embed(event, msg);
+  		}
+  	} catch (Exception e) {
+  		;
+  	}
 	}
 	
 	@Override

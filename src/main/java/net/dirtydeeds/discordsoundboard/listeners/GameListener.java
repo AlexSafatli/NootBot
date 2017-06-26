@@ -22,7 +22,7 @@ public class GameListener extends AbstractListener {
     public static final SimpleLog LOG = SimpleLog.getLog("Game");
     
     private List<GameUpdateProcessor> processors;
-	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "Hearthstone", "PUBG", "Endless Space 2", "Mass Effect: Andromeda"});
+	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "PUBG", "Endless Space 2", "Mass Effect: Andromeda", "Endless Legends"});
     
     public GameListener(SoundboardBot bot) {
         this.bot = bot;
@@ -44,14 +44,14 @@ public class GameListener extends AbstractListener {
 		if (user.isBot()) return; // Ignore bots.
 		
 		String name = user.getName();
-		Game previousGame = event.getPreviousGame();
+		Game previousGame = event.getPreviousGame(), currentGame = member.getGame();
 		
-		if (member.getGame() == null && previousGame != null)
+		if (currentGame == null && previousGame != null)
 			LOG.info(name + " stopped playing " + previousGame.getName() + " in " + event.getGuild() + ".");
 		else if (previousGame == null)
-			LOG.info(name + " started playing " + member.getGame().getName() + " in " + event.getGuild() + ".");
+			LOG.info(name + " started playing " + currentGame.getName() + " in " + event.getGuild() + ".");
 		else
-			LOG.info(name + " changed to " + member.getGame().getName() + " from " + previousGame.getName() + " in " + event.getGuild() + ".");
+			LOG.info(name + " changed to " + currentGame.getName() + " from " + previousGame.getName() + " in " + event.getGuild() + ".");
         
 		for (GameUpdateProcessor processor : processors) {
         	if (processor.isApplicableUpdateEvent(event, user)) {

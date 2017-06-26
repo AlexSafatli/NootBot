@@ -34,7 +34,6 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		User user = event.getAuthor();
         String name = message.substring(1, message.length());
-    	LOG.info(String.format("%s wants to play \"%s\" in %s.", user.getName(), name, event.getGuild()));
         if (!bot.isAllowedToPlaySound(user)) {
         	pm(event, lookupString(Strings.NOT_ALLOWED));
         	LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
@@ -66,7 +65,6 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	            	m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name, sound.getNumberOfPlays()));
 	            }
 	        } catch (Exception e) {
-	            LOG.fatal("Could not play file => " + e.toString());
 	        	e.printStackTrace();
 	        }
         }
