@@ -15,8 +15,8 @@ public class StyledEmbedMessage {
 
 	private EmbedBuilder builder;
 	private static final Color NOOT_BOT_EMBED_COLOR = Color.getHSBColor(252.7f, 0.565f, 0.622f);
-	private static final Color NOOT_BOT_ERROR_COLOR = Color.getHSBColor(360.0f, 1.000f, 0.500f);
-	private static final Color NOOT_BOT_WARN_COLOR  = Color.getHSBColor(55.00f, 1.000f, 0.500f);
+	private static final Color NOOT_BOT_ERROR_COLOR = Color.getHSBColor(360.0f, 0.680f, 0.337f);
+	private static final Color NOOT_BOT_WARN_COLOR  = Color.getHSBColor(58.00f, 0.700f, 1.000f);
 	
 	public StyledEmbedMessage() {
 		builder = new EmbedBuilder();

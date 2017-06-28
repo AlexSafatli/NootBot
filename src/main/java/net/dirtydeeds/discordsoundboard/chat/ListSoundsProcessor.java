@@ -53,10 +53,11 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         // List the sound files.
         Map<String, List<SoundFile>> categoryFiles = getCategoryMappings();
         if (soundFiles.size() > 0) {
-          if (soundFiles.size() > BIG_NUMBER_OF_SOUNDS) {
-              e(event, "**" + soundFiles.size() + " files are stored**. Listing them will *flood this channel*. List" +
-                " sounds by category using `" + getPrefix() + " category` instead.");
-        	} else if (cat == null) {
+          if (cat == null) {
+              if (soundFiles.size() > BIG_NUMBER_OF_SOUNDS) {
+                w(event, "**" + soundFiles.size() + " files are stored**. Listing them will *flood this channel*. List" + " sounds by category using `" + getPrefix() + " category` instead.");
+                return;
+              }
 	            m(event, "**" + soundFiles.size() + " files are stored**. They are organized in **" + 
 	        			bot.getDispatcher().getNumberOfCategories() + "** categories. Type any of these to play them.\n\n");
 	            // List everything uncategorized.
