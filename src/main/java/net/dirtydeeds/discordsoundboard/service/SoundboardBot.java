@@ -43,7 +43,7 @@ public class SoundboardBot {
     public static final SimpleLog LOG = SimpleLog.getLog("Bot");
     private static int CHANNEL_CONNECTION_TIMEOUT = 5000;
     private static int TOP_PLAYED_SOUND_THRESHOLD = 50;
-    private static int MAX_DURATION_FOR_RANDOM = 12;
+    private static int MAX_DURATION_FOR_RANDOM = 10;
     private static String NOT_IN_VOICE_CHANNEL_MESSAGE = "Are you in a voice channel? Could not find you!";
     
     private long startTime;
@@ -62,6 +62,28 @@ public class SoundboardBot {
     	this.audioSchedulers = new Hashtable<>();
     	initializeDiscordBot(token);
     }
+
+    private class SoundPlayedEvent {
+        String sound;
+        long time;
+        String who;
+        public SoundPlayedEvent(String sound, String who) {
+            this.sound = sound;
+            this.who = who;
+            this.time = System.currentTimeMillis();
+        }
+        public SoundFile getSoundFile() {
+            return dispatcher.getSoundFileByName(sound);
+        }
+        public String getUsername() {
+            return who;
+        }
+        public String toString() {
+            return "`" + sound + "` was played by **" + who + "**."
+        }
+    }
+
+    private SoundPlayedEvent lastPlayed;
     
     protected void addListener(Object listener) {
         bot.addEventListener(listener);
@@ -129,18 +151,25 @@ public class SoundboardBot {
     	return file.getSoundFileId();
     }
     
-    public String getRandomTopPlayedSoundName() {
+    public String getRandomTopPlayedSoundName(int maxDuration) {
     	List<SoundFile> sounds = dispatcher.getSoundFilesOrderedByNumberOfPlays();
     	if (sounds == null || sounds.isEmpty()) return null;
     	Random rng = new Random();
-    	int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size()/10), index = rng.nextInt(Math.min(top,sounds.size())), ceiling = top;
-    	while (sounds.get(index) == null || sounds.get(index).isExcludedFromRandom() && !sounds.get(index).getSoundFile().exists() && sounds.get(index).getDuration() > MAX_DURATION_FOR_RANDOM) {
+        maxDuration = Math.min(MAX_DURATION_FOR_RANDOM, maxDuration);
+    	int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size()/10),
+            index = rng.nextInt(Math.min(top,sounds.size())),
+            ceiling = top;
+    	while (sounds.get(index) == null || sounds.get(index).isExcludedFromRandom() && !sounds.get(index).getSoundFile().exists() && sounds.get(index).getDuration() > maxDuration) {
     		index = rng.nextInt(Math.min(ceiling,sounds.size()));
     		if (ceiling + 1 < sounds.size()) ++ceiling;
     	}
     	return sounds.get(index).getSoundFileId();
     }
-    
+
+    public String getRandomTopPlayedSoundName() {
+        return getRandomTopPlayedSoundName(MAX_DURATION_FOR_RANDOM);
+    }
+
     public User getUser(net.dv8tion.jda.core.entities.User user) {
 		List<User> users = dispatcher.getUserById(user.getId());
 		if (users != null && !users.isEmpty()) {
@@ -351,6 +380,7 @@ public class SoundboardBot {
         	} else {
         		moveToChannel(toJoin);
         		playFile(toPlay, toJoin.getGuild());
+                lastPlayed = new SoundPlayedEvent(toPlay, user.getName());
         		return toPlay;
         	}
         }
@@ -371,6 +401,7 @@ public class SoundboardBot {
             	if (toPlay == null) return null;
         		moveToChannel(toJoin);
         		playFile(toPlay, toJoin.getGuild());
+                lastPlayed = new SoundPlayedEvent(toPlay, user.getName());
         		return toPlay;
         	}
         }
@@ -393,6 +424,7 @@ public class SoundboardBot {
             	} else {
             		moveToChannel(toJoin);
             		playFile(fileName, toJoin.getGuild());
+                    lastPlayed = new SoundPlayedEvent(fileName, event.getAuthor().getName());
             		LOG.info("Played sound \"" + fileName + "\" in server " + toJoin.getGuild().getName());
             	}
         	}
@@ -435,6 +467,7 @@ public class SoundboardBot {
         		else {
         			moveToChannel(channel);
         			playFile(fileName, channel.getGuild());
+                    lastPlayed = new SoundPlayedEvent(fileName, null);
         			return dispatcher.getAvailableSoundFiles().get(fileName).getSoundFileId();
         		}
         	}
@@ -552,6 +585,21 @@ public class SoundboardBot {
     	return false;
     }
 
+    public SoundFile getLastPlayed() {
+        if (lastPlayed == null) return null;
+        return lastPlayed.getSoundFile();
+    }
+
+    public String getLastPlayedUsername() {
+        if (lastPlayed == null) return null;
+        return lastPlayed.getUsername();
+    }
+
+    public String getLastPlayedSoundInfo() {
+        if (lastPlayed == null) return null;
+        return lastPlayed.toString();
+    }
+
     /**
      * Play file name requested. Will first try to load the file from the map of available sounds.
      * @param fileName - fileName to play.
@@ -559,6 +607,7 @@ public class SoundboardBot {
     public void playFile(String fileName, Guild guild) {
         SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
         playFile(fileToPlay, guild, true);
+        lastPlayed = new SoundPlayedEvent(fileName, null);
     }
    
     private void playFile(SoundFile fileToPlay, Guild guild, boolean addToCount) {

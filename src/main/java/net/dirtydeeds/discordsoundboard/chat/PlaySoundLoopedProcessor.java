@@ -30,7 +30,7 @@ public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor 
         	pm(event, lookupString(Strings.NOT_ALLOWED));
         	LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
         } else if (numTimesToPlay <= 0 || numTimesToPlay > MAX_NUMBER_OF_LOOPED_PLAYS) {
-        	pm(event, "Need to be <= **" + MAX_NUMBER_OF_LOOPED_PLAYS + "** for number of plays."); return;
+        	e(event, "Need to be <= **" + MAX_NUMBER_OF_LOOPED_PLAYS + "** for number of plays."); return;
         } else if (StringUtils.containsAny(name, '?')) {
         	return; // File names cannot contain question marks.
         } else if (bot.getSoundMap().get(name) == null) {

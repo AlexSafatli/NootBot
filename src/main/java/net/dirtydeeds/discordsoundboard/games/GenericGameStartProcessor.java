@@ -7,6 +7,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -40,10 +41,11 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	}
 	
 	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
-		VoiceChannel userChannel = null, botChannel = bot.getConnectedChannel(event.getGuild());
-		try { userChannel = bot.getUsersVoiceChannel(user); } catch (Exception e) { LOG.fatal("Problem retrieving voice channel for user."); return false; }
-		if (userChannel == null || botChannel != null && !userChannel.equals(botChannel)) return false;
-		Game game = event.getGuild().getMemberById(user.getId()).getGame();
+		Guild guild = event.getGuild();
+		VoiceChannel userChannel = null, botChannel = bot.getConnectedChannel(guild);
+		try { userChannel = bot.getUsersVoiceChannel(user); } catch (Exception e) { return false; }
+		if (guild == null || userChannel == null || botChannel == null || !userChannel.equals(botChannel)) return false;
+		Game game = guild.getMemberById(user.getId()).getGame();
 		return (game != null && userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
 	}
 	
@@ -76,7 +78,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 					bot.playFileForUser(filePlayed, user);
 					publicChannel.sendMessage(announcement(filePlayed, game, user, numPlayers).getMessage()).queue((Message m)-> pastEvent.message = m);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
-				} catch (Exception e) { LOG.fatal("While playing sound for game start: " + e.toString()); e.printStackTrace(); }
+				} catch (Exception e) { e.printStackTrace(); }
 			}
 		}
 	}
@@ -84,8 +86,6 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	public StyledEmbedMessage announcement(String soundPlayed, String game, User user, int numPlaying) {
 		StyledEmbedMessage m = new StyledEmbedMessage("Whoa! You're all playing a game.");
 		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, game, user.getAsMention()));
-		String playing = "There are " + (numPlaying-1) + " others in your channel playing that game.";
-		m.addContent("How Many Are Playing?", playing, true);
 		m.addContent("Annoying?", lookupString(Strings.SOUND_REPORT_INFO), false);
 		return m;
 	}

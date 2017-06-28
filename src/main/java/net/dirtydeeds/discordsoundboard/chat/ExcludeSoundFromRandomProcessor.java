@@ -24,7 +24,7 @@ public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 			if (possibleName != null) {
 				suggestion = "Did you mean `" + possibleName + "`?";
 			}
-        	pm(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* ");
+      pm(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* ");
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			if (file.isExcludedFromRandom()) {

@@ -28,7 +28,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 			msg.addDescription("Do you even know what you're looking for?");
 		}
 		msg.addContent("You Could Search For It", "*Use `.search` with a keyword to find sounds.*", false);
-		embed(event, msg);
+		embed(event, msg.isWarning(true));
 	}
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {

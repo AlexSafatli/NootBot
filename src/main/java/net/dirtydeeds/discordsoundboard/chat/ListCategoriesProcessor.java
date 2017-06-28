@@ -20,7 +20,7 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
         			listCategories(root));
             LOG.info("Listed categories for user " + event.getAuthor().getName());
         } else {
-        	m(event, "There were no categories found.");
+        	e(event, "There were no categories found.");
         }
 	}
 	

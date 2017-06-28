@@ -43,7 +43,7 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 		for (String possibility : possibilities) mb.append("`?" + possibility + "` ");
 		if (!possibilities.isEmpty()) {
 			for (String m : mb) m(event, m);
-		} else m(event, "No results found for query `" + query + "` " + user.getAsMention() + ".");
+		} else w(event, "No results found for query `" + query + "` " + user.getAsMention() + ".");
 	}
 	
 	@Override

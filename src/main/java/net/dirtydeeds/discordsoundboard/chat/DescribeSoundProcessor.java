@@ -27,7 +27,7 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 			if (possibleName != null) {
 				suggestion = "Did you mean `" + possibleName + "`?";
 			}
-        	m(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
+      w(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			embed(event, StyledEmbedMessage.forSoundFile(file, "Information for Sound `" + file.getSoundFileId() + "`", 

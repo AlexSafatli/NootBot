@@ -16,6 +16,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
+  private static final int BIG_NUMBER_OF_SOUNDS = 1000;
 	public static final SimpleLog LOG = SimpleLog.getLog("ListSoundsProcessor");
 	
 	public ListSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
@@ -52,7 +53,10 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         // List the sound files.
         Map<String, List<SoundFile>> categoryFiles = getCategoryMappings();
         if (soundFiles.size() > 0) {
-        	if (cat == null) {
+          if (soundFiles.size() > BIG_NUMBER_OF_SOUNDS) {
+              w(event, "**" + soundFiles.size() + " files are stored**. Listing them will *flood this channel*. List
+                sounds by category instead using `" + getPrefix() + "` category` instead.";
+        	} else if (cat == null) {
 	            m(event, "**" + soundFiles.size() + " files are stored**. They are organized in **" + 
 	        			bot.getDispatcher().getNumberOfCategories() + "** categories. Type any of these to play them.\n\n");
 	            // List everything uncategorized.
@@ -75,11 +79,11 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         				}
         			}
         		} else {
-        			m(event, formatString(Strings.NOT_FOUND, cat));
+        			w(event, formatString(Strings.NOT_FOUND, cat));
         			LOG.info(event.getAuthor() + " requested a list for category " + cat + " but it wasn't found.");
         		}
         	}
-        } else m(event, "There are no sounds that can be played.");
+        } else e(event, "There are no sounds that can be played!");
 	}
 
 	private void listByCategory(Category category, Category parent, Map<String, List<SoundFile>> categoryFiles, MessageReceivedEvent event) {

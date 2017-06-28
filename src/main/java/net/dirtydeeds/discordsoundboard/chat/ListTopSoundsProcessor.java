@@ -41,7 +41,7 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
 	protected void handleEvent(MessageReceivedEvent event, String message) {
         Map<String, SoundFile> soundFiles = bot.getSoundMap();
         if (soundFiles.isEmpty()) {
-        	m(event, "There are **no sound files** at all!");
+        	e(event, "There are **no sound files** at all!");
         	return;
         }
         List<String> topSounds = getTopSounds();

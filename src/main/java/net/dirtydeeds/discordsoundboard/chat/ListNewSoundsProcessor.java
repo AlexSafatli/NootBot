@@ -63,7 +63,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	protected void handleEvent(MessageReceivedEvent event, String message) {
         Map<String, SoundFile> soundFiles = bot.getSoundMap();
         if (soundFiles.isEmpty()) {
-        	m(event, "There are **no sound files** at all!");
+        	e(event, "There are **no sound files** at all!");
         	return;
         }
     	String timeType = "hours";
@@ -99,7 +99,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
         		numTime /= DAYS;
         		timeType = "days";
         	}
-	        m(event, "There were no **new sounds** found (from the last " + 
+	        w(event, "There were no **new sounds** found (from the last " + 
 	        		numTime + " " + timeType + ").");
         }
 	}

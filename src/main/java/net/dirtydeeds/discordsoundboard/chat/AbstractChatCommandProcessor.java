@@ -90,16 +90,33 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		event.getAuthor().getPrivateChannel().sendMessage(message.getMessage()).queue();
 	}
 	
-	protected void m(MessageReceivedEvent event, String message) {
+	private StyledEmbedMessage makeEmbed(String message) {
+		StyledEmbedMessage em = new StyledEmbedMessage(getTitle());
+		em.addDescription(message);
+		return em;
+	}
+
+	private void sendEmbed(MessageReceivedEvent event, String message, boolean error, boolean warning) {
 		if (event.isFromType(ChannelType.PRIVATE)) {
 			pm(event, message);
 		} else {
-			StyledEmbedMessage em = new StyledEmbedMessage(getTitle());
-			em.addDescription(message);
+			StyledEmbedMessage em = makeEmbed(message).isWarning(warning).isError(error);
 			event.getChannel().sendMessage(em.getMessage()).queue((Message msg)-> {
 				buffer.add(msg);
 			});
 		}
+	}
+
+	protected void m(MessageReceivedEvent event, String message) {
+		sendEmbed(event, message, false, false);
+	}
+
+	protected void w(MessageReceivedEvent event, String message) {
+		sendEmbed(event, message, false, true);
+	}
+
+	protected void e(MessageReceivedEvent event, String message) {
+		sendEmbed(event, message, true, false);
 	}
 	
 	protected void embed(MessageReceivedEvent event, StyledEmbedMessage embed) {
