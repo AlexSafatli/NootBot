@@ -79,7 +79,7 @@ public class SoundboardBot {
             return who;
         }
         public String toString() {
-            return "`" + sound + "` was played by **" + who + "**."
+            return "`" + sound + "` was played by **" + who + "**.";
         }
     }
 

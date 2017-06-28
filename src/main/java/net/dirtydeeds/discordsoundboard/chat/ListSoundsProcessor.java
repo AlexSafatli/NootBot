@@ -55,7 +55,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         if (soundFiles.size() > 0) {
           if (soundFiles.size() > BIG_NUMBER_OF_SOUNDS) {
               w(event, "**" + soundFiles.size() + " files are stored**. Listing them will *flood this channel*. List" +
-                "sounds by category instead using `" + getPrefix() + "` category` instead.";
+                "sounds by category instead using `" + getPrefix() + "` category` instead.");
         	} else if (cat == null) {
 	            m(event, "**" + soundFiles.size() + " files are stored**. They are organized in **" + 
 	        			bot.getDispatcher().getNumberOfCategories() + "** categories. Type any of these to play them.\n\n");
