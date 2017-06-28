@@ -15,9 +15,9 @@ import net.dv8tion.jda.core.entities.Message;
 public class StyledEmbedMessage {
 
 	private EmbedBuilder builder;
-	private static final Color NOOT_BOT_EMBED_COLOR = Color.getHSBColor(252.7f, 0.565f, 0.622f);
-	private static final Color NOOT_BOT_ERROR_COLOR = Color.getHSBColor(360.0f, 1.000f, 0.700f);
-	private static final Color NOOT_BOT_WARN_COLOR  = Color.getHSBColor(51.00f, 1.000f, 1.000f);
+	private static final Color NOOT_BOT_EMBED_COLOR = new Color(87, 70, 158);
+	private static final Color NOOT_BOT_ERROR_COLOR = new Color(179, 0,   0);
+	private static final Color NOOT_BOT_WARN_COLOR  = new Color(255, 217, 0);
 	
 	public StyledEmbedMessage() {
 		builder = new EmbedBuilder();
