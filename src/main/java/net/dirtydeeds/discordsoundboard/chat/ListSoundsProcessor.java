@@ -20,7 +20,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 	public static final SimpleLog LOG = SimpleLog.getLog("ListSoundsProcessor");
 	
 	public ListSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
-		super(prefix, "Sounds", soundPlayer);
+		super(prefix, "List Sounds", soundPlayer);
 	}
 
 	private Map<String, List<SoundFile>> getCategoryMappings() {

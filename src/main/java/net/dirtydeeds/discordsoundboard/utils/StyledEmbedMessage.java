@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Date;
 import java.util.Random;
 
+import net.dirtydeeds.discordsoundboard.Icons;
 import net.dirtydeeds.discordsoundboard.Version;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
@@ -15,8 +16,8 @@ public class StyledEmbedMessage {
 
 	private EmbedBuilder builder;
 	private static final Color NOOT_BOT_EMBED_COLOR = Color.getHSBColor(252.7f, 0.565f, 0.622f);
-	private static final Color NOOT_BOT_ERROR_COLOR = Color.getHSBColor(360.0f, 0.680f, 0.337f);
-	private static final Color NOOT_BOT_WARN_COLOR  = Color.getHSBColor(58.00f, 0.700f, 1.000f);
+	private static final Color NOOT_BOT_ERROR_COLOR = Color.getHSBColor(360.0f, 1.000f, 0.700f);
+	private static final Color NOOT_BOT_WARN_COLOR  = Color.getHSBColor(51.00f, 1.000f, 1.000f);
 	
 	public StyledEmbedMessage() {
 		builder = new EmbedBuilder();
@@ -26,12 +27,13 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage(String title) {
 		this();
 		builder.setTitle(title);
-		builder.setFooter(Version.NAME + " " + Version.VERSION + " \u2014 " + Version.AUTHOR, null);
+		builder.setAuthor(Version.AUTHOR, null, Icons.ELLIPSIS);
+		builder.setFooter(Version.NAME + " " + Version.VERSION, null);
 	}
 	
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
 		this(title);
-		builder.setFooter(Version.NAME + " " + Version.VERSION + " \u2014 " + Version.getAuthor(bot), null);
+		builder.setAuthor(Version.getAuthor(bot), null, Icons.ELLIPSIS);
 	}
 	
 	public void addDescription(String desc) {
