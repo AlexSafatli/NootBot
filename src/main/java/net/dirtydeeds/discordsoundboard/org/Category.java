@@ -39,5 +39,9 @@ public class Category {
 	public void setFolderPath(Path folderPath) {
 		this.folderPath = folderPath;
 	}
+
+	public String toString() {
+		return getName();
+	}
 	
 }
