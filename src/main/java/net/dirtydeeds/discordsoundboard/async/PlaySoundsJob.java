@@ -119,7 +119,7 @@ public class PlaySoundsJob implements SoundboardJob {
 		StyledEmbedMessage msg = new StyledEmbedMessage("Playing Multiple Sounds");
 		msg.addDescription(description);
 		if (sb != null) msg.addContent("Sounds Queued", sb.toString(), false);
-		if (timePlaying > 0) msg.addContent("Total Duration", Long.toString(timePlaying) + " seconds", false);
+		if (duration > 0) msg.addContent("Total Duration", Long.toString(duration) + " seconds", false);
 		return msg.getMessage();
 	}
 	
