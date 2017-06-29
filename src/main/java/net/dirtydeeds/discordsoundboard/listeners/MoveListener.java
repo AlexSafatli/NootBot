@@ -45,7 +45,7 @@ public class MoveListener extends AbstractListener {
     	}
     }
 
-    private void leaveGuild(Guild guild) {
+    private void leaveVoiceInGuild(Guild guild) {
         if (guild.getAudioManager() != null) {
             guild.getAudioManager().closeAudioConnection();
         }
@@ -62,7 +62,7 @@ public class MoveListener extends AbstractListener {
 		if (bot.isUser(user)) {
 			if (voiceChannel.getMembers().size() == 1) {
 				LOG.info("Moved to an empty channel. Closing audio connection.");
-				leaveGuild(guild);
+				leaveVoiceInGuild(guild);
 			}
 			return;
 		} else if (user.isBot()) {
@@ -111,11 +111,10 @@ public class MoveListener extends AbstractListener {
 		        			SoundFile sound = bot.getDispatcher().getSoundFileByName(fileToPlay);
 		        			soundInfo = " Played sound " + formatString(Strings.SOUND_DESC, fileToPlay, sound.getCategory(),
 		        					sound.getNumberOfPlays()) + ".";
-		        		}
-		        	} catch (Exception e) {
-                        LOG.fatal("Could not play entrance.");
-		        		e.printStackTrace();
-		        	}
+		        		} else {
+                            LOG.info("Tried to play entrance " + fileToPlay + " for user but did not play a sound.");
+                        }
+		        	} catch (Exception e) { e.printStackTrace(); }
     			} else if (bot.getConnectedChannel(guild) == null) {
     				bot.moveToChannel(voiceChannel); // Move to channel otherwise.
     			}
@@ -142,7 +141,7 @@ public class MoveListener extends AbstractListener {
     	
     	if (botsChannel != null && VoiceUtils.numUsersInVoiceChannels(guild) == 0) {
             LOG.info("No more users! Leaving voice channel in server " + guild.getName());
-            leaveGuild(guild);
+            leaveVoiceInGuild(guild);
     	} else if (botsChannel != null && botsChannel.getMembers().size() == 1) {
             for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
             	if (botsChannel != null && botsChannel.equals(voiceChannel)) continue;

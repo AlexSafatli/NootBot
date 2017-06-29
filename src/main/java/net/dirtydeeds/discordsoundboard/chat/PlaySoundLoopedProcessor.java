@@ -11,7 +11,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("SoundLoopProcessor");
-	public static final int MAX_NUMBER_OF_LOOPED_PLAYS = 10;
+	public static final int MAX_NUMBER_OF_LOOPED_PLAYS = 12;
 	
 	public PlaySoundLoopedProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Loop", bot);
@@ -23,13 +23,14 @@ public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor 
 			pm(event, "Need sound name and number of times to play that sound.");
 			return;
 		}
+    boolean privileged = bot.getUser(user).isPrivileged();
         String name = getArguments()[0];
         int numTimesToPlay = Integer.valueOf(getArguments()[1]);
     	LOG.info(String.format("%s wants to play \"%s\".", user.getName(), name));
         if (!bot.isAllowedToPlaySound(user)) {
         	pm(event, lookupString(Strings.NOT_ALLOWED));
         	LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
-        } else if (numTimesToPlay <= 0 || numTimesToPlay > MAX_NUMBER_OF_LOOPED_PLAYS) {
+        } else if (numTimesToPlay <= 0 || (numTimesToPlay > MAX_NUMBER_OF_LOOPED_PLAYS && !privileged)) {
         	e(event, "Need to be <= **" + MAX_NUMBER_OF_LOOPED_PLAYS + "** for number of plays."); return;
         } else if (StringUtils.containsAny(name, '?')) {
         	return; // File names cannot contain question marks.

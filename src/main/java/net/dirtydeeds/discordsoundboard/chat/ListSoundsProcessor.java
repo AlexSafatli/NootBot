@@ -80,7 +80,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         				}
         			}
         		} else {
-        			w(event, formatString(Strings.NOT_FOUND, cat));
+        			e(event, formatString(Strings.NOT_FOUND, cat));
         			LOG.info(event.getAuthor() + " requested a list for category " + cat + " but it wasn't found.");
         		}
         	}

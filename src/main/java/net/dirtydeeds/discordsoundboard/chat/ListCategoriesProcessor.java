@@ -1,6 +1,9 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
+import java.util.LinkedList;
+
 import net.dirtydeeds.discordsoundboard.org.Category;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -23,15 +26,20 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
         	e(event, "There were no categories found.");
         }
 	}
+
+  private LinkedList<Category> getCategories(Category root) {
+    LinkedList<Category> categories = new LinkedList<>();
+    for (Category category : root.getChildren()) {
+      categories.add(category);
+      if (!category.getChildren().isEmpty())
+        categories.addAll(getCategories(category));
+    }
+    return categories;
+  }
 	
 	private String listCategories(Category root) {
-		StringBuilder sb = new StringBuilder();
-		for (Category category : root.getChildren()) {
-			sb.append("**" + category.getName() + "** / ");
-			if (!category.getChildren().isEmpty())
-				sb.append(listCategories(category));
-		}
-		return sb.toString();
+		LinkedList<Category> categories = getCategories(root);
+		return StringUtils.listToString(categories);
 	}
 	
 	@Override

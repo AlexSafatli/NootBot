@@ -539,9 +539,14 @@ public class SoundboardBot {
     	AudioManager voice = channel.getGuild().getAudioManager();
     	if (voice.isConnected() && voice.getConnectedChannel() != null && voice.getConnectedChannel().equals(channel)) return false;
     	if (!hasPermissionInVoiceChannel(channel, Permission.VOICE_CONNECT)) {
-    		LOG.debug("Could not move to channel " + channel + " because no permission to join.");
+    		LOG.info("Could not move to channel " + channel + " because no permission to join.");
     		return false;
     	}
+        if (voice.isSelfMuted()) {
+            LOG.info("Self-muted so not moving to channel.");
+            if (voice.isConnected()) voice.closeAudioConnection();
+            return false;
+        }
 		LOG.info("Moving to channel " + channel);
     	try {
 	        if (voice.isConnected() && !voice.isAttemptingToConnect()) voice.openAudioConnection(channel);
@@ -668,10 +673,13 @@ public class SoundboardBot {
     //Play the file provided.
     private void playFile(File audioFile, Guild guild) {
     	AudioManager audio = guild.getAudioManager();
+        if (audio.isSelfMuted()) {
+            LOG.info("Not playing sound because muted.");
+            return;
+        }
     	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
 		String path = audioFile.getPath();
-		LOG.info("Sending request for '" + path + "' to AudioManager");
 		scheduler.load(path, new AudioHandler(player));
     }
     

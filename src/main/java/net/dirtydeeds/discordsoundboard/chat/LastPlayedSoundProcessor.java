@@ -25,7 +25,7 @@ public class LastPlayedSoundProcessor extends SingleArgumentChatCommandProcessor
     } else {
       StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(file, getTitle(), 
           user.getAsMention());
-      if (player != null) em.addContent("Played By", player, false);
+      if (player != null) em.addContent("Sound Played By", player, false);
       embed(event, em);
     }
   }
