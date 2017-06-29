@@ -44,7 +44,7 @@ public class SoundboardBot {
     private static int CHANNEL_CONNECTION_TIMEOUT = 5000;
     private static int TOP_PLAYED_SOUND_THRESHOLD = 50;
     private static int MAX_DURATION_FOR_RANDOM = 10;
-    private static String NOT_IN_VOICE_CHANNEL_MESSAGE = "Are you in a voice channel? Could not find you!";
+    public static String NOT_IN_VOICE_CHANNEL_MESSAGE = "Are you in a voice channel? Could not find you!";
     
     private long startTime;
     private JDA bot;

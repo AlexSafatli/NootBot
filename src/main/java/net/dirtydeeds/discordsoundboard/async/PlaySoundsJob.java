@@ -40,11 +40,15 @@ public class PlaySoundsJob implements SoundboardJob {
 		return true;
 	}
 
-	private void play(SoundboardDispatcher dispatcher, AudioTrackScheduler scheduler, String name) throws InterruptedException, ExecutionException, TimeoutException {
+	private long play(SoundboardDispatcher dispatcher, AudioTrackScheduler scheduler, String name) throws InterruptedException, ExecutionException, TimeoutException {
+		long time = 0;
 		SoundFile f = bot.getSoundMap().get(name);
 		f.addOneToNumberOfPlays();
+		Long duration = f.getDuration();
+		if (duration != null) time = duration;
 		bot.getDispatcher().saveSound(f);
 	  scheduler.load(f.getSoundFile().getPath(), new AudioScheduler(scheduler)).get(5, TimeUnit.SECONDS);
+	  return time;
 	}
 	
 	public void run(SoundboardDispatcher dispatcher) {
@@ -55,9 +59,14 @@ public class PlaySoundsJob implements SoundboardJob {
 			String firstSound = null;
 			try {
 				voice = bot.getUsersVoiceChannel(user);
+				if (voice == null) {
+					bot.sendMessageToUser(SoundboardBot.NOT_IN_VOICE_CHANNEL_MESSAGE, user);
+					return;
+				}
 				guild = voice.getGuild();
 				bot.moveToChannel(voice);
 			} catch (Exception e) { return; }
+			long timePlaying = 0;
 			StringBuilder sb = new StringBuilder();
 			AudioTrackScheduler scheduler = bot.getSchedulerForGuild(guild);
 			for (int i = 0; i < sounds.length; ++i) {
@@ -65,26 +74,27 @@ public class PlaySoundsJob implements SoundboardJob {
 				if (sound == null || sound.equals("*")) {
 					if (category == null) try {
 						sound = bot.getRandomSoundName();
-						if (sound != null) play(dispatcher, scheduler, sound);
+						if (sound != null) timePlaying += play(dispatcher, scheduler, sound);
 					} catch (Exception e) { e.printStackTrace(); continue; }
 					else try {
 						sound = bot.getRandomSoundNameForCategory(category);
-						if (sound != null) play(dispatcher, scheduler, sound);
+						if (sound != null) timePlaying += play(dispatcher, scheduler, sound);
 					} catch (Exception e) { e.printStackTrace(); continue; }
 					randomed = true;
 				} else {
 					if (allRandomed) allRandomed = false;
 					try {
-						if (sound != null) play(dispatcher, scheduler, sound);
+						if (sound != null) timePlaying += play(dispatcher, scheduler, sound);
 					} catch (Exception e) { e.printStackTrace(); continue; }
 				}
-				if (sound != null) { try {
-					if (firstSound == null) firstSound = sound;
-					if (!sound.equals(firstSound)) same = false;
-					sb.append("`" + sound + "` (**" + dispatcher.getSoundFileByName(sound).getNumberOfPlays() + "** plays)");
-					if (i == sounds.length-2 && sounds.length > 1) sb.append(", and ");
-					else if (i < sounds.length-1) sb.append(", ");
-				} catch (Exception e) { e.printStackTrace(); continue; } }
+				if (sound != null) {
+					try {
+						if (firstSound == null) firstSound = sound;
+						if (!sound.equals(firstSound)) same = false;
+						sb.append("`" + sound + "` (**" + dispatcher.getSoundFileByName(sound).getNumberOfPlays() + "** plays)");
+						if (i == sounds.length-2 && sounds.length > 1) sb.append(", and ");
+						else if (i < sounds.length-1) sb.append(", ");
+					} catch (Exception e) { e.printStackTrace(); continue; } }
 			}
 			String end = "";
 			if (category != null) end += " from category **" + StringUtils.humanize(category) + "**";
@@ -92,8 +102,8 @@ public class PlaySoundsJob implements SoundboardJob {
 			else if (randomed) end += " *some of which were randomed*";
 			if (guild != null) {
 				RestAction<Message> m = null;
-				if (!same || sounds.length == 1) m = guild.getPublicChannel().sendMessage(embedMessage("Queued sound(s) " + end + " " + user.getAsMention() + ".", user, sb));
-				else m = guild.getPublicChannel().sendMessage(embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null));
+				if (!same || sounds.length == 1) m = guild.getPublicChannel().sendMessage(embedMessage("Queued sound(s) " + end + " " + user.getAsMention() + ".", user, sb, timePlaying));
+				else m = guild.getPublicChannel().sendMessage(embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null, timePlaying));
 				if (m != null) {
 					try {
 						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), 1800));
@@ -105,10 +115,11 @@ public class PlaySoundsJob implements SoundboardJob {
 		}
 	}
 
-	private Message embedMessage(String description, User user, StringBuilder sb) {
+	private Message embedMessage(String description, User user, StringBuilder sb, long duration) {
 		StyledEmbedMessage msg = new StyledEmbedMessage("Playing Multiple Sounds");
 		msg.addDescription(description);
 		if (sb != null) msg.addContent("Sounds Queued", sb.toString(), false);
+		if (timePlaying > 0) msg.addContent("Total Duration", Long.toString(timePlaying) + " seconds", false);
 		return msg.getMessage();
 	}
 	
