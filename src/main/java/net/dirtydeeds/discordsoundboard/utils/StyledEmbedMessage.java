@@ -15,6 +15,7 @@ import net.dv8tion.jda.core.entities.Message;
 public class StyledEmbedMessage {
 
 	private EmbedBuilder builder;
+	private String author;
 	private static final String NOOT_BOT_FOOTER_TEXT = Version.NAME + " " + Version.VERSION;
 	private static final Color  NOOT_BOT_EMBED_COLOR = new Color(87, 70, 158);
 	private static final Color  NOOT_BOT_ERROR_COLOR = new Color(179, 0,   0);
@@ -27,14 +28,16 @@ public class StyledEmbedMessage {
 	
 	public StyledEmbedMessage(String title) {
 		this();
+		author = Version.AUTHOR;
 		builder.setTitle(title);
-		builder.setAuthor(Version.AUTHOR, null, Icons.ELLIPSIS);
-		builder.setFooter(NOOT_BOT_FOOTER_TEXT, Icons.CHECK);
+		builder.setAuthor(author, null, Icons.ELLIPSIS);
+		builder.setFooter(NOOT_BOT_FOOTER_TEXT, null);
 	}
 	
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
 		this(title);
-		builder.setAuthor(Version.getAuthor(bot), null, Icons.ELLIPSIS);
+		author = Version.getAuthor(bot);
+		builder.setAuthor(author, null, Icons.ELLIPSIS);
 	}
 	
 	public void addDescription(String desc) {
@@ -52,7 +55,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isWarning(boolean warning) {
 		if (warning) {
 			builder.setColor(NOOT_BOT_WARN_COLOR);
-			builder.setFooter(NOOT_BOT_FOOTER_TEXT, Icons.WARNING);
+			builder.setAuthor(author, null, Icons.WARNING);
 		}
 		return this;
 	} 
@@ -60,7 +63,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isError(boolean error) {
 		if (error) {
 			builder.setColor(NOOT_BOT_ERROR_COLOR);
-			builder.setFooter(NOOT_BOT_FOOTER_TEXT, Icons.TIMES);
+			builder.setAuthor(author, null, Icons.TIMES);
 		}
 		return this;
 	} 
