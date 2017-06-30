@@ -367,6 +367,16 @@ public class SoundboardBot {
 		player.stopTrack();
 		scheduler.clear();
     }
+
+    public void muteSound(Guild guild) {
+        AudioManager audio = guild.getAudioManager();
+        audio.setSelfMuted(true);
+    }
+
+    public void unmuteSound(Guild guild) {
+        AudioManager audio = guild.getAudioManager();
+        audio.setSelfMuted(false);
+    }
     
     /**
      * Plays a random sound file.

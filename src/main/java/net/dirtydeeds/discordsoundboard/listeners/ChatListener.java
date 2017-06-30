@@ -77,7 +77,7 @@ public class ChatListener extends AbstractListener {
     	processors.add(new ServerMessageProcessor(".all",                 bot));
     	processors.add(new LeaveServerProcessor(".leave",                 bot));
     	processors.add(new RestartBotProcessor(".restart",                bot));
-    	processors.add(new UpdateSoundsProcessor(".refresh",              bot));
+    	processors.add(new UpdateSoundsProcessor(".update",               bot));
     	processors.add(new ListServersProcessor(".servers",               bot));
     	processors.add(new UserInfoProcessor(".user",                     bot));
     	processors.add(new AlternateHandleProcessor(".alt",               bot));
@@ -96,41 +96,42 @@ public class ChatListener extends AbstractListener {
     		this.tick = now;
     		if (requests.size() > 0) {
     			LOG.info(minutesSince + " minutes have passed since last clear. Clearing request counts for " + requests.size() + " users.");
+                requests.clear();
     		}
-    		requests.clear();
     	}
     }
     
 	public void onMessageReceived(MessageReceivedEvent event) {      
 		
+        User user = event.getAuthor();
+
 		processTick();
 		
 		// Get number of requests for this user.
-		Integer numRequests = requests.get(event.getAuthor());
+		Integer numRequests = requests.get(user);
 		if (numRequests == null) numRequests = 0;
 		
 		// See if a help command first. Process it here if that is the case. This does not count against requests.
 		if (helpProcessor.isApplicableCommand(event)) {
-			helpProcessor.process(event);
-			return;
+			helpProcessor.process(event); return;
 		}
 		
 		// Respond to a particular message using a processor otherwise.
         for (ChatCommandProcessor processor : processors) {
         	if (processor.isApplicableCommand(event)) {
-        		if (numRequests >= MAX_NUMBER_OF_REQUESTS_PER_TIME && bot.isThrottled(event.getAuthor())) {
-        			LOG.info("Throttled user " + event.getAuthor() + " trying to send too many requests.");
-        			event.getAuthor().getPrivateChannel().sendMessage("You have been throttled "
-        					+ "from sending too many requests. Please wait a little before sending "
-        					+ "another command.").queue();
-        		} else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME && !bot.isOwner(event.getAuthor())) {
-        			LOG.info("Throttling user " + event.getAuthor() + " because they sent too many requests.");
-        			bot.throttleUser(event.getAuthor());
-        			bot.sendMessageToUser("Throttling **" + event.getAuthor().getName() + 
+        		if (numRequests >= MAX_NUMBER_OF_REQUESTS_PER_TIME && bot.isThrottled(user)) {
+        			LOG.info("Throttled user " + user.getName() + " trying to send too many requests.");
+                    bot.sendMessageToUser("You have been throttled "
+                            + "from sending too many requests. Please wait a little before sending "
+                            + "another command.", user);
+        		} else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME && !bot.isOwner(user)) {
+        			LOG.info("Throttling user " + user.getName() + " because they sent too many requests.");
+        			bot.throttleUser(user);
+        			bot.sendMessageToUser("Throttling **" + user.getName() + 
         					"** automatically because of too many requests.", bot.getOwner());
         		} else {
         			processor.process(event);
-	        		requests.put(event.getAuthor(), numRequests + 1); // Increment number of requests.
+	        		requests.put(user, numRequests + 1); // Increment number of requests.
 	        		LOG.info("Processed chat message event with processor " + processor.getClass().getSimpleName());
         		}
         		return;
@@ -139,7 +140,7 @@ public class ChatListener extends AbstractListener {
         
         // Handle typo commands with common prefix.
         if (isTypoCommand(event)) {
-        	bot.sendMessageToUser("That's not one of my commands! *Check your spelling*.", event.getAuthor());
+        	bot.sendMessageToUser("That's not one of my commands! *Check your spelling*. Use `.help` to see all commands.", user);
         	noOpProcessor.process(event); // Do nothing - deletes the message.
         }
         

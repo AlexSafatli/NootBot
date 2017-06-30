@@ -115,7 +115,10 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 					} else {
 						String end = (event.isFromType(ChannelType.PRIVATE)) ? "" : " *Was this for me? This bot looks for `.mp3` or `.wav` uploads.*";
 						event.getAuthor().getPrivateChannel().sendMessage("File `" + name + "` is too large to add to sound list." + end).queue();
+						event.getMessage().addReaction("\u1F636").queue();
 					}
+				} else {
+					event.getMessage().addReaction("\u1F636").queue();
 				}
 			}
 		}

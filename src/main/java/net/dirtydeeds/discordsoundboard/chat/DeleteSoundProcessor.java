@@ -19,6 +19,7 @@ public class DeleteSoundProcessor extends
 			if (file == null) {
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			} else {
+				deleteOriginalMessage(event);
 				if (file.getSoundFile().delete()) {
 					bot.getDispatcher().updateFileList();
 					pm(event, formatString(Strings.DELETED_SUCCESS, filename));

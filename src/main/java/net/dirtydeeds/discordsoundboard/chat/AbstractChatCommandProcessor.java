@@ -32,7 +32,16 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		if (!isApplicableCommand(event)) return;
 		String message = event.getMessage().getContent().toLowerCase();
 		clearBuffer();
-		handleEvent(event, message);
+		try {
+			handleEvent(event, message);
+		} catch (Exception ex) {
+			e(event, ex.getMessage());
+			ex.printStackTrace();
+		}
+		deleteOriginalMessage(event);
+	}
+
+	protected void deleteOriginalMessage(MessageReceivedEvent event) {
 		if (!event.isFromType(ChannelType.PRIVATE) && bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
 			event.getMessage().deleteMessage().queue();
 	}

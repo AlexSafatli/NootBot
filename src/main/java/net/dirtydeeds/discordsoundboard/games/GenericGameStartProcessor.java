@@ -22,6 +22,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	
 	private static final int MIN_NUM_PLAYERS = 3;
 	private static final int NUMBER_SEC_BETWEEN = 60;
+	private static final int MAX_DURATION = 5;
 	
 	private GameStartEvent pastEvent;
 	
@@ -57,9 +58,10 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		try { channel = bot.getUsersVoiceChannel(user); } catch (Exception e) { return; }
 		// See if there have been multiple people that started playing the game in a channel.
 		// If so: play a sound randomly from top played sounds.
+		User[] users = new User[channel.getMembers().size()];
 		for (Member m : channel.getMembers()) {
 			if (m.getGame() != null && m.getGame().getName().equals(game)) {
-				++numPlayers;
+				users[numPlayers++] = m.getUser();
 			}
 		}
 		if (numPlayers >= MIN_NUM_PLAYERS) {
@@ -72,20 +74,26 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			TextChannel publicChannel = channel.getGuild().getPublicChannel();
 			if (pastEvent != null && pastEvent.message != null) pastEvent.message.deleteMessage().queue();
 			pastEvent = new GameStartEvent(channel, now, null);
-			String filePlayed = bot.getRandomTopPlayedSoundName();
+			String filePlayed = bot.getRandomTopPlayedSoundName(MAX_DURATION);
 			if (filePlayed != null) {
 				try {
 					bot.playFileForUser(filePlayed, user);
-					publicChannel.sendMessage(announcement(filePlayed, game, user, numPlayers).getMessage()).queue((Message m)-> pastEvent.message = m);
+					publicChannel.sendMessage(announcement(filePlayed, game, users, numPlayers).getMessage()).queue((Message m)-> pastEvent.message = m);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
 				} catch (Exception e) { e.printStackTrace(); }
 			}
 		}
 	}
 
-	public StyledEmbedMessage announcement(String soundPlayed, String game, User user, int numPlaying) {
+	public StyledEmbedMessage announcement(String soundPlayed, String game, User[] users, int numPlaying) {
 		StyledEmbedMessage m = new StyledEmbedMessage("Whoa! You're all playing a game.");
-		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, game, user.getAsMention()));
+		String mentions = "";
+		for (int i = 0; i < numPlaying; ++i) {
+			if (users[i] != null) {
+				mentions += users[i].getAsMention() + " ";
+			}
+		}
+		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, game, mentions));
 		m.addContent("Annoying?", lookupString(Strings.SOUND_REPORT_INFO), false);
 		return m;
 	}

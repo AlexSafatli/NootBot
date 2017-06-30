@@ -24,7 +24,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 		}
   	try {
   		if (category != null && bot.isASoundCategory(category)) {
-        desc += " from category **" + category + "** ";
+        desc += "from category **" + category + "** ";
   			filePlayed = bot.playRandomFileForCategory(event.getAuthor(), category);
   		} else {
   			filePlayed = bot.playRandomFile(event.getAuthor());
@@ -34,7 +34,6 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
     		LOG.info("Played \"" + filePlayed + "\" in server " + event.getGuild().getName());
     		StyledEmbedMessage msg = StyledEmbedMessage.forSoundFile(file, "You've Played a Random Sound",
     				desc + event.getAuthor().getAsMention());
-    		msg.addContent("You Can Report It", lookupString(Strings.SOUND_REPORT_INFO), false);
     		embed(event, msg);
   		}
   	} catch (Exception e) {
