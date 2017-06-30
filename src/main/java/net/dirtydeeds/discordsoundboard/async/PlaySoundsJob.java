@@ -106,7 +106,7 @@ public class PlaySoundsJob implements SoundboardJob {
 				else m = guild.getPublicChannel().sendMessage(embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null, timePlaying));
 				if (m != null) {
 					try {
-						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), timePlaying));
+						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), (int) timePlaying));
 					} catch (RateLimitedException e) {
 						e.printStackTrace();
 					}
