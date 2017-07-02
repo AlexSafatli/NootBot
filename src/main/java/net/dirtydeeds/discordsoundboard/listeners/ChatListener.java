@@ -51,7 +51,6 @@ public class ChatListener extends AbstractListener {
     	processors.add(new ListTopSoundsProcessor(".top",                 bot));
     	processors.add(new ListLongestSoundsProcessor(".longest",         bot));
     	processors.add(new PlayRandomSoundLoopedProcessor(".shuffle",     bot));
-        processors.add(new PlayRandomTopProcessor(".randomtop",           bot));
     	processors.add(new PlayRandomProcessor(".random",                 bot));
     	processors.add(new SetNicknameProcessor(".nickname",              bot));
     	processors.add(new AuthenticateUserProcessor(".privilege",        bot));
