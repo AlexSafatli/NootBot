@@ -30,14 +30,14 @@ public class StyledEmbedMessage {
 		this();
 		author = Version.AUTHOR;
 		builder.setTitle(title);
-		builder.setAuthor(author, null, Icons.ELLIPSIS);
-		builder.setFooter(NOOT_BOT_FOOTER_TEXT, null);
+		builder.setAuthor("", null, Icons.ELLIPSIS);
+		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + author, null);
 	}
 	
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
 		this(title);
 		author = Version.getAuthor(bot);
-		builder.setAuthor(author, null, Icons.ELLIPSIS);
+		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + author, Icons.CHECK);
 	}
 	
 	public void addDescription(String desc) {
@@ -55,7 +55,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isWarning(boolean warning) {
 		if (warning) {
 			builder.setColor(NOOT_BOT_WARN_COLOR);
-			builder.setAuthor(author, null, Icons.WARNING);
+			builder.setAuthor("Oops!", null, Icons.WARNING);
 		}
 		return this;
 	} 
@@ -63,7 +63,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isError(boolean error) {
 		if (error) {
 			builder.setColor(NOOT_BOT_ERROR_COLOR);
-			builder.setAuthor(author, null, Icons.TIMES);
+			builder.setAuthor("Oops!", null, Icons.TIMES);
 		}
 		return this;
 	} 
