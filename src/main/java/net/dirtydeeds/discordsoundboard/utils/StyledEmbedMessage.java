@@ -17,6 +17,8 @@ public class StyledEmbedMessage {
 	private EmbedBuilder builder;
 	private String author;
 	private static final String NOOT_BOT_FOOTER_TEXT = Version.NAME + " " + Version.VERSION;
+	private static final String NOOT_BOT_DEFAULT_TOP = " ";
+	private static final String NOOT_BOT_DEFAULT_ERR = "Oops!";
 	private static final Color  NOOT_BOT_EMBED_COLOR = new Color(87, 70, 158);
 	private static final Color  NOOT_BOT_ERROR_COLOR = new Color(179, 0,   0);
 	private static final Color  NOOT_BOT_WARN_COLOR  = new Color(255, 217, 0);
@@ -30,7 +32,7 @@ public class StyledEmbedMessage {
 		this();
 		author = Version.AUTHOR;
 		builder.setTitle(title);
-		builder.setAuthor("", null, Icons.ELLIPSIS);
+		builder.setAuthor(NOOT_BOT_DEFAULT_TOP, null, Icons.ELLIPSIS);
 		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + author, null);
 	}
 	
@@ -55,7 +57,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isWarning(boolean warning) {
 		if (warning) {
 			builder.setColor(NOOT_BOT_WARN_COLOR);
-			builder.setAuthor("Oops!", null, Icons.WARNING);
+			builder.setAuthor(NOOT_BOT_DEFAULT_ERR, null, Icons.WARNING);
 		}
 		return this;
 	} 
@@ -63,7 +65,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isError(boolean error) {
 		if (error) {
 			builder.setColor(NOOT_BOT_ERROR_COLOR);
-			builder.setAuthor("Oops!", null, Icons.TIMES);
+			builder.setAuthor(NOOT_BOT_DEFAULT_ERR, null, Icons.TIMES);
 		}
 		return this;
 	} 
