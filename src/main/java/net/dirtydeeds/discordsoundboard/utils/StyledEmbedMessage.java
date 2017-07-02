@@ -32,8 +32,8 @@ public class StyledEmbedMessage {
 		this();
 		author = Version.AUTHOR;
 		builder.setTitle(title);
-		builder.setAuthor(NOOT_BOT_DEFAULT_TOP, null, Icons.ELLIPSIS);
-		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + author, null);
+		builder.setAuthor(NOOT_BOT_DEFAULT_TOP, null, null);
+		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + author, Icons.ELLIPSIS);
 	}
 	
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
