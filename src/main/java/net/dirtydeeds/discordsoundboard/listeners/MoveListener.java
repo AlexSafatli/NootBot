@@ -169,6 +169,8 @@ public class MoveListener extends AbstractListener {
 		StyledEmbedMessage m = new StyledEmbedMessage("Welcome, " + user.getName() + "!");
 		if (!soundInfo.isEmpty()) {
 			m.addDescription(soundInfo + " \u2014 " + user.getAsMention());
+		} else {
+			m.addDescription("You have heard your entrance recently so I'm not playing it again.");
 		}
 		m.addContent("How Do I Use This Bot?", "Start by typing `.help`. That will give you a list of commands!", false);
 		return m;
