@@ -47,7 +47,7 @@ public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
         }
         List<String> topSounds = getTopSounds();
         if (topSounds == null) {
-          w(event, "There are **no controversial sound files** (no sounds reported)!")
+          w(event, "There are **no controversial sound files** (no sounds reported)!");
         }
       for (String msg : topSounds) m(event, msg);
         LOG.info("Listed the " + NUMBER_OF_TOP_TO_SHOW + " most controverial sounds for user " + event.getAuthor().getName());
