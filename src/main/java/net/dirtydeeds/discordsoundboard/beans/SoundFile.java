@@ -2,6 +2,7 @@ package net.dirtydeeds.discordsoundboard.beans;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
