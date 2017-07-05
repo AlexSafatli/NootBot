@@ -19,6 +19,8 @@ public class SoundFile {
     private final String soundFileId;
     @Transient
     private File soundFile;
+    @Transient
+    private Date modified;
     private final String category;
     private final Long duration;
     private Long numberPlays;
@@ -47,6 +49,9 @@ public class SoundFile {
     public SoundFile(String soundFileId, File soundFile, String category) {
         this.soundFileId = soundFileId;
         this.soundFile = soundFile;
+        if (soundFile != null) {
+            this.modified = new Date(soundFile.lastModified());
+        }
         this.category = category;
         this.duration = readDuration();
         this.numberPlays = 0L;
@@ -90,6 +95,10 @@ public class SoundFile {
     
     public void setSoundFile(File file) {
     	this.soundFile = file;
+    }
+
+    public Date getLastModified() {
+        return modified;
     }
     
     public Long getNumberOfPlays() {

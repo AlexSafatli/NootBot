@@ -12,5 +12,6 @@ public interface SoundFileRepository extends JpaRepository<SoundFile, String> {
 	
 	List<SoundFile> findAllByOrderByNumberPlaysDesc();
 	List<SoundFile> findAllByOrderByDurationDesc();
+  List<SoundFile> findAllByOrderByNumberReportsDesc();
 	
 }

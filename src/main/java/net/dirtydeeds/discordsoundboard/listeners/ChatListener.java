@@ -49,6 +49,8 @@ public class ChatListener extends AbstractListener {
     	processors.add(new ListCategoriesProcessor(".categories",         bot));
     	processors.add(new ListNewSoundsProcessor(".new",                 bot));
     	processors.add(new ListTopSoundsProcessor(".top",                 bot));
+        processors.add(new ListLowSoundsProcessor(".least",               bot));
+        processors.add(new ListMostReportsProcessor(".controversial",     bot));
     	processors.add(new ListLongestSoundsProcessor(".longest",         bot));
     	processors.add(new PlayRandomSoundLoopedProcessor(".shuffle",     bot));
     	processors.add(new PlayRandomProcessor(".random",                 bot));
@@ -65,7 +67,7 @@ public class ChatListener extends AbstractListener {
     	processors.add(new RecategorizeSoundProcessor(".mv",              bot));
     	processors.add(new DownloadSoundProcessor(".dl",                  bot));
     	processors.add(new ExcludeSoundFromRandomProcessor(".exclude",    bot));
-    	//processors.add(new ModifyAllSoundPlayCountProcessor(".countall",  bot));
+    	processors.add(new ModifyAllSoundPlayCountProcessor(".countall",  bot));
     	processors.add(new ModifySoundPlayCountProcessor(".count",        bot));
     	processors.add(new SetEntranceForUserProcessor(".entrancefor",    bot));
     	processors.add(new SetEntranceProcessor(".entrance",              bot));

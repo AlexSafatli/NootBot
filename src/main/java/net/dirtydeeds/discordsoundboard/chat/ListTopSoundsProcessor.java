@@ -46,13 +46,13 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
         }
         List<String> topSounds = getTopSounds();
     	for (String s : topSounds) m(event, s);
-        LOG.info("Listed the " + NUMBER_OF_TOP_TO_SHOW + " top sounds for user " + event.getAuthor().getName());
+        LOG.info("Listed the " + NUMBER_OF_TOP_TO_SHOW + " top played sounds for user " + event.getAuthor().getName());
 	}
 	
 	@Override
 	public String getCommandHelpString() {
 		return "`" + getPrefix() + "` - list the **" + NUMBER_OF_TOP_TO_SHOW + 
-				"** top sound files based on number of plays";
+				"** top played sound files";
 	}
 
 }

@@ -298,6 +298,10 @@ public class SoundboardDispatcher {
 		return soundDao.findAllByOrderByDurationDesc();
 	}
 
+	public List<SoundFile> getSoundFilesOrderedByNumberOfReports() {
+		return soundDao.findAllByOrderByNumberReportsDesc();
+	}
+
 	public SoundFile getSoundFileByName(String name) {
 		return soundDao.findOne(name);
 	}

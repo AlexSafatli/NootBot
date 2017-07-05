@@ -101,12 +101,14 @@ public class PlaySoundsJob implements SoundboardJob {
 			if (allRandomed) end += " *all of which were randomed*";
 			else if (randomed) end += " *some of which were randomed*";
 			if (guild != null) {
+				Message msg = null;
 				RestAction<Message> m = null;
-				if (!same || sounds.length == 1) m = guild.getPublicChannel().sendMessage(embedMessage("Queued sound(s) " + end + " " + user.getAsMention() + ".", user, sb, timePlaying));
-				else m = guild.getPublicChannel().sendMessage(embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null, timePlaying));
+				if (!same || sounds.length == 1) msg = embedMessage("Queued sound(s) " + end + " " + user.getAsMention() + ".", user, sb, timePlaying);
+				else msg = embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null, timePlaying);
+				m = guild.getPublicChannel().sendMessage(msg);
 				if (m != null) {
 					try {
-						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), (int) timePlaying));
+						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), 1800));
 					} catch (RateLimitedException e) {
 						e.printStackTrace();
 					}

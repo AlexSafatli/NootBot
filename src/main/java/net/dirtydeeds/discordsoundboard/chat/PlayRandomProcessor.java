@@ -23,9 +23,13 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
     	return;
 		}
   	try {
-  		if (category != null && bot.isASoundCategory(category)) {
-        desc += "from category **" + category + "** ";
-  			filePlayed = bot.playRandomFileForCategory(event.getAuthor(), category);
+  		if (category != null) {
+        if (bot.isASoundCategory(category)) {
+          desc += "from category **" + category + "** ";
+          filePlayed = bot.playRandomFileForCategory(event.getAuthor(), category); 
+        } else {
+          e(event, formatString(Strings.NOT_FOUND, category));
+        }
   		} else {
   			filePlayed = bot.playRandomFile(event.getAuthor());
   		}

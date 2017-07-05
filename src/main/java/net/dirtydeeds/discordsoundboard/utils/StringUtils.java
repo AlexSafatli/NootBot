@@ -59,7 +59,9 @@ public class StringUtils {
 	}
 	
 	public static String dayTimeStamp(Date date) {
-		String f = new SimpleDateFormat("yyyy-MM-dd").format(date);
+		if (date == null) return "";
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String f = formatter.format(date);
 		return (f != null) ? f : "";
 	}
 	

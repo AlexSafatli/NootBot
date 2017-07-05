@@ -52,7 +52,11 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	private Collection<SoundFile> getNewSounds(Collection<SoundFile> soundFiles, int numHours) {
 		List<SoundFile> newSounds = new LinkedList<>();
 		for (SoundFile file : soundFiles) {
-			Date lastModified = new Date(file.getSoundFile().lastModified());
+			Date lastModified = file.getLastModified();
+			if (lastModified == null) {
+				LOG.error(file + " had no last modified date");
+				continue;
+			}
 			if (!lastModified.after(new Date(System.currentTimeMillis()-numHours*60*60*1000)))
 				continue;
 			newSounds.add(file);

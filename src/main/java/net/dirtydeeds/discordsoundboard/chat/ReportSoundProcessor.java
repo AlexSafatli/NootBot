@@ -58,13 +58,12 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 				pm(event, "Your report was enough to have the sound get deleted. You won't have to deal with `" + name + "` anymore.");
 				bot.sendMessageToUser("Deleted `" + name + "` because of too many reports but made a copy in temporary directory.", bot.getOwner());
 				LOG.info("Deleted file because of number of reports.");
-			} else if (file.getNumberOfReports() >= NUMBER_OF_REPORTS_FOR_EXCLUDE) {
+			} else if (file.getNumberOfReports() >= NUMBER_OF_REPORTS_FOR_EXCLUDE && !file.isExcludedFromRandom()) {
 				file.setExcludedFromRandom(true);
 				bot.getDispatcher().saveSound(file);
 				LOG.info("Made file excuded from random because of number of reports.");
-			} else {
-				LOG.info("Sound now has " + file.getNumberOfReports() + " reports.");
 			}
+			LOG.info("Sound now has " + file.getNumberOfReports() + " reports.");
 		}
 	}
 
@@ -79,7 +78,7 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` - report a sound file for being inappropriate, annoying, or obnoxious; enough reports will have the file deleted";
+		return "`" + getPrefix() + " <soundfile>` - report a sound file for being inappropriate or annoying";
 	}
 	
 }

@@ -87,9 +87,11 @@ public class StyledEmbedMessage {
 		msg.addContent("Name", "`" + file.getSoundFileId() + "`", true);
 		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		msg.addContent("Played", file.getNumberOfPlays() + " times", true);
+		if (file.getNumberOfReports() > 0) {
+			msg.addContent("Reports", file.getNumberOfReports() + " times", true);
+		}
 		if (file.getSoundFile() != null) {
-			Date modified = new Date(file.getSoundFile().lastModified());
-			String stamp = StringUtils.dayTimeStamp(modified);
+			String stamp = StringUtils.dayTimeStamp(file.getLastModified());
 			if (!stamp.isEmpty()) msg.addContent("Added", stamp, true);
 		}
 		return msg;
