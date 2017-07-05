@@ -61,6 +61,7 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 			} else if (file.getNumberOfReports() >= NUMBER_OF_REPORTS_FOR_EXCLUDE && !file.isExcludedFromRandom()) {
 				file.setExcludedFromRandom(true);
 				bot.getDispatcher().saveSound(file);
+				bot.sendMessageToUser("Excluded `" + name + "` from random because of reports. Last report was made by **" + user.getName() + "**.", bot.getOwner());
 				LOG.info("Made file excuded from random because of number of reports.");
 			}
 			LOG.info("Sound now has " + file.getNumberOfReports() + " reports.");

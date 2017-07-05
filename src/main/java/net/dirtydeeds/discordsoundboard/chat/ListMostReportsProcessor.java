@@ -24,17 +24,18 @@ public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
     int numberOfSoundFiles = 0;
     MessageBuilder sb = new MessageBuilder();
     sb.append("The **" + NUMBER_OF_TOP_TO_SHOW + 
-          " most controversial sound files** are, in descending order:\n\n");
+          " most controversial sound files** (most reports) are, in descending order:\n\n");
     List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByNumberOfReports();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (SoundFile file : soundFiles) {
       if (numberOfSoundFiles >= NUMBER_OF_TOP_TO_SHOW) break;
       String name = file.getSoundFileId();
-      if (activeFileNames.contains(name)) {
+      if (activeFileNames.contains(name) && file.getNumberOfReports() > 0) {
         sb.append("`?" + name + "` (" + file.getNumberOfReports() + ") ");
-            ++numberOfSoundFiles;
+        ++numberOfSoundFiles;
       }
     }
+    if (numberOfSoundFiles == 0) return null;
     return sb.getStrings();
   }
   
@@ -45,6 +46,9 @@ public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
           return;
         }
         List<String> topSounds = getTopSounds();
+        if (topSounds == null) {
+          w(event, "There are **no controversial sound files** (no sounds reported)!")
+        }
       for (String msg : topSounds) m(event, msg);
         LOG.info("Listed the " + NUMBER_OF_TOP_TO_SHOW + " most controverial sounds for user " + event.getAuthor().getName());
   }

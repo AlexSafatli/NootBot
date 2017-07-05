@@ -23,6 +23,7 @@ public class GameListener extends AbstractListener {
     
     private List<GameUpdateProcessor> processors;
 	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "PUBG", "Endless Space 2", "Mass Effect: Andromeda", "Endless Legends"});
+    private static final String[] THUMBNAIL_URLS = new String[]{"https://upload.wikimedia.org/wikipedia/en/7/77/League_of_Legends_logo.png", "http://pubgshowcase.com/img/icon-pubg-2.png", "", "", ""};
     
     public GameListener(SoundboardBot bot) {
         this.bot = bot;
@@ -31,9 +32,15 @@ public class GameListener extends AbstractListener {
     }
     
     private void initializeProcessors() {
-    	for (String game : MONITORED_GAMES) {
+    	for (int i = 0; i < MONITORED_GAMES.size(); ++i) {
+            String game = MONITORED_GAMES.get(i);
+            String url = THUMBNAIL_URLS[i];
     		LOG.info("Initializing game launch processor for " + game);
-        	processors.add(new SpecificGameStartProcessor(bot, game));
+            if (url.length() > 0) {
+                processors.add(new SpecificGameStartProcessor(bot, game, url));
+            } else {
+                processors.add(new SpecificGameStartProcessor(bot, game));
+            }
     	}
     }
 

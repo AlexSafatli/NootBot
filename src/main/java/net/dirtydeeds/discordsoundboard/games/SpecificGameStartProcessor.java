@@ -14,6 +14,11 @@ public class SpecificGameStartProcessor extends GenericGameStartProcessor {
 		gameName = game;
 	}
 
+	public SpecificGameStartProcessor(SoundboardBot bot, String game, String thumb) {
+		super(bot, thumb);
+		gameName = game;
+	}
+	
 	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
 		Game currentGame = event.getGuild().getMemberById(user.getId()).getGame();
 		if (currentGame == null) return false;

@@ -44,7 +44,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 		for (SoundFile file : soundFiles) {
 			String filename = file.getSoundFile().getName();
 			String name = filename.substring(0, filename.indexOf("."));
-        	b.append("`?" + name + "` ");
+      b.append("`?" + name + "` ");
 		}
 		return b.getStrings();
 	}

@@ -60,7 +60,7 @@ public class StringUtils {
 	
 	public static String dayTimeStamp(Date date) {
 		if (date == null) return "";
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 		String f = formatter.format(date);
 		return (f != null) ? f : "";
 	}

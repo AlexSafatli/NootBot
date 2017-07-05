@@ -25,6 +25,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	private static final int MAX_DURATION = 5;
 	
 	private GameStartEvent pastEvent;
+	private String thumbnail;
 	
 	private class GameStartEvent {
 		public VoiceChannel channel;
@@ -39,6 +40,11 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	
 	public GenericGameStartProcessor(SoundboardBot bot) {
 		super(bot);
+	}
+
+	public GenericGameStartProcessor(SoundboardBot bot, String url) {
+		this(bot);
+		thumbnail = url;
 	}
 	
 	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
@@ -95,6 +101,9 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		}
 		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, game, mentions));
 		m.addContent("Annoying?", lookupString(Strings.SOUND_REPORT_INFO), false);
+		if (thumbnail != null) {
+			m.setThumbnail(thumbnail);
+		}
 		return m;
 	}
 
