@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.listeners;
 import net.dirtydeeds.discordsoundboard.games.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
@@ -22,8 +23,8 @@ public class GameListener extends AbstractListener {
     public static final SimpleLog LOG = SimpleLog.getLog("Game");
     
     private List<GameUpdateProcessor> processors;
-	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "PUBG", "Endless Space 2", "Mass Effect: Andromeda", "Endless Legends"});
-    private static final String[] THUMBNAIL_URLS = new String[]{"https://upload.wikimedia.org/wikipedia/en/7/77/League_of_Legends_logo.png", "http://pubgshowcase.com/img/icon-pubg-2.png", "", "", ""};
+	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "PUBG", "Endless Space 2"});
+    private static final String[] THUMBNAIL_URLS = new String[]{"https://upload.wikimedia.org/wikipedia/en/7/77/League_of_Legends_logo.png", "http://pubgshowcase.com/img/logo1.png", ""};
     
     public GameListener(SoundboardBot bot) {
         this.bot = bot;
@@ -44,21 +45,25 @@ public class GameListener extends AbstractListener {
     	}
     }
 
+    private void logGameChange(String name, Guild guild, Game previousGame, Game currentGame) {
+        if (currentGame == null && previousGame != null)
+            LOG.info(name + " stopped playing " + previousGame.getName() + " in " + guild + ".");
+        else if (previousGame == null)
+            LOG.info(name + " started playing " + currentGame.getName() + " in " + guild + ".");
+        else
+            LOG.info(name + " changed to " + currentGame.getName() + " from " + previousGame.getName() + " in " + guild + ".");
+    }
+
 	public void onUserGameUpdate(UserGameUpdateEvent event) {      
 		
 		User user = event.getUser();
-		Member member = event.getGuild().getMemberById(user.getId());
+        Guild guild = event.getGuild();
+		Member member = guild.getMemberById(user.getId());
 		if (user.isBot()) return; // Ignore bots.
 		
 		String name = user.getName();
 		Game previousGame = event.getPreviousGame(), currentGame = member.getGame();
-		
-		if (currentGame == null && previousGame != null)
-			LOG.info(name + " stopped playing " + previousGame.getName() + " in " + event.getGuild() + ".");
-		else if (previousGame == null)
-			LOG.info(name + " started playing " + currentGame.getName() + " in " + event.getGuild() + ".");
-		else
-			LOG.info(name + " changed to " + currentGame.getName() + " from " + previousGame.getName() + " in " + event.getGuild() + ".");
+        logGameChange(name, guild, previousGame, currentGame);
         
 		for (GameUpdateProcessor processor : processors) {
         	if (processor.isApplicableUpdateEvent(event, user)) {
@@ -70,6 +75,5 @@ public class GameListener extends AbstractListener {
             	}
         	}
         }
-        
     }
 }

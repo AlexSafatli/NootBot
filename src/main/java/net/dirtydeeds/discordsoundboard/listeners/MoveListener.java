@@ -167,12 +167,13 @@ public class MoveListener extends AbstractListener {
 	
 	public StyledEmbedMessage welcomeMessage(User user, Channel channel, String soundInfo) {
 		StyledEmbedMessage m = new StyledEmbedMessage("Welcome, " + user.getName() + "!");
+        m.setThumbnail(user.getEffectiveAvatarUrl());
 		if (!soundInfo.isEmpty()) {
 			m.addDescription(soundInfo + " \u2014 " + user.getAsMention());
 		} else {
 			m.addDescription("You have heard your entrance recently so I'm not playing it again.");
 		}
-		m.addContent("How Do I Use This Bot?", "Start by typing `.help`. That will give you a list of commands!", false);
+		m.addContent("What Am I?", "I am a bot that plays sounds. Type `.about` or `.help` for more information.", false);
 		return m;
 	}
 
