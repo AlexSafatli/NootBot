@@ -63,6 +63,8 @@ public class ChatListener extends AbstractListener {
     	processors.add(new AllowUserProcessor(".allow",                   bot));
     	processors.add(new LimitUserProcessor(".throttle",                bot));
     	processors.add(new RemoveLimitUserProcessor(".unthrottle",        bot));
+        processors.add(new MuteSoundProcessor(".mute",                    bot));
+        processors.add(new UnmuteSoundProcessor(".unmute",                bot));
     	processors.add(new DeleteSoundProcessor(".rm",                    bot));
     	processors.add(new ReportSoundProcessor(".report",                bot));
     	processors.add(new RenameSoundProcessor(".rename",                bot));
@@ -146,6 +148,7 @@ public class ChatListener extends AbstractListener {
         if (isTypoCommand(event)) {
         	bot.sendMessageToUser("That's not one of my commands! *Check your spelling*. Use `.help` to see all commands.", user);
         	noOpProcessor.process(event); // Do nothing - deletes the message.
+            return;
         }
 
         // Handle all other messages.

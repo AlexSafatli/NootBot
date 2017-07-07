@@ -1,7 +1,10 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import java.util.Random;
+import java.util.Arrays;
+import java.util.List;
 
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -12,8 +15,8 @@ public class RandomReactionProcessor implements ChatCommandProcessor {
 
   protected SoundboardBot bot;
   public static final SimpleLog LOG = SimpleLog.getLog("RandomReactionProcessor");
-  private static final String TEASE = "Sushiman777";
   private static final int N = 100;
+  private static final List<String> REACTIONS = Arrays.asList(new String[]{"👏", "✌"});
   private Random rng;
   
   public RandomReactionProcessor(SoundboardBot bot) {
@@ -27,11 +30,9 @@ public class RandomReactionProcessor implements ChatCommandProcessor {
   
   public void process(MessageReceivedEvent event) {
     if (isApplicableCommand(event)) {
-      if (event.getAuthor().getName().equals(TEASE)) {
-        bot.sendMessageToUser("If this was League of Legends, I would have crit you.", TEASE);
-      }
-      LOG.info("Random reaction 👏 applied to message " + event.getMessage());
-      event.getMessage().addReaction("👏").queue();
+      String reaction = StringUtils.randomString(REACTIONS);
+      LOG.info("Random reaction " + reaction + " applied to message " + event.getMessage());
+      event.getMessage().addReaction(reaction).queue();
     }
   }
   

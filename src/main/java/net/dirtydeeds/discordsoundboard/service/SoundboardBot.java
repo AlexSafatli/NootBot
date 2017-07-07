@@ -156,7 +156,7 @@ public class SoundboardBot {
     	if (sounds == null || sounds.isEmpty()) return null;
     	Random rng = new Random();
         maxDuration = Math.min(MAX_DURATION_FOR_RANDOM, maxDuration);
-    	int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size()/10),
+    	int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size()/20),
             index = rng.nextInt(Math.min(top,sounds.size())),
             ceiling = top;
     	while (sounds.get(index) == null || sounds.get(index).isExcludedFromRandom() && !sounds.get(index).getSoundFile().exists() && sounds.get(index).getDuration() > maxDuration) {

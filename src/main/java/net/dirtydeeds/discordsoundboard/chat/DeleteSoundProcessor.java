@@ -12,6 +12,15 @@ public class DeleteSoundProcessor extends
 		super(prefix, "Delete Sound", bot);
 	}
 
+	private boolean delete(SoundFile file) {
+		try {
+			Files.copy(file.getSoundFile(), bot.getTempPath().resolve(file.getSoundFile().getName()).toFile());
+		} catch (IOException io) {
+			LOG.fatal("Failed to copy file to " + bot.getTempPath());
+		}
+		return file.getSoundFile().delete();
+	}
+
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String filename = getArgument();
 		if (filename != null) {
@@ -20,7 +29,7 @@ public class DeleteSoundProcessor extends
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			} else {
 				deleteOriginalMessage(event);
-				if (file.getSoundFile().delete()) {
+				if (delete(file)) {
 					bot.getDispatcher().updateFileList();
 					pm(event, formatString(Strings.DELETED_SUCCESS, filename));
 				} else {
