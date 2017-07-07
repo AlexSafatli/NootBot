@@ -28,7 +28,7 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 				// Print command help for this processor.
 				if (!processor.canBeRunByAnyone()) canRunAuthenticated = true;
 				String cmdHelp = processor.getCommandHelpString();
-				mb.append(cmdHelp + "\n");
+				if (!cmdHelp.isEmpty()) mb.append(cmdHelp + "\n");
 			}
 		}
 		if (canRunAuthenticated) {

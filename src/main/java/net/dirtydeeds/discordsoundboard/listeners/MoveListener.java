@@ -109,7 +109,7 @@ public class MoveListener extends AbstractListener {
 		        	try {
 		        		if (bot.playFileForEntrance(fileToPlay, user, voiceChannel)) {
 		        			SoundFile sound = bot.getDispatcher().getSoundFileByName(fileToPlay);
-		        			soundInfo = " Played sound " + formatString(Strings.SOUND_DESC, fileToPlay, sound.getCategory(),
+		        			soundInfo = "Played sound " + formatString(Strings.SOUND_DESC, fileToPlay, sound.getCategory(),
 		        					sound.getNumberOfPlays()) + ".";
 		        		} else {
                             LOG.info("Tried to play entrance " + fileToPlay + " for user but did not play a sound.");
@@ -171,7 +171,7 @@ public class MoveListener extends AbstractListener {
 		if (!soundInfo.isEmpty()) {
 			m.addDescription(soundInfo + " \u2014 " + user.getAsMention());
 		} else {
-			m.addDescription("You have heard your entrance recently so I'm not playing it again.");
+			m.addDescription("Hey, how you doin'? \u2014 " + user.getAsMention());
 		}
 		m.addContent("What Am I?", "I am a bot that plays sounds. Type `.about` or `.help` for more information.", false);
 		return m;

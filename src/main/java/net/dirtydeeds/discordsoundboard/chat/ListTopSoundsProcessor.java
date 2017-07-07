@@ -14,7 +14,7 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ListTopSoundsProcessor");
 	
-	private static final int NUMBER_OF_TOP_TO_SHOW = 25;
+	private static final int NUMBER_OF_TOP_TO_SHOW = 50;
 	
 	public ListTopSoundsProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Top Sounds", bot);

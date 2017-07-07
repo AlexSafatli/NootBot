@@ -17,7 +17,7 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String[] args = getArguments();
 		if (args.length != 2) {
-			pm(event, "Need two arguments: a **username** and **filename**"); return;
+			pm(event, "Need two arguments: a **username** and **sound name**"); return;
 		}
 		String username = args[0];
 		String fileName = args[1];

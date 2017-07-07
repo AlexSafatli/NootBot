@@ -16,8 +16,7 @@ public class ServerMessageProcessor extends OwnerSingleArgumentChatCommandProces
 		String msgToSend = (getArgument() != null) ? event.getMessage().getContent().substring(getPrefix().length() + 1) : "";
 		if (!msgToSend.isEmpty()) {
 			LOG.info("Bot " + bot.getBotName() + ": \"" + msgToSend + "\".");
-			pm(event, "Sending this message: `" + msgToSend + "`.");
-			bot.sendMessageToAllGuilds("**FYI** " + msgToSend + " " + event.getAuthor().getAsMention());
+			bot.sendMessageToAllGuilds("**Yo!** " + msgToSend + " \u2014 sent by " + event.getAuthor().getAsMention());
 		} else pm(event, "You need to provide a message!");
 	}
 	

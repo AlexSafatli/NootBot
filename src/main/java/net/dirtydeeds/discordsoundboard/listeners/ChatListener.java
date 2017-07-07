@@ -52,6 +52,7 @@ public class ChatListener extends AbstractListener {
         processors.add(new ListLowSoundsProcessor(".least",               bot));
         processors.add(new ListMostReportsProcessor(".controversial",     bot));
     	processors.add(new ListLongestSoundsProcessor(".longest",         bot));
+        processors.add(new ListShortestSoundsProcessor(".shortest",       bot));
     	processors.add(new PlayRandomSoundLoopedProcessor(".shuffle",     bot));
     	processors.add(new PlayRandomProcessor(".random",                 bot));
     	processors.add(new SetNicknameProcessor(".nickname",              bot));
@@ -78,12 +79,13 @@ public class ChatListener extends AbstractListener {
     	processors.add(new ServerMessageProcessor(".all",                 bot));
     	processors.add(new LeaveServerProcessor(".leave",                 bot));
     	processors.add(new RestartBotProcessor(".restart",                bot));
-    	processors.add(new UpdateSoundsProcessor(".update",               bot));
+    	processors.add(new UpdateSoundsProcessor(".refresh",              bot));
     	processors.add(new ListServersProcessor(".servers",               bot));
     	processors.add(new UserInfoProcessor(".user",                     bot));
     	processors.add(new AlternateHandleProcessor(".alt",               bot));
     	processors.add(new StatsProcessor(".about",                       bot));
     	processors.add(new SoundAttachmentProcessor(                      bot));
+        processors.add(new RandomReactionProcessor(                       bot));
     	
     	this.helpProcessor = new HelpProcessor(".help", bot, processors);
     	this.noOpProcessor = new NoOpProcessor(bot);
