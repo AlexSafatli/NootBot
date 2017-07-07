@@ -16,7 +16,7 @@ public class RandomReactionProcessor implements ChatCommandProcessor {
   protected SoundboardBot bot;
   public static final SimpleLog LOG = SimpleLog.getLog("RandomReactionProcessor");
   private static final int N = 100;
-  private static final List<String> REACTIONS = Arrays.asList(new String[]{"👏", "✌"});
+  private static final List<String> REACTIONS = Arrays.asList(new String[]{"👏", "✌", "🤔", "😑", "😓", "😒"});
   private Random rng;
   
   public RandomReactionProcessor(SoundboardBot bot) {
