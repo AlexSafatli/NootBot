@@ -14,7 +14,7 @@ public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
 
   public static final SimpleLog LOG = SimpleLog.getLog("ListShortestSoundsProcessor");
   
-  private static final int NUMBER_TO_SHOW = 25;
+  private static final int NUMBER_TO_SHOW = 50;
   
   public ListShortestSoundsProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Shortest Sounds", bot);

@@ -26,6 +26,7 @@ public class ChatListener extends AbstractListener {
     private List<ChatCommandProcessor> processors;
     private HelpProcessor helpProcessor;
     private NoOpProcessor noOpProcessor;
+    private RandomReactionProcessor rngProcessor;
 
     public ChatListener(SoundboardBot soundPlayer) {
         this.bot = soundPlayer;
@@ -85,10 +86,10 @@ public class ChatListener extends AbstractListener {
     	processors.add(new AlternateHandleProcessor(".alt",               bot));
     	processors.add(new StatsProcessor(".about",                       bot));
     	processors.add(new SoundAttachmentProcessor(                      bot));
-        processors.add(new RandomReactionProcessor(                       bot));
     	
     	this.helpProcessor = new HelpProcessor(".help", bot, processors);
     	this.noOpProcessor = new NoOpProcessor(bot);
+        this.rngProcessor  = new RandomReactionProcessor(bot);
     	
     }
 
@@ -146,7 +147,9 @@ public class ChatListener extends AbstractListener {
         	bot.sendMessageToUser("That's not one of my commands! *Check your spelling*. Use `.help` to see all commands.", user);
         	noOpProcessor.process(event); // Do nothing - deletes the message.
         }
-        
+
+        // Handle all other messages.
+        rngProcessor.process(event);
     }
 	
 	private boolean isTypoCommand(MessageReceivedEvent event) {

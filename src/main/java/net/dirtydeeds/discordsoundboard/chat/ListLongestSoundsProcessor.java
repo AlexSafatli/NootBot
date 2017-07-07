@@ -14,7 +14,7 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("ListLongestSoundsProcessor");
 	
-	private static final int NUMBER_OF_TOP_TO_SHOW = 25;
+	private static final int NUMBER_OF_TOP_TO_SHOW = 50;
 	
 	public ListLongestSoundsProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Longest Sounds", bot);
