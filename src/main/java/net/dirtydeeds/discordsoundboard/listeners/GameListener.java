@@ -1,5 +1,7 @@
 package net.dirtydeeds.discordsoundboard.listeners;
 
+import net.dirtydeeds.discordsoundboard.Thumbnails;
+
 import net.dirtydeeds.discordsoundboard.games.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.entities.Game;
@@ -24,7 +26,7 @@ public class GameListener extends AbstractListener {
     
     private List<GameUpdateProcessor> processors;
 	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "PUBG", "Endless Space 2"});
-    private static final String[] THUMBNAIL_URLS = new String[]{"https://upload.wikimedia.org/wikipedia/en/7/77/League_of_Legends_logo.png", "http://pubgshowcase.com/img/icon-pubg-2.png", ""};
+    private static final String[] THUMBNAIL_URLS = new String[]{Thumbnails.LEAGUE, Thumbnails.PUBG, ""};
     
     public GameListener(SoundboardBot bot) {
         this.bot = bot;
