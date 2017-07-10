@@ -13,7 +13,7 @@ public class DeleteBotMessagesProcessor extends SingleArgumentChatCommandProcess
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		ChatUtils.clearBotMessagesInChannel(bot, event.getChannel());
+		ChatUtils.clearBotMessagesInChannel(bot, (TextChannel) event.getChannel());
 	}
 
 }
