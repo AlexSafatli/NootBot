@@ -88,7 +88,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			if (filePlayed != null) {
 				try {
 					bot.playFileForUser(filePlayed, user);
-					pastEvent = new GameStartEvent(channel, now, m);
+					pastEvent = new GameStartEvent(channel, now, null);
 					publicChannel.sendMessage(
 						announcement(filePlayed, game, users, numPlayers).getMessage())
 					.queue((Message m)-> pastEvent.message = m);
