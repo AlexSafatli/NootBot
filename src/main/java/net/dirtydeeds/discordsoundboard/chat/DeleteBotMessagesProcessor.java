@@ -5,6 +5,7 @@ import java.util.List;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dirtydeeds.discordsoundboard.utils.ChatUtils;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public class DeleteBotMessagesProcessor extends SingleArgumentChatCommandProcessor {
 	
