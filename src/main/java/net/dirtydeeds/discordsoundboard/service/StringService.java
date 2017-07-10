@@ -77,7 +77,9 @@ public class StringService {
         						": " + e.toString() + " => " + e.getMessage());
         				continue;
         			}
-        			LOG.info("Finished reading " + file.getName() + " and parsed " + numStringsRead + " strings.");
+              if (numStringsRead > 0) {
+                LOG.info("Finished reading " + file.getName() + " and parsed " + numStringsRead + " strings.");
+              }
     			} else {
     				LOG.warn("Could not read file " + file.getAbsolutePath());
     			}
