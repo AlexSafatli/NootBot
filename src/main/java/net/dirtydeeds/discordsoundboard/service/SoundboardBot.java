@@ -10,6 +10,7 @@ import net.dirtydeeds.discordsoundboard.listeners.ChatListener;
 import net.dirtydeeds.discordsoundboard.listeners.MoveListener;
 import net.dirtydeeds.discordsoundboard.listeners.GameListener;
 import net.dirtydeeds.discordsoundboard.org.Category;
+import net.dirtydeeds.discordsoundboard.utils.ChatUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -61,6 +62,7 @@ public class SoundboardBot {
     	this.settings = new Hashtable<>();
     	this.audioSchedulers = new Hashtable<>();
     	initializeDiscordBot(token);
+        clearPreviousMessages();
     }
 
     private class SoundPlayedEvent {
@@ -716,5 +718,12 @@ public class SoundboardBot {
 			e.printStackTrace();
 		}
     }
-    
+
+    private void clearPreviousMessages() {
+        for (Guild guild : getGuilds()) {
+            LOG.info("Queueing actions to clear previous messages in guild " + guild.getName());
+            ChatUtils.clearBotMessagesInChannel(this, guild.getPublicChannel());
+        }
+    }
+
 }

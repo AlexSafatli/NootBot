@@ -25,8 +25,8 @@ public class GameListener extends AbstractListener {
     public static final SimpleLog LOG = SimpleLog.getLog("Game");
     
     private List<GameUpdateProcessor> processors;
-	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "PUBG", "Endless Space 2"});
-    private static final String[] THUMBNAIL_URLS = new String[]{Thumbnails.LEAGUE, Thumbnails.PUBG, ""};
+	private static final List<String> MONITORED_GAMES = Arrays.asList(new String[]{"League of Legends", "PUBG", "Endless Space 2", "Mass Effect: Andromeda"});
+    private static final String[] THUMBNAIL_URLS = new String[]{Thumbnails.LEAGUE, Thumbnails.PUBG, "", Thumbnails.MEA};
     
     public GameListener(SoundboardBot bot) {
         this.bot = bot;

@@ -22,7 +22,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	
 	private static final int MIN_NUM_PLAYERS = 3;
 	private static final int NUMBER_SEC_BETWEEN = 60;
-	private static final int MAX_DURATION = 5;
+	private static final int MAX_DURATION = 3;
 	
 	private GameStartEvent pastEvent;
 	private String thumbnail;
@@ -35,6 +35,11 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			this.channel = channel;
 			this.time = time;
 			this.message = msg;
+		}
+		public void clear() {
+			if (message != null) {
+				message.deleteMessage().queue();
+			}
 		}
 	}
 	
@@ -78,13 +83,14 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		    	if (secSince < NUMBER_SEC_BETWEEN) { LOG.info("Not enough time since last event in this channel."); return; }
 			}
 			TextChannel publicChannel = channel.getGuild().getPublicChannel();
-			if (pastEvent != null && pastEvent.message != null) pastEvent.message.deleteMessage().queue();
-			pastEvent = new GameStartEvent(channel, now, null);
+			if (pastEvent != null) pastEvent.clear();
 			String filePlayed = bot.getRandomTopPlayedSoundName(MAX_DURATION);
 			if (filePlayed != null) {
 				try {
 					bot.playFileForUser(filePlayed, user);
-					publicChannel.sendMessage(announcement(filePlayed, game, users, numPlayers).getMessage()).queue((Message m)-> pastEvent.message = m);
+					publicChannel.sendMessage(
+						announcement(filePlayed, game, users, numPlayers).getMessage())
+					.queue((Message m)-> pastEvent = new GameStartEvent(channel, now, m));
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
 				} catch (Exception e) { e.printStackTrace(); }
 			}
@@ -101,9 +107,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		}
 		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, game, mentions));
 		m.addContent("Annoying?", lookupString(Strings.SOUND_REPORT_INFO), false);
-		if (thumbnail != null) {
-			m.setThumbnail(thumbnail);
-		}
+		if (thumbnail != null) m.setThumbnail(thumbnail);
 		return m;
 	}
 
