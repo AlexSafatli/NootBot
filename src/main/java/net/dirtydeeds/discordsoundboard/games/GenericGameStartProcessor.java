@@ -88,9 +88,10 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			if (filePlayed != null) {
 				try {
 					bot.playFileForUser(filePlayed, user);
+					pastEvent = new GameStartEvent(channel, now, m);
 					publicChannel.sendMessage(
 						announcement(filePlayed, game, users, numPlayers).getMessage())
-					.queue((Message m)-> pastEvent = new GameStartEvent(channel, now, m));
+					.queue((Message m)-> pastEvent.message = m);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
 				} catch (Exception e) { e.printStackTrace(); }
 			}
