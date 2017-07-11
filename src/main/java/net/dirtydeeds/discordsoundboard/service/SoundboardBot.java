@@ -715,7 +715,8 @@ public class SoundboardBot {
 	        this.addListener(gameListener);
 	        LOG.info("Finished initializing bot with name " + getBotName());
 		} catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException e) {
-			e.printStackTrace();
+			LOG.fatal("Could not initialize bot " + getBotName());
+            e.printStackTrace();
 		}
     }
 
