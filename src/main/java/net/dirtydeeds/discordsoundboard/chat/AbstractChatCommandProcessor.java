@@ -42,8 +42,7 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 
 	protected void deleteOriginalMessage(MessageReceivedEvent event) {
-		if (!event.isFromType(ChannelType.PRIVATE) && bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
-			event.getMessage().deleteMessage().queue();
+		if (!event.isFromType(ChannelType.PRIVATE)) delete(event.getMessage());
 	}
 
 	protected abstract void handleEvent(MessageReceivedEvent event, String message);
@@ -71,12 +70,14 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	public String getTitle() {
 		return this.title;
 	}
+
+	private void delete(Message m) {
+		if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
+			m.deleteMessage().queue();
+	}
 	
 	protected void clearBuffer() {
-		for (Message m : buffer) {
-			if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
-				bot.getDispatcher().getAsyncService().runJob(new DeleteMessageJob(m));
-		}
+		for (Message m : buffer) delete(m);
 		buffer.clear();
 	}
 	
@@ -90,12 +91,14 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 
 	protected void pm(MessageReceivedEvent event, StyledEmbedMessage message) {
-		if (!event.getAuthor().hasPrivateChannel())
+		if (!event.getAuthor().hasPrivateChannel()) {
 			try {
 				event.getAuthor().openPrivateChannel().block();
 			} catch (RateLimitedException e) {
-				e.printStackTrace();
+				embed(event, message);
+				return;
 			}
+		}
 		event.getAuthor().getPrivateChannel().sendMessage(message.getMessage()).queue();
 	}
 	
@@ -109,8 +112,9 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		if (event.isFromType(ChannelType.PRIVATE)) {
 			pm(event, message);
 		} else {
-			StyledEmbedMessage em = makeEmbed(message).isWarning(warning).isError(error);
-			event.getChannel().sendMessage(em.getMessage()).queue((Message msg)-> {
+			event.getChannel().sendMessage(
+				makeEmbed(message).isWarning(warning).isError(error).getMessage()
+			).queue((Message msg)-> {
 				buffer.add(msg);
 			});
 		}

@@ -31,96 +31,111 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 	public String getTitle() {
 		return "Sound Uploader";
 	}
+
+	private boolean handleAttachment(MessageReceivedEvent event, Attachment attachment) {
+		// Get the category to upload to.
+		String category = event.getMessage().getContent();
+
+		// Get the name of the file.
+		String name = attachment.getFileName().toLowerCase(); // Ensure is lowercase.
+		String shortName = name.substring(0, name.indexOf("."));
+		String extension = name.substring(name.indexOf(".") + 1);
+		
+		// Only allow wav/mp3 uploads.
+		if (!extension.equals("wav") && !extension.equals("mp3")) {
+			return false;
+		}
+
+		if (attachment.getSize() >= MAX_FILE_SIZE_IN_BYTES) {
+			String end = (event.isFromType(ChannelType.PRIVATE)) ? "" : " *Was this for me? This bot looks for `.mp3` or `.wav` uploads.*";
+			event.getAuthor().getPrivateChannel().sendMessage("File `" + name + "` is too large to add to sound list." + end).queue();
+			event.getMessage().addReaction("😶").queue();
+			return false;
+		}
+
+		Path downloadPath = bot.getSoundsPath();
+		if (bot.isASoundCategory(category)) {
+			for (Category _category : bot.getDispatcher().getCategories()) {
+				if (_category.getName().equalsIgnoreCase(category)) {
+					downloadPath = _category.getFolderPath();
+					category = _category.getName();
+					break;
+				}
+			}
+		} else {
+			if (bot.getDispatcher().getNumberOfCategories() >= 1 || (category != null && !category.isEmpty())) {
+				event.getAuthor().getPrivateChannel().sendMessage("No category was provided " +
+						"(*or it did not match an existing one*)!").queue();
+			}
+			category = null;
+		}
+
+		// See if it already exists!
+		File target = new File(downloadPath.toString(), name);
+		LOG.info("Will download file with path: " + downloadPath.toString() + " and name: " + name);
+		if (target.exists() || bot.getSoundMap().get(name) != null) {
+			LOG.info("Uploader tried to upload a file whose name already exists.");
+			event.getAuthor().getPrivateChannel().sendMessage("A sound with name `" + name + "` **already exists**!").queue();
+			return false;
+		}
+		// Download the file and put it in the proper folder/category.
+		else if (attachment.download(target)) {
+			LOG.info("Download succeeded for attachment: " + attachment.getFileName());
+			SoundboardDispatcher dispatcher = bot.getDispatcher();
+			dispatcher.updateFileList();
+			LOG.info("Updated sound list.");
+			SoundFile soundFile = dispatcher.getSoundFileByName(shortName);
+			if (soundFile == null) { LOG.fatal("Could not find uploaded file bean with name " + shortName); return false; }
+			// Check duration.
+			net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(event.getAuthor());
+			if ((u != null && u.getPrivilegeLevel() < 2 || !bot.isOwner(event.getAuthor())) && 
+					soundFile.getDuration() > MAX_DURATION_IN_SECONDS) {
+				// Delete the file.
+				LOG.info("File was too long! Deleting the file.");
+				Long duration = soundFile.getDuration();
+				target.delete();
+				dispatcher.updateFileList();
+				event.getAuthor().getPrivateChannel().sendMessage("File `" + name + 
+						"` is too long to add to sound list. *Duration:* **" + duration + "** seconds.").queue();
+			} else {
+				// Send message(s).
+				if (category == null || category.isEmpty()) category = "Uncategorized";
+				event.getAuthor().getPrivateChannel().sendMessage(getDownloadedMessage(
+						name, category, soundFile, attachment.getSize()).getMessage()).queue();
+				if (!event.isFromType(ChannelType.PRIVATE)) {
+					StyledEmbedMessage publishMessage = getPublishMessage(category, shortName, event.getAuthor(), soundFile);
+					event.getGuild().getPublicChannel().sendMessage(publishMessage.getMessage()).queue();
+					LOG.info("Sending announcement for uploaded file.");
+					if (!event.getAuthor().getName().equals(bot.getOwner())) {// Alert bot owner as well.
+						User owner = bot.getUserByName(bot.getOwner());
+						if (owner != null) owner.getPrivateChannel().sendMessage(publishMessage.getMessage()).queue();
+					}
+				}
+			}
+		} else {
+			event.getAuthor().getPrivateChannel().sendMessage("Download of file `" + name + "` **failed**!").queue();
+			return false;
+		}
+		return true;
+	}
 	
 	public void process(MessageReceivedEvent event) {
 		if (isApplicableCommand(event)) {
-			
+			boolean downloaded = false;
+
 			// Get all attachments from the message.
 			List<Attachment> attachments = event.getMessage().getAttachments();
-			// Get the category to upload to.
-			String category = event.getMessage().getContent();
 			
+			// Process attachments.
 			for (Attachment attachment : attachments) {
-			
-				// Get the name of the file.
-				String name = attachment.getFileName().toLowerCase(); // Ensure is lowercase.
-				String shortName = name.substring(0, name.indexOf("."));
-				String extension = name.substring(name.indexOf(".") + 1);
-				
-				// Only allow wav/mp3 uploads.
-				if (extension.equals("wav") || extension.equals("mp3")) {
-					if (attachment.getSize() < MAX_FILE_SIZE_IN_BYTES) {
-						Path downloadPath = bot.getSoundsPath();
-						if (bot.isASoundCategory(category)) {
-							for (Category _category : bot.getDispatcher().getCategories()) {
-								if (_category.getName().equalsIgnoreCase(category)) {
-									downloadPath = _category.getFolderPath();
-									category = _category.getName();
-									break;
-								}
-							}
-						} else {
-							if (bot.getDispatcher().getNumberOfCategories() >= 1 || (category != null && !category.isEmpty())) {
-								event.getAuthor().getPrivateChannel().sendMessage("No category was provided " +
-										"(*or it did not match an existing one*)!").queue();
-							}
-							category = null;
-						}
-						// See if it already exists!
-						File target = new File(downloadPath.toString(), name);
-						LOG.info("Got file with path: " + downloadPath.toString() + " and name: " + name);
-						if (target.exists() || bot.getSoundMap().get(name) != null) {
-							LOG.info("Uploader tried to upload a file whose name already exists.");
-							event.getAuthor().getPrivateChannel().sendMessage("A sound with name `" + name + "` **already exists**!").queue();
-						}
-						// Download the file and put it in the proper folder/category.
-						else if (attachment.download(target)) {
-							LOG.info("Download succeeded for attachment: " + attachment.getFileName());
-							SoundboardDispatcher dispatcher = bot.getDispatcher();
-							dispatcher.updateFileList();
-							LOG.info("Updated sound list.");
-							SoundFile soundFile = dispatcher.getSoundFileByName(shortName);
-							if (soundFile == null) { LOG.fatal("Could not find uploaded file bean with name " + shortName); return; }
-							// Check duration.
-							net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(event.getAuthor());
-							if ((u != null && u.getPrivilegeLevel() < 2 || !bot.isOwner(event.getAuthor())) && 
-									soundFile.getDuration() > MAX_DURATION_IN_SECONDS) {
-								// Delete the file.
-								LOG.info("File was too long! Deleting the file.");
-								Long duration = soundFile.getDuration();
-								target.delete();
-								dispatcher.updateFileList();
-								event.getAuthor().getPrivateChannel().sendMessage("File `" + name + 
-										"` is too long to add to sound list. *Duration:* **" + duration + "** seconds.").queue();
-							} else {
-								// Send message(s).
-								if (category == null || category.isEmpty()) category = "Uncategorized";
-								event.getAuthor().getPrivateChannel().sendMessage(getDownloadedMessage(
-										name, category, soundFile, attachment.getSize()).getMessage()).queue();
-								if (!event.isFromType(ChannelType.PRIVATE)) {
-									StyledEmbedMessage publishMessage = getPublishMessage(category, shortName, event.getAuthor(), soundFile);
-									event.getGuild().getPublicChannel().sendMessage(publishMessage.getMessage()).queue();
-									LOG.info("Sending announcement for uploaded file.");
-									if (!event.getAuthor().getName().equals(bot.getOwner())) {// Alert bot owner as well.
-										User owner = bot.getUserByName(bot.getOwner());
-										if (owner != null) owner.getPrivateChannel().sendMessage(publishMessage.getMessage()).queue();
-									}
-								}
-							}
-						} else {
-							event.getAuthor().getPrivateChannel().sendMessage("Download of file `" + name + "` **failed**!").queue();
-						}
-						if (!event.isFromType(ChannelType.PRIVATE) && bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
-							event.getMessage().deleteMessage().queue();
-					} else {
-						String end = (event.isFromType(ChannelType.PRIVATE)) ? "" : " *Was this for me? This bot looks for `.mp3` or `.wav` uploads.*";
-						event.getAuthor().getPrivateChannel().sendMessage("File `" + name + "` is too large to add to sound list." + end).queue();
-						event.getMessage().addReaction("😶").queue();
-					}
-				} else {
-					event.getMessage().addReaction("😶").queue();
-				}
+				if (handleAttachment(event, attachment)) downloaded = true;
 			}
+
+			// Delete original message if needed.
+			if (downloaded && 
+				!event.isFromType(ChannelType.PRIVATE) && 
+				bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+				event.getMessage().deleteMessage().queue();
 		}
 	}
 

@@ -14,7 +14,7 @@ public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor 
 	public static final int MAX_NUMBER_OF_LOOPED_PLAYS = 12;
 	
 	public PlaySoundLoopedProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Loop", bot);
+		super(prefix, "Loop Sound", bot);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
