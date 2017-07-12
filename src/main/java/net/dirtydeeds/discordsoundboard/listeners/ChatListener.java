@@ -19,7 +19,7 @@ public class ChatListener extends AbstractListener {
     
     private static final int THROTTLE_TIME_IN_MINUTES = 1;
     private static final int MAX_NUMBER_OF_REQUESTS_PER_TIME = 3;
-    private static final int EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME = 20;
+    private static final int EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME = 25;
     
     private Date tick;
     private int totalRequests;
@@ -94,7 +94,7 @@ public class ChatListener extends AbstractListener {
     	
     }
 
-    private void processTick() {
+    private void updateTick() {
     	Date now = new Date(System.currentTimeMillis());
     	long minutesSince = (now.getTime() - tick.getTime())/(1000*60);
     	if (minutesSince >= THROTTLE_TIME_IN_MINUTES) {
@@ -107,42 +107,48 @@ public class ChatListener extends AbstractListener {
     		}
     	}
     }
-    
-	public void onMessageReceived(MessageReceivedEvent event) {      
-		
+
+    private void process(ChatCommandProcessor processor, MessageReceivedEvent event) {
         User user = event.getAuthor();
 
-		processTick();
+        // Get number of requests for this user.
+        Integer numRequests = requests.get(user);
+        if (numRequests == null) numRequests = 0;
+
+        if (numRequests >= MAX_NUMBER_OF_REQUESTS_PER_TIME && bot.isThrottled(user)) {
+            bot.sendMessageToUser("Please wait a little before sending another command.", user);
+            return;
+        } else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME && !bot.isOwner(user)) {
+            LOG.info("Throttling user " + user.getName() + " because they sent too many requests.");
+            bot.throttleUser(user);
+            bot.sendMessageToUser("Throttling **" + user.getName() + 
+                    "** automatically because of too many requests.", bot.getOwner());
+            return;
+        }
+        
+        processor.process(event);
+        requests.put(user, numRequests + 1); // Increment number of requests.
+        ++totalRequests;
+        LOG.info("Processed chat message event with processor " + 
+            processor.getClass().getSimpleName() + " for user " + 
+            user.getName() + " with content \"" + 
+            event.getMessage().getContent() + "\".");
+    }
+    
+	public void onMessageReceived(MessageReceivedEvent event) {
+
+		updateTick();
 		
 		// See if a help command first. Process it here if that is the case. This does not count against requests.
 		if (helpProcessor.isApplicableCommand(event)) {
 			helpProcessor.process(event);
             return;
 		}
-
-        // Get number of requests for this user.
-        Integer numRequests = requests.get(user);
-        if (numRequests == null) numRequests = 0;
 		
 		// Respond to a particular message using a processor otherwise.
         for (ChatCommandProcessor processor : processors) {
         	if (processor.isApplicableCommand(event)) {
-        		if (numRequests >= MAX_NUMBER_OF_REQUESTS_PER_TIME && bot.isThrottled(user)) {
-        			LOG.info("Throttled user " + user.getName() + " trying to send too many requests.");
-                    bot.sendMessageToUser("You have been throttled "
-                            + "from sending too many requests. Please wait a little before sending "
-                            + "another command.", user);
-        		} else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME && !bot.isOwner(user)) {
-        			LOG.info("Throttling user " + user.getName() + " because they sent too many requests.");
-        			bot.throttleUser(user);
-        			bot.sendMessageToUser("Throttling **" + user.getName() + 
-        					"** automatically because of too many requests.", bot.getOwner());
-        		} else {
-        			processor.process(event);
-	        		requests.put(user, numRequests + 1); // Increment number of requests.
-                    ++totalRequests;
-	        		LOG.info("Processed chat message event with processor " + processor.getClass().getSimpleName());
-        		}
+        		process(processor, event);
         		return;
         	}
         }
