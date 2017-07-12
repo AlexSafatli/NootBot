@@ -118,7 +118,7 @@ public class PlaySoundsJob implements SoundboardJob {
 	}
 
 	private Message embedMessage(String description, User user, StringBuilder sb, long duration) {
-		StyledEmbedMessage msg = new StyledEmbedMessage("Playing Multiple Sounds");
+		StyledEmbedMessage msg = new StyledEmbedMessage("Playing Multiple Sounds", bot);
 		msg.addDescription(description);
 		if (sb != null) msg.addContent("Sounds Queued", sb.toString(), false);
 		if (duration > 0) msg.addContent("Total Duration", Long.toString(duration) + " seconds", false);

@@ -96,6 +96,19 @@ public class SoundboardBot {
     	long minutesSince = (now.getTime() - then.getTime())/(1000*60);
     	return minutesSince;
     }
+
+    public String getUptimeAsString() {
+        String uptime = "";
+        long minutes = getUptimeInMinutes();
+        if (minutes >= MIN_MINUTES_TO_SHOW_AS_DAYS) {
+            uptime = (minutes/(60*24) + " days");
+        } else if (minutes >= MIN_MINUTES_TO_SHOW_AS_HOURS) {
+            uptime = (minutes/60 + " hours");
+        } else {
+            uptime = (minutes + " minutes");
+        }
+        return uptime;
+    }
     
     /**
      * Gets a Map of the loaded sound files.

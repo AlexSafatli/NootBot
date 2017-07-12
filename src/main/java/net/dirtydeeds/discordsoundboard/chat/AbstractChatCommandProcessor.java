@@ -82,8 +82,7 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 	
 	protected StyledEmbedMessage buildStyledEmbedMessage() {
-		StyledEmbedMessage msg = new StyledEmbedMessage(this.getTitle());
-		return msg;
+		return new StyledEmbedMessage(getTitle(), bot);
 	}
 	
 	protected void pm(MessageReceivedEvent event, String message) {
@@ -103,7 +102,7 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 	
 	private StyledEmbedMessage makeEmbed(String message) {
-		StyledEmbedMessage em = new StyledEmbedMessage(getTitle());
+		StyledEmbedMessage em = new StyledEmbedMessage(getTitle(), bot);
 		em.addDescription(message);
 		return em;
 	}

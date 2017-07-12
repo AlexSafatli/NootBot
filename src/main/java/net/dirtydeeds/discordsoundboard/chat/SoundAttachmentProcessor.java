@@ -140,7 +140,7 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 	}
 
 	private StyledEmbedMessage getPublishMessage(String category, String name, User author, SoundFile file) {
-		StyledEmbedMessage msg = new StyledEmbedMessage("A New Sound Was Added!");
+		StyledEmbedMessage msg = new StyledEmbedMessage("A New Sound Was Added!", bot);
 		msg.addDescription("A new sound was added to the bot by " + author.getAsMention() + ".");
 		msg.addContent("Name", "`" + name + "`", true);
 		if (category != null && !category.isEmpty() && !category.equals("Uncategorized")) msg.addContent("Category", category, true);
@@ -150,7 +150,7 @@ public class SoundAttachmentProcessor implements ChatCommandProcessor {
 	}
 	
 	private StyledEmbedMessage getDownloadedMessage(String name, String category, SoundFile file, long size) {
-		StyledEmbedMessage msg = new StyledEmbedMessage("New Sound Added Successfully");
+		StyledEmbedMessage msg = new StyledEmbedMessage("New Sound Added Successfully", bot);
 		msg.addDescription("`" + name + "` downloaded and added to list of sounds. Play it with `?" + file.getSoundFileId() + "`.");
 		if (category != null && !category.isEmpty() && !category.equals("Uncategorized")) msg.addContent("Category", category, true);
 		msg.addContent("Duration", file.getDuration() + " seconds", true);

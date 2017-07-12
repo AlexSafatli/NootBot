@@ -102,7 +102,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	}
 
 	public StyledEmbedMessage announcement(String soundPlayed, String game, User[] users, int numPlaying, long numPlays) {
-		StyledEmbedMessage m = new StyledEmbedMessage("Whoa! You're all playing a game.");
+		StyledEmbedMessage m = new StyledEmbedMessage("Whoa! You're all playing a game.", bot);
 		String mentions = "";
 		for (int i = 0; i < numPlaying; ++i) {
 			if (users[i] != null) {

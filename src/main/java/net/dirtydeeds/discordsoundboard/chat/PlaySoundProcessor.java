@@ -21,7 +21,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	}
 
 	private void sendFailureMessage(MessageReceivedEvent event, String name, String suggestion, User user) {
-		StyledEmbedMessage msg = new StyledEmbedMessage("Could Not Find Sound `" + name + "`");
+		StyledEmbedMessage msg = new StyledEmbedMessage("Could Not Find Sound `" + name + "`", bot);
 		if (suggestion != null && !suggestion.isEmpty()) {
 			msg.addDescription(suggestion);
 		} else {

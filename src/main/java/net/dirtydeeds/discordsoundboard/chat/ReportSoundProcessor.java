@@ -52,7 +52,7 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			file.addOneToNumberOfReports();
 			bot.getDispatcher().saveSound(file);
-			pm(event, StyledEmbedMessage.forSoundFile(file, "Information for Sound `" + file.getSoundFileId() + "`", 
+			pm(event, StyledEmbedMessage.forSoundFile(bot, file, "Information for Sound `" + file.getSoundFileId() + "`", 
 					"You have successfully reported the sound called `" + file.getSoundFileId() + "`."));
 			if (file.getNumberOfReports() >= NUMBER_OF_REPORTS_FOR_DELETE && delete(file)) {
 				pm(event, "Your report was enough to have the sound get deleted. You won't have to deal with `" + name + "` anymore.");

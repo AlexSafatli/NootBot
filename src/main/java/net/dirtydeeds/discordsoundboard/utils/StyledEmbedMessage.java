@@ -15,7 +15,6 @@ import net.dv8tion.jda.core.entities.Message;
 public class StyledEmbedMessage {
 
 	private EmbedBuilder builder;
-	private String author;
 	private static final String NOOT_BOT_FOOTER_TEXT = Version.NAME + " " + Version.VERSION;
 	private static final String NOOT_BOT_DEFAULT_TOP = " ";
 	private static final String NOOT_BOT_DEFAULT_ERR = "Oops!";
@@ -30,16 +29,17 @@ public class StyledEmbedMessage {
 	
 	public StyledEmbedMessage(String title) {
 		this();
-		author = Version.AUTHOR;
 		builder.setTitle(title);
 		builder.setAuthor(NOOT_BOT_DEFAULT_TOP, null, null);
-		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + author, Icons.ELLIPSIS);
+		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR, 
+			Icons.ELLIPSIS);
 	}
 	
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
 		this(title);
-		author = Version.getAuthor(bot);
-		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + author, Icons.CHECK);
+		String numSounds = bot.getSoundMap().size() + " sounds";
+		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR + 
+			" \u2014 " + numSounds, Icons.ELLIPSIS);
 	}
 	
 	public void addDescription(String desc) {
@@ -80,8 +80,8 @@ public class StyledEmbedMessage {
 		return (Message) mb.build();
 	}
 	
-	public static StyledEmbedMessage forSoundFile(SoundFile file, String title, String description) {
-		StyledEmbedMessage msg = new StyledEmbedMessage(title);
+	public static StyledEmbedMessage forSoundFile(SoundboardBot bot, SoundFile file, String title, String description) {
+		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
 		msg.addDescription(description);
 		if (!file.getCategory().equals("sounds")) msg.addContent("Category", file.getCategory(), true);
 		msg.addContent("Name", "`" + file.getSoundFileId() + "`", true);

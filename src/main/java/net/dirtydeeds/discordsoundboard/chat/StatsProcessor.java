@@ -54,16 +54,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 			msg.addContent("Most Played", "`" +  mostPlayed.getSoundFileId() + "` with **" + mostPlayed.getNumberOfPlays() + "** plays", true);
 			msg.addContent("Longest Sound", "`" + longest.getSoundFileId() + "` (" + longest.getDuration() + "s)", true);
 		}
-		String uptime = null;
-		long minutes = bot.getUptimeInMinutes();
-		if (minutes >= MIN_MINUTES_TO_SHOW_AS_DAYS) {
-			uptime = (minutes/(60*24) + " days");
-		} else if (minutes >= MIN_MINUTES_TO_SHOW_AS_HOURS) {
-			uptime = (minutes/60 + " hours");
-		} else {
-			uptime = (minutes + " minutes");
-		}
-		msg.addContent("Bot Uptime", uptime, true);
+		msg.addContent("Bot Uptime", bot.getUptimeAsString(), true);
 		msg.addContent("Number of Servers", "" + bot.getGuilds().size(), true);
 		msg.addContent("Developer", Version.getAuthor(bot), true);
 		embed(event, msg);
