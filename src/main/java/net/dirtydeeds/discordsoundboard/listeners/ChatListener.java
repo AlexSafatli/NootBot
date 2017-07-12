@@ -155,9 +155,10 @@ public class ChatListener extends AbstractListener {
         
         // Handle typo commands with common prefix.
         if (isTypoCommand(event)) {
-        	bot.sendMessageToUser("That's not one of my commands! *Check your spelling*. Use `.help` to see all commands.", user);
+        	bot.sendMessageToUser("That's not one of my commands! *Check your spelling*. Use `.help` to see all commands.", event.getAuthor());
         	noOpProcessor.process(event); // Do nothing - deletes the message.
-            LOG.info("User " + user.getName() + " tried to run \"" + event.getMessage().getContent() + "\".");
+            LOG.info("User " + event.getAuthor().getName() + 
+                " tried to run \"" + event.getMessage().getContent() + "\".");
             return;
         }
         
