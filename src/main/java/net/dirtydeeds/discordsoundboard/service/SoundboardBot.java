@@ -42,9 +42,11 @@ import java.util.*;
 public class SoundboardBot {
 
     public static final SimpleLog LOG = SimpleLog.getLog("Bot");
-    private static int CHANNEL_CONNECTION_TIMEOUT = 5000;
-    private static int TOP_PLAYED_SOUND_THRESHOLD = 50;
-    private static int MAX_DURATION_FOR_RANDOM = 10;
+    private static final int CHANNEL_CONNECTION_TIMEOUT = 5000;
+    private static final int TOP_PLAYED_SOUND_THRESHOLD = 50;
+    private static final int MAX_DURATION_FOR_RANDOM = 10;
+    private static final long MIN_MINUTES_TO_SHOW_AS_HOURS = 120;  // 2 hours
+    private static final long MIN_MINUTES_TO_SHOW_AS_DAYS  = 2880; // 2 days
     public static String NOT_IN_VOICE_CHANNEL_MESSAGE = "Are you in a voice channel? Could not find you!";
     
     private long startTime;

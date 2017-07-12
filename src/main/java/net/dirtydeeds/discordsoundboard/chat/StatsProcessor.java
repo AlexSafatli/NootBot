@@ -9,9 +9,6 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class StatsProcessor extends AbstractChatCommandProcessor {
-
-	private static final long MIN_MINUTES_TO_SHOW_AS_HOURS = 120;  // 2 hours
-	private static final long MIN_MINUTES_TO_SHOW_AS_DAYS  = 2880; // 2 days
 	
 	public StatsProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "About Me", bot);
