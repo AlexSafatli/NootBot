@@ -88,7 +88,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			String filePlayed = bot.getRandomTopPlayedSoundName(MAX_DURATION);
 			if (filePlayed != null) {
 				SoundFile f = bot.getSoundMap().get(filePlayed);
-				int numPlays = (f != null) ? (int) f.getNumberOfPlays() : 0;
+				long numPlays = (f != null) ? f.getNumberOfPlays() : 0;
 				Message msg = announcement(
 					filePlayed, game, users, numPlayers, numPlays).getMessage();
 				try {
@@ -101,7 +101,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		}
 	}
 
-	public StyledEmbedMessage announcement(String soundPlayed, String game, User[] users, int numPlaying, int numPlays) {
+	public StyledEmbedMessage announcement(String soundPlayed, String game, User[] users, int numPlaying, long numPlays) {
 		StyledEmbedMessage m = new StyledEmbedMessage("Whoa! You're all playing a game.");
 		String mentions = "";
 		for (int i = 0; i < numPlaying; ++i) {
