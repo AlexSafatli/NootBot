@@ -242,10 +242,6 @@ public class SoundboardBot {
 	}
 	
 	public void setEntranceForUser(net.dv8tion.jda.core.entities.User user, String filename) {
-		if (filename != null && !filename.isEmpty())
-			LOG.info("New entrance \"" + filename + "\" set for " + user.getName());
-		else
-			LOG.info("Cleared entrance associated with " + user.getName());
 		List<User> users = dispatcher.getUserById(user.getId());
 		if (users != null && !users.isEmpty()) {
 			users.get(0).setEntrance(filename);
@@ -255,6 +251,10 @@ public class SoundboardBot {
 			u.setEntrance(filename);
 			dispatcher.saveUser(u);
 		}
+        if (filename != null && !filename.isEmpty())
+            LOG.info("New entrance \"" + filename + "\" set for " + user.getName());
+        else
+            LOG.info("Cleared entrance associated with " + user.getName());
 	}
     
     public boolean disallowUser(net.dv8tion.jda.core.entities.User user) {
@@ -262,13 +262,13 @@ public class SoundboardBot {
     	if (users != null && !users.isEmpty() && users.get(0).isDisallowed()) {
     		return true; // Already disallowed.
     	} else {
-    		LOG.info("User " + user + " disallowed from playing sounds.");
     		if (users == null || users.isEmpty()) { // Not already in records.
     			dispatcher.registerUser(user, true, false);
     		} else { // Already in records.
     			users.get(0).setDisallowed(true);
     			dispatcher.saveUser(users.get(0));
     		}
+            LOG.info("User " + user + " disallowed from playing sounds.");
     		return true;
     	}
     }
@@ -297,16 +297,16 @@ public class SoundboardBot {
     	if (users != null && !users.isEmpty() && users.get(0).isThrottled()) {
     		return true; // Already throttled.
     	} else {
-    		LOG.info("User " + user + " throttled from playing sounds.");
     		if (users == null || users.isEmpty()) {
     			dispatcher.registerUser(user, false, true);
     		} else {
     			users.get(0).setThrottled(true);
     			dispatcher.saveUser(users.get(0));
     		}
+            LOG.info("User " + user + " throttled from playing sounds.");
     		sendMessageToUser("You have been **throttled** from sending"
     				+ " me commands. You will only be able to send me limited requests in a"
-    				+ " period of time. Contact the bot owner to dispute this action.", user);
+    				+ " period of time. *Contact the bot owner to dispute this action.*", user);
     		return true;
     	}
     }
@@ -320,8 +320,9 @@ public class SoundboardBot {
     	List<User> users = dispatcher.getUserById(user.getId());
     	if (users != null && !users.isEmpty()) {
     		if (users.get(0).isThrottled()) {
-        		sendMessageToUser("You are no longer "
-        				+ "**throttled** from sending me commands.", user);
+        		sendMessageToUser(
+                    "You are no longer **throttled** from sending me commands.", 
+                    user);
     		}
     		users.get(0).setThrottled(false);
     		dispatcher.saveUser(users.get(0));
@@ -367,10 +368,12 @@ public class SoundboardBot {
     	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
 		player.stopTrack();
+        // TODO decrease all play counts by 1
 		scheduler.clear();
     }
 
     public void muteSound(Guild guild) {
+        stopPlayingSound(guild);
         AudioManager audio = guild.getAudioManager();
         audio.setSelfMuted(true);
     }
@@ -553,11 +556,6 @@ public class SoundboardBot {
     		LOG.info("Could not move to channel " + channel + " because no permission to join.");
     		return false;
     	}
-        if (voice.isSelfMuted()) {
-            LOG.info("Self-muted so not moving to channel.");
-            if (voice.isConnected()) voice.closeAudioConnection();
-            return false;
-        }
 		LOG.info("Moving to channel " + channel);
     	try {
 	        if (voice.isConnected() && !voice.isAttemptingToConnect()) voice.openAudioConnection(channel);
@@ -580,13 +578,12 @@ public class SoundboardBot {
      * @throws Exception
      */
     public VoiceChannel getUsersVoiceChannel(net.dv8tion.jda.core.entities.User user) throws Exception {
-    	
     	for (Guild guild : getGuildsWithUser(user)) {
     		Member member = guild.getMemberById(user.getId());
-    		if (member != null && member.getVoiceState().getChannel() != null) return member.getVoiceState().getChannel();
+    		if (member != null && member.getVoiceState().getChannel() != null)
+                return member.getVoiceState().getChannel();
     	}
     	return null; // Could not find this user in a voice channel.
-        
     }
 
 	public boolean isUser(net.dv8tion.jda.core.entities.User user) {
@@ -602,18 +599,15 @@ public class SoundboardBot {
     }
 
     public SoundFile getLastPlayed() {
-        if (lastPlayed == null) return null;
-        return lastPlayed.getSoundFile();
+        return (lastPlayed == null) ? null : lastPlayed.getSoundFile();
     }
 
     public String getLastPlayedUsername() {
-        if (lastPlayed == null) return null;
-        return lastPlayed.getUsername();
+        return (lastPlayed == null) ? null : lastPlayed.getUsername();
     }
 
     public String getLastPlayedSoundInfo() {
-        if (lastPlayed == null) return null;
-        return lastPlayed.toString();
+        return (lastPlayed == null) ? null : lastPlayed.toString();
     }
 
     /**
@@ -696,6 +690,10 @@ public class SoundboardBot {
     
     private void playURL(String url, Guild guild) {
     	AudioManager audio = guild.getAudioManager();
+        if (audio.isSelfMuted()) {
+            LOG.info("Not playing sound because muted.");
+            return;
+        }
     	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
 		LOG.info("Sending request for '" + url + "' to AudioManager");
@@ -705,14 +703,15 @@ public class SoundboardBot {
     private void initializeDiscordBot(String token) {
         try {
 			bot = new JDABuilder(AccountType.BOT).setToken(token).buildBlocking();
-	        ChatListener chatListener = new ChatListener(this);
+            ChatListener chatListener = new ChatListener(this);
+            MoveListener moveListener = new MoveListener(this);
+            GameListener gameListener = new GameListener(this);
 	        this.chatListener = chatListener;
 	        this.addListener(chatListener);
-	        MoveListener moveListener = new MoveListener(this);
 	        this.addListener(moveListener);
-	        GameListener gameListener = new GameListener(this);
 	        this.addListener(gameListener);
 	        LOG.info("Finished initializing bot with name " + getBotName());
+            for (Guild guild : getGuilds()) LOG.info("Connected to guild " + guild.getName());
 		} catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException e) {
 			LOG.fatal("Could not initialize bot " + getBotName());
             e.printStackTrace();
@@ -721,7 +720,7 @@ public class SoundboardBot {
 
     private void clearPreviousMessages() {
         for (Guild guild : getGuilds()) {
-            LOG.info("Queueing actions to clear previous messages in guild " + guild.getName());
+            LOG.info("Clearing previous messages in guild " + guild.getName());
             ChatUtils.clearBotMessagesInChannel(this, guild.getPublicChannel());
         }
     }

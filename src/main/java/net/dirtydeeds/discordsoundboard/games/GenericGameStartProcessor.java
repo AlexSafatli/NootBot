@@ -6,6 +6,7 @@ import net.dirtydeeds.discordsoundboard.games.AbstractGameUpdateProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -86,19 +87,21 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			if (pastEvent != null) pastEvent.clear();
 			String filePlayed = bot.getRandomTopPlayedSoundName(MAX_DURATION);
 			if (filePlayed != null) {
+				SoundFile f = bot.getSoundMap().get(filePlayed);
+				int numPlays = (f != null) ? f.getNumberOfPlays() : 0;
+				StyledEmbedMessage msg = announcement(
+					filePlayed, game, users, numPlayers, numPlays).getMessage();
 				try {
 					bot.playFileForUser(filePlayed, user);
 					pastEvent = new GameStartEvent(channel, now, null);
-					publicChannel.sendMessage(
-						announcement(filePlayed, game, users, numPlayers).getMessage())
-					.queue((Message m)-> pastEvent.message = m);
+					publicChannel.sendMessage(msg).queue((Message m)-> pastEvent.message = m);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
 				} catch (Exception e) { e.printStackTrace(); }
 			}
 		}
 	}
 
-	public StyledEmbedMessage announcement(String soundPlayed, String game, User[] users, int numPlaying) {
+	public StyledEmbedMessage announcement(String soundPlayed, String game, User[] users, int numPlaying, int numPlays) {
 		StyledEmbedMessage m = new StyledEmbedMessage("Whoa! You're all playing a game.");
 		String mentions = "";
 		for (int i = 0; i < numPlaying; ++i) {
@@ -106,7 +109,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				mentions += users[i].getAsMention() + " ";
 			}
 		}
-		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, game, mentions));
+		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, numPlays, game, mentions));
 		m.addContent("Annoying?", lookupString(Strings.SOUND_REPORT_INFO), false);
 		if (thumbnail != null) m.setThumbnail(thumbnail);
 		return m;
