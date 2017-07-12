@@ -89,7 +89,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			if (filePlayed != null) {
 				SoundFile f = bot.getSoundMap().get(filePlayed);
 				int numPlays = (f != null) ? f.getNumberOfPlays() : 0;
-				StyledEmbedMessage msg = announcement(
+				Message msg = announcement(
 					filePlayed, game, users, numPlayers, numPlays).getMessage();
 				try {
 					bot.playFileForUser(filePlayed, user);
