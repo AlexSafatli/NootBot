@@ -23,14 +23,14 @@ public class LimitUserProcessor extends AuthenticatedSingleArgumentChatCommandPr
 				LOG.info("Throttled username " + username);
 			} else {
 				pm(event, formatString(Strings.USER_NOT_FOUND_UNTHROTTLED, username));
-				LOG.info("Failed to throttle username " + username);
+				LOG.warn("Failed to throttle username " + username);
 			}
 		}
 	}
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - throttle a user from using bot every **5** minutes";
+		return super.getCommandHelpString() + " - throttle a user from using bot too often";
 	}
 	
 }

@@ -93,10 +93,12 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 		String title = category.getName();
     if (sounds != null) title += " (" + sounds.size() + ")";
 		if (parent != null) title += " \u2014 subcategory of " + parent.getName();
+    int i = 0;
 		for (String s : strings) {
-			StyledEmbedMessage em = new StyledEmbedMessage(title);
+			StyledEmbedMessage em = new StyledEmbedMessage((i == 0) ? title : title + " (*page " + i + "*)");
 			em.addDescription(s);
 			embed(event, em);
+      ++i;
 		}
 		if (!category.getChildren().isEmpty()) {
 			for (Category child : category.getChildren()) listByCategory(child, category, categoryFiles, event);

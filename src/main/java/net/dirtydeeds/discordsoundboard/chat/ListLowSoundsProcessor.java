@@ -11,8 +11,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
-
-  public static final SimpleLog LOG = SimpleLog.getLog("ListLowSoundsProcessor");
   
   private static final int NUMBER_TO_SHOW = 50;
   
@@ -47,7 +45,6 @@ public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
     }
     List<String> lowSounds = getLowSounds();
     for (String s : lowSounds) m(event, s);
-    LOG.info("Listed the " + NUMBER_TO_SHOW + " least played sounds for user " + event.getAuthor().getName());
   }
   
   @Override

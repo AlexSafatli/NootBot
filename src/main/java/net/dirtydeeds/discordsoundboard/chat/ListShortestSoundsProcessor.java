@@ -11,8 +11,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
-
-  public static final SimpleLog LOG = SimpleLog.getLog("ListShortestSoundsProcessor");
   
   private static final int NUMBER_TO_SHOW = 50;
   
@@ -40,14 +38,13 @@ public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
   }
   
   protected void handleEvent(MessageReceivedEvent event, String message) {
-        Map<String, SoundFile> soundFiles = bot.getSoundMap();
-        if (soundFiles.isEmpty()) {
-          e(event, "There are **no sound files** at all!");
-          return;
-        }
-        List<String> topSounds = getShortestSounds();
-      for (String msg : topSounds) m(event, msg);
-      LOG.info("Listed the " + NUMBER_TO_SHOW + " shortest sounds for user " + event.getAuthor().getName());
+    Map<String, SoundFile> soundFiles = bot.getSoundMap();
+    if (soundFiles.isEmpty()) {
+      e(event, "There are **no sound files** at all!");
+      return;
+    }
+    List<String> topSounds = getShortestSounds();
+    for (String msg : topSounds) m(event, msg);
   }
   
   @Override

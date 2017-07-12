@@ -40,6 +40,7 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 		MessageBuilder mb = new MessageBuilder();
 		mb.append("Found **" + possibilities.size() + "** possible sound files for query `" + query + "` " + 
 				user.getAsMention() + ":\n\n");
+		LOG.info("Query produced " + possibilities.size() + " possibilities.");
 		if (!possibilities.isEmpty()) {
 			for (String possibility : possibilities)
 				mb.append("`?" + possibility + "` ");

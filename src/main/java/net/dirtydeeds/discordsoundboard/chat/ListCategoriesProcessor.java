@@ -9,8 +9,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
-
-	public static final SimpleLog LOG = SimpleLog.getLog("ListCategoriesProcessor");
 	
 	public ListCategoriesProcessor(String prefix, SoundboardBot soundPlayer) {
 		super(prefix, "Categories", soundPlayer);
@@ -21,7 +19,6 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
         if (root.getChildren().size() > 0) {
         	m(event, "Here is a list of categories and subcategories:\n\n" + 
         			listCategories(root));
-            LOG.info("Listed categories for user " + event.getAuthor().getName());
         } else {
         	e(event, "There were no categories found.");
         }

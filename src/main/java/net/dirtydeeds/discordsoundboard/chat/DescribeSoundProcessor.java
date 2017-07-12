@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 	
 	public DescribeSoundProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Get Information for a Sound", bot);
+		super(prefix, "Sound Info", bot);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -30,7 +30,7 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
       w(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
-			embed(event, StyledEmbedMessage.forSoundFile(file, "Information for Sound `" + file.getSoundFileId() + "`", 
+			embed(event, StyledEmbedMessage.forSoundFile(file, getTitle(), 
 					"You requested information for a sound " + user.getAsMention()));
 		}
 	}

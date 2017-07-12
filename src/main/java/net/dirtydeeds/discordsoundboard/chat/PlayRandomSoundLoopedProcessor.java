@@ -9,7 +9,6 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class PlayRandomSoundLoopedProcessor extends MultiArgumentChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("RandomSoundLoopProcessor");
 	public static final int MAX_NUMBER_OF_LOOPED_PLAYS = 12;
 	
 	public PlayRandomSoundLoopedProcessor(String prefix, SoundboardBot bot) {
@@ -27,7 +26,6 @@ public class PlayRandomSoundLoopedProcessor extends MultiArgumentChatCommandProc
         }
         if (!bot.isAllowedToPlaySound(user)) {
         	pm(event, lookupString(Strings.NOT_ALLOWED));
-        	LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
         } else if (numTimesToPlay <= 0 || (numTimesToPlay > MAX_NUMBER_OF_LOOPED_PLAYS && !privileged)) {
         	e(event, "Need to be positive and <= **" + MAX_NUMBER_OF_LOOPED_PLAYS + "** for #/plays."); return;
         } else {

@@ -54,7 +54,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 		for (SoundFile file : soundFiles) {
 			Date lastModified = file.getLastModified();
 			if (lastModified == null) {
-				LOG.debug(file + " had no last modified date");
+				LOG.warn(file + " had no last modified date");
 				continue;
 			}
 			if (!lastModified.after(new Date(System.currentTimeMillis()-numHours*60*60*1000)))

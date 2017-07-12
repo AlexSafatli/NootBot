@@ -7,8 +7,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
-
-	public static final SimpleLog LOG = SimpleLog.getLog("SetEntranceForUserProcessor");
 	
 	public SetEntranceForUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Entrance for User", bot);
