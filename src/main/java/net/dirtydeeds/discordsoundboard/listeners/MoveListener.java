@@ -61,7 +61,7 @@ public class MoveListener extends AbstractListener {
     	
 		if (bot.isUser(user)) {
 			if (voiceChannel.getMembers().size() == 1) {
-				LOG.info("Moved to an empty channel. Closing audio connection.");
+				LOG.info("Moved to an empty channel. Closing audio connection in " + guild.getName() + ".");
 				leaveVoiceInGuild(guild);
 			}
 			return;
@@ -70,7 +70,7 @@ public class MoveListener extends AbstractListener {
 		}
 		
     	LOG.info(user.getName() + " joined " + voiceChannel.getName() + 
-    			" in " + guild.getName());
+    			" in " + guild.getName() + ".");
         
         if (!bot.isAllowedToPlaySound(user)) {
         	LOG.info("User " + user.getName() + " cannot play sounds. Ignoring.");
@@ -112,7 +112,7 @@ public class MoveListener extends AbstractListener {
 		        			soundInfo = "Played sound " + formatString(Strings.SOUND_DESC, fileToPlay, sound.getCategory(),
 		        					sound.getNumberOfPlays()) + ".";
 		        		} else {
-                            LOG.info("Tried to play entrance " + fileToPlay + " for user but did not play a sound.");
+                            LOG.info("Wanted to play entrance \"" + fileToPlay + "\" for user but did not play a sound.");
                         }
 		        	} catch (Exception e) { e.printStackTrace(); }
     			} else if (bot.getConnectedChannel(guild) == null) {
@@ -131,13 +131,13 @@ public class MoveListener extends AbstractListener {
     	onLeave(event.getChannelLeft(), event.getMember().getUser());
     }
 	
-	private void onLeave(VoiceChannel channel, User user) {
+	private void onLeave(VoiceChannel channel, User  user) {
     	if (bot.isUser(user) || bot.getConnectedChannel(channel.getGuild()) == null)
     		return; // Ignore if it is just the bot or not even connected.
     	Guild guild = channel.getGuild();
     	VoiceChannel botsChannel = guild.getAudioManager().getConnectedChannel();
     	LOG.info(user.getName() + " left " + channel.getName() + 
-    			" in " + guild.getName());
+    			" in " + guild.getName() + ".");
     	
     	if (botsChannel != null && VoiceUtils.numUsersInVoiceChannels(guild) == 0) {
             LOG.info("No more users! Leaving voice channel in server " + guild.getName());

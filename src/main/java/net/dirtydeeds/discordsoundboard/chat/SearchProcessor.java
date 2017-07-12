@@ -16,18 +16,18 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 	public static final SimpleLog LOG = SimpleLog.getLog("SearchProcessor");
 	
 	public SearchProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Search", bot);
+		super(prefix, "Search Sounds", bot);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		User user = event.getAuthor();
-        String query = getArgument();
-        List<String> possibilities = new LinkedList<>();
-    	LOG.info(String.format("%s wants to search for \"%s\" in %s.", user.getName(), query, event.getGuild()));
-        if (StringUtils.containsAny(query, '?')) {
-        	pm(event, "No sound file contains question marks `?`. *Baka*."); return;
-        }
-    	// Leverage trie first.
+    String query = getArgument();
+    List<String> possibilities = new LinkedList<>();
+		LOG.info(String.format("%s wants to search for \"%s\" in %s.", user.getName(), query, event.getGuild()));
+    if (StringUtils.containsAny(query, '?')) {
+    	w(event, "No sound file contains question marks `?`. *Baka*."); return;
+    }
+    // Leverage trie first.
 		String possibleName = bot.getClosestMatchingSoundName(query);
 		if (possibleName != null) {
 			LOG.info("A close matching sound name is: " + possibleName);
@@ -40,10 +40,14 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 		MessageBuilder mb = new MessageBuilder();
 		mb.append("Found **" + possibilities.size() + "** possible sound files for query `" + query + "` " + 
 				user.getAsMention() + ":\n\n");
-		for (String possibility : possibilities) mb.append("`?" + possibility + "` ");
 		if (!possibilities.isEmpty()) {
-			for (String m : mb) m(event, m);
-		} else w(event, "No results found for query `" + query + "` " + user.getAsMention() + ".");
+			for (String possibility : possibilities)
+				mb.append("`?" + possibility + "` ");
+			for (String m : mb)
+				m(event, m);
+		} else {
+			w(event, "No results found for query `" + query + "` " + user.getAsMention() + ".");
+		}
 	}
 	
 	@Override

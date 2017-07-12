@@ -31,11 +31,10 @@ repositories {
 
 dependencies {
     compile('net.dv8tion:JDA:3.0.BETA2_108')
-    compile('com.sedmelluq:lavaplayer:1.2.9')
+    compile('com.sedmelluq:lavaplayer:1.2.42')
     compile("commons-io:commons-io:2.4")
     compile("com.h2database:h2")
  	compile("com.googlecode.soundlibs:mp3spi:1.9.5-1")
- 	compile("com.github.theholywaffle:lolchatapi:1.2.8")
     compile group: "com.google.guava", name: "guava", version: "r05"
     compile 'com.google.code.gson:gson:2.8.0'
     compile("org.springframework.boot:spring-boot-starter-jersey")

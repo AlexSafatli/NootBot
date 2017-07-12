@@ -60,6 +60,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	        try {
 	            bot.playFileForChatCommand(name, event);
 	            SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
+	            LOG.info("Played sound for " + user.getName());
 	            if (sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
 	            	// Make an announcement every so many plays.
 	            	m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name, sound.getNumberOfPlays()));

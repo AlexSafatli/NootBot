@@ -48,12 +48,13 @@ public class GameListener extends AbstractListener {
     }
 
     private void logGameChange(String name, Guild guild, Game previousGame, Game currentGame) {
+        if (guild == null) return;
         if (currentGame == null && previousGame != null)
-            LOG.info(name + " stopped playing " + previousGame.getName() + " in " + guild + ".");
+            LOG.info(name + " stopped playing " + previousGame.getName() + " in server " + guild.getName() + ".");
         else if (previousGame == null)
-            LOG.info(name + " started playing " + currentGame.getName() + " in " + guild + ".");
+            LOG.info(name + " started playing " + currentGame.getName() + " in server " + guild.getName() + ".");
         else
-            LOG.info(name + " changed to " + currentGame.getName() + " from " + previousGame.getName() + " in " + guild + ".");
+            LOG.info(name + " changed to " + currentGame.getName() + " from " + previousGame.getName() + " in server " + guild.getName() + ".");
     }
 
 	public void onUserGameUpdate(UserGameUpdateEvent event) {      

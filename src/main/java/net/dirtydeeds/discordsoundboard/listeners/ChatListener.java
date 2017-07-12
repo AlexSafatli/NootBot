@@ -17,11 +17,12 @@ public class ChatListener extends AbstractListener {
     public static final SimpleLog LOG = SimpleLog.getLog("Chat");
     public static final char CommonPrefix = '.';
     
-    private static final int THROTTLE_TIME_IN_MINUTES = 5;
-    private static final int MAX_NUMBER_OF_REQUESTS_PER_TIME = 5;
-    private static final int EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME = 75;
+    private static final int THROTTLE_TIME_IN_MINUTES = 1;
+    private static final int MAX_NUMBER_OF_REQUESTS_PER_TIME = 3;
+    private static final int EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME = 20;
     
     private Date tick;
+    private int totalRequests;
     private Map<User,Integer> requests;
     private List<ChatCommandProcessor> processors;
     private HelpProcessor helpProcessor;
@@ -31,7 +32,7 @@ public class ChatListener extends AbstractListener {
         this.bot = soundPlayer;
         this.tick = new Date(System.currentTimeMillis());
         this.requests = new HashMap<>();
-        this.processors = new LinkedList<ChatCommandProcessor>();
+        this.processors = new LinkedList<>();
         initializeProcessors();
     }
     
@@ -99,8 +100,10 @@ public class ChatListener extends AbstractListener {
     	if (minutesSince >= THROTTLE_TIME_IN_MINUTES) {
     		this.tick = now;
     		if (requests.size() > 0) {
-    			LOG.info(minutesSince + " minutes have passed since last clear. Clearing request counts for " + requests.size() + " users.");
+    			LOG.info(minutesSince + " min have passed. Clearing request counts for " + 
+                    requests.size() + " users (" + totalRequests + " total requests).");
                 requests.clear();
+                totalRequests = 0;
     		}
     	}
     }
@@ -111,14 +114,15 @@ public class ChatListener extends AbstractListener {
 
 		processTick();
 		
-		// Get number of requests for this user.
-		Integer numRequests = requests.get(user);
-		if (numRequests == null) numRequests = 0;
-		
 		// See if a help command first. Process it here if that is the case. This does not count against requests.
 		if (helpProcessor.isApplicableCommand(event)) {
-			helpProcessor.process(event); return;
+			helpProcessor.process(event);
+            return;
 		}
+
+        // Get number of requests for this user.
+        Integer numRequests = requests.get(user);
+        if (numRequests == null) numRequests = 0;
 		
 		// Respond to a particular message using a processor otherwise.
         for (ChatCommandProcessor processor : processors) {
@@ -136,6 +140,7 @@ public class ChatListener extends AbstractListener {
         		} else {
         			processor.process(event);
 	        		requests.put(user, numRequests + 1); // Increment number of requests.
+                    ++totalRequests;
 	        		LOG.info("Processed chat message event with processor " + processor.getClass().getSimpleName());
         		}
         		return;
@@ -146,6 +151,7 @@ public class ChatListener extends AbstractListener {
         if (isTypoCommand(event)) {
         	bot.sendMessageToUser("That's not one of my commands! *Check your spelling*. Use `.help` to see all commands.", user);
         	noOpProcessor.process(event); // Do nothing - deletes the message.
+            LOG.info("User " + user.getName() + " tried to run \"" + event.getMessage().getContent() + "\".");
             return;
         }
         

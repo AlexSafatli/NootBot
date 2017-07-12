@@ -22,7 +22,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	
 	private static final int MIN_NUM_PLAYERS = 3;
 	private static final int NUMBER_SEC_BETWEEN = 60;
-	private static final int MAX_DURATION = 3;
+	private static final int MAX_DURATION = 2;
 	
 	private GameStartEvent pastEvent;
 	private String thumbnail;
@@ -76,7 +76,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			}
 		}
 		if (numPlayers >= MIN_NUM_PLAYERS) {
-			LOG.info("Found " + user.getName() + " and " + numPlayers + " other users playing " + game + " in channel " + channel);
+			LOG.info("Found " + user.getName() + " + " + numPlayers + " others playing " + game + " in " + channel.getName() + " of guild " + guild.getName() + ".");
 			Date now = new Date(System.currentTimeMillis());
 			if (pastEvent != null && pastEvent.channel != null && pastEvent.channel.equals(channel)) {
 		    	long secSince = (now.getTime() - pastEvent.time.getTime())/1000;

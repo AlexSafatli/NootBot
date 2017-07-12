@@ -243,9 +243,9 @@ public class SoundboardBot {
 	
 	public void setEntranceForUser(net.dv8tion.jda.core.entities.User user, String filename) {
 		if (filename != null && !filename.isEmpty())
-			LOG.info("New entrance \"" + filename + "\" set for " + user);
+			LOG.info("New entrance \"" + filename + "\" set for " + user.getName());
 		else
-			LOG.info("Cleared entrance associated with " + user);
+			LOG.info("Cleared entrance associated with " + user.getName());
 		List<User> users = dispatcher.getUserById(user.getId());
 		if (users != null && !users.isEmpty()) {
 			users.get(0).setEntrance(filename);
@@ -506,10 +506,9 @@ public class SoundboardBot {
         		LOG.info("User joined AFK channel so will not follow him to play entrance.");
         		return false;
         	}
-        	LOG.info("Playing entrance for user " + user.getName() + 
-        			" with filename " + fileName);
         	if (connected == null || !connected.equals(joined))
         		if (!moveToChannel(joined)) return false;
+            LOG.info("Playing entrance \"" + fileName + "\" for user " + user.getName() + " in " + joined.getName());
         	SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
             playFile(fileToPlay, joined.getGuild(), false); // Do not add to count for entrances.
         	return true;
