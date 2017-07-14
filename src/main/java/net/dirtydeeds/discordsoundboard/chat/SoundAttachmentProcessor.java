@@ -102,7 +102,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 			pm(event, getDownloadedMessage(file.name, category, soundFile, attachment.getSize()));
 			if (!event.isFromType(ChannelType.PRIVATE)) {
 				StyledEmbedMessage publishMessage = getPublishMessage(category, file.shortName, user, soundFile);
-				embed(event, publishMessage.getMessage());
+				embed(event, publishMessage);
 				LOG.info("Sending announcement for uploaded file.");
 				if (!user.getName().equals(bot.getOwner())) { // Alert bot owner as well.
 					User owner = bot.getUserByName(bot.getOwner());
