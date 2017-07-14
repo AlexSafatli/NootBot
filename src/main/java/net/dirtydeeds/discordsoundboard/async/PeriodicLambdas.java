@@ -25,7 +25,7 @@ public class PeriodicLambdas {
       StyledEmbedMessage msg = new StyledEmbedMessage(DONATION_TITLE, b);
       msg.setColor(DONATION_COLOR);
       msg.addDescription(DONATION_MSG);
-      b.sendMessageToAllGuilds(msg);
+      b.sendMessageToAllGuilds(msg.getMessage());
     }, EVERY_TWO_DAYS);
   }
 
