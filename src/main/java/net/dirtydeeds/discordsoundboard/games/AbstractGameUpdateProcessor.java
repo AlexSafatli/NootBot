@@ -4,8 +4,11 @@ import java.util.function.Consumer;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 import net.dv8tion.jda.core.requests.RestAction;
@@ -48,7 +51,7 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 	protected void error(UserGameUpdateEvent event, Exception e) {
 		Guild guild = event.getGuild();
 		VoiceChannel botChannel = bot.getConnectedChannel(guild);
-		Game game = guild.getMemberById(user.getId()).getGame();
+		Game game = guild.getMemberById(event.getUser().getId()).getGame();
 		StyledEmbedMessage msg = new StyledEmbedMessage(ERROR_TITLE, bot).isError(true);
 		msg.addDescription(e.toString());
 		msg.addContent("Connected Channel", botChannel.getName(), true);

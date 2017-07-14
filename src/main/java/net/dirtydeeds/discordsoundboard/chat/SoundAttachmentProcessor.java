@@ -16,6 +16,7 @@ import net.dv8tion.jda.core.entities.Message.Attachment;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
@@ -130,7 +131,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		String msg = "`" + name + "` downloaded and added to list of sounds successfully. Play it with `?" + file.getSoundFileId() + "`.\n";
 		if (category != null && !category.isEmpty() && !category.equals("Uncategorized"))
 			msg += "It was put into category: **" + category + "**\n";
-		msg += "File Size was: **" + Sizee/1000 + " kB**";
+		msg += "File Size was: **" + size/1000 + " kB**";
 		return msg;
 	}
 

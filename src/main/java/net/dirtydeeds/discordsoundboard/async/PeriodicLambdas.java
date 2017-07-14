@@ -1,5 +1,7 @@
 package net.dirtydeeds.discordsoundboard.async;
 
+import java.awt.Color;
+
 import net.dirtydeeds.discordsoundboard.Icons;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;

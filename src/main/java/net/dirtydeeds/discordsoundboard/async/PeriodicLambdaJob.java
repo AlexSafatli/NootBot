@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.async;
 import java.util.Date;
 import java.util.function.Consumer;
 
+import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 
 public class PeriodicLambdaJob implements SoundboardJob {
