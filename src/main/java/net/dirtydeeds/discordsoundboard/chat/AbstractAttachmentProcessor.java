@@ -36,7 +36,7 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
     }
 
     public String toString() {
-      return "Attachment [" name + "]";
+      return "Attachment [" + name + "]";
     }
   }
   
