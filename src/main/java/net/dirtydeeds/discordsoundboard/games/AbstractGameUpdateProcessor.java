@@ -12,6 +12,8 @@ import net.dv8tion.jda.core.requests.RestAction;
 
 public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor {
 
+	private static final String ERROR_TITLE = "Derp!";
+
 	protected SoundboardBot bot;
 	
 	public AbstractGameUpdateProcessor(SoundboardBot bot) {
@@ -41,6 +43,19 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 	protected void embed(TextChannel channel, StyledEmbedMessage embed, Consumer<Message> m) {
 		RestAction<Message> ra = channel.sendMessage(embed.getMessage());
 		ra.queue(m);
+	}
+
+	protected void error(UserGameUpdateEvent event, Exception e) {
+		Guild guild = event.getGuild();
+		VoiceChannel botChannel = bot.getConnectedChannel(guild);
+		Game game = guild.getMemberById(user.getId()).getGame();
+		StyledEmbedMessage msg = new StyledEmbedMessage(ERROR_TITLE, bot).isError(true);
+		msg.addDescription(e.toString());
+		msg.addContent("Connected Channel", botChannel.getName(), true);
+		msg.addContent("Triggering User", event.getUser().getName(), true);
+		msg.addContent("Game", game.getName(), true);
+		embed(event.getGuild().getPublicChannel(), msg);
+		e.printStackTrace();
 	}
 
 	public String toString() {

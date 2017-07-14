@@ -21,6 +21,9 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 	
+	private static final String MESSAGE_TITLE = "Whoa! You're all playing a game.";
+	private static final String MESSAGE_REPORT_SUBTITLE = "Annoying?";
+
 	private static final int MIN_NUM_PLAYERS = 3;
 	private static final int NUMBER_SEC_BETWEEN = 60;
 	private static final int MAX_DURATION = 2;
@@ -36,6 +39,14 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			this.channel = channel;
 			this.time = time;
 			this.message = msg;
+		}
+		public boolean isTooSoon(VoiceChannel in) {
+			Date now = new Date(System.currentTimeMillis());
+			if (channel != null && channel.equals(in)) {
+				long secSince = (now.getTime() - time.getTime())/1000;
+				return (secSince < NUMBER_SEC_BETWEEN);
+			}
+			return false;
 		}
 		public void clear() {
 			if (message != null) {
@@ -55,19 +66,26 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	
 	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
 		Guild guild = event.getGuild();
-		VoiceChannel userChannel = null, botChannel = bot.getConnectedChannel(guild);
+		VoiceChannel userChannel, botChannel = bot.getConnectedChannel(guild);
 		try { userChannel = bot.getUsersVoiceChannel(user); } catch (Exception e) { return false; }
-		if (guild == null || userChannel == null || botChannel == null || !userChannel.equals(botChannel)) return false;
+		if (guild == null || userChannel == null || botChannel == null || !userChannel.equals(botChannel))
+			return false;
 		Game game = guild.getMemberById(user.getId()).getGame();
 		return (game != null && userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
 	}
-	
+
 	protected void handleEvent(UserGameUpdateEvent event, User user) {
 		int numPlayers = 0;
 		Game currentGame = event.getGuild().getMemberById(user.getId()).getGame();
 		String game = currentGame.getName();
-		VoiceChannel channel = null;
-		try { channel = bot.getUsersVoiceChannel(user); } catch (Exception e) { return; }
+		VoiceChannel channel;
+		try {
+			channel = bot.getUsersVoiceChannel(user);
+		} catch (Exception e) {
+			error(event, e);
+			return;
+		}
+
 		// See if there have been multiple people that started playing the game in a channel.
 		// If so: play a sound randomly from top played sounds.
 		User[] users = new User[channel.getMembers().size()];
@@ -76,33 +94,39 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				users[numPlayers++] = m.getUser();
 			}
 		}
+
 		if (numPlayers >= MIN_NUM_PLAYERS) {
 			LOG.info("Found " + user.getName() + " + " + numPlayers + " others playing " + game + " in " + channel.getName() + " of guild " + event.getGuild().getName() + ".");
-			Date now = new Date(System.currentTimeMillis());
-			if (pastEvent != null && pastEvent.channel != null && pastEvent.channel.equals(channel)) {
-		    	long secSince = (now.getTime() - pastEvent.time.getTime())/1000;
-		    	if (secSince < NUMBER_SEC_BETWEEN) { LOG.info("Not enough time since last event in this channel."); return; }
+
+			if (pastEvent != null) {
+				if (pastEvent.isTooSoon(channel)) {
+		    	LOG.info("Not enough time since last event in this channel.");
+		    	return;
+	    	}
+	    	pastEvent.clear();
 			}
-			TextChannel publicChannel = channel.getGuild().getPublicChannel();
-			if (pastEvent != null) pastEvent.clear();
+
 			String filePlayed = bot.getRandomTopPlayedSoundName(MAX_DURATION);
 			if (filePlayed != null) {
+				TextChannel publicChannel = channel.getGuild().getPublicChannel();
 				SoundFile f = bot.getSoundMap().get(filePlayed);
 				long numPlays = (f != null) ? f.getNumberOfPlays() : 0;
-				Message msg = announcement(
-					filePlayed, game, users, numPlayers, numPlays).getMessage();
 				try {
 					bot.playFileForUser(filePlayed, user);
-					pastEvent = new GameStartEvent(channel, now, null);
-					publicChannel.sendMessage(msg).queue((Message m)-> pastEvent.message = m);
+					pastEvent = new GameStartEvent(channel, new Date(System.currentTimeMillis()), null);
 					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
-				} catch (Exception e) { e.printStackTrace(); }
+					embed(publicChannel, announcement(filePlayed, game, users, numPlayers, numPlays), (Message m)-> {
+						pastEvent.message = m;
+					});
+				} catch (Exception e) {
+					error(event, e);
+				}
 			}
 		}
 	}
 
 	public StyledEmbedMessage announcement(String soundPlayed, String game, User[] users, int numPlaying, long numPlays) {
-		StyledEmbedMessage m = new StyledEmbedMessage("Whoa! You're all playing a game.", bot);
+		StyledEmbedMessage m = new StyledEmbedMessage(MESSAGE_TITLE, bot);
 		String mentions = "";
 		for (int i = 0; i < numPlaying; ++i) {
 			if (users[i] != null) {
@@ -110,11 +134,10 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			}
 		}
 		m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed, numPlays, game, mentions));
-		m.addContent("Annoying?", lookupString(Strings.SOUND_REPORT_INFO), false);
+		m.addContent(MESSAGE_REPORT_SUBTITLE, lookupString(Strings.SOUND_REPORT_INFO), false);
 		if (thumbnail != null) m.setThumbnail(thumbnail);
 		return m;
 	}
-
 	
 	public boolean isMutuallyExclusive() {
 		return false;
