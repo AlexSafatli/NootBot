@@ -105,10 +105,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 				embed(event, publishMessage);
 				LOG.info("Sending announcement for uploaded file.");
 				if (!user.getName().equals(bot.getOwner())) { // Alert bot owner as well.
-					User owner = bot.getUserByName(bot.getOwner());
-					if (owner != null) {
-						owner.getPrivateChannel().sendMessage(publishMessage.getMessage()).queue();
-					}
+					sendPublishMessageToOwner(publishMessage);
 				}
 			}
 		} else {
@@ -133,8 +130,22 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		String msg = "`" + name + "` downloaded and added to list of sounds successfully. Play it with `?" + file.getSoundFileId() + "`.\n";
 		if (category != null && !category.isEmpty() && !category.equals("Uncategorized"))
 			msg += "It was put into category: **" + category + "**\n";
-		msg += "File Size was: **" + size/1000 + " kB**";
+		msg += "File Size was: **" + Sizee/1000 + " kB**";
 		return msg;
+	}
+
+	private void sendPublishMessageToOwner(StyledEmbedMessage msg) {
+		User owner = bot.getUserByName(bot.getOwner());
+		if (owner != null) {
+			if (!owner.hasPrivateChannel()) {
+				try {
+				  owner.openPrivateChannel().block();
+				  owner.getPrivateChannel().sendMessage(msg.getMessage()).queue();
+				} catch (RateLimitedException e) {
+				  ;
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -144,7 +155,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "**Upload** an `.mp3` or `.wav` file(s) to add to sounds. *Use the Comment field to specify category.*";
+		return "**Upload** an `.mp3` *OR* `.wav` file(s) to add sounds. *Use the Comment field to specify category.*";
 	}
 
 }

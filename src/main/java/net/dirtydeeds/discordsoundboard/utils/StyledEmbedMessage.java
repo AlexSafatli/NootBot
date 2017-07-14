@@ -15,6 +15,8 @@ import net.dv8tion.jda.core.entities.Message;
 public class StyledEmbedMessage {
 
 	private EmbedBuilder builder;
+	private String footer;
+
 	private static final String NOOT_BOT_FOOTER_TEXT = Version.NAME + " " + Version.VERSION;
 	private static final String NOOT_BOT_DEFAULT_TOP = " ";
 	private static final String NOOT_BOT_DEFAULT_ERR = "Oops!";
@@ -29,29 +31,38 @@ public class StyledEmbedMessage {
 	
 	public StyledEmbedMessage(String title) {
 		this();
+		this.footer = NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR;
 		builder.setTitle(title);
 		builder.setAuthor(NOOT_BOT_DEFAULT_TOP, null, null);
-		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR, 
-			Icons.ELLIPSIS);
+		builder.setFooter(footer, Icons.ELLIPSIS);
 	}
 	
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
 		this(title);
 		String numSounds = bot.getSoundMap().size() + " sounds";
-		builder.setFooter(NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR + 
-			" \u2014 " + numSounds, Icons.ELLIPSIS);
+		this.footer = NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR + 
+			" \u2014 " + numSounds;
+		builder.setFooter(footer, Icons.ELLIPSIS);
 	}
 	
 	public void addDescription(String desc) {
 		builder.setDescription(desc);
 	}
 	
+	public void setColor(Color color) {
+		builder.setColor(color);
+	}
+
 	public void setImage(String url) {
 		builder.setImage(url);
 	}
 	
 	public void setThumbnail(String url) {
 		builder.setThumbnail(url);
+	}
+
+	public void setFooterIcon(String url) {
+		builder.setFooter(footer, url);
 	}
 
 	public StyledEmbedMessage isWarning(boolean warning) {

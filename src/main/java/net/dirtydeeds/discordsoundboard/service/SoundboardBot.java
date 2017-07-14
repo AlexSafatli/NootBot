@@ -59,38 +59,38 @@ public class SoundboardBot {
 
     public SoundboardBot(String token, String owner, SoundboardDispatcher dispatcher) {
     	this.startTime = System.currentTimeMillis();
-        this.owner = owner;
+      this.owner = owner;
     	this.dispatcher = dispatcher;
     	this.settings = new Hashtable<>();
     	this.audioSchedulers = new Hashtable<>();
     	initializeDiscordBot(token);
-        clearPreviousMessages();
+      clearPreviousMessages();
     }
 
     private class SoundPlayedEvent {
-        String sound;
-        long time;
-        String who;
-        public SoundPlayedEvent(String sound, String who) {
-            this.sound = sound;
-            this.who = who;
-            this.time = System.currentTimeMillis();
-        }
-        public SoundFile getSoundFile() {
-            return dispatcher.getSoundFileByName(sound);
-        }
-        public String getUsername() {
-            return who;
-        }
-        public String toString() {
-            return "`" + sound + "` was played by **" + who + "**.";
-        }
+      String sound;
+      long time;
+      String who;
+      public SoundPlayedEvent(String sound, String who) {
+        this.sound = sound;
+        this.who = who;
+        this.time = System.currentTimeMillis();
+      }
+      public SoundFile getSoundFile() {
+        return dispatcher.getSoundFileByName(sound);
+      }
+      public String getUsername() {
+        return who;
+      }
+      public String toString() {
+        return "`" + sound + "` was played by **" + who + "**.";
+      }
     }
 
     private SoundPlayedEvent lastPlayed;
     
     protected void addListener(Object listener) {
-        bot.addEventListener(listener);
+      bot.addEventListener(listener);
     }
     
     public long getUptimeInMinutes() {
@@ -100,16 +100,16 @@ public class SoundboardBot {
     }
 
     public String getUptimeAsString() {
-        String uptime = "";
-        long minutes = getUptimeInMinutes();
-        if (minutes >= MIN_MINUTES_TO_SHOW_AS_DAYS) {
-            uptime = (minutes/(60*24) + " days");
-        } else if (minutes >= MIN_MINUTES_TO_SHOW_AS_HOURS) {
-            uptime = (minutes/60 + " hours");
-        } else {
-            uptime = (minutes + " minutes");
-        }
-        return uptime;
+      String uptime = "";
+      long minutes = getUptimeInMinutes();
+      if (minutes >= MIN_MINUTES_TO_SHOW_AS_DAYS) {
+        uptime = (minutes/(60*24) + " days");
+      } else if (minutes >= MIN_MINUTES_TO_SHOW_AS_HOURS) {
+        uptime = (minutes/60 + " hours");
+      } else {
+        uptime = (minutes + " minutes");
+      }
+      return uptime;
     }
     
     /**
@@ -117,7 +117,7 @@ public class SoundboardBot {
      * @return Map of sound files that have been loaded.
      */
     public Map<String, SoundFile> getSoundMap() {
-        return dispatcher.getAvailableSoundFiles();
+      return dispatcher.getAvailableSoundFiles();
     }
     
     public SoundboardDispatcher getDispatcher() {
@@ -207,8 +207,7 @@ public class SoundboardBot {
     	if (guild != null) {
 	    	List<Role> roles = guild.getMember(user).getRoles();
 	    	for (Role role : roles) {
-	    		if (role.hasPermission(Permission.ADMINISTRATOR) || 
-	    				role.hasPermission(Permission.MANAGE_SERVER))
+	    		if (role.hasPermission(Permission.ADMINISTRATOR) || role.hasPermission(Permission.MANAGE_SERVER))
 	    			return true;
 	    	}
 	    	if (user.getName().equals(getOwner())) return true;
@@ -371,6 +370,12 @@ public class SoundboardBot {
     	if (user != null) sendMessageToUser(msg, user);
     	else LOG.warn("Tried to send message \"" + msg + "\" to username " + username + " but could not find user.");
 	}
+
+  public void sendMessageToAllGuilds(Message message) {
+    for (Guild guild : bot.getGuilds()) {
+      guild.getPublicChannel().sendMessage(message).queue();
+    }
+  }
     
     public void sendMessageToAllGuilds(String msg) {
     	for (Guild guild : bot.getGuilds()) {
@@ -382,39 +387,39 @@ public class SoundboardBot {
     	AudioManager audio = guild.getAudioManager();
     	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
-		player.stopTrack();
-        // TODO decrease all play counts by 1
-		scheduler.clear();
+		  player.stopTrack();
+      // TODO decrease all play counts by 1
+		  scheduler.clear();
     }
 
     public void muteSound(Guild guild) {
-        stopPlayingSound(guild);
-        AudioManager audio = guild.getAudioManager();
-        audio.setSelfMuted(true);
+      stopPlayingSound(guild);
+      AudioManager audio = guild.getAudioManager();
+      audio.setSelfMuted(true);
     }
 
     public void unmuteSound(Guild guild) {
-        AudioManager audio = guild.getAudioManager();
-        audio.setSelfMuted(false);
+      AudioManager audio = guild.getAudioManager();
+      audio.setSelfMuted(false);
     }
     
     /**
      * Plays a random sound file.
      */
     public String playRandomFile(net.dv8tion.jda.core.entities.User user) throws Exception {
-        if (user != null && isAllowedToPlaySound(user)) {
-        	String toPlay = getRandomSoundName();
-        	VoiceChannel toJoin = getUsersVoiceChannel(user);
-        	if (toJoin == null) {
-                sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, user);
-        	} else {
-        		moveToChannel(toJoin);
-        		playFile(toPlay, toJoin.getGuild());
-                lastPlayed = new SoundPlayedEvent(toPlay, user.getName());
-        		return toPlay;
-        	}
-        }
-        return null;
+      if (user != null && isAllowedToPlaySound(user)) {
+      	String toPlay = getRandomSoundName();
+      	VoiceChannel toJoin = getUsersVoiceChannel(user);
+      	if (toJoin == null) {
+              sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, user);
+      	} else {
+      		moveToChannel(toJoin);
+      		playFile(toPlay, toJoin.getGuild());
+              lastPlayed = new SoundPlayedEvent(toPlay, user.getName());
+      		return toPlay;
+      	}
+      }
+      return null;
     }
     
     /**
@@ -657,12 +662,12 @@ public class SoundboardBot {
      * Get a list of users
      */
     public List<net.dirtydeeds.discordsoundboard.beans.User> getUsers() {
-        List<User> users = new ArrayList<>();
-        for (net.dv8tion.jda.core.entities.User user : bot.getUsers()) {
-            String username = user.getName();
-            users.add(new net.dirtydeeds.discordsoundboard.beans.User(user.getId(), username));
-        }
-        return users;
+      List<User> users = new ArrayList<>();
+      for (net.dv8tion.jda.core.entities.User user : bot.getUsers()) {
+        String username = user.getName();
+        users.add(new net.dirtydeeds.discordsoundboard.beans.User(user.getId(), username));
+      }
+      return users;
     }
     
     public List<Guild> getGuilds() {
@@ -693,51 +698,51 @@ public class SoundboardBot {
     //Play the file provided.
     private void playFile(File audioFile, Guild guild) {
     	AudioManager audio = guild.getAudioManager();
-        if (audio.isSelfMuted()) {
-            LOG.info("Not playing sound because muted.");
-            return;
-        }
+      if (audio.isSelfMuted()) {
+        LOG.info("Not playing sound because muted.");
+        return;
+      }
     	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
-		String path = audioFile.getPath();
-		scheduler.load(path, new AudioHandler(player));
+		  String path = audioFile.getPath();
+		  scheduler.load(path, new AudioHandler(player));
     }
     
     private void playURL(String url, Guild guild) {
     	AudioManager audio = guild.getAudioManager();
-        if (audio.isSelfMuted()) {
-            LOG.info("Not playing sound because muted.");
-            return;
-        }
+      if (audio.isSelfMuted()) {
+        LOG.info("Not playing sound because muted.");
+        return;
+      }
     	AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     	AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
-		LOG.info("Sending request for '" + url + "' to AudioManager");
-		scheduler.load(url, new AudioHandler(player));
+		  LOG.info("Sending request for '" + url + "' to AudioManager");
+		  scheduler.load(url, new AudioHandler(player));
     }
 
     private void initializeDiscordBot(String token) {
-        try {
-			bot = new JDABuilder(AccountType.BOT).setToken(token).buildBlocking();
-            ChatListener chatListener = new ChatListener(this);
-            MoveListener moveListener = new MoveListener(this);
-            GameListener gameListener = new GameListener(this);
-	        this.chatListener = chatListener;
-	        this.addListener(chatListener);
-	        this.addListener(moveListener);
-	        this.addListener(gameListener);
-	        LOG.info("Finished initializing bot with name " + getBotName());
-            for (Guild guild : getGuilds()) LOG.info("Connected to guild " + guild.getName());
-		} catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException e) {
-			LOG.fatal("Could not initialize bot " + getBotName());
-            e.printStackTrace();
-		}
+      try {
+        bot = new JDABuilder(AccountType.BOT).setToken(token).buildBlocking();
+        ChatListener chatListener = new ChatListener(this);
+        MoveListener moveListener = new MoveListener(this);
+        GameListener gameListener = new GameListener(this);
+        this.chatListener = chatListener;
+        this.addListener(chatListener);
+        this.addListener(moveListener);
+        this.addListener(gameListener);
+        LOG.info("Finished initializing bot with name " + getBotName());
+        for (Guild guild : getGuilds())
+          LOG.info("Connected to guild " + guild.getName());
+		  } catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException e) {
+  			LOG.fatal("Could not initialize bot " + getBotName());
+        e.printStackTrace();
+		  }
     }
 
     private void clearPreviousMessages() {
-        for (Guild guild : getGuilds()) {
-            LOG.info("Clearing previous messages in guild " + guild.getName());
-            ChatUtils.clearBotMessagesInChannel(this, guild.getPublicChannel());
-        }
+      for (Guild guild : getGuilds()) {
+        ChatUtils.clearBotMessagesInChannel(this, guild.getPublicChannel());
+      }
     }
 
 }
