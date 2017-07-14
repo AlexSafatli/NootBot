@@ -139,7 +139,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 	
 	@Override
 	public boolean canBeRunBy(User user, Guild guild) {
-		return bot.isAuthenticated(user, guild);
+		return !bot.isUser(user) && bot.isAuthenticated(user, guild);
 	}
 	
 	@Override
