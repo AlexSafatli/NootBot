@@ -19,7 +19,7 @@ public class StyledEmbedMessage {
 
 	private static final String NOOT_BOT_FOOTER_TEXT = Version.NAME + " " + Version.VERSION;
 	private static final String NOOT_BOT_DEFAULT_TOP = " ";
-	private static final String NOOT_BOT_DEFAULT_ERR = "Oops!";
+	private static final String NOOT_BOT_DEFAULT_ERR = "I fwubbed it.";
 	private static final Color  NOOT_BOT_EMBED_COLOR = new Color(87, 70, 158);
 	private static final Color  NOOT_BOT_ERROR_COLOR = new Color(179, 0,   0);
 	private static final Color  NOOT_BOT_WARN_COLOR  = new Color(255, 217, 0);
