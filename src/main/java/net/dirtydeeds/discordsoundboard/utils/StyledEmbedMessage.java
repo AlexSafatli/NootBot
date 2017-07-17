@@ -35,7 +35,7 @@ public class StyledEmbedMessage {
 	
 	public StyledEmbedMessage(String title) {
 		this();
-		this.footer = NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR;
+		this.footer = NOOT_BOT_FOOTER_TEXT + " by " + Version.AUTHOR;
 		builder.setTitle(title);
 		builder.setAuthor(NOOT_BOT_DEFAULT_TOP, null, null);
 		updateFooter();
@@ -44,7 +44,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
 		this(title);
 		String numSounds = bot.getSoundMap().size() + " sounds";
-		this.footer = NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR + 
+		this.footer = NOOT_BOT_FOOTER_TEXT + " by " + Version.AUTHOR + 
 			" \u2014 " + numSounds;
 		updateFooter();
 	}
@@ -117,7 +117,7 @@ public class StyledEmbedMessage {
 		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		msg.addContent("Played", file.getNumberOfPlays() + " times", true);
 		if (file.getNumberOfReports() > 0) {
-			msg.addContent("Reports", file.getNumberOfReports() + " times", true);
+			msg.addContent("Reported", file.getNumberOfReports() + " times", true);
 		}
 		if (file.getSoundFile() != null) {
 			String stamp = StringUtils.dayTimeStamp(file.getLastModified());
@@ -129,7 +129,7 @@ public class StyledEmbedMessage {
 	public static StyledEmbedMessage forUser(SoundboardBot bot, User user, String title, String description) {
 		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
 		msg.addDescription(description);
-		msg.addFooterText("Requested by " + user.getName());
+		msg.addFooterText("Request for " + user.getName());
 		msg.setFooterIcon(user.getEffectiveAvatarUrl());
 		return msg;
 	}
