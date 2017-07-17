@@ -34,7 +34,7 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		try {
 			handleEvent(event, message);
 		} catch (Exception ex) {
-			e(event, ex.getMessage());
+			e(event, ex.toString());
 			ex.printStackTrace();
 		}
 		deleteOriginalMessage(event);

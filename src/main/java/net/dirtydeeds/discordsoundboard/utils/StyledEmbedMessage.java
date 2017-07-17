@@ -129,7 +129,7 @@ public class StyledEmbedMessage {
 	public static StyledEmbedMessage forUser(SoundboardBot bot, User user, String title, String description) {
 		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
 		msg.addDescription(description);
-		msg.addFooterText("Request for " + user.getName());
+		msg.addFooterText("For " + user.getName());
 		msg.setFooterIcon(user.getEffectiveAvatarUrl());
 		return msg;
 	}
