@@ -21,7 +21,8 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	}
 
 	private void sendFailureMessage(MessageReceivedEvent event, String name, String suggestion, User user) {
-		StyledEmbedMessage msg = new StyledEmbedMessage("Could Not Find Sound `" + name + "`", bot);
+		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
+		msg.setTitle("Could Not Find Sound `" + name + "`");
 		if (suggestion != null && !suggestion.isEmpty()) {
 			msg.addDescription(suggestion);
 		} else {
@@ -57,16 +58,12 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 			}
 			sendFailureMessage(event, name, suggestion, user);
         } else {
-	        try {
-	            bot.playFileForChatCommand(name, event);
-	            SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
-	            LOG.info("Played sound for " + user.getName());
-	            if (sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
-	            	// Make an announcement every so many plays.
-	            	m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name, sound.getNumberOfPlays()));
-	            }
-	        } catch (Exception e) {
-	        	e.printStackTrace();
+	        bot.playFileForChatCommand(name, event);
+	        SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
+	        LOG.info("Played sound for " + user.getName());
+	        if (sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
+	        	// Make an announcement every so many plays.
+	        	m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name, sound.getNumberOfPlays()));
 	        }
         }
 	}

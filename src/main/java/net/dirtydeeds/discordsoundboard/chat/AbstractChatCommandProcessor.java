@@ -3,7 +3,6 @@ package net.dirtydeeds.discordsoundboard.chat;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.dirtydeeds.discordsoundboard.async.DeleteMessageJob;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.Permission;
@@ -81,8 +80,8 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		buffer.clear();
 	}
 	
-	protected StyledEmbedMessage buildStyledEmbedMessage() {
-		return new StyledEmbedMessage(getTitle(), bot);
+	protected StyledEmbedMessage buildStyledEmbedMessage(MessageReceivedEvent event) {
+		return StyledEmbedMessage.forUser(bot, event.getAuthor(), getTitle(), "");
 	}
 	
 	protected void pm(MessageReceivedEvent event, String message) {
@@ -101,10 +100,8 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		event.getAuthor().getPrivateChannel().sendMessage(message.getMessage()).queue();
 	}
 	
-	private StyledEmbedMessage makeEmbed(String message) {
-		StyledEmbedMessage em = new StyledEmbedMessage(getTitle(), bot);
-		em.addDescription(message);
-		return em;
+	private StyledEmbedMessage makeEmbed(String message, User user) {
+		return StyledEmbedMessage.forUser(bot, user, getTitle(), message);
 	}
 
 	private void sendEmbed(MessageReceivedEvent event, String message, boolean error, boolean warning) {
@@ -112,7 +109,7 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 			pm(event, message);
 		} else {
 			event.getChannel().sendMessage(
-				makeEmbed(message).isWarning(warning).isError(error).getMessage()
+				makeEmbed(message, event.getAuthor()).isWarning(warning).isError(error).getMessage()
 			).queue((Message msg)-> {
 				buffer.add(msg);
 			});
@@ -128,7 +125,7 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 
 	protected void e(MessageReceivedEvent event, String message) {
-		StyledEmbedMessage msg = makeEmbed(message).isError(true);
+		StyledEmbedMessage msg = makeEmbed(message, event.getAuthor()).isError(true);
 		msg.addContent("Message", "`" + event.getMessage().getContent() + "`", false);
 		msg.addContent("Author", event.getAuthor().getName(), true);
 		msg.addContent("Processor", "`" + getClass().getSimpleName() + "`", true);

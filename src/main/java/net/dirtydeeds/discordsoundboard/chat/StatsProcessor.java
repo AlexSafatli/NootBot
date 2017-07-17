@@ -41,7 +41,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 	}
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		StyledEmbedMessage msg = buildStyledEmbedMessage();
+		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
 		msg.addDescription("*Noot noot*.");
 		int numberOfSounds = bot.getSoundMap().size();
 		msg.addContent("Number of Sounds", "" + numberOfSounds, true);

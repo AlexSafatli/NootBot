@@ -11,20 +11,9 @@ public class RestartBotProcessor extends AuthenticatedSingleArgumentChatCommandP
 	public RestartBotProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Restart Bot", bot);
 	}
-
-	@Override
-	public void process(MessageReceivedEvent event) {
-		if (!event.isFromType(ChannelType.PRIVATE) && bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
-			try {
-				event.getMessage().deleteMessage().block();
-			} catch (RateLimitedException e) {
-				e.printStackTrace();
-			}
-		}
-		handleEvent(event, null);
-	}
 	
 	protected void handleEvent(MessageReceivedEvent event, String message) {
+		deleteOriginalMessage(event);
 		pm(event, "Restarting this bot instance. *This is a soft restart. This might break things. Hard restart if it does!*");
 		bot.getDispatcher().restartBot(bot);
 		bot.getDispatcher().updateFileList();

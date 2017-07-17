@@ -3,7 +3,6 @@ package net.dirtydeeds.discordsoundboard.chat;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.dirtydeeds.discordsoundboard.async.DeleteMessageJob;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.Permission;

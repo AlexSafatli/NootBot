@@ -30,8 +30,11 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
       w(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
-			embed(event, StyledEmbedMessage.forSoundFile(bot, file, getTitle(), 
-					"You requested information for a sound " + user.getAsMention()));
+			StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file, getTitle(), 
+					"You requested information for a sound " + user.getAsMention());
+			em.addFooterText("Requested by " + event.getAuthor().getName());
+			em.setFooterIcon(event.getAuthor().getEffectiveAvatar());
+			embed(event, em);
 		}
 	}
 

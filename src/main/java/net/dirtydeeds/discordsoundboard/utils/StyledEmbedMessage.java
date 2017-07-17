@@ -11,11 +11,15 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.Icon;
 
 public class StyledEmbedMessage {
 
 	private EmbedBuilder builder;
 	private String footer;
+	private String footerIconUrl;
+	private Icon footerIcon;
 
 	private static final String NOOT_BOT_FOOTER_TEXT = Version.NAME + " " + Version.VERSION;
 	private static final String NOOT_BOT_DEFAULT_TOP = " ";
@@ -25,6 +29,7 @@ public class StyledEmbedMessage {
 	private static final Color  NOOT_BOT_WARN_COLOR  = new Color(255, 217, 0);
 	
 	public StyledEmbedMessage() {
+		this.footerIconUrl = Icons.ELLIPSIS;
 		builder = new EmbedBuilder();
 		builder.setColor(NOOT_BOT_EMBED_COLOR);
 	}
@@ -34,7 +39,7 @@ public class StyledEmbedMessage {
 		this.footer = NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR;
 		builder.setTitle(title);
 		builder.setAuthor(NOOT_BOT_DEFAULT_TOP, null, null);
-		builder.setFooter(footer, Icons.ELLIPSIS);
+		updateFooter();
 	}
 	
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
@@ -42,9 +47,21 @@ public class StyledEmbedMessage {
 		String numSounds = bot.getSoundMap().size() + " sounds";
 		this.footer = NOOT_BOT_FOOTER_TEXT + " \u2014 " + Version.AUTHOR + 
 			" \u2014 " + numSounds;
-		builder.setFooter(footer, Icons.ELLIPSIS);
+		updateFooter();
 	}
 	
+	private void updateFooter() {
+		if (footerIcon != null) {
+			builder.setFooter(footer, footerIcon);
+		} else {
+			builder.setFooter(footer, footerIconUrl);
+		}
+	}
+
+	public void setTitle(String title) {
+		builder.setTitle(title);
+	}
+
 	public void addDescription(String desc) {
 		builder.setDescription(desc);
 	}
@@ -62,7 +79,18 @@ public class StyledEmbedMessage {
 	}
 
 	public void setFooterIcon(String url) {
-		builder.setFooter(footer, url);
+		footerIconUrl = url;
+		updateFooter();
+	}
+
+	public void setFooterIcon(Icon icon) {
+		footerIcon = icon;
+		updateFooter();
+	}
+
+	public void addFooterText(String text) {
+		footer += " \u2014 " + text;
+		updateFooter();
 	}
 
 	public StyledEmbedMessage isWarning(boolean warning) {
@@ -106,6 +134,13 @@ public class StyledEmbedMessage {
 			if (!stamp.isEmpty()) msg.addContent("Added", stamp, true);
 		}
 		return msg;
+	}
+
+	public static StyledEmbedMessage forUser(SoundboardBot bot, User user, String title, String description) {
+		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
+		msg.addDescription(description);
+		msg.addFooterText("Requested by " + user.getName());
+		msg.setFooterIcon(user.getEffectiveAvatar());
 	}
 	
 }

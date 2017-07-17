@@ -22,9 +22,12 @@ public class DownloadSoundProcessor extends
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			} else {
 				try {
+					if (!event.getAuthor().hasPrivateChannel()) {
+						event.getAuthor().openPrivateChannel().queue();
+					}
 					event.getAuthor().getPrivateChannel().sendFile(file.getSoundFile(), null).queue();
 				} catch (IOException e) {
-					e.printStackTrace();
+					e(event, e.toString());
 				}
 			}
 		}

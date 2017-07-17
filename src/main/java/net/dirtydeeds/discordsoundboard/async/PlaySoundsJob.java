@@ -15,7 +15,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.requests.RestAction;
 
 public class PlaySoundsJob implements SoundboardJob {
@@ -107,19 +106,16 @@ public class PlaySoundsJob implements SoundboardJob {
 				else msg = embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null, timePlaying);
 				m = guild.getPublicChannel().sendMessage(msg);
 				if (m != null) {
-					try {
-						dispatcher.getAsyncService().runJob(new DeleteMessageJob(m.block(), 1800));
-					} catch (RateLimitedException e) {
-						e.printStackTrace();
-					}
+					m.queue((Message sent)-> {
+						sent.delete().queueAfter(5, TimeUnit.SECONDS);
+					});
 				}
 			}
 		}
 	}
 
 	private Message embedMessage(String description, User user, StringBuilder sb, long duration) {
-		StyledEmbedMessage msg = new StyledEmbedMessage("Playing Multiple Sounds", bot);
-		msg.addDescription(description);
+		StyledEmbedMessage msg = StyledEmbedMessage.forUser(bot, "Playing Multiple Sounds", user, description);
 		if (sb != null) msg.addContent("Sounds Queued", sb.toString(), false);
 		if (duration > 0) msg.addContent("Total Duration", Long.toString(duration) + " seconds", false);
 		return msg.getMessage();
