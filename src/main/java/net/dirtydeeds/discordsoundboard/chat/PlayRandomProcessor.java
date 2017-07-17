@@ -38,7 +38,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
     		LOG.info("Played \"" + filePlayed + "\" in server " + event.getGuild().getName());
     		StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file, 
           "You've Played a Random Sound", desc + event.getAuthor().getAsMention());
-        em.addFooterText("Requested by " + event.getAuthor().getName());
+        em.addFooterText("For " + event.getAuthor().getName());
         em.setFooterIcon(event.getAuthor().getEffectiveAvatarUrl());
     		embed(event, em);
   		}
