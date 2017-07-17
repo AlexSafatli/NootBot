@@ -58,10 +58,12 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 			}
 			sendFailureMessage(event, name, suggestion, user);
         } else {
-	        bot.playFileForChatCommand(name, event);
+        	boolean played = true;
+        	try { bot.playFileForChatCommand(name, event); }
+	        catch (Exception e) { played = false; }
 	        SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
-	        LOG.info("Played sound for " + user.getName());
-	        if (sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
+	        if (played) LOG.info("Played sound for " + user.getName());
+	        if (played && sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
 	        	// Make an announcement every so many plays.
 	        	m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name, sound.getNumberOfPlays()));
 	        }
