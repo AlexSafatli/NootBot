@@ -19,7 +19,6 @@ public class StyledEmbedMessage {
 	private EmbedBuilder builder;
 	private String footer;
 	private String footerIconUrl;
-	private Icon footerIcon;
 
 	private static final String NOOT_BOT_FOOTER_TEXT = Version.NAME + " " + Version.VERSION;
 	private static final String NOOT_BOT_DEFAULT_TOP = " ";
@@ -51,11 +50,7 @@ public class StyledEmbedMessage {
 	}
 	
 	private void updateFooter() {
-		if (footerIcon != null) {
-			builder.setFooter(footer, footerIcon);
-		} else {
-			builder.setFooter(footer, footerIconUrl);
-		}
+		builder.setFooter(footer, footerIconUrl);
 	}
 
 	public void setTitle(String title) {
@@ -80,11 +75,6 @@ public class StyledEmbedMessage {
 
 	public void setFooterIcon(String url) {
 		footerIconUrl = url;
-		updateFooter();
-	}
-
-	public void setFooterIcon(Icon icon) {
-		footerIcon = icon;
 		updateFooter();
 	}
 
@@ -140,7 +130,7 @@ public class StyledEmbedMessage {
 		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
 		msg.addDescription(description);
 		msg.addFooterText("Requested by " + user.getName());
-		msg.setFooterIcon(user.getEffectiveAvatar());
+		msg.setFooterIcon(user.getEffectiveAvatarUrl());
 	}
 	
 }

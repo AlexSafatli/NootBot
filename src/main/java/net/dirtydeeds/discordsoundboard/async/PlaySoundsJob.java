@@ -106,8 +106,8 @@ public class PlaySoundsJob implements SoundboardJob {
 				else msg = embedMessage("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null, timePlaying);
 				m = guild.getPublicChannel().sendMessage(msg);
 				if (m != null) {
-					m.queue((Message sent)-> {
-						sent.delete().queueAfter(5, TimeUnit.SECONDS);
+					m.queue((Message s)-> {
+						s.deleteMessage().queueAfter(5, TimeUnit.SECONDS);
 					});
 				}
 			}
@@ -115,7 +115,7 @@ public class PlaySoundsJob implements SoundboardJob {
 	}
 
 	private Message embedMessage(String description, User user, StringBuilder sb, long duration) {
-		StyledEmbedMessage msg = StyledEmbedMessage.forUser(bot, "Playing Multiple Sounds", user, description);
+		StyledEmbedMessage msg = StyledEmbedMessage.forUser(bot, user, "Playing Multiple Sounds", description);
 		if (sb != null) msg.addContent("Sounds Queued", sb.toString(), false);
 		if (duration > 0) msg.addContent("Total Duration", Long.toString(duration) + " seconds", false);
 		return msg.getMessage();
