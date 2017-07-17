@@ -131,6 +131,7 @@ public class StyledEmbedMessage {
 		msg.addDescription(description);
 		msg.addFooterText("Requested by " + user.getName());
 		msg.setFooterIcon(user.getEffectiveAvatarUrl());
+		return msg;
 	}
 	
 }

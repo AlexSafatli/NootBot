@@ -107,7 +107,7 @@ public class PlaySoundsJob implements SoundboardJob {
 				m = guild.getPublicChannel().sendMessage(msg);
 				if (m != null) {
 					m.queue((Message s)-> {
-						s.deleteMessage().queueAfter(5, TimeUnit.SECONDS);
+						dispatcher.getAsyncService().runJob(new DeleteMessageJob(s, 1800));
 					});
 				}
 			}
