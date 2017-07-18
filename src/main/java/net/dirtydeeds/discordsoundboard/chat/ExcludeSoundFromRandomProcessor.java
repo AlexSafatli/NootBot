@@ -28,8 +28,7 @@ public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			if (file.isExcludedFromRandom()) {
-				file.setExcludedFromRandom(false);
-				pm(event, "That sound was already excluded! *Toggled - now included again!*");
+				pm(event, "That sound was already excluded! Use the pair to this command to include it again.");
 			} else {
 				file.setExcludedFromRandom(true);
 				pm(event, "That sound has been excluded from being played through random events.");
@@ -40,7 +39,7 @@ public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` (`*`) - exclude (or toggle) a sound file from random events";
+		return "`" + getPrefix() + " <soundfile>` (`*`) \u2014 exclude a sound file from random events";
 	}
 	
 }

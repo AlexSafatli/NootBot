@@ -19,7 +19,7 @@ public class ServerMessageProcessor extends OwnerSingleArgumentChatCommandProces
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <message>` (`*`) - send a message to all "
+		return "`" + getPrefix() + " <message>` (`*`) \u2014 send a message to all "
 				+ "servers this bot is in";
 	}
 

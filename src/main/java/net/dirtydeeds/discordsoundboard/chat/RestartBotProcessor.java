@@ -21,7 +21,7 @@ public class RestartBotProcessor extends AuthenticatedSingleArgumentChatCommandP
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` (`*`) - restart this bot";
+		return "`" + getPrefix() + "` (`*`) \u2014 restart this bot";
 	}
 	
 }

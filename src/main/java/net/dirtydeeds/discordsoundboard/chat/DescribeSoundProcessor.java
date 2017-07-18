@@ -21,7 +21,7 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 		String name = getArgument();
 		Set<String> soundNames = bot.getSoundMap().keySet();
 		if (name == null) {
-			pm(event, formatString(Strings.NEED_NAME, getPrefix() + " " + StringUtils.randomString(soundNames)));
+			e(event, formatString(Strings.NEED_NAME, getPrefix() + " " + StringUtils.randomString(soundNames)));
 		} else if (!soundNames.contains(name)) {
 			String suggestion = "Check your spelling.", possibleName = bot.getClosestMatchingSoundName(name);
 			if (possibleName != null) {
@@ -40,7 +40,7 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` - get information for a sound file";
+		return "`" + getPrefix() + " <soundfile>` \u2014 get information for a sound file";
 	}
 	
 }

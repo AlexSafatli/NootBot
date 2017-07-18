@@ -49,7 +49,7 @@ public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
   
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + "` - list the **" + NUMBER_TO_SHOW + 
+    return "`" + getPrefix() + "` \u2014 list the **" + NUMBER_TO_SHOW + 
         "** least played sound files";
   }
 

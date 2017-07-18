@@ -34,7 +34,7 @@ public class LastPlayedSoundProcessor extends SingleArgumentChatCommandProcessor
 
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + "` - get information for the last played sound";
+    return "`" + getPrefix() + "` \u2014 get information for the last played sound";
   }
   
 }

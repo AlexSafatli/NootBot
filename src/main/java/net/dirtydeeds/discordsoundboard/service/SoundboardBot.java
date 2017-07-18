@@ -256,7 +256,7 @@ public class SoundboardBot {
     return (users != null && !users.isEmpty()) ? users.get(0).getEntrance() : null;
   }
 
-  public void setEntranceForUser(net.dv8tion.jda.core.entities.User user, String filename) {
+  public void setEntranceForUser(net.dv8tion.jda.core.entities.User user, String filename, net.dv8tion.jda.core.entities.User by) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty()) {
       users.get(0).setEntrance(filename);
@@ -266,10 +266,17 @@ public class SoundboardBot {
       u.setEntrance(filename);
       dispatcher.saveUser(u);
     }
-    if (filename != null && !filename.isEmpty())
+    if (filename != null && !filename.isEmpty()) {
+      if (by != null) {
+        sendMessageToUser("Your entrance has been changed to `" + filename +
+                          "` by **" + by.getName() +
+                          "**. *Contact the bot owner to dispute this action if this action is being abused.*",
+                          user);
+      }
       LOG.info("New entrance \"" + filename + "\" set for " + user.getName());
-    else
+    } else {
       LOG.info("Cleared entrance associated with " + user.getName());
+    }
   }
 
   public boolean disallowUser(net.dv8tion.jda.core.entities.User user) {
@@ -284,6 +291,7 @@ public class SoundboardBot {
         dispatcher.saveUser(users.get(0));
       }
       LOG.info("User " + user + " disallowed from playing sounds.");
+      sendMessageToUser("You have been **disallowed** from playing sounds with this bot. *Contact the bot owner to dispute this action.*", user);
       return true;
     }
   }
@@ -296,6 +304,9 @@ public class SoundboardBot {
   public boolean allowUser(net.dv8tion.jda.core.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty()) {
+      if (users.get(0).isDisallowed()) {
+        sendMessageToUser("You are no longer **disallowed** from playing sounds with this bot.", user);
+      }
       users.get(0).setDisallowed(false);
       dispatcher.saveUser(users.get(0));
       return true;

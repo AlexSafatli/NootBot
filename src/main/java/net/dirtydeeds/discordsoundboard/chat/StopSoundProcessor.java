@@ -19,7 +19,7 @@ public class StopSoundProcessor extends SingleArgumentChatCommandProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` - stop the bot from playing its current sound and any queued sounds";
+		return "`" + getPrefix() + "` \u2014 stop the bot from playing its current sound and any queued sounds";
 	}
 	
 }

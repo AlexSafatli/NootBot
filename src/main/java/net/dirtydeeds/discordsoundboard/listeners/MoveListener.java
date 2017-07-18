@@ -80,7 +80,7 @@ public class MoveListener extends AbstractListener {
         bot.sendMessageToUser("**Uh oh!** Your entrance `" + fileToPlay +
                               "` doesn't exist anymore. *Update it!*", user);
         LOG.info(user.getName() + " has stale entrance. Alerted and clearing.");
-        bot.setEntranceForUser(user, null);
+        bot.setEntranceForUser(user, null, null);
       } else {
         boolean userHasHeardEntranceRecently = false;
         String soundInfo = "";

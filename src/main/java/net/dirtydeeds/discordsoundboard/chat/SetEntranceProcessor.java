@@ -17,10 +17,10 @@ public class SetEntranceProcessor extends
 		String fileName = getArgument();
 		if (bot.isAllowedToPlaySound(event.getAuthor())) {
 			if (fileName == null) {
-				bot.setEntranceForUser(event.getAuthor(), null);
+				bot.setEntranceForUser(event.getAuthor(), null, null);
 				pm(event, "Cleared your entrance.");
 			} else if (bot.getSoundMap().get(fileName) != null) {
-				bot.setEntranceForUser(event.getAuthor(), fileName);
+				bot.setEntranceForUser(event.getAuthor(), fileName, null);
 				pm(event, "Updated your entrance to sound file `" + fileName + "`!");
 				if (bot.getSoundMap().get(fileName).getDuration() 
 						> WARNING_DURATION_IN_SECONDS) {
@@ -35,7 +35,7 @@ public class SetEntranceProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` - set a sound as your entrance for when you join a channel";
+		return "`" + getPrefix() + " <soundfile>` \u2014 set a sound as your entrance for when you join a channel";
 	}
 
 }

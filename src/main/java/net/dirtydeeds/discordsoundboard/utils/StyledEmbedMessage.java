@@ -84,6 +84,11 @@ public class StyledEmbedMessage {
 		builder.setThumbnail(url);
 	}
 
+	public void setFooter(String footer) {
+		this.footer = footer;
+		updateFooter();
+	}
+
 	public void setFooterIcon(String url) {
 		footerIconUrl = url;
 		updateFooter();

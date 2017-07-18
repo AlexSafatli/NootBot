@@ -72,10 +72,10 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		String help = "`" + getPrefix() + "soundfile` - play a sound by name";
+		String help = "`" + getPrefix() + "soundfile` \u2014 play a sound by name";
 		Set<String> soundFileNames = bot.getSoundMap().keySet();
 		if (!soundFileNames.isEmpty()) {
-			help += " - e.g., `" + getPrefix() + StringUtils.randomString(soundFileNames) + "`";
+			help += " \u2014 e.g., `" + getPrefix() + StringUtils.randomString(soundFileNames) + "`";
 		}
 		return help;
 	}

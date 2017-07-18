@@ -108,7 +108,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + " [category]` - list files (or those just for a category)";
+    return "`" + getPrefix() + " [category]` \u2014 list files (or those just for a category)";
   }
 
 }

@@ -22,7 +22,7 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 		if (processors == null || processors.isEmpty()) return;
 		boolean canRunAuthenticated = (event.getAuthor().getName().equalsIgnoreCase(bot.getOwner()));
 		MessageBuilder mb = new MessageBuilder();
-		mb.append("Type **any of these commands** in a channel or a PM to me:\n\n");
+		mb.append("Type **any of these commands** in a channel or in a PM to me:\n\n");
 		for (ChatCommandProcessor processor : processors) {
 			if (processor.canBeRunByAnyone() || (!processor.canBeRunByAnyone() && processor.canBeRunBy(event.getAuthor(), event.getGuild()))) {
 				// Print command help for this processor.

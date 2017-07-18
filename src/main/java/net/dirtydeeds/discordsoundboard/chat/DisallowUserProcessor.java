@@ -24,7 +24,7 @@ public class DisallowUserProcessor extends AuthenticatedSingleArgumentChatComman
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - disallow user from playing sounds";
+		return super.getCommandHelpString() + " \u2014 disallow user from playing sounds";
 	}
 	
 }

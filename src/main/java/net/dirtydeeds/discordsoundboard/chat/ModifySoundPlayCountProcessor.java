@@ -14,6 +14,7 @@ public class ModifySoundPlayCountProcessor extends
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		if (getArguments() == null || getArguments().length != 2) {
 			pm(event, "Need a **sound name** and a new **play count**.");
+			return;
 		}
 		String name = getArguments()[0];
 		long count = Long.valueOf(getArguments()[1]);
@@ -27,7 +28,7 @@ public class ModifySoundPlayCountProcessor extends
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>, <count>` (`*`) - modify a sound play count";
+		return "`" + getPrefix() + " <soundfile>, <count>` (`*`) \u2014 modify a sound play count";
 	}
 
 }

@@ -65,7 +65,7 @@ public class RecategorizeSoundProcessor extends AuthenticatedMultiArgumentChatCo
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - change the category for a sound";
+		return super.getCommandHelpString() + " \u2014 change the category for a sound";
 	}
 	
 }

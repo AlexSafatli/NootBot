@@ -27,7 +27,7 @@ public class AuthenticateUserProcessor extends OwnerMultiArgumentChatCommandProc
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - set a user's privilege level to the bot (0-2)";
+		return super.getCommandHelpString() + " \u2014 set a user's privilege level to the bot (0-2)";
 	}
 	
 }

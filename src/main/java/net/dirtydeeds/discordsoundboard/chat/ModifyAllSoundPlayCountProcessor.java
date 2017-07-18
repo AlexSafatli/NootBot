@@ -28,7 +28,7 @@ public class ModifyAllSoundPlayCountProcessor extends
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <count>` (`*`) - modify all sound play counts";
+		return "`" + getPrefix() + " <count>` (`*`) \u2014 modify all sound play counts";
 	}
 
 }

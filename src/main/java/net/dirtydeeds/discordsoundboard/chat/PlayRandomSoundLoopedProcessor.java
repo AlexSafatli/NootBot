@@ -36,7 +36,7 @@ public class PlayRandomSoundLoopedProcessor extends MultiArgumentChatCommandProc
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " X, <category>` - play a random sound X number of times where X < **" + MAX_NUMBER_OF_LOOPED_PLAYS + "**";
+		return "`" + getPrefix() + " X, <category>` \u2014 play a random sound X number of times where X < **" + MAX_NUMBER_OF_LOOPED_PLAYS + "**";
 	}
 
 }

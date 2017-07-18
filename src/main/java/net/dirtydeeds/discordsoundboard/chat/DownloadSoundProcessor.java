@@ -7,8 +7,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class DownloadSoundProcessor extends
-		AuthenticatedSingleArgumentChatCommandProcessor {
+public class DownloadSoundProcessor extends SingleArgumentChatCommandProcessor {
 
 	public DownloadSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Download Sound", bot);
@@ -35,7 +34,7 @@ public class DownloadSoundProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - download a sound";
+		return super.getCommandHelpString() + " \u2014 download a sound";
 	}
 	
 }

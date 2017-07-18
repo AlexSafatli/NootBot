@@ -23,7 +23,7 @@ public class UserInfoProcessor extends AuthenticatedSingleArgumentChatCommandPro
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " [username]` (`*`) - get info about a user (self if no `username` specified)";
+		return "`" + getPrefix() + " [username]` (`*`) \u2014 get info about a user (self if no `username` specified)";
 	}
 	
 }

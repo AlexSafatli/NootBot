@@ -24,14 +24,14 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 		if (username != null) user = bot.getUserByName(username);
 		if (fileName != null && user != null) {
 			if (bot.getSoundMap().get(fileName) != null) {
-				bot.setEntranceForUser(user, fileName);
+				bot.setEntranceForUser(user, fileName, event.getAuthor());
 				pm(event, "User **" + user.getName() + "** had entrance updated" +
 						" to sound `" + fileName + "`.");
 			} else {
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			}
 		} else if (fileName == null) {
-			bot.setEntranceForUser(user, null);
+			bot.setEntranceForUser(user, null, null);
 			pm(event, "User **" + user.getName() + "** had their entrance cleared.");
 		} else if (user == null) {
 			pm(event, "Asked to change entrance for `" + username + "` but could not "
@@ -41,7 +41,7 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <username>, <soundfile>` (`*`) - set a sound file for a user "
+		return "`" + getPrefix() + " <username>, <soundfile>` (`*`) \u2014 set a sound file for a user "
 				+ "as their entrance sound when they join a channel";
 	}
 

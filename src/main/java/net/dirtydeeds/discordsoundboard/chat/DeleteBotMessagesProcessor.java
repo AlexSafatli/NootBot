@@ -17,7 +17,7 @@ public class DeleteBotMessagesProcessor extends SingleArgumentChatCommandProcess
 
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + "` (`*`) - clear all bot messages in channel"; 
+    return "`" + getPrefix() + "` (`*`) \u2014 clear all bot messages in channel"; 
   }
 
 }
