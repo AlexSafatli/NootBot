@@ -96,7 +96,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
     int i = 0;
 		for (String s : strings) {
 			int k = i+1;
-			StyledEmbedMessage em = new StyledEmbedMessage((i == 0) ? title : title + " (*page " + k + "*)", bot);
+			StyledEmbedMessage em = new StyledEmbedMessage((i == 0) ? title : title + " (*" + k + "*)", bot);
 			em.addDescription(s);
 			embed(event, em);
       ++i;

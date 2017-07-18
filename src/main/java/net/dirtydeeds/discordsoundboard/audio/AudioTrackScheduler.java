@@ -39,6 +39,14 @@ public class AudioTrackScheduler extends AudioEventAdapter {
 	public void clear() {
 		tracks.clear();
 	}	
+
+	public List<String> getIdentifiers() {
+		List<String> identifiers = new LinkedList<>();
+		for (AudioTrack t : tracks) {
+			identifiers.add(t.getIdentifier());
+		}
+		return identifiers;
+	}
 	
 	@Override
 	public void onPlayerPause(AudioPlayer player) {

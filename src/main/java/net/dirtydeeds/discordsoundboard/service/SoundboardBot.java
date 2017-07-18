@@ -389,7 +389,17 @@ public class SoundboardBot {
     AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
     player.stopTrack();
-    // TODO decrease all play counts by 1
+    List<String> files = scheduler.getIdentifiers();
+    if (files.size() > 1) {
+      for (String name : files) {
+        File f = new File(name);
+        SoundFile s = dispatcher.getAvailableSoundFiles().get(f.getName());
+        if (s != null) {
+          s.subtractOneFromNumberOfPlays();
+          dispatcher.saveSound(s);
+        }
+      }
+    }
     scheduler.clear();
   }
 
@@ -616,6 +626,15 @@ public class SoundboardBot {
       if (c.getName().equalsIgnoreCase(category)) return true;
     }
     return false;
+  }
+
+  public String getSoundCategory(String category) {
+    if (isASoundCategory(category)) {
+      for (Category c : dispatcher.getCategories()) {
+        if (c.getName().equalsIgnoreCase(category)) return c;
+      }
+    }
+    return null;
   }
 
   public SoundFile getLastPlayed() {

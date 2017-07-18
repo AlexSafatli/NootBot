@@ -125,6 +125,10 @@ public class SoundFile {
     public void addOneToNumberOfPlays() {
     	++numberPlays;
     }
+
+    public void subtractOneFromNumberOfPlays() {
+        numberPlays = (numberPlays == 0) ? --numberPlays : 0;
+    }
         
     public Boolean isExcludedFromRandom() {
     	return this.excludedFromRandom;

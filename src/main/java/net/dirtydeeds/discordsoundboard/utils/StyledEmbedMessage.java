@@ -16,39 +16,42 @@ import net.dv8tion.jda.core.entities.Icon;
 
 public class StyledEmbedMessage {
 
+	public static final String FOR_USER_FOOTER_PREFIX = "Request for ";
+
 	private EmbedBuilder builder;
 	private String footer;
 	private String footerIconUrl;
 
-	private static final String NOOT_BOT_FOOTER_TEXT = Version.NAME + " " + Version.VERSION;
-	private static final String NOOT_BOT_DEFAULT_TOP = " ";
-	private static final String NOOT_BOT_DEFAULT_ERR = "I fwubbed it.";
-	private static final Color  NOOT_BOT_EMBED_COLOR = new Color(87, 70, 158);
-	private static final Color  NOOT_BOT_ERROR_COLOR = new Color(179, 0,   0);
-	private static final Color  NOOT_BOT_WARN_COLOR  = new Color(255, 217, 0);
-	
+	private static final String FOOTER_TEXT = Version.NAME + " " +
+	    Version.VERSION + " by " Version.AUTHOR;
+	private static final String DEFAULT_TOP = " ";
+	private static final String DEFAULT_ERR = "Fwubbed it.";
+	private static final String SEPERATOR = " \u2022 ";
+	private static final Color  EMBED_COLOR = new Color(87, 70, 158);
+	private static final Color  ERROR_COLOR = new Color(179, 0,   0);
+	private static final Color  WARN_COLOR  = new Color(255, 217, 0);
+
 	public StyledEmbedMessage() {
 		this.footerIconUrl = Icons.ELLIPSIS;
 		builder = new EmbedBuilder();
-		builder.setColor(NOOT_BOT_EMBED_COLOR);
+		builder.setColor(EMBED_COLOR);
 	}
-	
+
 	public StyledEmbedMessage(String title) {
 		this();
-		this.footer = NOOT_BOT_FOOTER_TEXT + " by " + Version.AUTHOR;
+		this.footer = FOOTER_TEXT;
 		builder.setTitle(title);
-		builder.setAuthor(NOOT_BOT_DEFAULT_TOP, null, null);
+		builder.setAuthor(DEFAULT_TOP, null, null);
 		updateFooter();
 	}
-	
+
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
 		this(title);
 		String numSounds = bot.getSoundMap().size() + " sounds";
-		this.footer = NOOT_BOT_FOOTER_TEXT + " by " + Version.AUTHOR + 
-			" \u2014 " + numSounds;
+		this.footer = FOOTER_TEXT + SEPERATOR + numSounds;
 		updateFooter();
 	}
-	
+
 	private void updateFooter() {
 		builder.setFooter(footer, footerIconUrl);
 	}
@@ -60,7 +63,7 @@ public class StyledEmbedMessage {
 	public void addDescription(String desc) {
 		builder.setDescription(desc);
 	}
-	
+
 	public void setColor(Color color) {
 		builder.setColor(color);
 	}
@@ -68,7 +71,7 @@ public class StyledEmbedMessage {
 	public void setImage(String url) {
 		builder.setImage(url);
 	}
-	
+
 	public void setThumbnail(String url) {
 		builder.setThumbnail(url);
 	}
@@ -79,36 +82,36 @@ public class StyledEmbedMessage {
 	}
 
 	public void addFooterText(String text) {
-		footer += " \u2014 " + text;
+		footer += SEPERATOR + text;
 		updateFooter();
 	}
 
 	public StyledEmbedMessage isWarning(boolean warning) {
 		if (warning) {
-			builder.setColor(NOOT_BOT_WARN_COLOR);
-			builder.setAuthor(NOOT_BOT_DEFAULT_ERR, null, Icons.WARNING);
+			builder.setColor(WARN_COLOR);
+			builder.setAuthor(DEFAULT_ERR, null, Icons.WARNING);
 		}
 		return this;
-	} 
+	}
 
 	public StyledEmbedMessage isError(boolean error) {
 		if (error) {
-			builder.setColor(NOOT_BOT_ERROR_COLOR);
-			builder.setAuthor(NOOT_BOT_DEFAULT_ERR, null, Icons.TIMES);
+			builder.setColor(ERROR_COLOR);
+			builder.setAuthor(DEFAULT_ERR, null, Icons.TIMES);
 		}
 		return this;
-	} 
-	
+	}
+
 	public void addContent(String name, String value, boolean inline) {
 		builder.addField(name, value, inline);
 	}
-	
+
 	public Message getMessage() {
 		MessageBuilder mb = new MessageBuilder();
 		mb.setEmbed(builder.build());
 		return (Message) mb.build();
 	}
-	
+
 	public static StyledEmbedMessage forSoundFile(SoundboardBot bot, SoundFile file, String title, String description) {
 		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
 		msg.addDescription(description);
@@ -129,10 +132,10 @@ public class StyledEmbedMessage {
 	public static StyledEmbedMessage forUser(SoundboardBot bot, User user, String title, String description) {
 		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
 		msg.addDescription(description);
-		msg.addFooterText("For " + user.getName());
+		msg.addFooterText(FOR_USER_FOOTER_PREFIX + user.getName());
 		msg.setFooterIcon(user.getEffectiveAvatarUrl());
 		return msg;
 	}
-	
+
 }
 
