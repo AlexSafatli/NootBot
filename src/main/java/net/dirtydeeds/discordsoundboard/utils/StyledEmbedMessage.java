@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.utils;
 import java.awt.Color;
 import java.util.Date;
 import java.util.Random;
+import java.util.Arrays;
 
 import net.dirtydeeds.discordsoundboard.Icons;
 import net.dirtydeeds.discordsoundboard.Version;
@@ -23,10 +24,10 @@ public class StyledEmbedMessage {
 	private String footerIconUrl;
 	private String errorTitle;
 
-	private static final String[] ERROR_STRINGS = new String[] {
+	private static final List<String> ERROR_STRINGS = Arrays.asList(new String[] {
 	  "Fwubbed it.", "Gao~", "DELETE DELETE DELETTTTTTT", "Oro?", "Tch.",
 	  "Excuse me, I stuttered."
-	};
+	});
 
 	private static final String FOOTER_TEXT = Version.NAME + " " +
 	    Version.VERSION + " by " + Version.AUTHOR;
