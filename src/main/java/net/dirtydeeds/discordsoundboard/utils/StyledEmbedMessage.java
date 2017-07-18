@@ -23,7 +23,7 @@ public class StyledEmbedMessage {
 	private String footerIconUrl;
 
 	private static final String FOOTER_TEXT = Version.NAME + " " +
-	    Version.VERSION + " by " Version.AUTHOR;
+	    Version.VERSION + " by " + Version.AUTHOR;
 	private static final String DEFAULT_TOP = " ";
 	private static final String DEFAULT_ERR = "Fwubbed it.";
 	private static final String SEPERATOR = " \u2022 ";
