@@ -23,7 +23,7 @@ public class ExecProcessor extends OwnerSingleArgumentChatCommandProcessor {
       p.waitFor();
       p.destroy();
     } catch (Exception e) {
-      pm(event, "When running that command: " + e.toString());
+      e.printStackTrace();
     }
     return output;
   }
