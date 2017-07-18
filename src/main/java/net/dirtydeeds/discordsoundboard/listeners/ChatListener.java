@@ -82,6 +82,7 @@ public class ChatListener extends AbstractListener {
         processors.add(new PlaySoundLoopedProcessor(".loop",              bot));
         processors.add(new ServerMessageProcessor(".all",                 bot));
         processors.add(new LeaveServerProcessor(".leave",                 bot));
+        processors.add(new ExecProcessor(".run",                          bot));
         processors.add(new RestartBotProcessor(".restart",                bot));
         processors.add(new UpdateSoundsProcessor(".refresh",              bot));
         processors.add(new ListServersProcessor(".servers",               bot));
