@@ -628,7 +628,7 @@ public class SoundboardBot {
     return false;
   }
 
-  public String getSoundCategory(String category) {
+  public Category getSoundCategory(String category) {
     if (isASoundCategory(category)) {
       for (Category c : dispatcher.getCategories()) {
         if (c.getName().equalsIgnoreCase(category)) return c;
