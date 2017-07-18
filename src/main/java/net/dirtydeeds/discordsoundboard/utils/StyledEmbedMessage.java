@@ -21,18 +21,24 @@ public class StyledEmbedMessage {
 	private EmbedBuilder builder;
 	private String footer;
 	private String footerIconUrl;
+	private String errorTitle;
+
+	private static final String[] ERROR_STRINGS = new String[] {
+	  "Fwubbed it.", "Gao~", "DELETE DELETE DELETTTTTTT", "Oro?", "Tch.",
+	  "Excuse me, I stuttered."
+	};
 
 	private static final String FOOTER_TEXT = Version.NAME + " " +
 	    Version.VERSION + " by " + Version.AUTHOR;
 	private static final String DEFAULT_TOP = " ";
-	private static final String DEFAULT_ERR = "Fwubbed it.";
-	private static final String SEPERATOR = " \u2022 ";
+	private static final String SEPERATOR = " \u2014 ";
 	private static final Color  EMBED_COLOR = new Color(87, 70, 158);
 	private static final Color  ERROR_COLOR = new Color(179, 0,   0);
 	private static final Color  WARN_COLOR  = new Color(255, 217, 0);
 
 	public StyledEmbedMessage() {
 		this.footerIconUrl = Icons.ELLIPSIS;
+		this.errorTitle = StringUtils.randomString(ERROR_STRINGS);
 		builder = new EmbedBuilder();
 		builder.setColor(EMBED_COLOR);
 	}
@@ -89,7 +95,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isWarning(boolean warning) {
 		if (warning) {
 			builder.setColor(WARN_COLOR);
-			builder.setAuthor(DEFAULT_ERR, null, Icons.WARNING);
+			builder.setAuthor(errorTitle, null, Icons.WARNING);
 		}
 		return this;
 	}
@@ -97,7 +103,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isError(boolean error) {
 		if (error) {
 			builder.setColor(ERROR_COLOR);
-			builder.setAuthor(DEFAULT_ERR, null, Icons.TIMES);
+			builder.setAuthor(errorTitle, null, Icons.TIMES);
 		}
 		return this;
 	}
