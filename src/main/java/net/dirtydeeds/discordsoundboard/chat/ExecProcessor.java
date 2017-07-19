@@ -1,5 +1,6 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
+import java.io.Reader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -17,13 +18,14 @@ public class ExecProcessor extends OwnerSingleArgumentChatCommandProcessor {
     Process p;
     try {
       p = Runtime.getRuntime().exec(cmd);
-      BufferedReader br = new BufferedReader(
-        new InputStreamReader(p.getInputStream()));
-      while ((s = br.readLine()) != null) output += s + "\n";
+      Reader r = new InputStreamReader(p.getInputStream());
+      BufferedReader stdin = new BufferedReader(r);
+      while ((s = stdin.readLine()) != null) output += s + "\n";
       p.waitFor();
       p.destroy();
+      stdin.close();
     } catch (Exception e) {
-      e.printStackTrace();
+      return e.toString();
     }
     return output;
   }
@@ -31,7 +33,9 @@ public class ExecProcessor extends OwnerSingleArgumentChatCommandProcessor {
   protected void handleEvent(MessageReceivedEvent event, String message) {
     String cmd = getArgument();
     if (cmd != null) {
-      m(event, "```" + run(cmd) + "```");
+      String out = run(cmd);
+      if (!out.isEmpty()) m(event, "```" + run(cmd) + "```");
+      else pm(event, "Ran command and received no output.");
     }
   }
 
