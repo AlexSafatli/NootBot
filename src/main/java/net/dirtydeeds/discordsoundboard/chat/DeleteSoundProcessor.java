@@ -32,7 +32,7 @@ public class DeleteSoundProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " \u2014 remove a sound from the file system";
+		return super.getCommandHelpString() + " - remove a sound from the file system";
 	}
 	
 }

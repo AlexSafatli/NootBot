@@ -28,7 +28,7 @@ public class SetNicknameProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <nickname>` (`*`) \u2014 set a new nickname for this bot in this server";
+		return getPrefix() + " <nickname> (*) - set a new nickname for this bot in this server";
 	}
 
 }

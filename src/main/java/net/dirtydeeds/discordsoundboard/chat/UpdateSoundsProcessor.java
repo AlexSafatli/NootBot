@@ -16,7 +16,7 @@ public class UpdateSoundsProcessor extends AuthenticatedSingleArgumentChatComman
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` (`*`) \u2014 refresh the sound/file list";
+		return getPrefix() + " (*) - refresh the sound/file list";
 	}
 	
 }

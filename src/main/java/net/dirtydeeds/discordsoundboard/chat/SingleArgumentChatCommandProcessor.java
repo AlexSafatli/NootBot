@@ -32,6 +32,6 @@ public abstract class SingleArgumentChatCommandProcessor extends AbstractChatCom
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " [argument]`"; 
+		return getPrefix() + " [argument]"; 
 	}
 }

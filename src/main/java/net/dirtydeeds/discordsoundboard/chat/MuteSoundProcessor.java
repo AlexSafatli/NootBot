@@ -19,7 +19,7 @@ public class MuteSoundProcessor extends AuthenticatedSingleArgumentChatCommandPr
 
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + "` \u2014 mute the bot";
+    return getPrefix() + " - mute the bot";
   }
   
 }

@@ -110,8 +110,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` \u2014 list the newest sound files at least **" + 
-				MIN_NUMBER_OF_HOURS/DAYS + "** days old";
+		return getPrefix() + " - list the newest sound files at least " + 
+				MIN_NUMBER_OF_HOURS/DAYS + " days old";
 	}
 
 }

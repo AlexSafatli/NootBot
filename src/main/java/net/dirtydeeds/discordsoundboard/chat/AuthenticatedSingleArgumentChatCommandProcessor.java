@@ -42,7 +42,7 @@ public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 	
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " (`*`)"; 
+		return super.getCommandHelpString() + " (*)"; 
 	}
 	
 }

@@ -41,7 +41,7 @@ public abstract class MultiArgumentChatCommandProcessor extends AbstractChatComm
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " [argument1],[argument2],...`"; 
+		return getPrefix() + " [argument1], [argument2], ..."; 
 	}
 	
 }

@@ -48,8 +48,8 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` \u2014 list the **" + NUMBER_OF_TOP_TO_SHOW + 
-				"** longest sound files";
+		return getPrefix() + " - list the " + NUMBER_OF_TOP_TO_SHOW + 
+				" longest sound files";
 	}
 
 }

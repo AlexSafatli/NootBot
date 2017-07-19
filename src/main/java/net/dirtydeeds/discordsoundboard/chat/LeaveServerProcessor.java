@@ -30,7 +30,7 @@ public class LeaveServerProcessor extends OwnerSingleArgumentChatCommandProcesso
 	
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " \u2014 leave a joined server by name";
+		return super.getCommandHelpString() + " - leave a joined server by name";
 	}
 
 }

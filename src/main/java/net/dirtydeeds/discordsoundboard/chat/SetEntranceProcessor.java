@@ -35,7 +35,7 @@ public class SetEntranceProcessor extends
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` \u2014 set a sound as your entrance for when you join a channel";
+		return getPrefix() + " <soundfile> - set a sound as your entrance for when you join a channel";
 	}
 
 }

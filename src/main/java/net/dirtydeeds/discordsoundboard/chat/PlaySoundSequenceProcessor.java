@@ -29,7 +29,7 @@ public class PlaySoundSequenceProcessor extends MultiArgumentChatCommandProcesso
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` `soundfile, [soundfile2], ..., [soundfileX]` \u2014 play a sequence of sound files where X < **" + MAX_NUMBER_OF_PLAYS + "**";
+		return getPrefix() + " soundfile, [soundfile2], ..., [soundfileX] - play a sequence of sound files where X <= " + MAX_NUMBER_OF_PLAYS;
 	}
 
 }

@@ -19,7 +19,7 @@ public class UnmuteSoundProcessor extends AuthenticatedSingleArgumentChatCommand
 
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + "` \u2014 unmute the bot";
+    return getPrefix() + " - unmute the bot";
   }
   
 }

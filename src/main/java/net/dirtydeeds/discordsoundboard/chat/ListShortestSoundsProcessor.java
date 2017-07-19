@@ -49,8 +49,8 @@ public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
   
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + "` \u2014 list the **" + NUMBER_TO_SHOW + 
-        "** shortest sound files";
+    return getPrefix() + " - list the " + NUMBER_TO_SHOW + 
+        " shortest sound files";
   }
 
 }

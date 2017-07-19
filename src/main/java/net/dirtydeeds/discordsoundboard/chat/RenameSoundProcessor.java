@@ -51,7 +51,7 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " \u2014 rename a sound";
+		return getPrefix() + " <soundfile>, <newname> - rename a sound";
 	}
 	
 }

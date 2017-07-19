@@ -41,7 +41,7 @@ public class ExecProcessor extends OwnerSingleArgumentChatCommandProcessor {
 
   @Override
   public String getCommandHelpString() {
-    return super.getCommandHelpString() + " \u2014 run a command on the system";
+    return getPrefix() + " <cmd> (*) - run a command on the system";
   }
 
 }

@@ -41,7 +41,7 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <username>, <soundfile>` (`*`) \u2014 set a sound file for a user "
+		return getPrefix() + " <username>, <soundfile> (*) - set a sound file for a user "
 				+ "as their entrance sound when they join a channel";
 	}
 

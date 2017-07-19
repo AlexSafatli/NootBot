@@ -39,7 +39,7 @@ public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` (`*`) \u2014 exclude a sound file from random events";
+		return getPrefix() + " <soundfile> (*) - exclude a sound file from random events";
 	}
 	
 }

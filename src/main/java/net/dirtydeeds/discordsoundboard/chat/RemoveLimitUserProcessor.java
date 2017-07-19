@@ -27,7 +27,7 @@ public class RemoveLimitUserProcessor extends AuthenticatedSingleArgumentChatCom
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " \u2014 stop throttling a user";
+		return super.getCommandHelpString() + " - stop throttling a user";
 	}
 	
 }

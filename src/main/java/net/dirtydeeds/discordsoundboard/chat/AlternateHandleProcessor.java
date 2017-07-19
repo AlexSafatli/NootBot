@@ -25,7 +25,7 @@ public class AlternateHandleProcessor extends SingleArgumentChatCommandProcessor
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <handle>` \u2014 let the bot know about another handle you go by on the internet \u2014 used for some *optional* functionality";
+		return getPrefix() + " <handle> - let the bot know about another handle you go by on the internet; used for some *optional* functionality";
 	}
 
 }

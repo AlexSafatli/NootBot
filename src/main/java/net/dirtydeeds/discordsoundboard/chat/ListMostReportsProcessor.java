@@ -52,8 +52,8 @@ public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
   
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + "` \u2014 list the **" + NUMBER_OF_TOP_TO_SHOW + 
-        "** most controverial sound files (most reports)";
+    return getPrefix() + " - list the " + NUMBER_OF_TOP_TO_SHOW + 
+        " most controverial sound files (most reports)";
   }
 
 }

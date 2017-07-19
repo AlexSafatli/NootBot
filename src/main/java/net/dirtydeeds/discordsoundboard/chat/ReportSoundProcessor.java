@@ -79,7 +79,7 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` \u2014 report a sound file for being inappropriate or annoying";
+		return getPrefix() + " <soundfile> - report a sound file for being inappropriate or annoying";
 	}
 	
 }

@@ -34,7 +34,7 @@ public class DownloadSoundProcessor extends SingleArgumentChatCommandProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` \u2014 download a sound by name";
+		return getPrefix() + " <soundfile> - download a sound by name";
 	}
 	
 }

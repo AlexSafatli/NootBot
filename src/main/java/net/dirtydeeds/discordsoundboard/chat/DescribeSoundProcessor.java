@@ -40,7 +40,7 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " <soundfile>` \u2014 get information for a sound file";
+		return getPrefix() + " <soundfile> - get information for a sound file";
 	}
 	
 }

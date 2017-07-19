@@ -59,7 +59,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` \u2014 print some stats related to the bot";
+		return getPrefix() + " - print some stats related to the bot";
 	}
 
 }

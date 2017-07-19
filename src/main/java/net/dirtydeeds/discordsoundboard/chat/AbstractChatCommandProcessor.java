@@ -146,7 +146,7 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 	
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "`"; 
+		return getPrefix(); 
 	}
 
 }

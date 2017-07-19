@@ -21,8 +21,8 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		if (processors == null || processors.isEmpty()) return;
 		boolean canRunAuthenticated = (event.getAuthor().getName().equalsIgnoreCase(bot.getOwner()));
-		MessageBuilder mb = new MessageBuilder();
-		mb.append("Type **any of these commands** in a channel or in a PM to me:\n\n");
+		MessageBuilder mb = new MessageBuilder(true);
+		mb.append("Type any of these commands in a channel or in a PM to me:\n\n");
 		for (ChatCommandProcessor processor : processors) {
 			if (processor.canBeRunByAnyone() || (!processor.canBeRunByAnyone() && processor.canBeRunBy(event.getAuthor(), event.getGuild()))) {
 				// Print command help for this processor.
@@ -32,7 +32,7 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 			}
 		}
 		if (canRunAuthenticated) {
-			mb.append("\nAn `*` symbol indicates a command only available to moderators.");
+			mb.append("\nAn * symbol indicates a command only available to moderators.");
 		}
 		// Send all buffered data.
 		for (String s : mb) pm(event, s);

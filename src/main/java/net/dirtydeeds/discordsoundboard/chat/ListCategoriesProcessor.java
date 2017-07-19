@@ -41,7 +41,7 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` \u2014 list all sound categories";
+		return getPrefix() + " - list all sound categories";
 	}
 	
 }

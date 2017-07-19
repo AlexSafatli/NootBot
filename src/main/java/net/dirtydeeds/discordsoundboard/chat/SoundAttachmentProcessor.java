@@ -156,7 +156,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "**Upload** an `.mp3` *OR* `.wav` file(s) to add sounds. *Use the Comment field to specify category.*";
+		return "Upload (an) .mp3 OR .wav file(s) to add sounds. Use the Comment field to specify category.";
 	}
 
 }

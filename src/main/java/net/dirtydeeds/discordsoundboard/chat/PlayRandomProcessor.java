@@ -49,7 +49,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + " [category]` \u2014 play a random sound (from `category` if specified)";
+		return getPrefix() + " [category] - play a random sound (from category if specified)";
 	}
 
 }

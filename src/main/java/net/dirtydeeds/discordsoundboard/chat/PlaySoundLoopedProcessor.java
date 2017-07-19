@@ -51,7 +51,7 @@ public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor 
 
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + "` `<soundfile>, X` \u2014 play a sound by name X number of times where X < **" + MAX_NUMBER_OF_LOOPED_PLAYS + "**";
+    return getPrefix() + " <soundfile>, X - play a sound by name X number of times where X <= " + MAX_NUMBER_OF_LOOPED_PLAYS;
   }
 
 }

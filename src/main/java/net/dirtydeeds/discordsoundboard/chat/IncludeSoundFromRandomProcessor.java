@@ -39,7 +39,7 @@ public class IncludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + " <soundfile>` (`*`) \u2014 include a sound file again for random events";
+    return getPrefix() + " <soundfile> (*) - include a sound file again for random events";
   }
   
 }

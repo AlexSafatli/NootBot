@@ -57,8 +57,8 @@ public class PlaySoundForUserProcessor extends MultiArgumentChatCommandProcessor
 
   @Override
   public String getCommandHelpString() {
-    return "`" + getPrefix() + " <username>, <soundfile>` \u2014 plays a file by name "
-           + "for a particular user; will move to their channel - can be used anywhere";
+    return getPrefix() + " <username>, <soundfile> - plays a file by name "
+           + "for a particular user; will move to their channel and can be used anywhere";
   }
 
 }

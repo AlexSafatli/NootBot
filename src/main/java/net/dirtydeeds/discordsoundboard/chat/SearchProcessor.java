@@ -53,7 +53,7 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 	
 	@Override
 	public String getCommandHelpString() {
-		return "`" + getPrefix() + "` `<keyword>` \u2014 search for sounds by keyword";
+		return getPrefix() + " <keyword> - search for sounds by keyword";
 	}
 
 }
