@@ -17,7 +17,7 @@ public class MessageBuilder implements Iterable<String> {
 	}
 
 	public MessageBuilder(boolean codified) {
-		super();
+		this();
 		this.codified = codified;
 	}
 	
