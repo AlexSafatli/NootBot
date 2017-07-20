@@ -55,7 +55,8 @@ public class MoveListener extends AbstractListener {
 
     if (bot.isUser(user)) {
       if (voiceChannel.getMembers().size() == 1) {
-        LOG.info("Moved to an empty channel. Closing audio connection in " + guild.getName() + ".");
+        LOG.info("Moved to an empty channel. Closing audio connection in " +
+                 guild.getName() + ".");
         leaveVoiceInGuild(guild);
       }
       return;
@@ -103,8 +104,8 @@ public class MoveListener extends AbstractListener {
           try {
             if (bot.playFileForEntrance(fileToPlay, user, voiceChannel)) {
               SoundFile sound = bot.getDispatcher().getSoundFileByName(fileToPlay);
-              soundInfo = "Played sound " + formatString(Strings.SOUND_DESC, fileToPlay, sound.getCategory(),
-                          sound.getNumberOfPlays()) + ".";
+              soundInfo = "Played sound " + formatString(Strings.SOUND_DESC,
+                          fileToPlay, sound.getCategory(), sound.getNumberOfPlays()) + ".";
             } else {
               LOG.info("Wanted to play entrance \"" + fileToPlay + "\" for user but did not play a sound.");
             }

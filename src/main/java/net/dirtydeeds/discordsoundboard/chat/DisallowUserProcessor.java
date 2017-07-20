@@ -5,20 +5,23 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class DisallowUserProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
-	
+
 	public DisallowUserProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Disallow User", bot);
+		super(prefix, "I Smite Thee", bot);
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		if (getArgument() != null) {
 			String username = getArgument();
-			if (username.equals(event.getAuthor().getName()))
+			if (username.equals(event.getAuthor().getName())) {
 				pm(event, lookupString(Strings.NOT_TO_SELF));
-			else if (bot.disallowUser(username))
+			} else if (bot.disallowUser(username)) {
 				pm(event, formatString(Strings.USER_DISALLOW_ALLOWED, username));
-			else
+				m(event, "**" + bot.getUser(username).getUsername() +
+				  "** has had his sound playing privileges removed. *Rekt*.");
+			} else {
 				pm(event, formatString(Strings.USER_NOT_FOUND_ALLOWED, username));
+			}
 		}
 	}
 
@@ -26,5 +29,5 @@ public class DisallowUserProcessor extends AuthenticatedSingleArgumentChatComman
 	public String getCommandHelpString() {
 		return super.getCommandHelpString() + " - disallow user from playing sounds";
 	}
-	
+
 }

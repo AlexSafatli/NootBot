@@ -15,7 +15,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("SoundProcessor");
 	private static final long PLAY_COUNT_FOR_ANNOUNCEMENT = 50;
-	
+
 	public PlaySoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Play Sound", bot);
 	}
@@ -31,17 +31,17 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 		msg.addContent("You Could Search For It", "*Use `.search` with a keyword to find sounds.*", false);
 		embed(event, msg.isWarning(true));
 	}
-	
+
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		User user = event.getAuthor();
-        String name = message.substring(1, message.length());
-        if (!bot.isAllowedToPlaySound(user)) {
-        	pm(event, lookupString(Strings.NOT_ALLOWED));
-        	LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
-        } else if (StringUtils.containsAny(name, '?')) {
-        	return; // File names cannot contain question marks.
-        } else if (bot.getSoundMap().get(name) == null) {
-        	LOG.info("Sound was not found.");
+		String name = message.substring(1, message.length());
+		if (!bot.isAllowedToPlaySound(user)) {
+			pm(event, lookupString(Strings.NOT_ALLOWED));
+			LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
+		} else if (StringUtils.containsAny(name, '?')) {
+			return; // File names cannot contain question marks.
+		} else if (bot.getSoundMap().get(name) == null) {
+			LOG.info("Sound was not found.");
 			String suggestion = "Check your spelling.", possibleName = bot.getClosestMatchingSoundName(name);
 			if (name.equals("help")) {
 				suggestion = "Were you trying to access the `.help` command?";
@@ -57,18 +57,18 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 				}
 			}
 			sendFailureMessage(event, name, suggestion, user);
-        } else {
-        	boolean played = true;
-        	try { bot.playFileForChatCommand(name, event); }
-	        catch (Exception e) { played = false; }
-	        SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
-	        if (played && sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
-	        	// Make an announcement every so many plays.
-	        	m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name, sound.getNumberOfPlays()));
-	        }
-        }
+		} else {
+			boolean played = true;
+			try { bot.playFileForChatCommand(name, event); }
+			catch (Exception e) { played = false; }
+			SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
+			if (played && sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
+				// Make an announcement every so many plays.
+				m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name, sound.getNumberOfPlays()));
+			}
+		}
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
 		String help = getPrefix() + "soundfile - play a sound by name";
