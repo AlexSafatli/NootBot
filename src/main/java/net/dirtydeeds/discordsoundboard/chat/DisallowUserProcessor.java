@@ -17,7 +17,7 @@ public class DisallowUserProcessor extends AuthenticatedSingleArgumentChatComman
 				pm(event, lookupString(Strings.NOT_TO_SELF));
 			} else if (bot.disallowUser(username)) {
 				pm(event, formatString(Strings.USER_DISALLOW_ALLOWED, username));
-				m(event, "**" + bot.getUser(username).getUsername() +
+				m(event, "**" + bot.getUserByName(username).getName() +
 				  "** has had his sound playing privileges removed. *Rekt*.");
 			} else {
 				pm(event, formatString(Strings.USER_NOT_FOUND_ALLOWED, username));
