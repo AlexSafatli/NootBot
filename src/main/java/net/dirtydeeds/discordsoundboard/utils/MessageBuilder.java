@@ -9,7 +9,7 @@ public class MessageBuilder implements Iterable<String> {
 	private List<String> messages;
 	private StringBuilder builder;
 	private boolean codified;
-	private int max = MAX_MESSAGE_LENGTH;
+	private long max = MAX_MESSAGE_LENGTH;
 	private static final long MAX_MESSAGE_LENGTH = 2000;
 	
 	public MessageBuilder() {
@@ -22,7 +22,7 @@ public class MessageBuilder implements Iterable<String> {
 		this.codified = codified;
 	}
 
-	public MessageBuilder(int max) {
+	public MessageBuilder(long max) {
 		this.max = Math.max(max, this.max);
 	}
 	
