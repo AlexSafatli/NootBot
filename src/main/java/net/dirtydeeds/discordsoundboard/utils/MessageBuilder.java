@@ -23,6 +23,7 @@ public class MessageBuilder implements Iterable<String> {
 	}
 
 	public MessageBuilder(long max) {
+		this();
 		this.max = Math.max(max, this.max);
 	}
 	
