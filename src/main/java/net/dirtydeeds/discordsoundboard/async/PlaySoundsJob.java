@@ -129,12 +129,16 @@ public class PlaySoundsJob implements SoundboardJob {
 
 	private List<Message> makeMessages(String description, User user, MessageBuilder mb, long duration) {
 		List<Message> msgs = new LinkedList<>();
-		for (String str : mb) {
-			String titleSuffix = (msgs.size() > 1) ? " \u2014 (*" + msgs.size() + "*)" : "";
-			StyledEmbedMessage msg = StyledEmbedMessage.forUser(bot, user, "Playing Multiple Sounds" + titleSuffix, description);
-			if (mb != null) msg.addContent("Sounds Queued", str, false);
-			if (duration > 0) msg.addContent("Total Duration", Long.toString(duration) + " seconds", false);
-			msgs.add(msg.getMessage());
+		if (mb != null) {
+			for (String str : mb) {
+				String titleSuffix = (msgs.size() > 1) ? " \u2014 (*" + msgs.size() + "*)" : "";
+				StyledEmbedMessage msg = StyledEmbedMessage.forUser(bot, user, "Playing Multiple Sounds" + titleSuffix, description);
+				if (mb != null) msg.addContent("Sounds Queued", str, false);
+				if (duration > 0) msg.addContent("Total Duration", Long.toString(duration) + " seconds", false);
+				msgs.add(msg.getMessage());
+			}
+		} else {
+			msgs.add(StyledEmbedMessage.forUser(bot, user, "Loop", description).getMessage());
 		}
 		return msgs;
 	}
