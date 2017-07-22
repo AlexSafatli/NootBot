@@ -104,16 +104,16 @@ public class PlaySoundsJob implements SoundboardJob {
 			String end = "";
 			if (category != null) {
 				Category c = bot.getSoundCategory(category);
-				if (c != null) end += " from category **" + c.getName() + "**";
+				if (c != null) end += "from category **" + c.getName() + "** ";
 			}
-			if (allRandomed) end += " *all of which were randomed*";
-			else if (randomed) end += " *some of which were randomed*";
+			if (allRandomed) end += "*all of which were randomed*";
+			else if (randomed) end += "*some of which were randomed*";
 			if (guild != null) {
 				List<Message> msgs;
 				if (!same || sounds.length == 1) {
-					msgs = makeMessages("Queued sound(s) " + end + " " + user.getAsMention() + ".", user, mb, timePlaying);
+					msgs = makeMessages("Queued sound(s) " + end + " \u2014 " + user.getAsMention(), user, mb, timePlaying);
 				} else {
-					msgs = makeMessages("Looping `" + firstSound + "` **" + sounds.length + "** times " + user.getAsMention() + ".", user, null, timePlaying);
+					msgs = makeMessages("Looping `" + firstSound + "` **" + sounds.length + "** times \u2014 " + user.getAsMention(), user, null, timePlaying);
 				}
 				for (Message msg : msgs) {
 					RestAction<Message> m = guild.getPublicChannel().sendMessage(msg);
