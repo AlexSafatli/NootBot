@@ -9,6 +9,7 @@ public class MessageBuilder implements Iterable<String> {
 	private List<String> messages;
 	private StringBuilder builder;
 	private boolean codified;
+	private int max = MAX_MESSAGE_LENGTH;
 	private static final long MAX_MESSAGE_LENGTH = 2000;
 	
 	public MessageBuilder() {
@@ -20,10 +21,14 @@ public class MessageBuilder implements Iterable<String> {
 		this();
 		this.codified = codified;
 	}
+
+	public MessageBuilder(int max) {
+		this.max = Math.max(max, this.max);
+	}
 	
 	public MessageBuilder append(Object o) {
 		String s = o.toString();
-		if (builder.length() + s.length() > ((codified) ? MAX_MESSAGE_LENGTH - 6 : MAX_MESSAGE_LENGTH)) {
+		if (builder.length() + s.length() > ((codified) ? max - 6 : max)) {
 			messages.add(builder.toString());
 			builder = new StringBuilder();
 		}

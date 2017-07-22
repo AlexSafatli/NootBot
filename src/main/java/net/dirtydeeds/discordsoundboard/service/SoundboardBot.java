@@ -173,20 +173,22 @@ public class SoundboardBot {
     List<SoundFile> sounds = dispatcher.getSoundFilesOrderedByNumberOfPlays();
     if (sounds == null || sounds.isEmpty()) return null;
     Random rng = new Random();
+    SoundFile file = null;
     maxDuration = Math.min(MAX_DURATION_FOR_RANDOM, maxDuration);
     int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size() / 20),
         index = rng.nextInt(Math.min(top, sounds.size())),
         ceiling = top;
-    while (sounds.get(index) == null
-	|| sounds.get(index).isExcludedFromRandom()
-	|| sounds.get(index).getSoundFile() == null
-	|| !sounds.get(index).getSoundFile().exists()
-	|| sounds.get(index).getDuration() == null
-	|| sounds.get(index).getDuration() > maxDuration) {
+    while (file == null
+	|| file.isExcludedFromRandom()
+	|| file.getSoundFile() == null
+	|| !file.getSoundFile().exists()
+	|| file.getDuration() == null
+	|| file.getDuration() > maxDuration) {
       index = rng.nextInt(Math.min(ceiling, sounds.size()));
+      file = sounds.get(index);
       if (ceiling + 1 < sounds.size()) ++ceiling;
     }
-    return sounds.get(index).getSoundFileId();
+    return file.getSoundFileId();
   }
 
   public String getRandomTopPlayedSoundName() {
