@@ -71,7 +71,7 @@ public class PlaySoundsJob implements SoundboardJob {
 				bot.moveToChannel(voice);
 			} catch (Exception e) { return; }
 			long timePlaying = 0;
-			MessageBuilder mb = new MessageBuilder(512);
+			MessageBuilder mb = new MessageBuilder(1024);
 			AudioTrackScheduler scheduler = bot.getSchedulerForGuild(guild);
 			for (int i = 0; i < sounds.length; ++i) {
 				String sound = sounds[i];

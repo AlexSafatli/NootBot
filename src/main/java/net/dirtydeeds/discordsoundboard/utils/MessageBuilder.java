@@ -24,7 +24,7 @@ public class MessageBuilder implements Iterable<String> {
 
 	public MessageBuilder(long max) {
 		this();
-		this.max = Math.max(max, this.max);
+		this.max = Math.min(max, this.max);
 	}
 	
 	public MessageBuilder append(Object o) {
