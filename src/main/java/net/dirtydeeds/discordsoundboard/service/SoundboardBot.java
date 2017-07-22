@@ -177,7 +177,7 @@ public class SoundboardBot {
     int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size() / 20),
         index = rng.nextInt(Math.min(top, sounds.size())),
         ceiling = top;
-    while (sounds.get(index) == null || sounds.get(index).isExcludedFromRandom() && !sounds.get(index).getSoundFile().exists() && sounds.get(index).getDuration() > maxDuration) {
+    while (sounds.get(index) == null || sounds.get(index).isExcludedFromRandom() || sounds.get(index).getSoundFile() == null || !sounds.get(index).getSoundFile().exists() || sounds.get(index).getDuration() > maxDuration) {
       index = rng.nextInt(Math.min(ceiling, sounds.size()));
       if (ceiling + 1 < sounds.size()) ++ceiling;
     }
