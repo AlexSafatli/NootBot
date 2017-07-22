@@ -16,7 +16,7 @@ public class PlayRandomTopSoundProcessor extends SingleArgumentChatCommandProces
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
-		String filePlayed = null, desc = "Played a random top sound ";
+		String desc = "Played a random top sound ";
 		if (!bot.isAllowedToPlaySound(event.getAuthor())) {
     	pm(event, lookupString(Strings.NOT_ALLOWED));
     	LOG.info(event.getAuthor() + " tried to play a sound file but is not allowed.");
