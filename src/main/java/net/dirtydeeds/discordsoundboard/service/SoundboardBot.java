@@ -180,9 +180,6 @@ public class SoundboardBot {
         ceiling = top;
     while (file == null
 	|| file.isExcludedFromRandom()
-	|| file.getSoundFile() == null
-	|| !file.getSoundFile().exists()
-	|| file.getDuration() == null
 	|| file.getDuration() > maxDuration) {
       index = rng.nextInt(Math.min(ceiling, sounds.size()));
       file = sounds.get(index);

@@ -53,6 +53,7 @@ public class MessageBuilder implements Iterable<String> {
 	public Iterator<String> iterator() {
 		return getStrings().iterator();
 	}
+
 	
 	public void clear() {
 		messages = new LinkedList<>();

@@ -127,7 +127,6 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	protected void e(MessageReceivedEvent event, String message) {
 		StyledEmbedMessage msg = makeEmbed(message, event.getAuthor()).isError(true);
 		msg.addContent("Message", "`" + event.getMessage().getContent() + "`", false);
-		msg.addContent("Author", event.getAuthor().getName(), true);
 		msg.addContent("Processor", "`" + getClass().getSimpleName() + "`", true);
 		embed(event, msg);
 	}
