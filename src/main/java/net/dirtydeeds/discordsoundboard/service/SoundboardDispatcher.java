@@ -28,6 +28,7 @@ import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 
+import net.dirtydeeds.discordsoundboard.async.*;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.dao.SoundFileRepository;
 import net.dirtydeeds.discordsoundboard.dao.UserRepository;
@@ -156,7 +157,8 @@ public class SoundboardDispatcher {
 		bots = new SoundboardBot[num];
 		for (int i = 1; i <= num; ++i) startBot(i);
 		// Async jobs
-		// LOG.info("Starting async jobs.");
+		//LOG.info("Starting async jobs.");
+		//asyncService.addJob(PeriodicLambdas.askForDonation());
 		// Audio Playing
 		LOG.info("Adding sources to audio manager.");
 		audioManager.registerSourceManager(new YoutubeAudioSourceManager());

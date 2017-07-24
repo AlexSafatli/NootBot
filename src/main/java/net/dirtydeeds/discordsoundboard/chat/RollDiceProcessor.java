@@ -4,9 +4,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
@@ -15,6 +13,7 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
   private static final int MAX_DICE_HEADS = 100;
   private static final int MIN_DICE = 1;
   private static final int MAX_DICE = 100;
+  private static final String NULL = "null";
 
   private final Random rng;
   private final Pattern dice;
@@ -41,32 +40,32 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    String msg = event.getMessage().getContent().trim();
-    User u = bot.getUser(event.getAuthor());
-    Matcher m = dice.matcher(msg);
+    Matcher m = dice.matcher(event.getMessage().getContent().trim());
     if (m.find()) {
       int dice = Math.max(Integer.valueOf(m.group(1)), MIN_DICE);
       int sides = Math.max(Integer.valueOf(m.group(2)), MIN_DICE_HEADS);
       int add = 0;
       if (dice > MAX_DICE) {
-        pm(event, "Max number of dice that can be rolled is **" + MAX_DICE + "**.");
+        w(event, "Max number of dice that can be rolled is **" + MAX_DICE + "**.");
         return;
       } else if (sides > MAX_DICE_HEADS) {
-        pm(event, "Max number of dice heads that can be rolled is **" + MAX_DICE_HEADS + "**.");
+        w(event, "Max number of dice heads that can be rolled is **" + MAX_DICE_HEADS + "**.");
         return;
       }
-      if (m.group(3) != null && !"null".equals(m.group(3))) {
+      if (m.group(3) != null && !NULL.equals(m.group(3))) {
         add = Math.max(Integer.valueOf(m.group(3)), 0);
       }
       m(event, roll(dice, sides, add));
     } else {
-      pm(event, "Want syntax in the form XdY+z \u2014 e.g., 2d5+2 rolls 2 dice of 1-5 and returns the sum plus 2.");
+      w(event, "This command needs syntax in the form `xdy+z` \u2014 " +
+         "e.g., `2d5+2` rolls 2 dice with possible sides ranging from 1 " + 
+         "to 5 and returns the result plus 2.");
     }
   }
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " <dice> - roll dice that is in XdY syntax";
+    return getPrefix() + " <dice> - roll dice that is in xdy syntax";
   }
 
 }
