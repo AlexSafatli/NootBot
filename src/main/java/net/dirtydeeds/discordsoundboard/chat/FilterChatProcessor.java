@@ -1,75 +1,70 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public abstract class AbstractFilterChatProcessor implements ChatCommandProcessor {
+public class FilterChatProcessor implements ChatCommandProcessor {
 
 	private final Pattern regexp;
 	private final String channelname;
 	protected SoundboardBot bot;
-	
-	public AbstractFilterChatProcessor(Pattern regexp, String channelname, SoundboardBot bot) {
+
+	public FilterChatProcessor(Pattern regexp, String channelname, SoundboardBot bot) {
 		this.regexp = regexp;
 		this.channelname = channelname;
 		this.bot = bot;
 	}
-	
+
 	public void process(MessageReceivedEvent event) {
 		if (!isApplicableCommand(event)) return;
-		String message = event.getMessage().getContent().toLowerCase();
 		try {
-			copyToChannel(event, message);
+			copyMessage(event, event.getMessage().getContent());
 			deleteOriginalMessage(event);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 
-	protected void copyToChannel(MessageReceivedEvent event, String message) {
-		//TODO
+	protected void copyMessage(MessageReceivedEvent event, String message) {
+		List<TextChannel> textChannels = event.getGuild().getTextChannelsByName(channelname, true);
+		String modified = String.format("%s\n\u2014\nOriginally posted by %s.\n*This was filtered to this channel because it contained a certain pattern.*", message, event.getAuthor().getAsMention());
+		for (TextChannel channel : textChannels) {
+			channel.sendMessage(modified).queue();
+		}
 	}
 
 	protected void deleteOriginalMessage(MessageReceivedEvent event) {
 		if (!event.isFromType(ChannelType.PRIVATE)) delete(event.getMessage());
 	}
 
-	protected abstract void handleEvent(MessageReceivedEvent event, String message);
-	
-	protected abstract boolean isApplicableCommand(String msg);
-	
 	public boolean isApplicableCommand(MessageReceivedEvent event) {
-		return isApplicableCommand(event.getMessage().getContent());
+		List<TextChannel> textChannels = event.getGuild().getTextChannelsByName(channelname, true);
+		Matcher m = regexp.matcher(event.getMessage().getContent());
+		return !textChannels.isEmpty()
+		       && !event.isFromType(ChannelType.PRIVATE)
+		       && !textChannels.contains(event.getTextChannel())
+		       && m.matches();
 	}
-	
+
 	public boolean canBeRunByAnyone() {
 		return true;
 	}
-	
+
 	public boolean canBeRunBy(User user, Guild guild) {
 		return true;
 	}
-	
+
 	private void delete(Message m) {
 		if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
 			m.deleteMessage().queue();
 	}
-	
-	protected String lookupString(String key) {
-		String value = bot.getDispatcher().getStringService().lookup(key);
-		return (value != null) ? value : "<String Not Found: " + key + ">";
-	}
-	
-	protected String formatString(String key, Object... args) {
-		return String.format(lookupString(key),args);
-	}
-	
+
 	public String getCommandHelpString() {
-		return ""; 
+		return "";
 	}
 
 }

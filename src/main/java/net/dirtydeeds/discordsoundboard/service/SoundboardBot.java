@@ -129,6 +129,11 @@ public class SoundboardBot {
     return this.settings.get(key);
   }
 
+  public boolean isMuted(Guild guild) {
+    Member self = guild.getMemberById(bot.getSelfUser().getId());
+    return (self.getVoiceState().isMuted());
+  }
+
   public AudioTrackScheduler getSchedulerForGuild(Guild guild) {
     if (this.audioSchedulers.get(guild) == null) {
       AudioManager audio = guild.getAudioManager();

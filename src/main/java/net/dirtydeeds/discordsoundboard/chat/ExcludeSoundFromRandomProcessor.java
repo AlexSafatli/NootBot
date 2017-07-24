@@ -28,7 +28,7 @@ public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			if (file.isExcludedFromRandom()) {
-				pm(event, "That sound was already excluded! Use the pair to this command to include it again.");
+				pm(event, "That sound was *already excluded*! Use the pair to this command to include it again.");
 			} else {
 				file.setExcludedFromRandom(true);
 				pm(event, "That sound has been excluded from being played through random events.");

@@ -18,6 +18,7 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.core.events.guild.voice.GuildVoiceGuildMuteEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
@@ -73,6 +74,9 @@ public class MoveListener extends AbstractListener {
     } else if (afkChannel != null && afkChannel.getId().equals(voiceChannel.getId())) {
       LOG.info("User " + user.getName() + " joined an AFK channel. Ignoring.");
       return;
+    } else if (bot.isMuted(guild)) {
+      LOG.info("Bot is currently muted. Not bothering to do anything.");
+      return;
     }
 
     String fileToPlay = bot.getEntranceForUser(user);
@@ -116,11 +120,12 @@ public class MoveListener extends AbstractListener {
         // Send a message greeting them into the server.
         VoiceChannel joined = bot.getConnectedChannel(guild);
         if (joined != null && joined.equals(voiceChannel)) {
-          if (!bot.hasPermissionInChannel(guild.getPublicChannel(), Permission.MESSAGE_WRITE)) {
+          if (bot.hasPermissionInChannel(guild.getPublicChannel(), Permission.MESSAGE_WRITE)) {
+            embed(guild.getPublicChannel(), welcomeMessage(user, voiceChannel, soundInfo),
+                  (Message m)-> pastEntrances.get(guild).add(new EntranceEvent(m, user)));
+          } else {
             LOG.warn("Did not have permission to write messages in server " + guild.getName());
           }
-          embed(guild.getPublicChannel(), welcomeMessage(user, voiceChannel, soundInfo),
-                (Message m)-> pastEntrances.get(guild).add(new EntranceEvent(m, user)));
         }
       }
     }
@@ -149,11 +154,13 @@ public class MoveListener extends AbstractListener {
           if (voiceChannel.getMembers().size() == 1 && voiceChannel.getMembers().get(0).getUser().isBot()) {
             continue;
           }
-          bot.moveToChannel(voiceChannel);
-          LOG.info("Moving to voice channel " + voiceChannel.getName() + " in server " + guild.getName());
-          return;
+          if (bot.moveToChannel(voiceChannel)) {
+            LOG.info("Moving to voice channel " + voiceChannel.getName() + " in server " + guild.getName());
+            return;
+          }
         }
       }
+      leaveVoiceInGuild(guild);
     }
   }
 
@@ -163,6 +170,13 @@ public class MoveListener extends AbstractListener {
       onLeave(event.getChannelLeft(), event.getMember().getUser());
     }
     onJoin(event.getChannelJoined(), event.getMember().getUser());
+  }
+
+  public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event) {
+    if (bot.isUser(event.getMember().getUser())) {
+      LOG.info("Was guild muted. Leaving voice channel.");
+      leaveVoiceInGuild(event.getGuild());
+    }
   }
 
   private void leaveVoiceInGuild(Guild guild) {
