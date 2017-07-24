@@ -5,7 +5,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class ModifyAllSoundPlayCountProcessor extends
-		OwnerSingleArgumentChatCommandProcessor {
+	OwnerSingleArgumentChatCommandProcessor {
 
 	public ModifyAllSoundPlayCountProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Modify Sound Counts", bot);
@@ -25,7 +25,7 @@ public class ModifyAllSoundPlayCountProcessor extends
 		}
 		pm(event, "Set all sounds to play count: **" + count + "**.");
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
 		return getPrefix() + " <count> (*) - modify all sound play counts";

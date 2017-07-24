@@ -6,8 +6,8 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class DeleteSoundProcessor extends
-		OwnerSingleArgumentChatCommandProcessor {
-	
+	OwnerSingleArgumentChatCommandProcessor {
+
 	public DeleteSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Delete Sound", bot);
 	}
@@ -34,5 +34,5 @@ public class DeleteSoundProcessor extends
 	public String getCommandHelpString() {
 		return super.getCommandHelpString() + " - remove a sound from the file system";
 	}
-	
+
 }

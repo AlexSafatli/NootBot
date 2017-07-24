@@ -9,20 +9,20 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
-	
-	public ListCategoriesProcessor(String prefix, SoundboardBot soundPlayer) {
-		super(prefix, "Categories", soundPlayer);
-	}
 
-	protected void handleEvent(MessageReceivedEvent event, String message) {
-        Category root = bot.getDispatcher().getCategoryTree();
-        if (root.getChildren().size() > 0) {
-        	m(event, "Here is a list of categories and subcategories:\n\n" + 
-        			listCategories(root));
-        } else {
-        	e(event, "There were no categories found.");
-        }
-	}
+  public ListCategoriesProcessor(String prefix, SoundboardBot soundPlayer) {
+    super(prefix, "Categories", soundPlayer);
+  }
+
+  protected void handleEvent(MessageReceivedEvent event, String message) {
+    Category root = bot.getDispatcher().getCategoryTree();
+    if (root.getChildren().size() > 0) {
+      m(event, "Here is a list of categories and subcategories:\n\n" +
+        listCategories(root));
+    } else {
+      e(event, "There were no categories found.");
+    }
+  }
 
   private LinkedList<Category> getCategories(Category root) {
     LinkedList<Category> categories = new LinkedList<>();
@@ -33,15 +33,15 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
     }
     return categories;
   }
-	
-	private String listCategories(Category root) {
-		LinkedList<Category> categories = getCategories(root);
-		return StringUtils.listToString(categories);
-	}
-	
-	@Override
-	public String getCommandHelpString() {
-		return getPrefix() + " - list all sound categories";
-	}
-	
+
+  private String listCategories(Category root) {
+    LinkedList<Category> categories = getCategories(root);
+    return StringUtils.listToString(categories);
+  }
+
+  @Override
+  public String getCommandHelpString() {
+    return getPrefix() + " - list all sound categories";
+  }
+
 }

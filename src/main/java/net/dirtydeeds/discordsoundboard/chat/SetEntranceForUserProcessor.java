@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
-	
+
 	public SetEntranceForUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Entrance for User", bot);
 	}
@@ -26,7 +26,7 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 			if (bot.getSoundMap().get(fileName) != null) {
 				bot.setEntranceForUser(user, fileName, event.getAuthor());
 				pm(event, "User **" + user.getName() + "** had entrance updated" +
-						" to sound `" + fileName + "`.");
+				   " to sound `" + fileName + "`.");
 			} else {
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			}
@@ -35,14 +35,14 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 			pm(event, "User **" + user.getName() + "** had their entrance cleared.");
 		} else if (user == null) {
 			pm(event, "Asked to change entrance for `" + username + "` but could not "
-					+ "find user with that name.");
+			   + "find user with that name.");
 		}
 	}
 
 	@Override
 	public String getCommandHelpString() {
 		return getPrefix() + " <username>, <soundfile> (*) - set a sound file for a user "
-				+ "as their entrance sound when they join a channel";
+		       + "as their entrance sound when they join a channel";
 	}
 
 }

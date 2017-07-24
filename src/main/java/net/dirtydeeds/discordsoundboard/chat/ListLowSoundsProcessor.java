@@ -11,18 +11,18 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
-  
+
   private static final int NUMBER_TO_SHOW = 50;
-  
+
   public ListLowSoundsProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Least Played Sounds", bot);
   }
-  
+
   private List<String> getLowSounds() {
     int numberOfSoundFiles = 0;
     MessageBuilder sb = new MessageBuilder();
-      sb.append("The **" + NUMBER_TO_SHOW + 
-          " least played sound files** are, in ascending order:\n\n");
+    sb.append("The **" + NUMBER_TO_SHOW +
+              " least played sound files** are, in ascending order:\n\n");
     List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByNumberOfPlays();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (int i = soundFiles.size() - 1; i >= 0; --i) {
@@ -36,7 +36,7 @@ public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
     }
     return sb.getStrings();
   }
-  
+
   protected void handleEvent(MessageReceivedEvent event, String message) {
     Map<String, SoundFile> soundFiles = bot.getSoundMap();
     if (soundFiles.isEmpty()) {
@@ -46,11 +46,11 @@ public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
     List<String> lowSounds = getLowSounds();
     for (String s : lowSounds) m(event, s);
   }
-  
+
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " - list the " + NUMBER_TO_SHOW + 
-        " least played sound files";
+    return getPrefix() + " - list the " + NUMBER_TO_SHOW +
+           " least played sound files";
   }
 
 }

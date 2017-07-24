@@ -9,7 +9,7 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class StatsProcessor extends AbstractChatCommandProcessor {
-	
+
 	public StatsProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "About Me", bot);
 	}
@@ -26,7 +26,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 		}
 		return null;
 	}
-	
+
 	private SoundFile longestSound() {
 		List<SoundFile> files = bot.getDispatcher().getSoundFilesOrderedByDuration();
 		int i = 0;
@@ -39,7 +39,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 		}
 		return null;
 	}
-	
+
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
 		msg.addDescription("*Noot noot*.");
@@ -56,7 +56,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 		msg.addContent("Developer", Version.getAuthor(bot), true);
 		embed(event, msg);
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
 		return getPrefix() + " - print some stats related to the bot";

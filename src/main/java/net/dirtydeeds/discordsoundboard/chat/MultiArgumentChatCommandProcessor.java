@@ -6,13 +6,13 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public abstract class MultiArgumentChatCommandProcessor extends AbstractChatCommandProcessor {
 
 	private String[] args = {};
-	
+
 	public MultiArgumentChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
 		super(prefix, title, bot);
 	}
-	
+
 	protected abstract void handleEvent(MessageReceivedEvent event, String message);
-	
+
 	public void process(MessageReceivedEvent event) {
 		String message = event.getMessage().getContent().toLowerCase();
 		if (!message.endsWith(getPrefix())) {
@@ -23,11 +23,11 @@ public abstract class MultiArgumentChatCommandProcessor extends AbstractChatComm
 		super.process(event);
 		args = new String[0]; // Clear arguments.
 	}
-	
+
 	public String[] getArguments() {
 		return this.args;
 	}
-	
+
 	public String[] getArgumentsCased(MessageReceivedEvent event) {
 		String[] argsCased = null;
 		String message = event.getMessage().getContent();
@@ -38,10 +38,10 @@ public abstract class MultiArgumentChatCommandProcessor extends AbstractChatComm
 		}
 		return argsCased;
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
-		return getPrefix() + " [argument1], [argument2], ..."; 
+		return getPrefix() + " [argument1], [argument2], ...";
 	}
-	
+
 }

@@ -6,18 +6,18 @@ import net.dirtydeeds.discordsoundboard.utils.ChatUtils;
 import net.dv8tion.jda.core.entities.TextChannel;
 
 public class DeleteBotMessagesProcessor extends SingleArgumentChatCommandProcessor {
-	
-	public DeleteBotMessagesProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Delete Messages", bot);
-	}
 
-	protected void handleEvent(MessageReceivedEvent event, String message) {
-		ChatUtils.clearBotMessagesInChannel(bot, (TextChannel) event.getChannel());
-	}
+  public DeleteBotMessagesProcessor(String prefix, SoundboardBot bot) {
+    super(prefix, "Delete Messages", bot);
+  }
+
+  protected void handleEvent(MessageReceivedEvent event, String message) {
+    ChatUtils.clearBotMessagesInChannel(bot, (TextChannel) event.getChannel());
+  }
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " (*) - clear all bot messages in channel"; 
+    return getPrefix() + " (*) - clear all bot messages in channel";
   }
 
 }

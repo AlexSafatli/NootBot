@@ -18,7 +18,7 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
 
   private final String title;
   protected SoundboardBot bot;
-  
+
   public AbstractAttachmentProcessor(String title, SoundboardBot bot) {
     this.title = title;
     this.bot = bot;
@@ -39,14 +39,14 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
       return "Attachment [" + name + "]";
     }
   }
-  
+
   public void process(MessageReceivedEvent event) {
     if (!isApplicableCommand(event)) return;
     boolean succeeded = false;
 
     // Get all attachments from the message.
     List<Attachment> attachments = event.getMessage().getAttachments();
-    
+
     // Process attachments.
     for (Attachment attachment : attachments) {
       try {
@@ -59,27 +59,27 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
     }
 
     // Delete original message if needed.
-    if (succeeded && 
-      !event.isFromType(ChannelType.PRIVATE) && 
-      bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+    if (succeeded &&
+        !event.isFromType(ChannelType.PRIVATE) &&
+        bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
       delete(event.getMessage());
   }
 
   protected abstract boolean handleAttachment(MessageReceivedEvent event, Attachment attachment);
-  
+
   public boolean isApplicableCommand(MessageReceivedEvent event) {
-    return (!event.getMessage().getAttachments().isEmpty() && 
-        canBeRunBy(event.getAuthor(), event.getGuild()));
+    return (!event.getMessage().getAttachments().isEmpty() &&
+            canBeRunBy(event.getAuthor(), event.getGuild()));
   }
-  
+
   public boolean canBeRunByAnyone() {
     return true;
   }
-  
+
   public boolean canBeRunBy(User user, Guild guild) {
     return true;
   }
-  
+
   public String getTitle() {
     return this.title;
   }
@@ -92,7 +92,7 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
     if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
       m.deleteMessage().queue();
   }
-  
+
   protected void pm(MessageReceivedEvent event, String message) {
     bot.sendMessageToUser(message, event.getAuthor());
   }
@@ -108,7 +108,7 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
     }
     event.getAuthor().getPrivateChannel().sendMessage(message.getMessage()).queue();
   }
-  
+
   private StyledEmbedMessage makeEmbed(String message) {
     StyledEmbedMessage em = new StyledEmbedMessage(getTitle(), bot);
     em.addDescription(message);
@@ -117,7 +117,7 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
 
   private void sendEmbed(MessageReceivedEvent event, String message, boolean error, boolean warning) {
     if (event.isFromType(ChannelType.PRIVATE)
-      || !bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
+        || !bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
       pm(event, message);
     } else {
       event.getChannel().sendMessage(
@@ -137,7 +137,7 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
   protected void e(MessageReceivedEvent event, String message) {
     sendEmbed(event, message, true, false);
   }
-  
+
   protected void embed(MessageReceivedEvent event, StyledEmbedMessage embed) {
     if (!event.isFromType(ChannelType.PRIVATE)) {
       event.getGuild().getPublicChannel().sendMessage(embed.getMessage()).queue();
@@ -145,18 +145,18 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
       event.getChannel().sendMessage(embed.getMessage()).queue();
     }
   }
-  
+
   protected String lookupString(String key) {
     String value = bot.getDispatcher().getStringService().lookup(key);
     return (value != null) ? value : "<String Not Found: " + key + ">";
   }
-  
+
   protected String formatString(String key, Object... args) {
-    return String.format(lookupString(key),args);
+    return String.format(lookupString(key), args);
   }
-  
+
   public String getCommandHelpString() {
-    return ""; 
+    return "";
   }
 
 }

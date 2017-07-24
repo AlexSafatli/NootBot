@@ -8,11 +8,11 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class HelpProcessor extends AbstractChatCommandProcessor {
-	
+
 	public static final SimpleLog LOG = SimpleLog.getLog("HelpProcessor");
-	
+
 	List<ChatCommandProcessor> processors;
-	
+
 	public HelpProcessor(String prefix, SoundboardBot bot, List<ChatCommandProcessor> processors) {
 		super(prefix, "Commands", bot);
 		this.processors = processors;
@@ -24,7 +24,9 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 		MessageBuilder mb = new MessageBuilder(true);
 		mb.append("Type any of these commands in a channel or in a PM to me:\n\n");
 		for (ChatCommandProcessor processor : processors) {
-			if (processor.canBeRunByAnyone() || (!processor.canBeRunByAnyone() && processor.canBeRunBy(event.getAuthor(), event.getGuild()))) {
+			if (processor.canBeRunByAnyone()
+			    || (!processor.canBeRunByAnyone()
+			        && processor.canBeRunBy(event.getAuthor(), event.getGuild()))) {
 				// Print command help for this processor.
 				if (!processor.canBeRunByAnyone()) canRunAuthenticated = true;
 				String cmdHelp = processor.getCommandHelpString();
@@ -38,7 +40,7 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 		for (String s : mb) pm(event, s);
 		LOG.info("Responded to help command from " + event.getAuthor().getName());
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
 		LOG.warn("This processor was queried for a command help string but has none.");

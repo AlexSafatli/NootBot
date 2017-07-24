@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class LimitUserProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("LimitUserProcessor");
-	
+
 	public LimitUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Throttle User", bot);
 	}
@@ -32,5 +32,5 @@ public class LimitUserProcessor extends AuthenticatedSingleArgumentChatCommandPr
 	public String getCommandHelpString() {
 		return super.getCommandHelpString() + " - throttle a user from using bot too often";
 	}
-	
+
 }

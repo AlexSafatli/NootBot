@@ -27,7 +27,7 @@ public class LeaveServerProcessor extends OwnerSingleArgumentChatCommandProcesso
 			} else pm(event, "No server found with name `" + serverName + "`.");
 		}
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
 		return super.getCommandHelpString() + " - leave a joined server by name";

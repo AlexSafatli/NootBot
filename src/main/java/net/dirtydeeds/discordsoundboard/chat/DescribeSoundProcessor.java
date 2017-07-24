@@ -11,7 +11,7 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
-	
+
 	public DescribeSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Sound Info", bot);
 	}
@@ -27,11 +27,11 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 			if (possibleName != null) {
 				suggestion = "Did you mean `" + possibleName + "`?";
 			}
-      w(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
+			w(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
-			StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file, getTitle(), 
-					"You requested information for a sound " + user.getAsMention());
+			StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file, getTitle(),
+			                        "You requested information for a sound " + user.getAsMention());
 			embedForUser(event, em);
 		}
 	}
@@ -40,5 +40,5 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 	public String getCommandHelpString() {
 		return getPrefix() + " <soundfile> - get information for a sound file";
 	}
-	
+
 }

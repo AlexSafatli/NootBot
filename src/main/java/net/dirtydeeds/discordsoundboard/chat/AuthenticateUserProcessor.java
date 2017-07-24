@@ -6,7 +6,7 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class AuthenticateUserProcessor extends OwnerMultiArgumentChatCommandProcessor {
-	
+
 	public AuthenticateUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Authenticate User", bot);
 	}
@@ -29,5 +29,5 @@ public class AuthenticateUserProcessor extends OwnerMultiArgumentChatCommandProc
 	public String getCommandHelpString() {
 		return super.getCommandHelpString() + " - set a user's privilege level to the bot (0-2)";
 	}
-	
+
 }

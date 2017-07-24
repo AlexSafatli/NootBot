@@ -21,5 +21,5 @@ public class MuteSoundProcessor extends AuthenticatedSingleArgumentChatCommandPr
   public String getCommandHelpString() {
     return getPrefix() + " - mute the bot";
   }
-  
+
 }

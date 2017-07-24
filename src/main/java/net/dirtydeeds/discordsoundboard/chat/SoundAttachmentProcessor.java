@@ -23,7 +23,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 	public static final SimpleLog LOG = SimpleLog.getLog("SoundAttachmentProcessor");
 	private static final int MAX_FILE_SIZE_IN_BYTES = 2000000; // 2MB
 	private static final int MAX_DURATION_IN_SECONDS = 12; // 12s
-	
+
 	public SoundAttachmentProcessor(SoundboardBot bot) {
 		super("Sound Uploader", bot);
 	}
@@ -37,7 +37,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 		// Get the details for the file.
 		AttachmentFile file = getAttachmentDetails(attachment);
-		
+
 		// Only allow wav/mp3 uploads.
 		if (!file.extension.equals("wav") && !file.extension.equals("mp3")) {
 			return false;
@@ -85,16 +85,16 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 			SoundFile soundFile = dispatcher.getSoundFileByName(file.shortName);
 			// Check duration.
 			net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(user);
-			if ((u != null && u.getPrivilegeLevel() < 2 || !bot.isOwner(user)) && 
-					soundFile.getDuration() > MAX_DURATION_IN_SECONDS) {
+			if ((u != null && u.getPrivilegeLevel() < 2 || !bot.isOwner(user)) &&
+			    soundFile.getDuration() > MAX_DURATION_IN_SECONDS) {
 				// Delete the file.
 				LOG.info("File was too long! Deleting the file.");
 				target.delete();
 				dispatcher.updateFileList();
-				pm(event, "File `" + file.name + 
-						"` is too long to add to sound list. *Duration:* **" + 
-						soundFile.getDuration() + "** seconds. Want **<= " + 
-						MAX_DURATION_IN_SECONDS + "** seconds.");
+				pm(event, "File `" + file.name +
+				   "` is too long to add to sound list. *Duration:* **" +
+				   soundFile.getDuration() + "** seconds. Want **<= " +
+				   MAX_DURATION_IN_SECONDS + "** seconds.");
 				return false;
 			}
 			// Send message(s).
@@ -126,12 +126,12 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		return msg;
 	}
-	
+
 	private String getDownloadedMessage(String name, String category, SoundFile file, long size) {
 		String msg = "`" + name + "` downloaded and added to list of sounds successfully. Play it with `?" + file.getSoundFileId() + "`.\n";
 		if (category != null && !category.isEmpty() && !category.equals("Uncategorized"))
 			msg += "It was put into category: **" + category + "**\n";
-		msg += "File Size was: **" + size/1000 + " kB**";
+		msg += "File Size was: **" + size / 1000 + " kB**";
 		return msg;
 	}
 
@@ -140,20 +140,20 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		if (owner != null) {
 			if (!owner.hasPrivateChannel()) {
 				try {
-				  owner.openPrivateChannel().block();
-				  owner.getPrivateChannel().sendMessage(msg.getMessage()).queue();
+					owner.openPrivateChannel().block();
+					owner.getPrivateChannel().sendMessage(msg.getMessage()).queue();
 				} catch (RateLimitedException e) {
-				  ;
+					;
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean canBeRunBy(User user, Guild guild) {
 		return !bot.isUser(user) && bot.isAuthenticated(user, guild);
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
 		return "Upload (an) .mp3 OR .wav file(s) to add sounds. Use the Comment field to specify category.";

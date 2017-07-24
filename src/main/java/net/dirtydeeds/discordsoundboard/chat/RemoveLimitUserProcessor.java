@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class RemoveLimitUserProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("RemoveLimitUserProcessor");
-	
+
 	public RemoveLimitUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Unthrottle User", bot);
 	}
@@ -29,5 +29,5 @@ public class RemoveLimitUserProcessor extends AuthenticatedSingleArgumentChatCom
 	public String getCommandHelpString() {
 		return super.getCommandHelpString() + " - stop throttling a user";
 	}
-	
+
 }

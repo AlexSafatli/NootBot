@@ -5,7 +5,7 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class AllowUserProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
-	
+
 	public AllowUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Allow User", bot);
 	}
@@ -22,5 +22,5 @@ public class AllowUserProcessor extends AuthenticatedSingleArgumentChatCommandPr
 	public String getCommandHelpString() {
 		return super.getCommandHelpString() + " - allow a disallowed user to play sounds again";
 	}
-	
+
 }

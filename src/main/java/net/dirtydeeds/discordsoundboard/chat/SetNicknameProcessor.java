@@ -6,8 +6,8 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class SetNicknameProcessor extends
-		OwnerSingleArgumentChatCommandProcessor {
-	
+	OwnerSingleArgumentChatCommandProcessor {
+
 	public SetNicknameProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Set Nickname", bot);
 	}

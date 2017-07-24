@@ -26,9 +26,9 @@ public class StyledEmbedMessage {
 	private String errorTitle;
 
 	private static final List<String> ERROR_STRINGS = Arrays.asList(new String[] {
-	  "Fwubbed it.", "Gao~", "DELETE DELETE DELETTTTTTT", "Oro?", "Tch.",
-	  "Excuse me, I stuttered."
-	});
+	      "Fwubbed it.", "Gao~", "DELETE DELETE DELETTTTTTT", "Oro?", "Tch.",
+	      "Excuse me, I stuttered."
+	    });
 
 	private static final String FOOTER_TEXT = Version.NAME + " " +
 	    Version.VERSION + " by " + Version.AUTHOR;

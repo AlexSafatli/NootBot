@@ -15,11 +15,11 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
-	
+
 	public static final SimpleLog LOG = SimpleLog.getLog("ReportSoundProcessor");
 	private static final int NUMBER_OF_REPORTS_FOR_EXCLUDE = 3;
 	private static final int NUMBER_OF_REPORTS_FOR_DELETE  = 8;
-	
+
 	public ReportSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Report a Sound", bot);
 	}
@@ -36,7 +36,7 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 			if (possibleName != null) {
 				suggestion = "Did you mean `" + possibleName + "`?";
 			}
-        	m(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
+			m(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* " + user.getAsMention());
 		} else {
 			// See if already reported it.
 			if (bot.getUser(user).getSoundsReported().contains(name)) {
@@ -52,8 +52,8 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			file.addOneToNumberOfReports();
 			bot.getDispatcher().saveSound(file);
-			pm(event, StyledEmbedMessage.forSoundFile(bot, file, "Information for Sound `" + file.getSoundFileId() + "`", 
-					"You have successfully reported the sound called `" + file.getSoundFileId() + "`."));
+			pm(event, StyledEmbedMessage.forSoundFile(bot, file, "Information for Sound `" + file.getSoundFileId() + "`",
+			    "You have successfully reported the sound called `" + file.getSoundFileId() + "`."));
 			if (file.getNumberOfReports() >= NUMBER_OF_REPORTS_FOR_DELETE && delete(file)) {
 				pm(event, "Your report was enough to have the sound get deleted. You won't have to deal with `" + name + "` anymore.");
 				bot.sendMessageToUser("Deleted `" + name + "` because of too many reports but made a copy in temporary directory.", bot.getOwner());
@@ -76,10 +76,10 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 		}
 		return file.getSoundFile().delete();
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
 		return getPrefix() + " <soundfile> - report a sound file for being inappropriate or annoying";
 	}
-	
+
 }

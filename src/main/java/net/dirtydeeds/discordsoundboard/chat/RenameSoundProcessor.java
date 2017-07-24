@@ -14,7 +14,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("RenameSoundProcessor");
-	
+
 	public RenameSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Rename Sound", bot);
 	}
@@ -53,5 +53,5 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 	public String getCommandHelpString() {
 		return getPrefix() + " <soundfile>, <newname> - rename a sound";
 	}
-	
+
 }

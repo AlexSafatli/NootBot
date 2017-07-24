@@ -11,18 +11,18 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
-  
+
   private static final int NUMBER_TO_SHOW = 50;
-  
+
   public ListShortestSoundsProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Shortest Sounds", bot);
   }
-  
+
   private List<String> getShortestSounds() {
     int numberOfSoundFiles = 0;
     MessageBuilder sb = new MessageBuilder();
-    sb.append("The **" + NUMBER_TO_SHOW + 
-          " shortest sound files** are, in ascending order:\n\n");
+    sb.append("The **" + NUMBER_TO_SHOW +
+              " shortest sound files** are, in ascending order:\n\n");
     List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByDuration();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (int i = soundFiles.size() - 1; i >= 0; --i) {
@@ -36,7 +36,7 @@ public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
     }
     return sb.getStrings();
   }
-  
+
   protected void handleEvent(MessageReceivedEvent event, String message) {
     Map<String, SoundFile> soundFiles = bot.getSoundMap();
     if (soundFiles.isEmpty()) {
@@ -46,11 +46,11 @@ public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
     List<String> topSounds = getShortestSounds();
     for (String msg : topSounds) m(event, msg);
   }
-  
+
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " - list the " + NUMBER_TO_SHOW + 
-        " shortest sound files";
+    return getPrefix() + " - list the " + NUMBER_TO_SHOW +
+           " shortest sound files";
   }
 
 }

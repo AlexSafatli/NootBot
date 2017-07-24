@@ -6,11 +6,11 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class AlternateHandleProcessor extends SingleArgumentChatCommandProcessor {
-	
+
 	public AlternateHandleProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Alternate Handles", bot);
 	}
-	
+
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String m = event.getMessage().getContent(), handle = m.substring(getPrefix().length() + 1).trim();
 		User u = bot.getUser(event.getAuthor());

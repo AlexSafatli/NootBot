@@ -10,7 +10,7 @@ public class Reusables {
   private static final String DONATION_TITLE = "Heya!";
   private static final String DONATION_MSG = "I am hosted on a personally owned computer who is always on and consuming power. That's not cheap! If you wanna help out, you can.";
   private static final String DONATION_BUG_TITLE = "Found a bug!";
-  private static final String DONATION_BUG = "You can report any bugs you find using the `bug` command.";
+  private static final String DONATION_BUG = "You can report any bugs you find using the `.bug` command.";
   private static final String DONATION_DONATE_TITLE = "Donate?";
   private static final String DONATION_DONATE = "You can do this through patreon <https://www.patreon.com/asaph>";
 

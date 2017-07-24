@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class RecategorizeSoundProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("RecategorizeSoundProcessor");
-	
+
 	public RecategorizeSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Recategorize", bot);
 	}
@@ -67,5 +67,5 @@ public class RecategorizeSoundProcessor extends AuthenticatedMultiArgumentChatCo
 	public String getCommandHelpString() {
 		return getPrefix() + " <soundfile>, <category> - change the category for a sound";
 	}
-	
+
 }

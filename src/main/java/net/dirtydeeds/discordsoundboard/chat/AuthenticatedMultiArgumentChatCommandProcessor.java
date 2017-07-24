@@ -7,12 +7,12 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public abstract class AuthenticatedMultiArgumentChatCommandProcessor extends
-		MultiArgumentChatCommandProcessor {
-	
+	MultiArgumentChatCommandProcessor {
+
 	public AuthenticatedMultiArgumentChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
 		super(prefix, title, bot);
 	}
-	
+
 	@Override
 	public boolean isApplicableCommand(MessageReceivedEvent event) {
 		if (super.isApplicableCommand(event)) {
@@ -20,29 +20,29 @@ public abstract class AuthenticatedMultiArgumentChatCommandProcessor extends
 			else {
 				pm(event, lookupString(Strings.NOT_FOR_YOU));
 				bot.sendMessageToUser(formatString(Strings.USER_WITHOUT_PERMISSION,
-						event.getAuthor().getName(), event.getMessage().getContent()),
-						bot.getOwner());
+				                                   event.getAuthor().getName(),
+				                                   event.getMessage().getContent()),
+				                      bot.getOwner());
 				return false;
 			}
-		}
-		else return false;
+		} else return false;
 	}
-	
+
 	protected abstract void handleEvent(MessageReceivedEvent event, String message);
 
 	@Override
 	public boolean canBeRunByAnyone() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean canBeRunBy(User user, Guild guild) {
 		return bot.isAuthenticated(user, guild);
 	}
-	
+
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " (*)"; 
+		return super.getCommandHelpString() + " (*)";
 	}
-	
+
 }
