@@ -43,6 +43,7 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 	}
 
 	public boolean isApplicableCommand(MessageReceivedEvent event) {
+		if (event.getGuild() == null) return false;
 		List<TextChannel> textChannels = event.getGuild().getTextChannelsByName(channelname, true);
 		Matcher m = regexp.matcher(event.getMessage().getContent());
 		return !textChannels.isEmpty()

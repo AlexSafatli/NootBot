@@ -7,8 +7,10 @@ import net.dv8tion.jda.core.entities.*;
 
 public class FilterTwitchClipProcessor extends FilterChatProcessor {
 
+  private static final String CHANNEL = "clips";
+
   public FilterTwitchClipProcessor(SoundboardBot bot) {
-    super(Pattern.compile("clips\\.twitch\\.tv/"), "clips", bot);
+    super(Pattern.compile(".*clips\\.twitch\\.tv/.*"), CHANNEL, bot);
   }
  
 }
