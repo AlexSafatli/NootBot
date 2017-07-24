@@ -45,8 +45,8 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
     User u = bot.getUser(event.getAuthor());
     Matcher m = dice.matcher(msg);
     if (m.find()) {
-      int dice = Math.max(Integer.valueOf(match.group(1)), MIN_DICE);
-      int sides = Math.max(Integer.valueOf(match.group(2)), MIN_DICE_HEADS);
+      int dice = Math.max(Integer.valueOf(m.group(1)), MIN_DICE);
+      int sides = Math.max(Integer.valueOf(m.group(2)), MIN_DICE_HEADS);
       int add = 0;
       if (dice > MAX_DICE) {
         pm(event, "Max number of dice that can be rolled is **" + MAX_DICE + "**.");
@@ -55,8 +55,8 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
         pm(event, "Max number of dice heads that can be rolled is **" + MAX_DICE_HEADS + "**.");
         return;
       }
-      if (match.group(3) != null && !"null".equals(match.group(3))) {
-        add = Math.max(Integer.valueOf(match.group(3)), 0);
+      if (m.group(3) != null && !"null".equals(m.group(3))) {
+        add = Math.max(Integer.valueOf(m.group(3)), 0);
       }
       m(event, roll(dice, sides, add));
     } else {
