@@ -16,13 +16,13 @@ public class Strings {
 	public static final String USER_PLAY_SOUND_FAILURE = "USER_PLAY_SOUND_FAILURE";
 	public static final String USER_PLAY_SOUND_RECIPIENT = "USER_PLAY_SOUND_RECIPIENT";
 	public static final String USER_ENTRANCE_MESSAGE = "USER_ENTRANCE_MESSAGE";
-	
+
 	public static final String NOT_TO_SELF = "NOT_TO_SELF";
 	public static final String NOT_FOR_YOU = "NOT_FOR_YOU";
 	public static final String NOT_ALLOWED = "NOT_ALLOWED";
-	
+
 	public static final String SERVER_ONLY = "SERVER_ONLY";
-	
+
 	public static final String SOUND_NOT_FOUND = "SOUND_NOT_FOUND";
 	public static final String SOUND_NOT_FOUND_SUGGESTION = "SOUND_NOT_FOUND_SUGGESTION";
 	public static final String SOUND_PLAY_COUNT_ANNOUNCEMENT = "SOUND_PLAY_COUNT_ANNOUNCEMENT";
@@ -32,15 +32,15 @@ public class Strings {
 	public static final String SOUND_MOVE_FAILURE = "SOUND_MOVE_FAILURE";
 	public static final String SOUND_RENAME_SUCCESS = "SOUND_RENAME_SUCCESS";
 	public static final String SOUND_RENAME_FAILURE = "SOUND_RENAME_FAILURE";
-	
+
 	public static final String GAME_START_MESSAGE = "GAME_START_MESSAGE";
 	public static final String LEAGUE_START_MESSAGE = "LEAGUE_START_MESSAGE";
-	
+
 	public static final String NOT_FOUND = "NOT_FOUND";
-	
+
 	public static final String DELETED_SUCCESS = "DELETED_SUCCESS";
 	public static final String DELETED_FAILURE = "DELETED_FAILURE";
-	
+
 	public static final String NEED_NAME = "NEED_NAME";
-	
+
 }

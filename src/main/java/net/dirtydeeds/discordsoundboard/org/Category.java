@@ -9,7 +9,7 @@ public class Category {
 	private Collection<Category> children;
 	private String name;
 	private Path folderPath;
-	
+
 	public Category(String name, Path path) {
 		this.name = name;
 		this.folderPath = path;
@@ -43,5 +43,5 @@ public class Category {
 	public String toString() {
 		return getName();
 	}
-	
+
 }

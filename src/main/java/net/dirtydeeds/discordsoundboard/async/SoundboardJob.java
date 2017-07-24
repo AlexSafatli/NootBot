@@ -4,7 +4,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 
 public interface SoundboardJob {
 
-	boolean isApplicable(SoundboardDispatcher dispatcher);
-	void run(SoundboardDispatcher dispatcher);
-	
+  boolean isApplicable(SoundboardDispatcher dispatcher);
+  void run(SoundboardDispatcher dispatcher);
+
 }

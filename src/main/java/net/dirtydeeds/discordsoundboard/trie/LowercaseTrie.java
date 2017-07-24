@@ -7,16 +7,16 @@ public class LowercaseTrie implements Vocabulary {
 	private boolean isWord = false;
 	private LowercaseTrie[] children = new LowercaseTrie[Alphabet.LOWERCASE.size()];
 	private int numChildren = 0;
-	
+
 	public LowercaseTrie() {
 	}
-	
+
 	public LowercaseTrie(Collection<String> set) {
 		for (String str : set) {
 			add(str);
 		}
 	}
-	
+
 	public boolean add(String s) {
 		char first = s.charAt(0);
 		int index = Alphabet.LOWERCASE.getIndex(first);
@@ -46,7 +46,7 @@ public class LowercaseTrie implements Vocabulary {
 		LowercaseTrie n = getNode(s);
 		return n != null && n.numChildren > 0;
 	}
-	
+
 	public String getWordWithPrefix(String s) {
 		String out = s;
 		LowercaseTrie n = getNode(s);
@@ -69,7 +69,7 @@ public class LowercaseTrie implements Vocabulary {
 		}
 		return null;
 	}
-	
+
 	public LowercaseTrie getNode(String s) {
 		LowercaseTrie node = this;
 		for (int i = 0; i < s.length(); i++) {
@@ -93,9 +93,9 @@ public class LowercaseTrie implements Vocabulary {
 	public boolean isWord() {
 		return isWord;
 	}
-	
+
 	public boolean hasChildren() {
 		return numChildren > 0;
 	}
-	
+
 }

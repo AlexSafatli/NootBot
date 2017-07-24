@@ -20,17 +20,17 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
-	
+
 	private static final String MESSAGE_TITLE = "Whoa! You're all playing a game.";
 	private static final String MESSAGE_REPORT_SUBTITLE = "Annoying?";
 
 	private static final int MIN_NUM_PLAYERS = 3;
 	private static final int NUMBER_SEC_BETWEEN = 60;
 	private static final int MAX_DURATION = 2;
-	
+
 	private GameStartEvent pastEvent;
 	private String thumbnail;
-	
+
 	private class GameStartEvent {
 		public VoiceChannel channel;
 		public Date time;
@@ -43,7 +43,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		public boolean isTooSoon(VoiceChannel in) {
 			Date now = new Date(System.currentTimeMillis());
 			if (channel != null && channel.equals(in)) {
-				long secSince = (now.getTime() - time.getTime())/1000;
+				long secSince = (now.getTime() - time.getTime()) / 1000;
 				return (secSince < NUMBER_SEC_BETWEEN);
 			}
 			return false;
@@ -54,7 +54,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			}
 		}
 	}
-	
+
 	public GenericGameStartProcessor(SoundboardBot bot) {
 		super(bot);
 	}
@@ -63,7 +63,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		this(bot);
 		thumbnail = url;
 	}
-	
+
 	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
 		Guild guild = event.getGuild();
 		VoiceChannel userChannel, botChannel = bot.getConnectedChannel(guild);
@@ -100,10 +100,10 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
 			if (pastEvent != null) {
 				if (pastEvent.isTooSoon(channel)) {
-		    	LOG.info("Not enough time since last event in this channel.");
-		    	return;
-	    	}
-	    	pastEvent.clear();
+					LOG.info("Not enough time since last event in this channel.");
+					return;
+				}
+				pastEvent.clear();
 			}
 
 			String filePlayed = bot.getRandomTopPlayedSoundName(MAX_DURATION);
@@ -138,7 +138,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		if (thumbnail != null) m.setThumbnail(thumbnail);
 		return m;
 	}
-	
+
 	public boolean isMutuallyExclusive() {
 		return false;
 	}

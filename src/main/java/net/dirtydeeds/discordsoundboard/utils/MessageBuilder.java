@@ -11,7 +11,7 @@ public class MessageBuilder implements Iterable<String> {
 	private boolean codified;
 	private long max = MAX_MESSAGE_LENGTH;
 	private static final long MAX_MESSAGE_LENGTH = 2000;
-	
+
 	public MessageBuilder() {
 		messages = new LinkedList<>();
 		builder = new StringBuilder();
@@ -26,7 +26,7 @@ public class MessageBuilder implements Iterable<String> {
 		this();
 		this.max = Math.min(max, this.max);
 	}
-	
+
 	public MessageBuilder append(Object o) {
 		String s = o.toString();
 		if (builder.length() + s.length() > ((codified) ? max - 6 : max)) {
@@ -49,15 +49,15 @@ public class MessageBuilder implements Iterable<String> {
 		builder = new StringBuilder();
 		return messages;
 	}
-	
+
 	public Iterator<String> iterator() {
 		return getStrings().iterator();
 	}
 
-	
+
 	public void clear() {
 		messages = new LinkedList<>();
 		builder = new StringBuilder();
 	}
-	
+
 }

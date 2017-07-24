@@ -10,12 +10,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 @EnableAsync
 public class MainController {
-    
-    public MainController() {
-    }
 
-    public static void main(String[] args) {
-        SpringApplication.run(MainController.class, args);
-    }
-    
+  public MainController() {
+  }
+
+  public static void main(String[] args) {
+    SpringApplication.run(MainController.class, args);
+  }
+
 }

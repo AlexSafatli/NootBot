@@ -11,9 +11,9 @@ public class StringUtils {
 	public static String truncate(String str) {
 		return truncate(str, 10);
 	}
-	
+
 	public static String truncate(String str, int len) {
-		String truncated = str.substring(0,Math.min(str.length(), len));
+		String truncated = str.substring(0, Math.min(str.length(), len));
 		if (str.length() > len) truncated += "...";
 		return truncated;
 	}
@@ -31,7 +31,7 @@ public class StringUtils {
 		}
 		return false;
 	}
-	
+
 	public static String randomString(Collection<String> strings) {
 		Random rng = new Random();
 		int i = rng.nextInt(strings.size()), k = 0;
@@ -56,12 +56,12 @@ public class StringUtils {
 		if (s.length() == 1) return s.toUpperCase();
 		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 	}
-	
+
 	public static String dayTimeStamp(Date date) {
 		if (date == null) return "";
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 		String f = formatter.format(date);
 		return (f != null) ? f : "";
 	}
-	
+
 }

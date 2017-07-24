@@ -8,7 +8,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 public class LambdaJob implements SoundboardJob {
 
 	private Consumer<SoundboardBot> lambda;
-	
+
 	public LambdaJob(Consumer<SoundboardBot> lambda) {
 		this.lambda = lambda;
 	}
