@@ -96,6 +96,7 @@ public class ChatListener extends AbstractListener {
     processors.add(new ServerDonationMessageProcessor(".donate",      bot));
     processors.add(new SoundAttachmentProcessor(                      bot));
     processors.add(new FilterTwitchClipProcessor(                     bot));
+    processors.add(new FilterYoutubeClipProcessor(                    bot));
 
     this.helpProcessor = new HelpProcessor(".help", bot, processors);
     this.noOpProcessor = new NoOpProcessor(bot);
