@@ -268,6 +268,13 @@ public class SoundboardBot {
     return (guild.getAudioManager().isConnected()) ? guild.getAudioManager().getConnectedChannel() : null;
   }
 
+  public TextChannel getBotChannel(Guild guild) {
+    if (guild == null) return null;
+    List<TextChannel> botChannels = guild.getTextChannelsByName("bot", true);
+    if (!botChannels.isEmpty()) return botChannels.get(0);
+    return guild.getPublicChannel();
+  }
+
   public net.dv8tion.jda.core.entities.User getUserByName(String username) {
     for (net.dv8tion.jda.core.entities.User user : bot.getUsers()) {
       if (user.getName().equalsIgnoreCase(username)) return user;

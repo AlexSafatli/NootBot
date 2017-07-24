@@ -174,7 +174,6 @@ public class MoveListener extends AbstractListener {
   }
 
   public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event) {
-    if (event.getMember() == null) return;
     if (bot.isUser(event.getMember().getUser())) {
       LOG.info("Was guild muted. Leaving voice channel.");
       leaveVoiceInGuild(event.getGuild());
