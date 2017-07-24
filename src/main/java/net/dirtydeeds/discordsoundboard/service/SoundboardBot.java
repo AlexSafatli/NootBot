@@ -414,6 +414,10 @@ public class SoundboardBot {
 
   public void sendMessageToUser(String msg, String username) {
     net.dv8tion.jda.core.entities.User user = getUserByName(username);
+    if (isUser(user)) {
+      LOG.fatal("Tried to send message to self with content \"" + msg + "\".");
+      return;
+    }
     if (user != null) sendMessageToUser(msg, user);
     else LOG.warn("Tried to send message \"" + msg + "\" to username " +
                     username + " but could not find user.");

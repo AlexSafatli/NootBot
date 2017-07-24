@@ -11,7 +11,10 @@ public class ReportBugProcessor extends SingleArgumentChatCommandProcessor {
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
     pm(event, "Got it!");
-    bot.sendMessageToUser(event.getMessage().getContent().trim() + " \u2014 " + event.getAuthor().getName() + " \u2014 " + event.getGuild(), bot.getOwner());
+    String guild = (event.getGuild() != null) ? event.getGuild().getName() : "via PM";
+    bot.sendMessageToUser("`" + event.getMessage().getContent().trim() + "`\n" +
+                          event.getAuthor().getName() + " \u2014 " +
+                          guild, bot.getOwner());
   }
 
   @Override

@@ -51,7 +51,8 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 
 	public boolean isApplicableCommand(MessageReceivedEvent event) {
-		return isApplicableCommand(event.getMessage().getContent());
+		return isApplicableCommand(event.getMessage().getContent()) &&
+		       !bot.isUser(event.getAuthor());
 	}
 
 	public boolean canBeRunByAnyone() {
