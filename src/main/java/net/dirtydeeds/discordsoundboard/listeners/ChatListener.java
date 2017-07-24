@@ -89,7 +89,6 @@ public class ChatListener extends AbstractListener {
         processors.add(new ListServersProcessor(".servers",               bot));
         processors.add(new UserInfoProcessor(".user",                     bot));
         processors.add(new AlternateHandleProcessor(".alt",               bot));
-        processors.add(new TemporaryInviteToGuildProcessor(".tempinv",    bot));
         processors.add(new StatsProcessor(".about",                       bot));
         processors.add(new SoundAttachmentProcessor(                      bot));
         processors.add(new FilterTwitchClipProcessor(                     bot));
