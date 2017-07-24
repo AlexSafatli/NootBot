@@ -26,9 +26,7 @@ public class LastPlayedSoundProcessor extends SingleArgumentChatCommandProcessor
       StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file, getTitle(), 
           "This was the last played sound \u2014 " + user.getAsMention());
       if (player != null) em.addContent("Sound Was Played By", player, false);
-      em.addFooterText(StyledEmbedMessage.FOR_USER_FOOTER_PREFIX + event.getAuthor().getName());
-      em.setFooterIcon(event.getAuthor().getEffectiveAvatarUrl());
-      embed(event, em);
+      embedForUser(event, em);
     }
   }
 

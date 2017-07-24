@@ -133,8 +133,15 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		embed(event, msg);
 	}
 
-	protected void embed(MessageReceivedEvent event, StyledEmbedMessage embed) {
-		event.getChannel().sendMessage(embed.getMessage()).queue((Message msg)-> buffer.add(msg));
+	protected void embed(MessageReceivedEvent event, StyledEmbedMessage em) {
+		event.getChannel().sendMessage(em.getMessage()).queue((Message msg)-> buffer.add(msg));
+	}
+
+	protected void embedForUser(MessageReceivedEvent event, StyledEmbedMessage em) {
+		em.addFooterText(StyledEmbedMessage.FOR_USER_FOOTER_PREFIX + 
+		  event.getAuthor().getName());
+		em.setFooterIcon(event.getAuthor().getEffectiveAvatarUrl());
+		embed(event, em);
 	}
 
 	protected String lookupString(String key) {

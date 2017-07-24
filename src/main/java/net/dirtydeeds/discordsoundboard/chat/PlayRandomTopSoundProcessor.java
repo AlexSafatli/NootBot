@@ -32,9 +32,7 @@ public class PlayRandomTopSoundProcessor extends SingleArgumentChatCommandProces
                                 "You've Played a Random Top Sound",
                                 desc + " \u2014 " +
                                 event.getAuthor().getAsMention());
-        em.addFooterText(StyledEmbedMessage.FOR_USER_FOOTER_PREFIX + event.getAuthor().getName());
-        em.setFooterIcon(event.getAuthor().getEffectiveAvatarUrl());
-        embed(event, em);
+        embedForUser(event, em);
       }
     } catch (Exception e) {
       e(event, e.toString());
