@@ -65,7 +65,7 @@ public class SoundboardDispatcher {
 
 	@Inject
 	public SoundboardDispatcher(UserRepository userDao, SoundFileRepository soundDao, AsyncService asyncService,
-			StringService stringService) {
+	                            StringService stringService) {
 		this.asyncService = asyncService;
 		this.stringService = stringService;
 		this.userDao = userDao;
@@ -83,61 +83,13 @@ public class SoundboardDispatcher {
 	public AudioPlayerManager getAudioManager() {
 		return audioManager;
 	}
-	
-	/**
-	 * Gets a Map of the loaded sound files.
-	 * 
-	 * @return Map of sound files that have been loaded.
-	 */
+
 	public Map<String, SoundFile> getAvailableSoundFiles() {
 		return availableSounds;
 	}
 
 	public LowercaseTrie getSoundNameTrie() {
 		return soundNameTrie;
-	}
-
-	private void startBot(int i) {
-		int index = i - 1;
-		if (bots[index] != null) {
-			List<Object> listeners = bots[index].getAPI().getRegisteredListeners();
-			for (Object listener : listeners) {
-				bots[index].getAPI().removeEventListener(listener);
-			}
-			bots[index].getAPI().shutdown(false);
-			bots[index] = null;
-		}
-		String token = appProperties.getProperty("token_" + i);
-		String owner = appProperties.getProperty("owner_" + i);
-		if (token == null || owner == null) {
-			LOG.fatal("The config was not populated! Please enter both an API token and owner for bot " + i);
-			return;
-		} else {
-			LOG.info("Initializing bot " + i);
-		}
-		SoundboardBot bot = new SoundboardBot(token, owner, this);
-		bots[index] = bot;
-	}
-
-	private void startServices() {
-		int num = Integer.valueOf(appProperties.getProperty("number_of_users"));
-		// Bots
-		LOG.info("Starting bots.");
-		bots = new SoundboardBot[num];
-		for (int i = 1; i <= num; ++i)
-			startBot(i);
-		// Async jobs
-		// LOG.info("Starting async jobs.");
-		// Audio Playing
-		LOG.info("Adding sources to audio manager.");
-		audioManager.registerSourceManager(new YoutubeAudioSourceManager());
-		audioManager.registerSourceManager(new TwitchStreamAudioSourceManager());
-		audioManager.registerSourceManager(new HttpAudioSourceManager());
-		audioManager.registerSourceManager(new LocalAudioSourceManager());
-		AudioSourceManagers.registerRemoteSources(audioManager);
-		// String files.
-		LOG.info("Reading string files.");
-		stringService.addFile(Paths.get(System.getProperty("user.dir") + "/strings.txt"));
 	}
 
 	// Loads in the properties from the app.properties file
@@ -166,6 +118,57 @@ public class SoundboardDispatcher {
 		}
 	}
 
+	private void startBot(int i) {
+		int index = i - 1;
+		if (bots[index] != null) {
+			List<Object> listeners = bots[index].getAPI().getRegisteredListeners();
+			for (Object listener : listeners) {
+				bots[index].getAPI().removeEventListener(listener);
+			}
+			bots[index].getAPI().shutdown(false);
+			bots[index] = null;
+		}
+		String token = getProperty("token_" + i);
+		String owner = getProperty("owner_" + i);
+		if (token == null || owner == null) {
+			LOG.fatal("The config was not populated! Please enter both an API token and owner for bot " + i);
+			return;
+		} else {
+			LOG.info("Initializing bot " + i);
+		}
+		SoundboardBot bot = new SoundboardBot(token, owner, this);
+		bots[index] = bot;
+	}
+
+	public void restartBot(SoundboardBot bot) {
+		LOG.info("Restarting bot " + bot.getBotName());
+		for (int i = 0; i < bots.length; ++i) {
+			if (bots[i] != null && bots[i].equals(bot)) {
+				startBot(i + 1);
+			}
+		}
+	}
+
+	private void startServices() {
+		int num = Integer.valueOf(getProperty("number_of_users"));
+		// Bots
+		LOG.info("Starting bots.");
+		bots = new SoundboardBot[num];
+		for (int i = 1; i <= num; ++i) startBot(i);
+		// Async jobs
+		// LOG.info("Starting async jobs.");
+		// Audio Playing
+		LOG.info("Adding sources to audio manager.");
+		audioManager.registerSourceManager(new YoutubeAudioSourceManager());
+		audioManager.registerSourceManager(new TwitchStreamAudioSourceManager());
+		audioManager.registerSourceManager(new HttpAudioSourceManager());
+		audioManager.registerSourceManager(new LocalAudioSourceManager());
+		AudioSourceManagers.registerRemoteSources(audioManager);
+		// String files.
+		LOG.info("Reading string files.");
+		stringService.addFile(Paths.get(System.getProperty("user.dir") + "/strings.txt"));
+	}
+
 	// This method loads the files. This checks if you are running from a .jar
 	// file and loads from the /sounds dir relative
 	// to the jar file. If not it assumes you are running from code and loads
@@ -192,7 +195,7 @@ public class SoundboardDispatcher {
 					LOG.fatal("Could not create directory: " + tmpFilePath.toFile());
 				}
 			}
-			
+
 			Files.walk(soundFilePath).forEach(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					// Sound file case
@@ -260,15 +263,6 @@ public class SoundboardDispatcher {
 		return bots;
 	}
 
-	public void restartBot(SoundboardBot bot) {
-		LOG.info("Restarting bot " + bot.getBotName());
-		for (int i = 0; i < bots.length; ++i) {
-			if (bots[i] != null && bots[i].equals(bot)) {
-				startBot(i + 1);
-			}
-		}
-	}
-
 	public void sendMessageToAll(String message) {
 		List<Guild> guilds = new LinkedList<Guild>();
 		for (SoundboardBot bot : getBots()) {
@@ -310,6 +304,10 @@ public class SoundboardDispatcher {
 		return appProperties;
 	}
 
+	public String getProperty(String key) {
+		return (appProperties != null) ? appProperties.getProperty(key) : null;
+	}
+
 	public StringService getStringService() {
 		return this.stringService;
 	}
@@ -335,7 +333,7 @@ public class SoundboardDispatcher {
 		return categories;
 	}
 
-	private Category getCategory(String name) {
+	public Category getCategory(String name) {
 		for (Category category : getCategories())
 			if (category.getName().equalsIgnoreCase(name))
 				return category;
@@ -357,7 +355,7 @@ public class SoundboardDispatcher {
 
 	public net.dirtydeeds.discordsoundboard.beans.User registerUser(User user, boolean disallowed, boolean throttled) {
 		net.dirtydeeds.discordsoundboard.beans.User u = new net.dirtydeeds.discordsoundboard.beans.User(
-				user.getName(), user.getId());
+		  user.getName(), user.getId());
 		u.setDisallowed(disallowed);
 		u.setThrottled(throttled);
 		saveUser(u);

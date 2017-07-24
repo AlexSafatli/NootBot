@@ -116,7 +116,8 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
   }
 
   private void sendEmbed(MessageReceivedEvent event, String message, boolean error, boolean warning) {
-    if (event.isFromType(ChannelType.PRIVATE)) {
+    if (event.isFromType(ChannelType.PRIVATE)
+      || !bot.hasPermissionInChannel(event.getChannel(), Permission.MESSAGE_WRITE)) {
       pm(event, message);
     } else {
       event.getChannel().sendMessage(

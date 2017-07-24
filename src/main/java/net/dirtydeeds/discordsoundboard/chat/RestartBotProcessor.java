@@ -11,10 +11,10 @@ public class RestartBotProcessor extends AuthenticatedSingleArgumentChatCommandP
 	public RestartBotProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Restart Bot", bot);
 	}
-	
+
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		deleteOriginalMessage(event);
-		pm(event, "Restarting this bot instance. *This is a soft restart. This might break things. Hard restart if it does!*");
+		pm(event, "Restarting. *This is a soft restart. Hard restart if this breaks things!*");
 		bot.getDispatcher().restartBot(bot);
 		bot.getDispatcher().updateFileList();
 	}
@@ -23,5 +23,5 @@ public class RestartBotProcessor extends AuthenticatedSingleArgumentChatCommandP
 	public String getCommandHelpString() {
 		return getPrefix() + " (*) - restart this bot";
 	}
-	
+
 }

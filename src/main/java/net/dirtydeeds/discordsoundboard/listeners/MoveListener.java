@@ -116,6 +116,9 @@ public class MoveListener extends AbstractListener {
         // Send a message greeting them into the server.
         VoiceChannel joined = bot.getConnectedChannel(guild);
         if (joined != null && joined.equals(voiceChannel)) {
+          if (!bot.hasPermissionInChannel(guild.getPublicChannel(), Permission.MESSAGE_WRITE)) {
+            LOG.warn("Did not have permission to write messages in server " + guild.getName());
+          }
           embed(guild.getPublicChannel(), welcomeMessage(user, voiceChannel, soundInfo),
                 (Message m)-> pastEntrances.get(guild).add(new EntranceEvent(m, user)));
         }
