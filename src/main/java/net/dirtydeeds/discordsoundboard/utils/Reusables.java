@@ -1,5 +1,8 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
+import java.awt.Color;
+
+import net.dirtydeeds.discordsoundboard.Icons;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 
 public class Reusables {
