@@ -64,6 +64,10 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 			m.deleteMessage().queue();
 	}
 
+	public String getTitle() {
+		return "";
+	}
+
 	public String getCommandHelpString() {
 		return "";
 	}
