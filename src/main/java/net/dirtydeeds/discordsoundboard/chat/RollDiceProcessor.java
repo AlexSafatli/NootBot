@@ -22,7 +22,7 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
   public RollDiceProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Roll Dice", bot);
     rng = new Random();
-    dice = Pattern.compile("(\\d+)d(\\d+)\\+?(\\d+)?")
+    dice = Pattern.compile("(\\d+)d(\\d+)\\+?(\\d+)?");
   }
 
   private String roll(int dice, int sides, int add) {
