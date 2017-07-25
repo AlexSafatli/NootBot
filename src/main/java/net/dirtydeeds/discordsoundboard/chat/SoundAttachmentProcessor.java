@@ -116,7 +116,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 	@Override
 	public boolean isApplicableCommand(MessageReceivedEvent event) {
-		return super.isApplicableCommand() && hasApplicableAttachment(event);
+		return super.isApplicableCommand(event) && hasApplicableAttachment(event);
 	}
 
 	private boolean hasApplicableAttachment(MessageReceivedEvent event) {
