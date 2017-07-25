@@ -2,6 +2,7 @@ package net.dirtydeeds.discordsoundboard.listeners;
 
 import net.dirtydeeds.discordsoundboard.chat.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -42,7 +43,7 @@ public class ChatListener extends AbstractListener {
 
   private void initializeProcessors() {
 
-    processors.add(new PlaySoundProcessor ("?",                       bot));
+    processors.add(new PlaySoundProcessor("?",                        bot));
     processors.add(new ListSoundsProcessor(".list",                   bot));
     processors.add(new SearchProcessor(".search",                     bot));
     processors.add(new DescribeSoundProcessor(".whatis",              bot));
@@ -81,7 +82,6 @@ public class ChatListener extends AbstractListener {
     processors.add(new PlaySoundSequenceProcessor(".play",            bot));
     processors.add(new StopSoundProcessor(".stop",                    bot));
     processors.add(new PlaySoundLoopedProcessor(".loop",              bot));
-    processors.add(new ServerMessageProcessor(".all",                 bot));
     processors.add(new LeaveServerProcessor(".leave",                 bot));
     processors.add(new ExecProcessor(".run",                          bot));
     processors.add(new RestartBotProcessor(".restart",                bot));
@@ -131,7 +131,8 @@ public class ChatListener extends AbstractListener {
       LOG.info("Throttling user " + user.getName() + " because they sent too many requests.");
       bot.throttleUser(user);
       bot.sendMessageToUser("Throttling **" + user.getName() +
-                            "** automatically because of too many requests.", bot.getOwner());
+                            "** automatically because of too many requests.",
+                            bot.getOwner());
       return;
     }
 
@@ -164,7 +165,8 @@ public class ChatListener extends AbstractListener {
 
     // Handle typo commands with common prefix.
     if (isTypoCommand(event)) {
-      bot.sendMessageToUser("That's not one of my commands! *Check your spelling*. \u2014 Use `.help` to see all commands.", event.getAuthor());
+      bot.sendMessageToUser(lookupString(Strings.NOT_A_COMMAND),
+                            event.getAuthor());
       noOpProcessor.process(event); // Do nothing - deletes the message.
       LOG.info("User " + event.getAuthor().getName() +
                " tried to run \"" + event.getMessage().getContent() +

@@ -38,14 +38,11 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		// Get the details for the file.
 		AttachmentFile file = getAttachmentDetails(attachment);
 
-		// Only allow wav/mp3 uploads.
-		if (!file.extension.equals("wav") && !file.extension.equals("mp3")) {
-			return false;
-		}
-
 		// Check for maximum file size allowed.
 		if (attachment.getSize() >= MAX_FILE_SIZE_IN_BYTES) {
-			String end = (event.isFromType(ChannelType.PRIVATE)) ? "" : " *Was this for me? This bot looks for `.mp3` or `.wav` uploads.*";
+			LOG.info("File " + file.name + " is too large.");
+			String end = (event.isFromType(ChannelType.PRIVATE)) ?
+			             "" : " *Was this for me? This bot looks for `.mp3` or `.wav` uploads.*";
 			pm(event, "File `" + file.name + "` is too large to add to sound list." + end);
 			event.getMessage().addReaction("😶").queue();
 			return false;
@@ -64,7 +61,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 			}
 		} else {
 			if (dispatcher.getNumberOfCategories() >= 1 || (category != null && !category.isEmpty())) {
-				pm(event, "No category was provided (*or it did not match an existing one*)!");
+				pm(event, "*Warning*: No category was provided (or it did not match an existing one)!");
 			}
 			category = null;
 		}
@@ -115,6 +112,23 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean isApplicableCommand(MessageReceivedEvent event) {
+		return super.isApplicableCommand() && hasApplicableAttachment(event);
+	}
+
+	private boolean hasApplicableAttachment(MessageReceivedEvent event) {
+		List<Attachment> attachments = event.getMessage().getAttachments();
+		for (Attachment attachment : attachments) {
+			AttachmentFile file = getAttachmentDetails(attachment);
+			// Only allow wav/mp3 uploads.
+			if (file.extension.equals("wav") || file.extension.equals("mp3")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private StyledEmbedMessage getPublishMessage(String category, String name, User author, SoundFile file) {

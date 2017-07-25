@@ -20,6 +20,7 @@ public class Strings {
 	public static final String NOT_TO_SELF = "NOT_TO_SELF";
 	public static final String NOT_FOR_YOU = "NOT_FOR_YOU";
 	public static final String NOT_ALLOWED = "NOT_ALLOWED";
+	public static final String NOT_A_COMMAND = "NOT_A_COMMAND";
 
 	public static final String SERVER_ONLY = "SERVER_ONLY";
 
@@ -34,7 +35,6 @@ public class Strings {
 	public static final String SOUND_RENAME_FAILURE = "SOUND_RENAME_FAILURE";
 
 	public static final String GAME_START_MESSAGE = "GAME_START_MESSAGE";
-	public static final String LEAGUE_START_MESSAGE = "LEAGUE_START_MESSAGE";
 
 	public static final String NOT_FOUND = "NOT_FOUND";
 

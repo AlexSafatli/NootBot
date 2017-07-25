@@ -97,7 +97,10 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		}
 
 		if (numPlayers >= MIN_NUM_PLAYERS) {
-			LOG.info("Found " + user.getName() + " + " + numPlayers + " others playing " + game + " in " + channel.getName() + " of guild " + event.getGuild().getName() + ".");
+			LOG.info("Found " + user.getName() + " + " +
+			         numPlayers + " others playing " + game + " in " +
+			         channel.getName() + " of guild " + event.getGuild().getName() +
+			         ".");
 
 			if (pastEvent != null) {
 				if (pastEvent.isTooSoon(channel)) {
