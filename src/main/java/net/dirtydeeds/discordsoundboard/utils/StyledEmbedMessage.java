@@ -26,7 +26,7 @@ public class StyledEmbedMessage {
 	private String errorTitle;
 
 	private static final List<String> ERROR_STRINGS = Arrays.asList(new String[] {
-	      "Fwubbed it.", "Gao~", "DELETE DELETE DELETTTTTTT", "Oro?", "Tch.",
+	      "Fwubbed it.", "Gao~", "DELETE DELETE DELETTTTTTT", "Oro?",
 	      "Excuse me, I stuttered."
 	    });
 
