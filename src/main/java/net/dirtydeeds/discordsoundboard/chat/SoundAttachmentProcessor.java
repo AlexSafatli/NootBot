@@ -60,9 +60,6 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 				}
 			}
 		} else {
-			if (dispatcher.getNumberOfCategories() >= 1 || (category != null && !category.isEmpty())) {
-				pm(event, "*Warning*: No category was provided (or it did not match an existing one)!");
-			}
 			category = null;
 		}
 
@@ -135,16 +132,21 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		StyledEmbedMessage msg = new StyledEmbedMessage("A New Sound Was Added!", bot);
 		msg.addDescription("A new sound was added to the bot by " + author.getAsMention() + ".");
 		msg.addContent("Name", "`" + name + "`", true);
-		if (category != null && !category.isEmpty() && !category.equals("Uncategorized")) msg.addContent("Category", category, true);
-		msg.addContent("Uploader", author.getName(), true);
+		msg.addContent("Category",
+		               (category != null &&
+		                !category.isEmpty() &&
+		                !category.equals("Uncategorized")) ? category : "\u2014",
+		               true);
 		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		return msg;
 	}
 
 	private String getDownloadedMessage(String name, String category, SoundFile file, long size) {
-		String msg = "`" + name + "` downloaded and added to list of sounds successfully. Play it with `?" + file.getSoundFileId() + "`.\n";
+		String msg = "`" + name + "` downloaded and added to list of sounds successfully. Play it with `?" + file.getSoundFileId() + "`.\n\u2014\n";
 		if (category != null && !category.isEmpty() && !category.equals("Uncategorized"))
 			msg += "It was put into category: **" + category + "**\n";
+		else
+			msg += "No category was provided (or it did not match an existing one)!\n";
 		msg += "File Size was: **" + size / 1000 + " kB**";
 		return msg;
 	}

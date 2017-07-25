@@ -139,6 +139,12 @@ public class StyledEmbedMessage {
 			String stamp = StringUtils.dayTimeStamp(file.getLastModified());
 			if (!stamp.isEmpty()) msg.addContent("Added", stamp, true);
 		}
+		List<net.dirtydeeds.discordsoundboard.beans.User> usersWithEntrance =
+		  bot.getDispatcher().getUsersWithEntrance(file.getSoundFileId());
+		if (!usersWithEntrance.isEmpty()) {
+			msg.addContent("Entrance For", StringUtils.listToString(usersWithEntrance),
+			               false);
+		}
 		return msg;
 	}
 

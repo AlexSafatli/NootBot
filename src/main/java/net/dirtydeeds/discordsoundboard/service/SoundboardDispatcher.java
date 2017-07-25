@@ -286,6 +286,10 @@ public class SoundboardDispatcher {
 		return userDao.findByUserid(userid);
 	}
 
+	public List<net.dirtydeeds.discordsoundboard.beans.User> getUsersWithEntrance(String entrance) {
+		return userDao.findAllByEntrancefilenameLike(entrance);
+	}
+
 	public List<SoundFile> getSoundFilesOrderedByNumberOfPlays() {
 		return soundDao.findAllByOrderByNumberPlaysDesc();
 	}

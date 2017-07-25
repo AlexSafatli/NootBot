@@ -196,9 +196,7 @@ public class User {
   }
 
   public String toString() {
-    return String.format("User[id=%s, name=%s, disallowed=%b, throttled=%b, level=%d]",
-                         userid, username, disallowed, throttled, privilegeLevel);
+    return username;
   }
-
 
 }

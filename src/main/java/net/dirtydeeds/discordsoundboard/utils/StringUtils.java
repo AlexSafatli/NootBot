@@ -43,6 +43,9 @@ public class StringUtils {
 	}
 
 	public static <T> String listToString(List<T> list) {
+		if (list.size() == 1) {
+			return list.get(0).toString();
+		}
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < list.size(); ++i) {
 			sb.append(list.get(i).toString());
