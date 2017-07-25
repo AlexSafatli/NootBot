@@ -287,7 +287,7 @@ public class SoundboardDispatcher {
 	}
 
 	public List<net.dirtydeeds.discordsoundboard.beans.User> getUsersWithEntrance(String entrance) {
-		return userDao.findAllByEntrancefilenameLike(entrance);
+		return userDao.findAllByEntrancefilename(entrance);
 	}
 
 	public List<SoundFile> getSoundFilesOrderedByNumberOfPlays() {
