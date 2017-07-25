@@ -290,20 +290,38 @@ public class SoundboardDispatcher {
 		return userDao.findAllByEntrancefilename(entrance);
 	}
 
+	private void curateSoundFile(SoundFile sound) {
+		SoundFile _sound = availableSounds.get(sound.getSoundFileId());
+		if (_sound != null && _sound.getSoundFile() != null)
+			sound.setSoundFile(_sound.getSoundFile());
+	}
+
+	private List<SoundFile> curateSoundFiles(List<SoundFile> sounds) {
+		for (SoundFile sound : sounds) {
+			curateSoundFile(sound);
+		}
+		return sounds;
+	}
+
 	public List<SoundFile> getSoundFilesOrderedByNumberOfPlays() {
-		return soundDao.findAllByOrderByNumberPlaysDesc();
+		List<SoundFile> sounds = soundDao.findAllByOrderByNumberPlaysDesc();
+		return curateSoundFiles(sounds);
 	}
 
 	public List<SoundFile> getSoundFilesOrderedByDuration() {
-		return soundDao.findAllByOrderByDurationDesc();
+		List<SoundFile> sounds = soundDao.findAllByOrderByDurationDesc();
+		return curateSoundFiles(sounds);
 	}
 
 	public List<SoundFile> getSoundFilesOrderedByNumberOfReports() {
-		return soundDao.findAllByOrderByNumberReportsDesc();
+		List<SoundFile> sounds = soundDao.findAllByOrderByNumberReportsDesc();
+		return curateSoundFiles(sounds);
 	}
 
 	public SoundFile getSoundFileByName(String name) {
-		return soundDao.findOne(name);
+		SoundFile sound = soundDao.findOne(name);
+		curateSoundFile(sound);
+		return sound;
 	}
 
 	public Properties getAppProperties() {
