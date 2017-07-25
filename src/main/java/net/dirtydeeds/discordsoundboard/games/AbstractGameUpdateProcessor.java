@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -40,12 +41,16 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 	}
 
 	protected void embed(TextChannel channel, StyledEmbedMessage embed) {
-		channel.sendMessage(embed.getMessage()).queue();
+		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
+			channel.sendMessage(embed.getMessage()).queue();
+		}
 	}
 
 	protected void embed(TextChannel channel, StyledEmbedMessage embed, Consumer<Message> m) {
-		RestAction<Message> ra = channel.sendMessage(embed.getMessage());
-		ra.queue(m);
+		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
+			RestAction<Message> ra = channel.sendMessage(embed.getMessage());
+			ra.queue(m);
+		}
 	}
 
 	protected void error(UserGameUpdateEvent event, Exception e) {

@@ -7,7 +7,6 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.requests.RestAction;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public abstract class AbstractListener extends ListenerAdapter {
@@ -24,14 +23,14 @@ public abstract class AbstractListener extends ListenerAdapter {
 	}
 
 	protected void embed(TextChannel channel, StyledEmbedMessage embed) {
-		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE))
+		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
 			channel.sendMessage(embed.getMessage()).queue();
+		}
 	}
 
 	protected void embed(TextChannel channel, StyledEmbedMessage embed, Consumer<Message> m) {
 		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
-			RestAction<Message> ra = channel.sendMessage(embed.getMessage());
-			ra.queue(m);
+			channel.sendMessage(embed.getMessage()).queue(m);
 		}
 	}
 

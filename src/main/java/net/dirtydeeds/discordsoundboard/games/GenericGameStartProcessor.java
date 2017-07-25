@@ -90,7 +90,8 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		// If so: play a sound randomly from top played sounds.
 		User[] users = new User[channel.getMembers().size()];
 		for (Member m : channel.getMembers()) {
-			if (m.getGame() != null && m.getGame().getName().equals(game)) {
+			if (m.getGame() != null && m.getGame().getName().equals(game) && m.getUser() != null) {
+				LOG.info(m.getUser().getName() + " in this channel is also playing " + game);
 				users[numPlayers++] = m.getUser();
 			}
 		}
