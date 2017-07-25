@@ -42,5 +42,6 @@ public class Strings {
 	public static final String DELETED_FAILURE = "DELETED_FAILURE";
 
 	public static final String NEED_NAME = "NEED_NAME";
+	public static final String NO_NAME = "NO_NAME";
 
 }

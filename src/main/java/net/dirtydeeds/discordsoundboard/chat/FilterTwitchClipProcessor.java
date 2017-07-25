@@ -10,7 +10,7 @@ public class FilterTwitchClipProcessor extends FilterChatProcessor {
   private static final String CHANNEL = "clips";
 
   public FilterTwitchClipProcessor(SoundboardBot bot) {
-    super(Pattern.compile(".*clips\\.twitch\\.tv/.*"), CHANNEL, bot);
+    super(Pattern.compile(".*clips\\.twitch\\.tv/.*"), CHANNEL, "`clips.twitch.tv`", bot);
   }
  
 }

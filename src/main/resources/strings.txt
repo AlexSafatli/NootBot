@@ -1,4 +1,4 @@
-USER_NOT_FOUND=That username was not found. *Is he/she visible to this bot?*
+USER_NOT_FOUND=That username was not found. *Is he/she visible to this bot?*.
 USER_NOT_FOUND_DISALLOWED=No user found disallowed with username **%s**.
 USER_NOT_FOUND_ALLOWED=No user **%s** found that can be muted.
 USER_NOT_FOUND_UNTHROTTLED=No user **%s** found that can be throttled.
@@ -30,3 +30,4 @@ NOT_FOUND=Could not find `%s`.
 DELETED_SUCCESS=Deleted `%s` successfully.
 DELETED_FAILURE=Could not delete `%s`.
 NEED_NAME=You need to provide a name. For example: `%s`.
+NO_NAME=You didn't give me a name. *Twirls thumbs*.

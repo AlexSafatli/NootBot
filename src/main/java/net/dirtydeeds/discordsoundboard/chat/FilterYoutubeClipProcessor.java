@@ -10,7 +10,7 @@ public class FilterYoutubeClipProcessor extends FilterChatProcessor {
   private static final String CHANNEL = "clips";
 
   public FilterYoutubeClipProcessor(SoundboardBot bot) {
-    super(Pattern.compile(".*youtube\\.com/watch.*"), CHANNEL, bot);
+    super(Pattern.compile(".*youtube\\.com/watch.*"), CHANNEL, "a YouTube link", bot);
   }
  
 }

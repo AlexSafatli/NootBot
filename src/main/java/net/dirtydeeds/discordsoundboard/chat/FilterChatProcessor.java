@@ -12,11 +12,17 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 
 	private final Pattern regexp;
 	private final String channelname;
+	private final String patternname;
 	protected SoundboardBot bot;
 
 	public FilterChatProcessor(Pattern regexp, String channelname, SoundboardBot bot) {
+		this(regexp, channelname, "a certain pattern", bot);
+	}
+
+	public FilterChatProcessor(Pattern regexp, String channelname, String patternname, SoundboardBot bot) {
 		this.regexp = regexp;
 		this.channelname = channelname;
+		this.patternname = patternname;
 		this.bot = bot;
 	}
 
@@ -32,7 +38,7 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 
 	protected void copyMessage(MessageReceivedEvent event, String message) {
 		List<TextChannel> textChannels = event.getGuild().getTextChannelsByName(channelname, true);
-		String modified = String.format("%s\n\u2014\nOriginally posted by %s.\n*This was filtered to this channel because it contained a certain pattern.*", message, event.getAuthor().getAsMention());
+		String modified = String.format("%s\n\u2014\nOriginally posted by %s.\n*This was filtered to this channel because it contained %s.*", message, event.getAuthor().getAsMention(), patternname);
 		for (TextChannel channel : textChannels) {
 			channel.sendMessage(modified).queue();
 		}
