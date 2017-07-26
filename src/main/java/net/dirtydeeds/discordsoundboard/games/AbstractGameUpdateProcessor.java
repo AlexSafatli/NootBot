@@ -63,7 +63,7 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 		msg.addContent("Triggering User", event.getUser().getName(), true);
 		msg.addContent("Game", game.getName(), true);
 		msg.addContent("Processor", this.toString(), true);
-		embed(event.getGuild().getPublicChannel(), msg);
+		embed(guild.getPublicChannel(), msg);
 		e.printStackTrace();
 	}
 

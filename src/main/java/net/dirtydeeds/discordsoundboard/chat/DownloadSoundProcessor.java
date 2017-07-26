@@ -24,7 +24,8 @@ public class DownloadSoundProcessor extends SingleArgumentChatCommandProcessor {
 					if (!event.getAuthor().hasPrivateChannel()) {
 						event.getAuthor().openPrivateChannel().queue();
 					}
-					event.getAuthor().getPrivateChannel().sendFile(file.getSoundFile(), null).queue();
+					event.getAuthor().getPrivateChannel().sendFile(
+					  file.getSoundFile(), null).queue();
 				} catch (IOException e) {
 					e(event, e.toString());
 				}

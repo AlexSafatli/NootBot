@@ -18,13 +18,16 @@ public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 		String name = getArgument();
 		Set<String> soundNames = bot.getSoundMap().keySet();
 		if (name == null) {
-			pm(event, formatString(Strings.NEED_NAME, getPrefix() + " " + StringUtils.randomString(soundNames)));
+			pm(event, formatString(Strings.NEED_NAME, getPrefix() +
+			                       " " + StringUtils.randomString(soundNames)));
 		} else if (!soundNames.contains(name)) {
-			String suggestion = "Check your spelling.", possibleName = bot.getClosestMatchingSoundName(name);
+			String suggestion = "Check your spelling.",
+			       possibleName = bot.getClosestMatchingSoundName(name);
 			if (possibleName != null) {
 				suggestion = "Did you mean `" + possibleName + "`?";
 			}
-			pm(event, formatString(Strings.NOT_FOUND, name) + " *" + suggestion + "* ");
+			pm(event, formatString(Strings.NOT_FOUND, name) + " *" +
+			   suggestion + "* ");
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			if (file.isExcludedFromRandom()) {

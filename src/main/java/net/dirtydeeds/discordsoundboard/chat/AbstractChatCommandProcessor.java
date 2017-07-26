@@ -72,7 +72,8 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 
 	private void delete(Message m) {
-		if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
+		if (bot.hasPermissionInChannel(m.getTextChannel(),
+		                               Permission.MESSAGE_MANAGE))
 			m.deleteMessage().queue();
 	}
 
@@ -127,10 +128,10 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 	}
 
 	protected void e(MessageReceivedEvent event, String message) {
-		StyledEmbedMessage msg = makeEmbed(message, event.getAuthor()).isError(true);
+		StyledEmbedMessage msg = makeEmbed(message, event.getAuthor());
 		msg.addContent("Message", "`" + event.getMessage().getContent() + "`", false);
 		msg.addContent("Processor", "`" + getClass().getSimpleName() + "`", true);
-		embed(event, msg);
+		embed(event, msg.isError(true));
 	}
 
 	protected void embed(MessageReceivedEvent event, StyledEmbedMessage em) {

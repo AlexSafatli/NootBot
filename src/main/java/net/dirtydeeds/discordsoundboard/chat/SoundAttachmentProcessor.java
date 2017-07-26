@@ -23,6 +23,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 	public static final SimpleLog LOG = SimpleLog.getLog("SoundAttachmentProcessor");
 	private static final int MAX_FILE_SIZE_IN_BYTES = 2000000; // 2MB
 	private static final int MAX_DURATION_IN_SECONDS = 12; // 12s
+	private static final String WAS_THIS_FOR_ME =
+	  " *Was this for me? This bot looks for `.mp3` or `.wav` uploads.*";
 
 	public SoundAttachmentProcessor(SoundboardBot bot) {
 		super("Sound Uploader", bot);
@@ -42,8 +44,9 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		if (attachment.getSize() >= MAX_FILE_SIZE_IN_BYTES) {
 			LOG.info("File " + file.name + " is too large.");
 			String end = (event.isFromType(ChannelType.PRIVATE)) ?
-			             "" : " *Was this for me? This bot looks for `.mp3` or `.wav` uploads.*";
-			pm(event, "File `" + file.name + "` is too large to add to sound list." + end);
+			             "" : WAS_THIS_FOR_ME;
+			pm(event, "File `" + file.name +
+			   "` is too large to add to sound list." + end);
 			event.getMessage().addReaction("😶").queue();
 			return false;
 		}
@@ -65,10 +68,12 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 		// See if it already exists!
 		File target = new File(downloadPath.toString(), file.name);
-		LOG.info("Will download file with path: " + downloadPath.toString() + " and name: " + file.name);
+		LOG.info("Will download file with path: " +
+		         downloadPath.toString() + " and name: " + file.name);
 		if (target.exists() || bot.getSoundMap().get(file.name) != null) {
 			LOG.info(user.getName() + " tried to upload a file whose name already exists.");
-			pm(event, "A sound with name `" + file.shortName + "` **already exists**!");
+			pm(event, "A sound with name `" + file.shortName +
+			   "` **already exists**!");
 			return false;
 		}
 
@@ -86,7 +91,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 				target.delete();
 				dispatcher.updateFileList();
 				pm(event, "File `" + file.name +
-				   "` is too long to add to sound list. *Duration:* **" +
+				   "` is *too long* to add to sound list. Duration: **" +
 				   soundFile.getDuration() + "** seconds. Want **<= " +
 				   MAX_DURATION_IN_SECONDS + "** seconds.");
 				return false;
@@ -94,7 +99,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 			// Send message(s).
 			if (category == null || category.isEmpty())
 				category = "Uncategorized";
-			pm(event, getDownloadedMessage(file.name, category, soundFile, attachment.getSize()));
+			pm(event, getDownloadedMessage(
+			     file.name, category, soundFile, attachment.getSize()));
 			if (!event.isFromType(ChannelType.PRIVATE)) {
 				StyledEmbedMessage publishMessage = getPublishMessage(category, file.shortName, user, soundFile);
 				embed(event, publishMessage);
@@ -104,7 +110,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 				}
 			}
 		} else {
-			e(event, "Download of file `" + file.name + "` **failed**!");
+			e(event, "Download of file `" + file.name + "` **FAILED**!");
 			return false;
 		}
 
@@ -142,7 +148,9 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 	}
 
 	private String getDownloadedMessage(String name, String category, SoundFile file, long size) {
-		String msg = "`" + name + "` downloaded and added to list of sounds successfully. Play it with `?" + file.getSoundFileId() + "`.\n\u2014\n";
+		String msg = "`" + name +
+		             "` downloaded and added to list of sounds successfully. Play it with `?" +
+		             file.getSoundFileId() + "`.\n\u2014\n";
 		if (category != null && !category.isEmpty() && !category.equals("Uncategorized"))
 			msg += "It was put into category: **" + category + "**\n";
 		else
