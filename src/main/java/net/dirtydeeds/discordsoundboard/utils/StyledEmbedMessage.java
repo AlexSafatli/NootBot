@@ -125,10 +125,12 @@ public class StyledEmbedMessage {
 		return (Message) mb.build();
 	}
 
-	public static StyledEmbedMessage forSoundFile(SoundboardBot bot, SoundFile file, String title, String description) {
+	public static StyledEmbedMessage forSoundFile(SoundboardBot bot,
+	    SoundFile file, String title, String description) {
 		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
 		msg.addDescription(description);
-		if (!file.getCategory().equals("sounds")) msg.addContent("Category", file.getCategory(), true);
+		msg.addContent("Category", (!file.getCategory().equals("sounds")) ?
+		               file.getCategory() : "\u2014", true);
 		msg.addContent("Name", "`" + file.getSoundFileId() + "`", true);
 		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		msg.addContent("Played", file.getNumberOfPlays() + " times", true);
@@ -142,13 +144,14 @@ public class StyledEmbedMessage {
 		List<net.dirtydeeds.discordsoundboard.beans.User> usersWithEntrance =
 		  bot.getDispatcher().getUsersWithEntrance(file.getSoundFileId());
 		if (!usersWithEntrance.isEmpty()) {
-			msg.addContent("Entrance For", StringUtils.listToString(usersWithEntrance),
-			               false);
+			msg.addContent("Entrance For",
+			               StringUtils.listToString(usersWithEntrance), false);
 		}
 		return msg;
 	}
 
-	public static StyledEmbedMessage forUser(SoundboardBot bot, User user, String title, String description) {
+	public static StyledEmbedMessage forUser(SoundboardBot bot, User user,
+	    String title, String description) {
 		StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
 		msg.addDescription(description);
 		msg.addFooterText(FOR_USER_FOOTER_PREFIX + user.getName());
