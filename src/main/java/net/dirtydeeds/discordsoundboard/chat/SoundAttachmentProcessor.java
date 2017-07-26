@@ -20,7 +20,8 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("SoundAttachmentProcessor");
+	public static final SimpleLog LOG = SimpleLog.getLog(
+	                                      "SoundAttachmentProcessor");
 	private static final int MAX_FILE_SIZE_IN_BYTES = 2000000; // 2MB
 	private static final int MAX_DURATION_IN_SECONDS = 12; // 12s
 	private static final String WAS_THIS_FOR_ME =
@@ -30,7 +31,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		super("Sound Uploader", bot);
 	}
 
-	protected boolean handleAttachment(MessageReceivedEvent event, Attachment attachment) {
+	protected boolean handleAttachment(MessageReceivedEvent event,
+	                                   Attachment attachment) {
 		// Get the user.
 		User user = event.getAuthor();
 
@@ -74,8 +76,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		if (target.exists() || bot.getSoundMap().get(file.name) != null) {
 			LOG.info(user.getName() +
 			         " tried to upload a file whose name already exists.");
-			pm(event, "A sound with name `" + file.shortName +
-			   "` **already exists**! Type `.whatis " +
+			pm(event, "A sound with the name `" + file.shortName +
+			   "` already exists! Type `.whatis " +
 			   file.shortName + "` for details.");
 			return false;
 		}
@@ -110,7 +112,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 				                                    file.shortName, user, soundFile);
 				embed(event, publishMessage);
 				LOG.info("Sending announcement for uploaded file.");
-				if (!user.getName().equals(bot.getOwner())) { // Alert bot owner as well.
+				if (!user.getName().equals(bot.getOwner())) { // Alert bot owner too.
 					sendPublishMessageToOwner(publishMessage);
 				}
 			}
@@ -192,7 +194,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		return "Upload (an) .mp3 OR .wav file(s) to add sounds. Use the Comment field to specify category.";
+		return "Upload (an) .mp3 OR .wav file(s) to add sounds. Use the Comment " +
+		       "field to specify category.";
 	}
 
 }

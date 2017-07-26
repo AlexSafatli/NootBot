@@ -12,7 +12,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class StatsProcessor extends AbstractChatCommandProcessor {
 
-	private static final String[] UNITS = new String[] {"B", "KB", "MB", "GB", "TB"};
+	private static final String[] UNITS = new String[] {
+	  "B", "KB", "MB", "GB", "TB"
+	};
+	private static final String LIBRARY_TOO_BIG = "**TOO BIG**";
 
 	public StatsProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "About Me", bot);
@@ -22,11 +25,10 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 		List<SoundFile> files = bot.getDispatcher().getSoundFilesOrderedByNumberOfPlays();
 		int i = 0;
 		while (files != null && !files.isEmpty() && i < files.size()) {
-			SoundFile f = files.get(i);
+			SoundFile f = files.get(i++);
 			if (bot.getSoundMap().get(f.getSoundFileId()) != null) {
 				return f;
 			}
-			++i;
 		}
 		return null;
 	}
@@ -35,11 +37,10 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 		List<SoundFile> files = bot.getDispatcher().getSoundFilesOrderedByDuration();
 		int i = 0;
 		while (files != null && !files.isEmpty() && i < files.size()) {
-			SoundFile f = files.get(i);
+			SoundFile f = files.get(i++);
 			if (bot.getSoundMap().get(f.getSoundFileId()) != null) {
 				return f;
 			}
-			++i;
 		}
 		return null;
 	}
@@ -57,9 +58,11 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 	private String sizeOfLibrary() {
 		long size = getFolderSize(bot.getSoundsPath().toFile());
 		int index = (int) (Math.log10(size) / 3);
+		if (index >= UNITS.length) {
+			return LIBRARY_TOO_BIG;
+		}
 		double val = 1 << (index * 10);
-		return new DecimalFormat("#,##0.#").format(size / val) +
-		       " " + UNITS[index];
+		return new DecimalFormat("#,##0.#").format(size / val) + " " + UNITS[index];
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -67,7 +70,8 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 		msg.addDescription("*Noot noot*.");
 		int numberOfSounds = bot.getSoundMap().size();
 		msg.addContent("Number of Sounds", "" + numberOfSounds, true);
-		msg.addContent("Number of Categories", "" + bot.getDispatcher().getNumberOfCategories(), true);
+		msg.addContent("Number of Categories", "" +
+		               bot.getDispatcher().getNumberOfCategories(), true);
 		if (numberOfSounds > 0) {
 			SoundFile mostPlayed = mostPlayedSound(), longest = longestSound();
 			msg.addContent("Most Played", "`" +  mostPlayed.getSoundFileId() +

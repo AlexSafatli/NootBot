@@ -60,7 +60,9 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
       if (m.group(3) != null && !NULL.equals(m.group(3))) {
         add = Math.max(Integer.valueOf(m.group(3)), 0);
       }
-      m(event, "Rolling `" + getArgument() + "` and got:\n" + roll(dice, sides, add));
+      m(event, "Rolling `" + getArgument() + "` and got:\n" +
+        roll(dice, sides, add)
+       );
     } else {
       w(event, "This command needs syntax in the form `xdy+z` \u2014 " +
         "e.g., `2d5+2` rolls 2 dice with possible sides ranging from 1 " +
