@@ -1,5 +1,6 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
+import java.io.File;
 import java.util.List;
 import java.text.DecimalFormat;
 
