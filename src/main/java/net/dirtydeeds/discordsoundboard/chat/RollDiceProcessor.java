@@ -24,6 +24,11 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
     dice = Pattern.compile("(\\d+)d(\\d+)\\+?(\\d+)?");
   }
 
+  @Override
+  protected void clearBuffer() {
+    buffer.clear(); // Do not delete past messages.
+  }
+
   private String roll(int dice, int sides, int add) {
     String out = String.format("Rolling %d %d-sided dice and got:\n", dice, sides);
     int total = 0;
