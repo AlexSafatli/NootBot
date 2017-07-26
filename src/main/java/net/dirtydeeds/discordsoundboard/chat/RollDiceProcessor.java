@@ -45,8 +45,7 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    String r = event.getMessage().getContent().trim();
-    Matcher m = dice.matcher(r);
+    Matcher m = dice.matcher(event.getMessage().getContent().trim());
     if (m.find()) {
       int dice = Math.max(Integer.valueOf(m.group(1)), MIN_DICE);
       int sides = Math.max(Integer.valueOf(m.group(2)), MIN_DICE_HEADS);
@@ -61,7 +60,7 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
       if (m.group(3) != null && !NULL.equals(m.group(3))) {
         add = Math.max(Integer.valueOf(m.group(3)), 0);
       }
-      m(event, "Rolling `" + r + "` and got:\n" + roll(dice, sides, add));
+      m(event, "Rolling `" + getArgument() + "` and got:\n" + roll(dice, sides, add));
     } else {
       w(event, "This command needs syntax in the form `xdy+z` \u2014 " +
         "e.g., `2d5+2` rolls 2 dice with possible sides ranging from 1 " +
