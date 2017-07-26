@@ -61,11 +61,15 @@ public class SoundboardDispatcher {
 	private int numCategories;
 	private final AsyncService asyncService;
 	private final StringService stringService;
-	private final Path soundFilePath = Paths.get(System.getProperty("user.dir") + "/sounds");
-	private final Path tmpFilePath = Paths.get(System.getProperty("user.dir") + "/tmp");
+	private final Path soundFilePath =
+	  Paths.get(System.getProperty("user.dir") + "/sounds");
+	private final Path tmpFilePath =
+	  Paths.get(System.getProperty("user.dir") + "/tmp");
 
 	@Inject
-	public SoundboardDispatcher(UserRepository userDao, SoundFileRepository soundDao, AsyncService asyncService,
+	public SoundboardDispatcher(UserRepository userDao,
+	                            SoundFileRepository soundDao,
+	                            AsyncService asyncService,
 	                            StringService stringService) {
 		this.asyncService = asyncService;
 		this.stringService = stringService;
@@ -98,7 +102,8 @@ public class SoundboardDispatcher {
 		appProperties = new Properties();
 		InputStream stream = null;
 		try {
-			stream = new FileInputStream(System.getProperty("user.dir") + "/app.properties");
+			stream = new FileInputStream(
+			  System.getProperty("user.dir") + "/app.properties");
 			appProperties.load(stream);
 			stream.close();
 			return;
@@ -122,17 +127,15 @@ public class SoundboardDispatcher {
 	private void startBot(int i) {
 		int index = i - 1;
 		if (bots[index] != null) {
-			List<Object> listeners = bots[index].getAPI().getRegisteredListeners();
-			for (Object listener : listeners) {
+			for (Object listener : bots[index].getAPI().getRegisteredListeners()) {
 				bots[index].getAPI().removeEventListener(listener);
 			}
 			bots[index].getAPI().shutdown(false);
 			bots[index] = null;
 		}
-		String token = getProperty("token_" + i);
-		String owner = getProperty("owner_" + i);
+		String token = getProperty("token_" + i), owner = getProperty("owner_" + i);
 		if (token == null || owner == null) {
-			LOG.fatal("The config was not populated! Please enter both an API token and owner for bot " + i);
+			LOG.fatal("Config not populated! Need API token and owner for bot " + i);
 			return;
 		} else {
 			LOG.info("Initializing bot " + i);
@@ -153,7 +156,7 @@ public class SoundboardDispatcher {
 	private void startServices() {
 		int num = Integer.valueOf(getProperty("number_of_users"));
 		// Bots
-		LOG.info("Starting bots.");
+		LOG.info("Starting " + num + " bots.");
 		bots = new SoundboardBot[num];
 		for (int i = 1; i <= num; ++i) startBot(i);
 		// Async jobs
@@ -168,7 +171,9 @@ public class SoundboardDispatcher {
 		AudioSourceManagers.registerRemoteSources(audioManager);
 		// String files.
 		LOG.info("Reading string files.");
-		stringService.addFile(Paths.get(System.getProperty("user.dir") + "/strings.txt"));
+		stringService.addFile(
+		  Paths.get(System.getProperty("user.dir") + "/strings.txt")
+		);
 	}
 
 	// This method loads the files. This checks if you are running from a .jar
@@ -176,37 +181,27 @@ public class SoundboardDispatcher {
 	// to the jar file. If not it assumes you are running from code and loads
 	// relative to your resource dir.
 	private void getFileList() {
-
 		Map<String, SoundFile> sounds = new TreeMap<>();
 		try {
-
 			if (!soundFilePath.toFile().exists()) {
 				LOG.info("Creating directory: " + soundFilePath.toFile());
-				try {
-					soundFilePath.toFile().mkdir();
-				} catch (SecurityException se) {
-					LOG.fatal("Could not create directory: " + soundFilePath.toFile());
-				}
+				soundFilePath.toFile().mkdir();
 			}
-
 			if (!tmpFilePath.toFile().exists()) {
 				LOG.info("Creating directory: " + tmpFilePath.toFile());
-				try {
-					tmpFilePath.toFile().mkdir();
-				} catch (SecurityException se) {
-					LOG.fatal("Could not create directory: " + tmpFilePath.toFile());
-				}
+				tmpFilePath.toFile().mkdir();
 			}
-
 			Files.walk(soundFilePath).forEach(filePath -> {
 				if (Files.isRegularFile(filePath)) {
 					// Sound file case
 					String fileName = filePath.getFileName().toString();
-					fileName = fileName.substring(fileName.indexOf("/") + 1, fileName.length());
+					fileName = fileName.substring(
+					  fileName.indexOf("/") + 1, fileName.length());
 					fileName = fileName.substring(0, fileName.indexOf("."));
 					File file = filePath.toFile();
 					String parent = file.getParentFile().getName(); // Category name.
-					SoundFile soundFile = new SoundFile(fileName, filePath.toFile(), parent);
+					SoundFile soundFile = new SoundFile(
+					  fileName, filePath.toFile(), parent);
 					SoundFile _soundFile = soundDao.findOne(fileName);
 					if (_soundFile != null) {
 						// Resolve conflicts between persistence object and new
@@ -219,20 +214,13 @@ public class SoundboardDispatcher {
 					sounds.put(fileName, soundFile);
 				}
 			});
-
 			availableSounds = sounds;
-			try {
-				LOG.info("Instantiating trie with " + availableSounds.size() + " sound file names.");
-				soundNameTrie = new LowercaseTrie(sounds.keySet());
-			} catch (Exception e) {
-				LOG.fatal("Could not instantiate trie.");
-				soundNameTrie = new LowercaseTrie();
-			}
-
-		} catch (IOException e) {
+			LOG.info("Instantiating trie with " + availableSounds.size() +
+			         " sound file names.");
+			soundNameTrie = new LowercaseTrie(sounds.keySet());
+		} catch (Exception e) {
 			LOG.fatal(e.toString());
 		}
-
 	}
 
 	private void getCategoryList(Path path, Category cursor) {
@@ -256,7 +244,7 @@ public class SoundboardDispatcher {
 	}
 
 	public List<SoundboardBot> getBots() {
-		LinkedList<SoundboardBot> bots = new LinkedList<>();
+		List<SoundboardBot> bots = new LinkedList<>();
 		for (int i = 0; i < this.bots.length; ++i) {
 			if (this.bots[i] != null) {
 				bots.add(this.bots[i]);
@@ -265,28 +253,13 @@ public class SoundboardDispatcher {
 		return bots;
 	}
 
-	public void sendMessageToAll(String message) {
-		List<Guild> guilds = new LinkedList<Guild>();
-		for (SoundboardBot bot : getBots()) {
-			for (Guild g : bot.getGuilds())
-				if (!guilds.contains(g))
-					guilds.add(g);
-		}
-		for (Guild guild : guilds) {
-			guild.getPublicChannel().sendMessage(message).queue();
-		}
-	}
-
-	public void sendMessageToAll(String message, Consumer<Integer> callback) {
-		sendMessageToAll(message);
-		callback.accept(bots.length);
-	}
-
-	public List<net.dirtydeeds.discordsoundboard.beans.User> getUserById(String userid) {
+	public List<net.dirtydeeds.discordsoundboard.beans.User> getUserById(
+	  String userid) {
 		return userDao.findByUserid(userid);
 	}
 
-	public List<net.dirtydeeds.discordsoundboard.beans.User> getUsersWithEntrance(String entrance) {
+	public List<net.dirtydeeds.discordsoundboard.beans.User> getUsersWithEntrance(
+	  String entrance) {
 		return userDao.findAllByEntrancefilename(entrance);
 	}
 
@@ -351,7 +324,8 @@ public class SoundboardDispatcher {
 			return true;
 		Category _category = getCategory(category);
 		for (Category child : _category.getChildren()) {
-			if (subcategory.equalsIgnoreCase(child.getName()) || isASubCategory(subcategory, child.getName())) {
+			if (subcategory.equalsIgnoreCase(child.getName())
+			    || isASubCategory(subcategory, child.getName())) {
 				LOG.info("Category " + subcategory + " is subcategory to " + category);
 				return true;
 			}
@@ -359,8 +333,10 @@ public class SoundboardDispatcher {
 		return false;
 	}
 
-	public net.dirtydeeds.discordsoundboard.beans.User registerUser(User user, boolean disallowed, boolean throttled) {
-		net.dirtydeeds.discordsoundboard.beans.User u = new net.dirtydeeds.discordsoundboard.beans.User(
+	public net.dirtydeeds.discordsoundboard.beans.User registerUser(
+	  User user, boolean disallowed, boolean throttled) {
+		net.dirtydeeds.discordsoundboard.beans.User u =
+		  new net.dirtydeeds.discordsoundboard.beans.User(
 		  user.getName(), user.getId());
 		u.setDisallowed(disallowed);
 		u.setThrottled(throttled);
@@ -379,7 +355,9 @@ public class SoundboardDispatcher {
 	public void updateFileList() {
 		categoryTree = new Category("", soundFilePath);
 		numCategories = 0;
+		LOG.info("Getting list of files.");
 		getFileList();
+		LOG.info("Getting list of categories.");
 		getCategoryList(soundFilePath, categoryTree);
 	}
 

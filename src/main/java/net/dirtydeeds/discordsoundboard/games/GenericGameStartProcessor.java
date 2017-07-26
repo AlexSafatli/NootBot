@@ -91,20 +91,20 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		User[] users = new User[channel.getMembers().size()];
 		for (Member m : channel.getMembers()) {
 			if (m.getGame() != null && m.getGame().getName().equals(game) && m.getUser() != null) {
-				LOG.info(m.getUser().getName() + " in this channel is also playing " + game);
+				LOG.info(m.getUser().getName() + " in this channel is playing " + game);
 				users[numPlayers++] = m.getUser();
 			}
 		}
 
 		if (numPlayers >= MIN_NUM_PLAYERS) {
 			LOG.info("Found " + user.getName() + " + " +
-			         numPlayers + " others playing " + game + " in " +
+			         (numPlayers - 1) + " others playing " + game + " in " +
 			         channel.getName() + " of guild " + event.getGuild().getName() +
 			         ".");
 
 			if (pastEvent != null) {
 				if (pastEvent.isTooSoon(channel)) {
-					LOG.info("Not enough time since last event in this channel.");
+					LOG.info("Not enough time since last event in this channel!");
 					return;
 				}
 				pastEvent.clear();
