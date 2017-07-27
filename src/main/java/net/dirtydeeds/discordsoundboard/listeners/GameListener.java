@@ -15,11 +15,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author asafatli.
- *
- * This class handles listening to game events.
- */
 public class GameListener extends AbstractListener {
 
   public static final SimpleLog LOG = SimpleLog.getLog("Game");
@@ -64,14 +59,16 @@ public class GameListener extends AbstractListener {
     Member member = guild.getMemberById(user.getId());
     if (user.isBot()) return; // Ignore bots.
 
+    boolean processed = false;
     String name = user.getName();
     Game previousGame = event.getPreviousGame(), currentGame = member.getGame();
-    logGameChange(name, guild, previousGame, currentGame);
 
     for (GameUpdateProcessor processor : processors) {
       if (processor.isApplicableUpdateEvent(event, user)) {
         processor.process(event);
-        LOG.info("Processed game update event with processor " + processor);
+        if (!processed) logGameChange(name, guild, previousGame, currentGame);
+        processed = true;
+        LOG.info("Processed game update event with " + processor);
         if (processor.isMutuallyExclusive()) {
           LOG.info("That processor cannot be run with others. Stopping.");
           return;
