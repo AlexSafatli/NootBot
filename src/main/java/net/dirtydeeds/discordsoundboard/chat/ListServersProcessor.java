@@ -20,7 +20,7 @@ public class ListServersProcessor extends
     List<String> names = new LinkedList<>();
     if (guilds.size() > 0) {
       for (Guild guild : guilds) {
-        names.append("**" + guild.getName() + "**");
+        names.add("**" + guild.getName() + "**");
       }
       m(event, "I am connected to **" + guilds.size() + " servers**:\n\n" +
         StringUtils.listToString(names));
