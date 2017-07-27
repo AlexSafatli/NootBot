@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 
 import com.google.common.io.Files;
 
+import net.dirtydeeds.discordsoundboard.beans.User;
+import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -22,7 +24,8 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		int numArgs = getArguments().length;
 		if (numArgs != 2) {
-			pm(event, "You need to provide an old and new name. For example: `" + getPrefix() + " holdthedoor, door`.");
+			pm(event, "You need to provide an old and new name. For example: `" +
+			   getPrefix() + " holdthedoor, door`.");
 			return;
 		}
 		String oldName = getArguments()[0], newName = getArguments()[1];
@@ -31,7 +34,8 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 			return;
 		}
 		try {
-			File oldFile = bot.getSoundMap().get(oldName).getSoundFile();
+			SoundFile old = bot.getSoundMap().get(oldName);
+			File oldFile = old.getSoundFile();
 			Path source = Paths.get(oldFile.getPath());
 			LOG.info("Identified path of file: " + source);
 			int extIndex = oldFile.getName().lastIndexOf(".");
@@ -40,13 +44,26 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 			File newFile = source.resolveSibling(newName + ext).toFile();
 			LOG.info("Moving file to: " + newFile.getPath());
 			Files.move(oldFile, newFile);
+			bot.getDispatcher().updateFileList();
+			SoundFile sound = bot.getDispatcher().getSoundFileByName(newName);
+			if (sound != null) {
+				List<User> usersWithEntrance = bot.getDispatcher().getUsersWithEntrance(oldName);
+				for (User user : usersWithEntrance) {
+					user.setEntrance(newName);
+					bot.getDispatcher().saveUser(user);
+				}
+				sound.setNumberOfPlays(old.getNumberOfPlays());
+				sound.setNumberOfReports(old.getNumberOfReports());
+				sound.setExcludedFromRandom(old.isExcludedFromRandom());
+				bot.getDispatcher().saveSound(sound);
+			}
 			pm(event, formatString(Strings.SOUND_RENAME_SUCCESS, oldName, newName));
 		} catch (Exception e) {
-			e.printStackTrace();
 			LOG.fatal("While renaming a file: " + e.toString() + " => " + e.getMessage());
+			e.printStackTrace();
+			bot.getDispatcher().updateFileList();
 			pm(event, formatString(Strings.SOUND_RENAME_FAILURE, oldName, newName));
 		}
-		bot.getDispatcher().updateFileList();
 	}
 
 	@Override
