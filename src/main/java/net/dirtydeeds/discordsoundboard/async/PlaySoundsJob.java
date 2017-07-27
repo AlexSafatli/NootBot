@@ -64,7 +64,8 @@ public class PlaySoundsJob implements SoundboardJob {
 			try {
 				voice = bot.getUsersVoiceChannel(user);
 				if (voice == null) {
-					bot.sendMessageToUser(SoundboardBot.NOT_IN_VOICE_CHANNEL_MESSAGE, user);
+					bot.sendMessageToUser(SoundboardBot.NOT_IN_VOICE_CHANNEL_MESSAGE,
+					                      user);
 					return;
 				}
 				guild = voice.getGuild();
@@ -78,24 +79,29 @@ public class PlaySoundsJob implements SoundboardJob {
 				if (sound == null || sound.equals("*")) {
 					if (category == null) try {
 							sound = bot.getRandomSoundName();
-							if (sound != null) timePlaying += schedule(dispatcher, scheduler, sound);
+							if (sound != null)
+								timePlaying += schedule(dispatcher, scheduler, sound);
 						} catch (Exception e) { e.printStackTrace(); continue; }
 					else try {
 							sound = bot.getRandomSoundNameForCategory(category);
-							if (sound != null) timePlaying += schedule(dispatcher, scheduler, sound);
+							if (sound != null)
+								timePlaying += schedule(dispatcher, scheduler, sound);
 						} catch (Exception e) { e.printStackTrace(); continue; }
 					randomed = true;
 				} else {
 					if (allRandomed) allRandomed = false;
 					try {
-						if (sound != null) timePlaying += schedule(dispatcher, scheduler, sound);
+						if (sound != null)
+							timePlaying += schedule(dispatcher, scheduler, sound);
 					} catch (Exception e) { e.printStackTrace(); continue; }
 				}
 				if (sound != null) {
 					try {
 						if (firstSound == null) firstSound = sound;
 						if (!sound.equals(firstSound)) same = false;
-						mb.append("`" + sound + "` (**" + dispatcher.getSoundFileByName(sound).getNumberOfPlays() + "** plays)");
+						mb.append("`" + sound + "` (**" +
+						          dispatcher.getSoundFileByName(sound).getNumberOfPlays() +
+						          "** plays)");
 						if (i == sounds.length - 2 && sounds.length > 1) mb.append(", and ");
 						else if (i < sounds.length - 1) mb.append(", ");
 					} catch (Exception e) { e.printStackTrace(); continue; }
@@ -111,9 +117,12 @@ public class PlaySoundsJob implements SoundboardJob {
 			if (guild != null) {
 				List<Message> msgs;
 				if (!same || sounds.length == 1) {
-					msgs = makeMessages("Queued sound(s) " + end + " \u2014 " + user.getAsMention(), user, mb, timePlaying);
+					msgs = makeMessages("Queued sound(s) " + end + " \u2014 " +
+					                    user.getAsMention(), user, mb, timePlaying);
 				} else {
-					msgs = makeMessages("Looping `" + firstSound + "` **" + sounds.length + "** times \u2014 " + user.getAsMention(), user, null, timePlaying);
+					msgs = makeMessages("Looping sound `" + firstSound + "` **" +
+					                    sounds.length + "** times \u2014 " +
+					                    user.getAsMention(), user, null, timePlaying);
 				}
 				for (Message msg : msgs) {
 					RestAction<Message> m = guild.getPublicChannel().sendMessage(msg);

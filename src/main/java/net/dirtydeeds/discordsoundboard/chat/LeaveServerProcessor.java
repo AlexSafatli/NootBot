@@ -12,7 +12,7 @@ public class LeaveServerProcessor extends OwnerSingleArgumentChatCommandProcesso
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		if (getArgument() == null) {
-			pm(event, "You need to provide an argument containing the server name.");
+			pm(event, "You need to provide a **server name**.");
 		} else {
 			String serverName = getArgument();
 			Guild toLeave = null;

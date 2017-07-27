@@ -30,28 +30,36 @@ public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor 
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
       LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
-    } else if (numTimesToPlay <= 0 || (numTimesToPlay > MAX_NUMBER_OF_LOOPED_PLAYS && !privileged)) {
-      e(event, "Need to be <= **" + MAX_NUMBER_OF_LOOPED_PLAYS + "** for number of plays."); return;
+    } else if (numTimesToPlay <= 0 || (numTimesToPlay >
+                                       MAX_NUMBER_OF_LOOPED_PLAYS &&
+                                       !privileged)) {
+      e(event, "Need to be less than or equal to **" +
+        MAX_NUMBER_OF_LOOPED_PLAYS +
+        "** for number of plays.");
+      return;
     } else if (StringUtils.containsAny(name, '?')) {
       return; // File names cannot contain question marks.
     } else if (bot.getSoundMap().get(name) == null) {
-      String suggestion = "Check your spelling.", possibleName = bot.getClosestMatchingSoundName(name);
+      String suggestion = "Check your spelling.",
+             possibleName = bot.getClosestMatchingSoundName(name);
       if (possibleName != null) {
         LOG.info("Closest matching sound name is: " + possibleName);
         suggestion = "Did you mean `" + possibleName + "`?";
       }
-      w(event, formatString(Strings.SOUND_NOT_FOUND_SUGGESTION, name, suggestion, user.getAsMention()));
+      w(event, formatString(Strings.SOUND_NOT_FOUND_SUGGESTION, name,
+                            suggestion, user.getAsMention()));
       LOG.info("Sound was not found.");
     } else {
       String[] sounds = new String[numTimesToPlay];
       for (int i = 0; i < numTimesToPlay; ++i) sounds[i] = name;
-      bot.getDispatcher().getAsyncService().runJob(new PlaySoundsJob(sounds, bot, user));
+      bot.getDispatcher().getAsyncService().runJob(
+        new PlaySoundsJob(sounds, bot, user));
     }
   }
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " <soundfile>, X - play a sound by name X number of times where X <= " + MAX_NUMBER_OF_LOOPED_PLAYS;
+    return getPrefix() + " <soundfile>, X - play a sound by name X number of times where X less than or equal to " + MAX_NUMBER_OF_LOOPED_PLAYS;
   }
 
 }

@@ -21,8 +21,8 @@ public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
   private List<String> getTopSounds() {
     int numberOfSoundFiles = 0;
     MessageBuilder sb = new MessageBuilder();
-    sb.append("The **" + NUMBER_OF_TOP_TO_SHOW +
-              " most controversial sound files** (most reports) are, in descending order:\n\n");
+    sb.append("Up to **" + NUMBER_OF_TOP_TO_SHOW +
+              " controversial sound files** (most reports) are, in descending order:\n\n");
     List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByNumberOfReports();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (SoundFile file : soundFiles) {

@@ -13,29 +13,38 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 
 	List<ChatCommandProcessor> processors;
 
-	public HelpProcessor(String prefix, SoundboardBot bot, List<ChatCommandProcessor> processors) {
+	public HelpProcessor(String prefix, SoundboardBot bot,
+	                     List<ChatCommandProcessor> processors) {
 		super(prefix, "Commands", bot);
 		this.processors = processors;
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		if (processors == null || processors.isEmpty()) return;
-		boolean canRunAuthenticated = (event.getAuthor().getName().equalsIgnoreCase(bot.getOwner()));
+
+		boolean canRunAuthenticated =
+		  event.getAuthor().getName().equalsIgnoreCase(bot.getOwner());
 		MessageBuilder mb = new MessageBuilder(true);
+
 		mb.append("Type any of these commands in a channel or in a PM to me:\n\n");
 		for (ChatCommandProcessor processor : processors) {
 			if (processor.canBeRunByAnyone()
 			    || (!processor.canBeRunByAnyone()
 			        && processor.canBeRunBy(event.getAuthor(), event.getGuild()))) {
 				// Print command help for this processor.
-				if (!processor.canBeRunByAnyone()) canRunAuthenticated = true;
+				if (!processor.canBeRunByAnyone() && !canRunAuthenticated)
+					canRunAuthenticated = true;
 				String cmdHelp = processor.getCommandHelpString();
-				if (!cmdHelp.isEmpty()) mb.append(cmdHelp + "\n");
+				if (!cmdHelp.isEmpty())
+					mb.append(cmdHelp + "\n");
 			}
 		}
+
 		if (canRunAuthenticated) {
-			mb.append("\nAn * symbol indicates a command only available to moderators.");
+			mb.append("\nAn * symbol means this is a command only you "
+			          + "(and possibly others) can run.");
 		}
+
 		// Send all buffered data.
 		for (String s : mb) pm(event, s);
 		LOG.info("Responded to help command from " + event.getAuthor().getName());
@@ -43,8 +52,7 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		LOG.warn("This processor was queried for a command help string but has none.");
-		return null;
+		return "";
 	}
 
 }

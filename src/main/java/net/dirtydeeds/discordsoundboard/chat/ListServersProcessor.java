@@ -1,12 +1,15 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import java.util.List;
+import java.util.LinkedList;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class ListServersProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
+public class ListServersProcessor extends
+  AuthenticatedSingleArgumentChatCommandProcessor {
 
   public ListServersProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Servers", bot);
@@ -14,16 +17,15 @@ public class ListServersProcessor extends AuthenticatedSingleArgumentChatCommand
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
     List<Guild> guilds = bot.getGuilds();
+    List<String> names = new LinkedList<>();
     if (guilds.size() > 0) {
-      StringBuilder sb = new StringBuilder();
-      int i = 0;
       for (Guild guild : guilds) {
-        sb.append("**" + guild.getName() + "** ");
-        ++i;
-        if (i != guilds.size()) sb.append(" / ");
+        names.append("**" + guild.getName() + "**");
       }
       m(event, "I am connected to **" + guilds.size() + " servers**:\n\n" +
-        sb.toString());
+        StringUtils.listToString(names));
+    } else {
+      w(event, "I am connected to **no servers**.");
     }
   }
 

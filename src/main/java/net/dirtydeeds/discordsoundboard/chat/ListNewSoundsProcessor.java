@@ -29,7 +29,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 	private Map<String, List<SoundFile>> getCategoryMappings(Collection<SoundFile> newSounds) {
 		Map<String, List<SoundFile>> categoryFiles = new TreeMap<String, List<SoundFile>>();
 		for (SoundFile file : newSounds) {
-			String category = (file.getCategory().equalsIgnoreCase("sounds")) ? "Uncategorized" : file.getCategory();
+			String category = (file.getCategory().equalsIgnoreCase("sounds")) ?
+			                  "Uncategorized" : file.getCategory();
 			if (categoryFiles.get(category) == null) {
 				categoryFiles.put(category, new LinkedList<SoundFile>());
 			}
@@ -57,7 +58,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 				LOG.warn(file + " had no last modified date");
 				continue;
 			}
-			if (!lastModified.after(new Date(System.currentTimeMillis() - numHours * 60 * 60 * 1000)))
+			if (!lastModified.after(new Date(System.currentTimeMillis() -
+			                                 numHours * 60 * 60 * 1000)))
 				continue;
 			newSounds.add(file);
 		}
@@ -86,7 +88,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 				          " " + timeType + ") were:\n\n");
 				Map<String, List<SoundFile>> catMap = getCategoryMappings(newSounds);
 				for (String category : catMap.keySet()) {
-					for (String msg : getMessagesForCategory(category, catMap.get(category))) {
+					for (String msg : getMessagesForCategory(
+					       category, catMap.get(category))) {
 						mb.append(msg);
 					}
 				}

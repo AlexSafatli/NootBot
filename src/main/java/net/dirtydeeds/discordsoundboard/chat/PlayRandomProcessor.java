@@ -16,28 +16,31 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    String category = getArgument(), filePlayed = null, desc = "Played a random sound ";
+    String category = getArgument(), filePlayed = null,
+           desc = "Played a random sound ";
     if (!bot.isAllowedToPlaySound(event.getAuthor())) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
-      LOG.info(event.getAuthor() + " tried to play a sound file but is not allowed.");
+      LOG.info(event.getAuthor() +
+               " tried to play a sound file but is not allowed.");
       return;
     }
     try {
       if (category != null) {
         if (bot.isASoundCategory(category)) {
-          desc += "from category **" + bot.getSoundCategory(category).getName() + "** ";
+          desc += "from category **" +
+                  bot.getSoundCategory(category).getName() + "** ";
           filePlayed = bot.playRandomFileForCategory(event.getAuthor(), category);
-        } else if (category.equals("loop")) {
-          w(event, "`.randomloop` no longer exists as a command. It has been replaced with `.shuffle`.");
         } else {
           w(event, formatString(Strings.NOT_FOUND, category));
         }
       } else {
         filePlayed = bot.playRandomFile(event.getAuthor());
       }
-      if (filePlayed != null && bot.getUsersVoiceChannel(event.getAuthor()) != null) {
+      if (filePlayed != null &&
+          bot.getUsersVoiceChannel(event.getAuthor()) != null) {
         SoundFile file = bot.getDispatcher().getSoundFileByName(filePlayed);
-        LOG.info("Played \"" + filePlayed + "\" in server " + event.getGuild().getName());
+        LOG.info("Played \"" + filePlayed + "\" in server " +
+                 event.getGuild().getName());
         StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file,
                                 "You've Played a Random Sound",
                                 desc + " \u2014 " +
