@@ -6,7 +6,8 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
+public class SetEntranceForUserProcessor extends
+	AuthenticatedMultiArgumentChatCommandProcessor {
 
 	public SetEntranceForUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Entrance for User", bot);
@@ -14,14 +15,15 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		String[] args = getArguments();
-		if (args.length != 2) {
-			pm(event, "Need two arguments: a **username** and **sound name**"); return;
+		if (args.length < 2) {
+			pm(event, "Need a **username** and **sound name**.");
+			return;
 		}
-		String username = args[0];
-		String fileName = args[1];
+		String username = args[0], fileName = args[1];
 		if (fileName.isEmpty()) fileName = null; // Too lazy to change logic.
 		User user = null;
 		if (username != null) user = bot.getUserByName(username);
+
 		if (fileName != null && user != null) {
 			if (bot.getSoundMap().get(fileName) != null) {
 				bot.setEntranceForUser(user, fileName, event.getAuthor());
@@ -41,8 +43,7 @@ public class SetEntranceForUserProcessor extends AuthenticatedMultiArgumentChatC
 
 	@Override
 	public String getCommandHelpString() {
-		return getPrefix() + " <username>, <soundfile> (*) - set a sound file for a user "
-		       + "as their entrance sound when they join a channel";
+		return getPrefix() + " <username>, <soundfile> (*) - set a sound file" +
+		       " for a user as their entrance sound when they join a channel";
 	}
-
 }

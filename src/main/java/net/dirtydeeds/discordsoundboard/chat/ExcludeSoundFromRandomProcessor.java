@@ -8,7 +8,8 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
+public class ExcludeSoundFromRandomProcessor extends
+	AuthenticatedSingleArgumentChatCommandProcessor {
 
 	public ExcludeSoundFromRandomProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Exclude Sound From Being Randomed", bot);
@@ -31,10 +32,12 @@ public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			if (file.isExcludedFromRandom()) {
-				pm(event, "That sound was *already excluded*! Use the pair to this command to include it again.");
+				pm(event, "That sound was *already excluded*! Use the pair to this " +
+				   "command to include it again.");
 			} else {
 				file.setExcludedFromRandom(true);
-				pm(event, "Sound `" + name + "` has been excluded from being played through random events.");
+				pm(event, "Sound `" + name + "` has been excluded from being played " +
+				   "through random events.");
 			}
 			bot.getDispatcher().saveSound(file);
 		}
@@ -42,7 +45,7 @@ public class ExcludeSoundFromRandomProcessor extends AuthenticatedSingleArgument
 
 	@Override
 	public String getCommandHelpString() {
-		return getPrefix() + " <soundfile> (*) - exclude a sound file from random events";
+		return getPrefix() +
+		       " <soundfile> (*) - exclude a sound file from random events";
 	}
-
 }

@@ -9,9 +9,11 @@ public class ReportBugProcessor extends SingleArgumentChatCommandProcessor {
     super(prefix, "Ah!", bot);
   }
 
-  protected void handleEvent(MessageReceivedEvent event, String message) {
+  protected void handleEvent(MessageReceivedEvent event,
+                             String message) {
     pm(event, "Got it!");
-    String guild = (event.getGuild() != null) ? event.getGuild().getName() : "via PM";
+    String guild = (event.getGuild() != null) ?
+                   event.getGuild().getName() : "via PM";
     bot.sendMessageToUser("`" + event.getMessage().getContent().trim() + "`\n" +
                           event.getAuthor().getName() + " \u2014 " +
                           guild, bot.getOwner());
@@ -21,5 +23,4 @@ public class ReportBugProcessor extends SingleArgumentChatCommandProcessor {
   public String getCommandHelpString() {
     return getPrefix() + " - report a bug";
   }
-
 }

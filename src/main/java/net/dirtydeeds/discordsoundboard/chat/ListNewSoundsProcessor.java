@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("ListNewSoundsProcessor");
+	public static final SimpleLog LOG = SimpleLog.getLog("ListNewSounds");
 
 	private static final int MIN_NUMBER_OF_HOURS = 168; // 7 days
 	private static final int MAX_NUMBER_OF_HOURS = 504; // 3 weeks
@@ -26,8 +26,10 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 		super(prefix, "Newest Sounds", soundPlayer);
 	}
 
-	private Map<String, List<SoundFile>> getCategoryMappings(Collection<SoundFile> newSounds) {
-		Map<String, List<SoundFile>> categoryFiles = new TreeMap<String, List<SoundFile>>();
+	private Map<String, List<SoundFile>> getCategoryMappings(
+	  Collection<SoundFile> newSounds) {
+		Map<String, List<SoundFile>> categoryFiles =
+		  new TreeMap<String, List<SoundFile>>();
 		for (SoundFile file : newSounds) {
 			String category = (file.getCategory().equalsIgnoreCase("sounds")) ?
 			                  "Uncategorized" : file.getCategory();
@@ -39,7 +41,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 		return categoryFiles;
 	}
 
-	private List<String> getMessagesForCategory(String category, Collection<SoundFile> soundFiles) {
+	private List<String> getMessagesForCategory(String category,
+	    Collection<SoundFile> soundFiles) {
 		MessageBuilder b = new MessageBuilder();
 		b.append("**" + category + "** (" + soundFiles.size() + ") \u2014 ");
 		for (SoundFile file : soundFiles) {
@@ -50,7 +53,8 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 		return b.getStrings();
 	}
 
-	private Collection<SoundFile> getNewSounds(Collection<SoundFile> soundFiles, int numHours) {
+	private Collection<SoundFile> getNewSounds(Collection<SoundFile> soundFiles,
+	    int numHours) {
 		List<SoundFile> newSounds = new LinkedList<>();
 		for (SoundFile file : soundFiles) {
 			Date lastModified = file.getLastModified();
@@ -116,5 +120,4 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 		return getPrefix() + " - list the newest sound files at least " +
 		       MIN_NUMBER_OF_HOURS / DAYS + " days old";
 	}
-
 }

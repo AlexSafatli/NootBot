@@ -197,5 +197,4 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		return "Upload (an) .mp3 OR .wav file(s) to add sounds. Use the Comment " +
 		       "field to specify category.";
 	}
-
 }

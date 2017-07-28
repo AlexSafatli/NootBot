@@ -9,7 +9,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 	SingleArgumentChatCommandProcessor {
 
-	public AuthenticatedSingleArgumentChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
+	public AuthenticatedSingleArgumentChatCommandProcessor(String prefix,
+	    String title, SoundboardBot bot) {
 		super(prefix, title, bot);
 	}
 
@@ -23,12 +24,13 @@ public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 				                                   event.getAuthor().getName(),
 				                                   event.getMessage().getContent()),
 				                      bot.getOwner());
-				return false;
 			}
-		} else return false;
+		}
+		return false;
 	}
 
-	protected abstract void handleEvent(MessageReceivedEvent event, String message);
+	protected abstract void handleEvent(MessageReceivedEvent event,
+	                                    String message);
 
 	@Override
 	public boolean canBeRunByAnyone() {
@@ -44,5 +46,4 @@ public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 	public String getCommandHelpString() {
 		return super.getCommandHelpString() + " (*)";
 	}
-
 }

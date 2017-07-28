@@ -14,7 +14,8 @@ public class RestartBotProcessor extends AuthenticatedSingleArgumentChatCommandP
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		deleteOriginalMessage(event);
-		pm(event, "Restarting. *This is a soft restart. Hard restart if this breaks things!*");
+		pm(event, "Restarting. *This is a soft restart. Hard restart if this " +
+		   "breaks things!*");
 		bot.getDispatcher().restartBot(bot);
 		bot.getDispatcher().updateFileList();
 	}
@@ -23,5 +24,4 @@ public class RestartBotProcessor extends AuthenticatedSingleArgumentChatCommandP
 	public String getCommandHelpString() {
 		return getPrefix() + " (*) - restart this bot";
 	}
-
 }

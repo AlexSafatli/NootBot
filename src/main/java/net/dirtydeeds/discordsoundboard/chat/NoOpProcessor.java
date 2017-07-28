@@ -12,5 +12,4 @@ public class NoOpProcessor extends SingleArgumentChatCommandProcessor {
   protected void handleEvent(MessageReceivedEvent event, String message) {
     ;
   }
-
 }

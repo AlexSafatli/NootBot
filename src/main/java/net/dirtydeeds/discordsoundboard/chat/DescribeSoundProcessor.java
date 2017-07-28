@@ -10,7 +10,8 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
+public class DescribeSoundProcessor extends
+	SingleArgumentChatCommandProcessor {
 
 	public DescribeSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Sound Info", bot);
@@ -38,6 +39,10 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 			                          "You requested information for a sound " +
 			                          user.getAsMention());
 			embedForUser(event, em);
+			if (bot.getOwner().equals(user.getName())) {
+				pm(event, "Sound `" + name + "` is" + (file.isExcludedFromRandom()) ?
+				   "" : " not" + " excluded from random.");
+			}
 		}
 	}
 
@@ -45,5 +50,4 @@ public class DescribeSoundProcessor extends SingleArgumentChatCommandProcessor {
 	public String getCommandHelpString() {
 		return getPrefix() + " <soundfile> - get information for a sound file";
 	}
-
 }

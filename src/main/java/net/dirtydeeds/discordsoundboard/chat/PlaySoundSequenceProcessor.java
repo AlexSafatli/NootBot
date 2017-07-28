@@ -7,7 +7,8 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class PlaySoundSequenceProcessor extends MultiArgumentChatCommandProcessor {
+public class PlaySoundSequenceProcessor extends
+  MultiArgumentChatCommandProcessor {
 
   public static final int MAX_NUMBER_OF_PLAYS = 24;
 
@@ -21,15 +22,18 @@ public class PlaySoundSequenceProcessor extends MultiArgumentChatCommandProcesso
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
     } else if (sounds.length <= 0 || sounds.length > MAX_NUMBER_OF_PLAYS) {
-      pm(event, "Need to be <= **" + MAX_NUMBER_OF_PLAYS + "** for number of sounds to play."); return;
+      pm(event, "Need to be less than or equal to **" + MAX_NUMBER_OF_PLAYS +
+         "** for number of sounds to play.");
+      return;
     } else {
-      bot.getDispatcher().getAsyncService().runJob(new PlaySoundsJob(sounds, bot, user));
+      bot.getDispatcher().getAsyncService().runJob(new PlaySoundsJob(sounds,
+          bot, user));
     }
   }
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " soundfile, [soundfile2], ..., [soundfileX] - play a sequence of sound files where X <= " + MAX_NUMBER_OF_PLAYS;
+    return getPrefix() + " soundfile, [soundfile2], ..., [soundfileX] - play " +
+           "a sequence of sound files where X <= " + MAX_NUMBER_OF_PLAYS;
   }
-
 }

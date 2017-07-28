@@ -13,14 +13,16 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
-public abstract class AbstractChatCommandProcessor implements ChatCommandProcessor {
+public abstract class AbstractChatCommandProcessor implements
+	ChatCommandProcessor {
 
 	private final String prefix;
 	private final String title;
 	protected List<Message> buffer;
 	protected SoundboardBot bot;
 
-	public AbstractChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
+	public AbstractChatCommandProcessor(String prefix, String title,
+	                                    SoundboardBot bot) {
 		this.prefix = prefix;
 		this.title = title;
 		this.bot = bot;
@@ -44,7 +46,8 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		if (!event.isFromType(ChannelType.PRIVATE)) delete(event.getMessage());
 	}
 
-	protected abstract void handleEvent(MessageReceivedEvent event, String message);
+	protected abstract void handleEvent(MessageReceivedEvent event,
+	                                    String message);
 
 	private boolean isApplicableCommand(String cmd) {
 		return (cmd.toLowerCase().startsWith(prefix) && cmd.length() > 1);
@@ -82,7 +85,8 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 		buffer.clear();
 	}
 
-	protected StyledEmbedMessage buildStyledEmbedMessage(MessageReceivedEvent event) {
+	protected StyledEmbedMessage buildStyledEmbedMessage(MessageReceivedEvent
+	    event) {
 		return StyledEmbedMessage.forUser(bot, event.getAuthor(), getTitle(), "");
 	}
 
@@ -99,20 +103,24 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 				return;
 			}
 		}
-		event.getAuthor().getPrivateChannel().sendMessage(message.getMessage()).queue();
+		event.getAuthor().getPrivateChannel().sendMessage(
+		  message.getMessage()).queue();
 	}
 
 	private StyledEmbedMessage makeEmbed(String message, User user) {
 		return StyledEmbedMessage.forUser(bot, user, getTitle(), message);
 	}
 
-	private void sendEmbed(MessageReceivedEvent event, String message, boolean error, boolean warning) {
+	private void sendEmbed(MessageReceivedEvent event, String message,
+	                       boolean error, boolean warning) {
 		if (event.isFromType(ChannelType.PRIVATE)
-		    || !bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
+		    || !bot.hasPermissionInChannel(event.getTextChannel(),
+		                                   Permission.MESSAGE_WRITE)) {
 			pm(event, message);
 		} else {
 			event.getChannel().sendMessage(
-			  makeEmbed(message, event.getAuthor()).isWarning(warning).isError(error).getMessage()
+			  makeEmbed(message, event.getAuthor()).isWarning(
+			    warning).isError(error).getMessage()
 			).queue((Message msg)-> {
 				buffer.add(msg);
 			});
@@ -129,16 +137,20 @@ public abstract class AbstractChatCommandProcessor implements ChatCommandProcess
 
 	protected void e(MessageReceivedEvent event, String message) {
 		StyledEmbedMessage msg = makeEmbed(message, event.getAuthor());
-		msg.addContent("Message", "`" + event.getMessage().getContent() + "`", false);
-		msg.addContent("Processor", "`" + getClass().getSimpleName() + "`", true);
+		msg.addContent("Message", "`" +
+		               event.getMessage().getContent() + "`", false);
+		msg.addContent("Processor", "`" +
+		               getClass().getSimpleName() + "`", true);
 		embed(event, msg.isError(true));
 	}
 
 	protected void embed(MessageReceivedEvent event, StyledEmbedMessage em) {
-		event.getChannel().sendMessage(em.getMessage()).queue((Message msg)-> buffer.add(msg));
+		event.getChannel().sendMessage(em.getMessage()).queue(
+		  (Message msg)-> buffer.add(msg));
 	}
 
-	protected void embedForUser(MessageReceivedEvent event, StyledEmbedMessage em) {
+	protected void embedForUser(MessageReceivedEvent event,
+	                            StyledEmbedMessage em) {
 		em.addFooterText(StyledEmbedMessage.FOR_USER_FOOTER_PREFIX +
 		                 event.getAuthor().getName());
 		em.setFooterIcon(event.getAuthor().getEffectiveAvatarUrl());

@@ -20,17 +20,17 @@ public class AudioTrackScheduler extends AudioEventAdapter {
 	private Queue<AudioTrack> tracks;
 	private AudioPlayerManager audioManager;
 	private AudioPlayer audioPlayer;
-	
+
 	public AudioTrackScheduler(AudioPlayerManager manager, AudioPlayer player) {
 		this.tracks = new LinkedList<>();
 		this.audioManager = manager;
 		this.audioPlayer = player;
 	}
-	
+
 	public Future<Void> load(String identifier, AudioLoadResultHandler handler) {
 		return audioManager.loadItem(identifier, handler);
 	}
-	
+
 	public void queue(AudioTrack track) {
 		if (!audioPlayer.startTrack(track, true)) {
 			tracks.add(track); // Queue it if not started.
@@ -39,7 +39,7 @@ public class AudioTrackScheduler extends AudioEventAdapter {
 
 	public void clear() {
 		tracks.clear();
-	}	
+	}
 
 	public List<String> getIdentifiers() {
 		List<String> identifiers = new LinkedList<>();
@@ -48,7 +48,7 @@ public class AudioTrackScheduler extends AudioEventAdapter {
 		}
 		return identifiers;
 	}
-	
+
 	@Override
 	public void onPlayerPause(AudioPlayer player) {
 		super.onPlayerPause(player);
@@ -68,16 +68,16 @@ public class AudioTrackScheduler extends AudioEventAdapter {
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		// TODO have + to numberOfPlays for a sound done here
 		super.onTrackEnd(player, track, endReason);
-	    if (endReason.mayStartNext && !tracks.isEmpty()) {
-	        player.playTrack(tracks.poll());
-	    }
+		if (endReason.mayStartNext && !tracks.isEmpty()) {
+			player.playTrack(tracks.poll());
+		}
 
-	      // endReason == FINISHED: A track finished or died by an exception (mayStartNext = true).
-	      // endReason == LOAD_FAILED: Loading of a track failed (mayStartNext = true).
-	      // endReason == STOPPED: The player was stopped.
-	      // endReason == REPLACED: Another track started playing while this had not finished
-	      // endReason == CLEANUP: Player hasn't been queried for a while, if you want you can put a
-	      //                       clone of this back to your queue
+		// endReason == FINISHED: A track finished or died by an exception (mayStartNext = true).
+		// endReason == LOAD_FAILED: Loading of a track failed (mayStartNext = true).
+		// endReason == STOPPED: The player was stopped.
+		// endReason == REPLACED: Another track started playing while this had not finished
+		// endReason == CLEANUP: Player hasn't been queried for a while, if you want you can put a
+		//                       clone of this back to your queue
 	}
 
 	@Override
@@ -94,5 +94,4 @@ public class AudioTrackScheduler extends AudioEventAdapter {
 	public void onEvent(AudioEvent event) {
 		super.onEvent(event);
 	}
-	
 }

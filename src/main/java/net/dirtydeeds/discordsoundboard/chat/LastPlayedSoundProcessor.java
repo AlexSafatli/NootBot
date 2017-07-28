@@ -10,8 +10,9 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class LastPlayedSoundProcessor extends SingleArgumentChatCommandProcessor {
-  
+public class LastPlayedSoundProcessor extends
+  SingleArgumentChatCommandProcessor {
+
   public LastPlayedSoundProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Last Played Sound", bot);
   }
@@ -23,9 +24,12 @@ public class LastPlayedSoundProcessor extends SingleArgumentChatCommandProcessor
     if (file == null) {
       w(event, "No last played sound found " + user.getAsMention());
     } else {
-      StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file, getTitle(), 
-          "This was the last played sound \u2014 " + user.getAsMention());
-      if (player != null) em.addContent("Sound Was Played By", player, false);
+      StyledEmbedMessage em =
+        StyledEmbedMessage.forSoundFile(
+          bot, file, getTitle(), "This was the last played sound \u2014 " +
+          user.getAsMention());
+      em.addContent("Sound Was Played By", (player != null) ? player : "\u2014",
+                    false);
       embedForUser(event, em);
     }
   }
@@ -34,5 +38,4 @@ public class LastPlayedSoundProcessor extends SingleArgumentChatCommandProcessor
   public String getCommandHelpString() {
     return getPrefix() + " - get information for the last played sound";
   }
-  
 }

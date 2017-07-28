@@ -48,5 +48,4 @@ public class Setting {
   public String toString() {
     return "`" + id + "`";
   }
-
 }

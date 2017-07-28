@@ -15,11 +15,13 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 	private final String patternname;
 	protected SoundboardBot bot;
 
-	public FilterChatProcessor(Pattern regexp, String channelname, SoundboardBot bot) {
+	public FilterChatProcessor(Pattern regexp, String channelname,
+	                           SoundboardBot bot) {
 		this(regexp, channelname, "a certain pattern", bot);
 	}
 
-	public FilterChatProcessor(Pattern regexp, String channelname, String patternname, SoundboardBot bot) {
+	public FilterChatProcessor(Pattern regexp, String channelname,
+	                           String patternname, SoundboardBot bot) {
 		this.regexp = regexp;
 		this.channelname = channelname;
 		this.patternname = patternname;
@@ -37,7 +39,8 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 	}
 
 	protected void copyMessage(MessageReceivedEvent event, String message) {
-		List<TextChannel> textChannels = event.getGuild().getTextChannelsByName(channelname, true);
+		List<TextChannel> textChannels =
+		  event.getGuild().getTextChannelsByName(channelname, true);
 		String modified = String.format("%s\n\u2014\nOriginally posted by %s.\n*This was filtered to this channel because it contained %s.*", message, event.getAuthor().getAsMention(), patternname);
 		for (TextChannel channel : textChannels) {
 			channel.sendMessage(modified).queue();
@@ -50,7 +53,8 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 
 	public boolean isApplicableCommand(MessageReceivedEvent event) {
 		if (event.getGuild() == null) return false;
-		List<TextChannel> textChannels = event.getGuild().getTextChannelsByName(channelname, true);
+		List<TextChannel> textChannels = event.getGuild().getTextChannelsByName(
+		                                   channelname, true);
 		Matcher m = regexp.matcher(event.getMessage().getContent());
 		return !textChannels.isEmpty()
 		       && !event.isFromType(ChannelType.PRIVATE)
@@ -67,7 +71,8 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 	}
 
 	private void delete(Message m) {
-		if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
+		if (bot.hasPermissionInChannel(m.getTextChannel(),
+		                               Permission.MESSAGE_MANAGE))
 			m.deleteMessage().queue();
 	}
 
@@ -78,5 +83,4 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 	public String getCommandHelpString() {
 		return "";
 	}
-
 }

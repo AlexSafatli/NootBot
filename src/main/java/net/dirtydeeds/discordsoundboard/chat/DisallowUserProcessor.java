@@ -4,7 +4,8 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class DisallowUserProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
+public class DisallowUserProcessor extends
+	AuthenticatedSingleArgumentChatCommandProcessor {
 
 	public DisallowUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "I Smite Thee", bot);
@@ -27,7 +28,7 @@ public class DisallowUserProcessor extends AuthenticatedSingleArgumentChatComman
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - disallow user from playing sounds";
+		return super.getCommandHelpString() +
+		       " - disallow user from playing sounds";
 	}
-
 }

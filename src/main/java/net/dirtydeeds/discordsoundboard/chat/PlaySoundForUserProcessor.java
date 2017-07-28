@@ -6,9 +6,10 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class PlaySoundForUserProcessor extends MultiArgumentChatCommandProcessor {
+public class PlaySoundForUserProcessor extends
+  MultiArgumentChatCommandProcessor {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("SoundForUserProcessor");
+  public static final SimpleLog LOG = SimpleLog.getLog("SoundForUser");
 
   public PlaySoundForUserProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Sound for User", bot);

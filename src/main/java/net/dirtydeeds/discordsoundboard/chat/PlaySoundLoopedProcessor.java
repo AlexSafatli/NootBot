@@ -8,9 +8,10 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor {
+public class PlaySoundLoopedProcessor extends
+  MultiArgumentChatCommandProcessor {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("SoundLoopProcessor");
+  public static final SimpleLog LOG = SimpleLog.getLog("SoundLoop");
   public static final int MAX_NUMBER_OF_LOOPED_PLAYS = 12;
 
   public PlaySoundLoopedProcessor(String prefix, SoundboardBot bot) {
@@ -20,7 +21,8 @@ public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor 
   protected void handleEvent(MessageReceivedEvent event, String message) {
     User user = event.getAuthor();
     if (getArguments().length != 2) {
-      e(event, "Need **sound name** and **number of times** to play that sound.");
+      e(event,
+        "Need **sound name** and **number of times** to play that sound.");
       return;
     }
     boolean privileged = bot.getUser(user).isPrivileged();
@@ -29,7 +31,8 @@ public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor 
     LOG.info(String.format("%s wants to play \"%s\".", user.getName(), name));
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
-      LOG.info(String.format("%s isn't allowed to play sounds.", user.getName()));
+      LOG.info(String.format("%s isn't allowed to play sounds.",
+                             user.getName()));
     } else if (numTimesToPlay <= 0 || (numTimesToPlay >
                                        MAX_NUMBER_OF_LOOPED_PLAYS &&
                                        !privileged)) {
@@ -59,7 +62,7 @@ public class PlaySoundLoopedProcessor extends MultiArgumentChatCommandProcessor 
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " <soundfile>, X - play a sound by name X number of times where X less than or equal to " + MAX_NUMBER_OF_LOOPED_PLAYS;
+    return getPrefix() + " <soundfile>, X - play a sound by name X number of " +
+           "times where X less than or equal to " + MAX_NUMBER_OF_LOOPED_PLAYS;
   }
-
 }

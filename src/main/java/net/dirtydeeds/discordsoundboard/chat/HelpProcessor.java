@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class HelpProcessor extends AbstractChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("HelpProcessor");
+	public static final SimpleLog LOG = SimpleLog.getLog("Help");
 
 	List<ChatCommandProcessor> processors;
 
@@ -54,5 +54,4 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 	public String getCommandHelpString() {
 		return "";
 	}
-
 }

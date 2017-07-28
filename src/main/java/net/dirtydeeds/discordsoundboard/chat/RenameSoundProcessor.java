@@ -14,9 +14,10 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandProcessor {
+public class RenameSoundProcessor extends
+	AuthenticatedMultiArgumentChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("RenameSoundProcessor");
+	public static final SimpleLog LOG = SimpleLog.getLog("RenameSound");
 
 	public RenameSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Rename Sound", bot);
@@ -34,13 +35,15 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 			pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			return;
 		}
+		deleteOriginalMessage(event);
 		try {
 			SoundFile old = bot.getSoundMap().get(oldName);
 			File oldFile = old.getSoundFile();
 			Path source = Paths.get(oldFile.getPath());
 			LOG.info("Identified path of file: " + source);
 			int extIndex = oldFile.getName().lastIndexOf(".");
-			String ext = (extIndex != -1) ? oldFile.getName().substring(extIndex) : "";
+			String ext = (extIndex != -1) ?
+			             oldFile.getName().substring(extIndex) : "";
 			LOG.info("Identified extension of file: " + ext);
 			File newFile = source.resolveSibling(newName + ext).toFile();
 			LOG.info("Moving file to: " + newFile.getPath());
@@ -48,7 +51,8 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 			bot.getDispatcher().updateFileList();
 			SoundFile sound = bot.getDispatcher().getSoundFileByName(newName);
 			if (sound != null) {
-				List<User> usersWithEntrance = bot.getDispatcher().getUsersWithEntrance(oldName);
+				List<User> usersWithEntrance =
+				  bot.getDispatcher().getUsersWithEntrance(oldName);
 				for (User user : usersWithEntrance) {
 					user.setEntrance(newName);
 					bot.getDispatcher().saveUser(user);
@@ -58,9 +62,15 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 				sound.setExcludedFromRandom(old.isExcludedFromRandom());
 				bot.getDispatcher().saveSound(sound);
 			}
-			pm(event, formatString(Strings.SOUND_RENAME_SUCCESS, oldName, newName));
+			if (old.getNumberOfPlays() > 0) {
+				m(event, "Sound `" + oldName + "` has been renamed to `" + newName +
+				  "`.");
+			} else {
+				pm(event, formatString(Strings.SOUND_RENAME_SUCCESS, oldName, newName));
+			}
 		} catch (Exception e) {
-			LOG.fatal("While renaming a file: " + e.toString() + " => " + e.getMessage());
+			LOG.fatal("While renaming a file: " + e.toString() + " => " +
+			          e.getMessage());
 			e.printStackTrace();
 			bot.getDispatcher().updateFileList();
 			pm(event, formatString(Strings.SOUND_RENAME_FAILURE, oldName, newName));
@@ -71,5 +81,4 @@ public class RenameSoundProcessor extends AuthenticatedMultiArgumentChatCommandP
 	public String getCommandHelpString() {
 		return getPrefix() + " <soundfile>, <newname> - rename a sound";
 	}
-
 }

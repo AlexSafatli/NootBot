@@ -5,15 +5,15 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 
 public abstract class OwnerMultiArgumentChatCommandProcessor extends
-	AuthenticatedMultiArgumentChatCommandProcessor {
+  AuthenticatedMultiArgumentChatCommandProcessor {
 
-	public OwnerMultiArgumentChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
-		super(prefix, title, bot);
-	}
+  public OwnerMultiArgumentChatCommandProcessor(String prefix, String title,
+      SoundboardBot bot) {
+    super(prefix, title, bot);
+  }
 
-	@Override
-	public boolean canBeRunBy(User user, Guild guild) {
-		return bot.getOwner().equals(user.getName());
-	}
-
+  @Override
+  public boolean canBeRunBy(User user, Guild guild) {
+    return bot.getOwner().equals(user.getName());
+  }
 }

@@ -30,5 +30,4 @@ public abstract class AbstractAsyncJob implements SoundboardJob {
 	}
 
 	public abstract void handle(SoundboardDispatcher dispatcher);
-
 }

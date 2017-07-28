@@ -91,5 +91,4 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 	public String getCommandHelpString() {
 		return getPrefix() + " - print some stats related to the bot";
 	}
-
 }

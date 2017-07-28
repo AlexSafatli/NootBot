@@ -8,11 +8,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 public class AudioScheduler implements AudioLoadResultHandler {
 
 	private AudioTrackScheduler scheduler;
-	
+
 	public AudioScheduler(AudioTrackScheduler scheduler) {
 		this.scheduler = scheduler;
 	}
-	
+
 	@Override
 	public void trackLoaded(AudioTrack track) {
 		scheduler.queue(track);
@@ -30,5 +30,4 @@ public class AudioScheduler implements AudioLoadResultHandler {
 	public void loadFailed(FriendlyException exception) {
 		exception.printStackTrace();
 	}
-
 }

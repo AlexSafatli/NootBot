@@ -17,7 +17,8 @@ public class DeleteMessageJob implements SoundboardJob {
 
   public DeleteMessageJob(Message message, int numSecondsLater) {
     this.message = message;
-    this.timestamp = new Date(System.currentTimeMillis() + numSecondsLater * 1000);
+    this.timestamp = new Date(System.currentTimeMillis() +
+                              numSecondsLater * 1000);
   }
 
   public boolean isApplicable(SoundboardDispatcher dispatcher) {
@@ -31,5 +32,4 @@ public class DeleteMessageJob implements SoundboardJob {
   public void run(SoundboardDispatcher dispatcher) {
     message.deleteMessage().queue();
   }
-
 }

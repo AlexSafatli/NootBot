@@ -10,10 +10,9 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-// Naive search function.
 public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("SearchProcessor");
+	public static final SimpleLog LOG = SimpleLog.getLog("Search");
 
 	public SearchProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Search Sounds", bot);
@@ -23,32 +22,42 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 		User user = event.getAuthor();
 		String query = getArgument();
 		List<String> possibilities = new LinkedList<>();
-		LOG.info(String.format("%s wants to search for \"%s\" in %s.", user.getName(), query, event.getGuild()));
+
 		if (StringUtils.containsAny(query, '?')) {
-			w(event, "No sound file contains question marks `?`. *Baka*."); return;
+			w(event, "No sound file contains question marks `?`. *Baka*.");
+			return;
+		} else if (query.length() <= 1) {
+			w(event, "That search keyword is too short. *Baka*.");
+			return;
 		}
+
 		// Leverage trie first.
 		String possibleName = bot.getClosestMatchingSoundName(query);
 		if (possibleName != null) {
-			LOG.info("A close matching sound name is: " + possibleName);
+			LOG.info("A close matching sound name from trie is: " + possibleName);
 			possibilities.add(possibleName);
 		}
+
 		// Naive iteration through all sound names.
 		for (String name : bot.getSoundMap().keySet()) {
-			if (name.contains(query) && !name.equals(possibleName)) possibilities.add(name);
+			if (name.contains(query) && !name.equals(possibleName))
+				possibilities.add(name);
 		}
+
+		// Display results.
 		MessageBuilder mb = new MessageBuilder();
 		mb.append("Found **" + possibilities.size() +
-		          "** possible sound files for query `" + query + "` " +
-		          user.getAsMention() + ":\n\n");
-		LOG.info("Query produced " + possibilities.size() + " possibilities.");
+		          "** possible sounds for query `" + query + "` \u2014 " +
+		          user.getAsMention() + ".\n\n");
+		LOG.info("Found " + possibilities.size() + " possible sounds for query.");
 		if (!possibilities.isEmpty()) {
 			for (String possibility : possibilities)
 				mb.append("`?" + possibility + "` ");
 			for (String m : mb)
 				m(event, m);
 		} else {
-			w(event, "No results found for query `" + query + "` " + user.getAsMention() + ".");
+			w(event, "No results found for query `" + query + "` \u2014 " +
+			  user.getAsMention() + ".");
 		}
 	}
 
@@ -56,5 +65,4 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 	public String getCommandHelpString() {
 		return getPrefix() + " <keyword> - search for sounds by keyword";
 	}
-
 }

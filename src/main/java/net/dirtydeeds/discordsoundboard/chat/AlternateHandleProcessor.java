@@ -6,7 +6,8 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class AlternateHandleProcessor extends SingleArgumentChatCommandProcessor {
+public class AlternateHandleProcessor extends
+	SingleArgumentChatCommandProcessor {
 
 	public AlternateHandleProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Alternate Handles", bot);
@@ -29,7 +30,7 @@ public class AlternateHandleProcessor extends SingleArgumentChatCommandProcessor
 
 	@Override
 	public String getCommandHelpString() {
-		return getPrefix() + " <handle> - let the bot know about another handle you go by on the internet; used for some *optional* functionality";
+		return getPrefix() + " <handle> - let the bot know about another handle " +
+		       "you go by on the internet; used for some *optional* functionality";
 	}
-
 }

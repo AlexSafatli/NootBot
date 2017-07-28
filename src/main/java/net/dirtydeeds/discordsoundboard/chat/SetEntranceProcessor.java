@@ -24,9 +24,11 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			}
 			SoundFile file = bot.getSoundMap().get(fileName);
-			boolean authenticated = bot.isAuthenticated(event.getAuthor(), event.getGuild());
+			boolean authenticated = bot.isAuthenticated(event.getAuthor(),
+			                        event.getGuild());
 			if (!authenticated && file.getDuration() > MAX_DURATION_IN_SECONDS) {
-				pm(event, "The file `" + fileName + "` is far too **long**! *Pick something shorter*.");
+				pm(event, "The file `" + fileName +
+				   "` is far too **long**! *Pick something shorter*.");
 				return;
 			}
 			bot.setEntranceForUser(event.getAuthor(), fileName, null);
@@ -40,7 +42,7 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		return getPrefix() + " <soundfile> - set a sound as your entrance for when you join a channel";
+		return getPrefix() + " <soundfile> - set a sound as your entrance for " +
+		       "when you join a channel";
 	}
-
 }

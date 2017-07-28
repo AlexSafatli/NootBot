@@ -14,7 +14,8 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
-public abstract class AbstractAttachmentProcessor implements ChatCommandProcessor {
+public abstract class AbstractAttachmentProcessor implements
+  ChatCommandProcessor {
 
   private final String title;
   protected SoundboardBot bot;
@@ -61,7 +62,8 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
     // Delete original message if needed.
     if (succeeded &&
         !event.isFromType(ChannelType.PRIVATE) &&
-        bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+        bot.hasPermissionInChannel(event.getTextChannel(),
+                                   Permission.MESSAGE_MANAGE))
       delete(event.getMessage());
   }
 
@@ -89,7 +91,8 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
   }
 
   private void delete(Message m) {
-    if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
+    if (bot.hasPermissionInChannel(m.getTextChannel(),
+                                   Permission.MESSAGE_MANAGE))
       m.deleteMessage().queue();
   }
 
@@ -106,7 +109,8 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
         return;
       }
     }
-    event.getAuthor().getPrivateChannel().sendMessage(message.getMessage()).queue();
+    event.getAuthor().getPrivateChannel().sendMessage(
+      message.getMessage()).queue();
   }
 
   private StyledEmbedMessage makeEmbed(String message) {
@@ -115,9 +119,11 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
     return em;
   }
 
-  private void sendEmbed(MessageReceivedEvent event, String message, boolean error, boolean warning) {
+  private void sendEmbed(MessageReceivedEvent event, String message,
+                         boolean error, boolean warning) {
     if (event.isFromType(ChannelType.PRIVATE)
-        || !bot.hasPermissionInChannel(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
+        || !bot.hasPermissionInChannel(event.getTextChannel(),
+                                       Permission.MESSAGE_WRITE)) {
       pm(event, message);
     } else {
       event.getChannel().sendMessage(
@@ -138,9 +144,11 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
     sendEmbed(event, message, true, false);
   }
 
-  protected void embed(MessageReceivedEvent event, StyledEmbedMessage embed) {
+  protected void embed(MessageReceivedEvent event, StyledEmbedMessage
+                       embed) {
     if (!event.isFromType(ChannelType.PRIVATE)) {
-      event.getGuild().getPublicChannel().sendMessage(embed.getMessage()).queue();
+      event.getGuild().getPublicChannel().sendMessage(
+        embed.getMessage()).queue();
     } else {
       event.getChannel().sendMessage(embed.getMessage()).queue();
     }
@@ -158,5 +166,4 @@ public abstract class AbstractAttachmentProcessor implements ChatCommandProcesso
   public String getCommandHelpString() {
     return "";
   }
-
 }

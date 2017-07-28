@@ -5,7 +5,8 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class AuthenticateUserProcessor extends OwnerMultiArgumentChatCommandProcessor {
+public class AuthenticateUserProcessor extends
+	OwnerMultiArgumentChatCommandProcessor {
 
 	public AuthenticateUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Authenticate User", bot);
@@ -21,13 +22,14 @@ public class AuthenticateUserProcessor extends OwnerMultiArgumentChatCommandProc
 				u.setPrivilegeLevel(level);
 				bot.getDispatcher().saveUser(u);
 				pm(event, "Access level changed to **" + level + "** for that user.");
-			} else pm(event, formatString(Strings.USER_NOT_FOUND_DISALLOWED, username));
+			} else
+				pm(event, formatString(Strings.USER_NOT_FOUND_DISALLOWED, username));
 		}
 	}
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - set a user's privilege level to the bot (0-2)";
+		return super.getCommandHelpString() +
+		       " - set a user's privilege level to the bot (0-2)";
 	}
-
 }

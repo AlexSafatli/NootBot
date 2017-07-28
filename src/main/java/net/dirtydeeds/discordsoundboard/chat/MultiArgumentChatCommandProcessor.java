@@ -3,15 +3,18 @@ package net.dirtydeeds.discordsoundboard.chat;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public abstract class MultiArgumentChatCommandProcessor extends AbstractChatCommandProcessor {
+public abstract class MultiArgumentChatCommandProcessor extends
+	AbstractChatCommandProcessor {
 
 	private String[] args = {};
 
-	public MultiArgumentChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
+	public MultiArgumentChatCommandProcessor(String prefix, String title,
+	    SoundboardBot bot) {
 		super(prefix, title, bot);
 	}
 
-	protected abstract void handleEvent(MessageReceivedEvent event, String message);
+	protected abstract void handleEvent(MessageReceivedEvent event,
+	                                    String message);
 
 	public void process(MessageReceivedEvent event) {
 		String message = event.getMessage().getContent().toLowerCase();
@@ -43,5 +46,4 @@ public abstract class MultiArgumentChatCommandProcessor extends AbstractChatComm
 	public String getCommandHelpString() {
 		return getPrefix() + " [argument1], [argument2], ...";
 	}
-
 }

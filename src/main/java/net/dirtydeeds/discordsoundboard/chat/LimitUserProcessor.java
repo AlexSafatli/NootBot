@@ -5,9 +5,10 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class LimitUserProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
+public class LimitUserProcessor extends
+	AuthenticatedSingleArgumentChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("LimitUserProcessor");
+	public static final SimpleLog LOG = SimpleLog.getLog("LimitUser");
 
 	public LimitUserProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Throttle User", bot);
@@ -30,7 +31,7 @@ public class LimitUserProcessor extends AuthenticatedSingleArgumentChatCommandPr
 
 	@Override
 	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - throttle a user from using bot too often";
+		return super.getCommandHelpString() +
+		       " - throttle a user from using bot too often";
 	}
-
 }

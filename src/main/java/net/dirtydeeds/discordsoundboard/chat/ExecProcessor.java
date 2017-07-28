@@ -43,5 +43,4 @@ public class ExecProcessor extends OwnerSingleArgumentChatCommandProcessor {
   public String getCommandHelpString() {
     return getPrefix() + " <cmd> (*) - run a command on the system";
   }
-
 }

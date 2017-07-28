@@ -7,7 +7,8 @@ import net.dv8tion.jda.core.entities.User;
 public abstract class OwnerSingleArgumentChatCommandProcessor extends
   AuthenticatedSingleArgumentChatCommandProcessor {
 
-  public OwnerSingleArgumentChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
+  public OwnerSingleArgumentChatCommandProcessor(String prefix,
+      String title, SoundboardBot bot) {
     super(prefix, title, bot);
   }
 
@@ -15,5 +16,4 @@ public abstract class OwnerSingleArgumentChatCommandProcessor extends
   public boolean canBeRunBy(User user, Guild guild) {
     return bot.getOwner().equals(user.getName());
   }
-
 }

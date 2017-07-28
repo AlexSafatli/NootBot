@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
 
-  private static final int NUMBER_OF_TOP_TO_SHOW = 50;
+  private static final int NUMBER_TO_SHOW = 50;
 
   public ListLongestSoundsProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Longest Sounds", bot);
@@ -21,12 +21,12 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
   private List<String> getTopSounds() {
     int numberOfSoundFiles = 0;
     MessageBuilder sb = new MessageBuilder();
-    sb.append("The **" + NUMBER_OF_TOP_TO_SHOW +
+    sb.append("The **" + NUMBER_TO_SHOW +
               " longest sound files** are, in descending order:\n\n");
     List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByDuration();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (SoundFile file : soundFiles) {
-      if (numberOfSoundFiles >= NUMBER_OF_TOP_TO_SHOW) break;
+      if (numberOfSoundFiles >= NUMBER_TO_SHOW) break;
       String name = file.getSoundFileId();
       if (activeFileNames.contains(name)) {
         sb.append("`?" + name + "` (" + file.getDuration() + "s) ");
@@ -48,7 +48,7 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " - list the " + NUMBER_OF_TOP_TO_SHOW +
+    return getPrefix() + " - list the " + NUMBER_TO_SHOW +
            " longest sound files";
   }
 

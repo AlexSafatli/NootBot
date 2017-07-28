@@ -51,10 +51,12 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
       int sides = Math.max(Integer.valueOf(m.group(2)), MIN_DICE_HEADS);
       int add = 0;
       if (dice > MAX_DICE) {
-        w(event, "Max number of dice that can be rolled is **" + MAX_DICE + "**.");
+        w(event, "Max number of dice that can be rolled is **" +
+          MAX_DICE + "**.");
         return;
       } else if (sides > MAX_DICE_HEADS) {
-        w(event, "Max number of dice heads that can be rolled is **" + MAX_DICE_HEADS + "**.");
+        w(event, "Max number of dice heads that can be rolled is **" +
+          MAX_DICE_HEADS + "**.");
         return;
       }
       if (m.group(3) != null && !NULL.equals(m.group(3))) {
@@ -74,5 +76,4 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
   public String getCommandHelpString() {
     return getPrefix() + " <dice> - roll dice that is in xdy syntax";
   }
-
 }

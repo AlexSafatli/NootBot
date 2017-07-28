@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
 
-  private static final int NUMBER_OF_TOP_TO_SHOW = 25;
+  private static final int NUMBER_TO_SHOW = 25;
 
   public ListMostReportsProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Most Controversial Sounds", bot);
@@ -21,12 +21,14 @@ public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
   private List<String> getTopSounds() {
     int numberOfSoundFiles = 0;
     MessageBuilder sb = new MessageBuilder();
-    sb.append("Up to **" + NUMBER_OF_TOP_TO_SHOW +
-              " controversial sound files** (most reports) are, in descending order:\n\n");
-    List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByNumberOfReports();
+    sb.append("Up to **" + NUMBER_TO_SHOW +
+              " controversial sound files** (most reports) are, in " +
+              "descending order:\n\n");
+    List<SoundFile> soundFiles =
+      bot.getDispatcher().getSoundFilesOrderedByNumberOfReports();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (SoundFile file : soundFiles) {
-      if (numberOfSoundFiles >= NUMBER_OF_TOP_TO_SHOW) break;
+      if (numberOfSoundFiles >= NUMBER_TO_SHOW) break;
       String name = file.getSoundFileId();
       if (activeFileNames.contains(name) && file.getNumberOfReports() > 0) {
         sb.append("`?" + name + "` (" + file.getNumberOfReports() + ") ");
@@ -45,15 +47,15 @@ public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
     }
     List<String> topSounds = getTopSounds();
     if (topSounds == null) {
-      w(event, "There are **no controversial sound files** (no sounds reported)!");
+      w(event,
+        "There are **no controversial sound files** (no sounds reported)!");
     }
     for (String msg : topSounds) m(event, msg);
   }
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " - list the " + NUMBER_OF_TOP_TO_SHOW +
+    return getPrefix() + " - list the " + NUMBER_TO_SHOW +
            " most controverial sound files (most reports)";
   }
-
 }

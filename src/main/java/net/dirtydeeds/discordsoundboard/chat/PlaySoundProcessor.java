@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("SoundProcessor");
+	public static final SimpleLog LOG = SimpleLog.getLog("Sound");
 	private static final long PLAY_COUNT_FOR_ANNOUNCEMENT = 50;
 
 	public PlaySoundProcessor(String prefix, SoundboardBot bot) {
@@ -84,9 +84,9 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 		String help = getPrefix() + "soundfile - play a sound by name";
 		Set<String> soundFileNames = bot.getSoundMap().keySet();
 		if (!soundFileNames.isEmpty()) {
-			help += " - e.g., " + getPrefix() + StringUtils.randomString(soundFileNames);
+			help += " - e.g., " + getPrefix() +
+			        StringUtils.randomString(soundFileNames);
 		}
 		return help;
 	}
-
 }

@@ -11,9 +11,9 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class AudioHandler implements AudioLoadResultHandler {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("AudioHandler");
-	
+
 	private final AudioPlayer player;
-	
+
 	public AudioHandler(AudioPlayer player) {
 		this.player = player;
 	}
@@ -38,5 +38,4 @@ public class AudioHandler implements AudioLoadResultHandler {
 	public void loadFailed(FriendlyException exception) {
 		exception.printStackTrace();
 	}
-
 }

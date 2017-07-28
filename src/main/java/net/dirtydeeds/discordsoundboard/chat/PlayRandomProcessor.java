@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("RandomSoundProcessor");
+  public static final SimpleLog LOG = SimpleLog.getLog("RandomSound");
 
   public PlayRandomProcessor(String prefix, SoundboardBot soundPlayer) {
     super(prefix, "Random Sound", soundPlayer);
@@ -29,7 +29,8 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
         if (bot.isASoundCategory(category)) {
           desc += "from category **" +
                   bot.getSoundCategory(category).getName() + "** ";
-          filePlayed = bot.playRandomFileForCategory(event.getAuthor(), category);
+          filePlayed = bot.playRandomFileForCategory(event.getAuthor(),
+                       category);
         } else {
           w(event, formatString(Strings.NOT_FOUND, category));
         }
@@ -54,7 +55,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " [category] - play a random sound (from category if specified)";
+    return getPrefix() + " [category] - play a random sound (from " +
+           "category if specified)";
   }
-
 }

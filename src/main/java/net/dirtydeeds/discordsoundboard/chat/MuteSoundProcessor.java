@@ -3,7 +3,8 @@ package net.dirtydeeds.discordsoundboard.chat;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class MuteSoundProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
+public class MuteSoundProcessor extends
+  AuthenticatedSingleArgumentChatCommandProcessor {
 
   public MuteSoundProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Mute Bot", bot);
@@ -21,5 +22,4 @@ public class MuteSoundProcessor extends AuthenticatedSingleArgumentChatCommandPr
   public String getCommandHelpString() {
     return getPrefix() + " - mute the bot";
   }
-
 }

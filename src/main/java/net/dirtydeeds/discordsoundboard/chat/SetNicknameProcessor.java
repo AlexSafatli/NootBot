@@ -21,14 +21,17 @@ public class SetNicknameProcessor extends
 			pm(event, "You did not send this command in a server.");
 			return;
 		}
-		Member botAsMember = event.getGuild().getMemberById(bot.getAPI().getSelfUser().getId());
-		event.getGuild().getController().setNickname(botAsMember, newNickName).queue();
-		pm(event, "Sent request to change nickname in server **" + event.getGuild().getName() + "**.");
+		Member botAsMember = event.getGuild().getMemberById(
+		                       bot.getAPI().getSelfUser().getId());
+		event.getGuild().getController().setNickname(botAsMember,
+		    newNickName).queue();
+		pm(event, "Sent request to change nickname in server **" +
+		   event.getGuild().getName() + "**.");
 	}
 
 	@Override
 	public String getCommandHelpString() {
-		return getPrefix() + " <nickname> (*) - set a new nickname for this bot in this server";
+		return getPrefix() + " <nickname> (*) - set a new nickname for this bot " +
+		       "in this server";
 	}
-
 }
