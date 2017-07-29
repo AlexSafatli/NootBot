@@ -70,7 +70,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 			sendBadSoundMessage(event, name, suggestion, user);
 		} else {
 			SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
-			if (play(event, name) &&
+			if (play(event, name) && sound.getNumberOfPlays() > 0 &&
 			    sound.getNumberOfPlays() % PLAY_COUNT_FOR_ANNOUNCEMENT == 0) {
 				// Make an announcement every so many plays.
 				m(event, formatString(Strings.SOUND_PLAY_COUNT_ANNOUNCEMENT, name,
