@@ -8,6 +8,7 @@ import java.util.Queue;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dirtydeeds.discordsoundboard.utils.VoiceUtils;
 import net.dv8tion.jda.core.Permission;
@@ -31,6 +32,10 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class MoveListener extends AbstractListener {
 
   public static final SimpleLog LOG = SimpleLog.getLog("Move");
+
+  private static final List<String> WELCOMES = Arrays.asList(new String[] {
+        "Welcome", "Hello", "Greetings", "Yo"
+      });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 
@@ -57,8 +62,7 @@ public class MoveListener extends AbstractListener {
 
     if (bot.isUser(user)) {
       if (voiceChannel.getMembers().size() == 1) {
-        LOG.info("Moved to an empty channel. Closing audio connection in " +
-                 guild.getName() + ".");
+        LOG.info("Moved to an empty channel.");
         leaveVoiceInGuild(guild);
       }
       return;
@@ -72,11 +76,12 @@ public class MoveListener extends AbstractListener {
     if (!bot.isAllowedToPlaySound(user)) {
       LOG.info("User " + user.getName() + " cannot play sounds. Ignoring.");
       return;
-    } else if (afkChannel != null && afkChannel.getId().equals(voiceChannel.getId())) {
+    } else if (afkChannel != null && afkChannel.getId().equals(
+                 voiceChannel.getId())) {
       LOG.info("User " + user.getName() + " joined an AFK channel. Ignoring.");
       return;
     } else if (bot.isMuted(guild)) {
-      LOG.info("Bot is currently muted. Not bothering to do anything.");
+      LOG.info("Bot is currently muted. Doing nothing.");
       return;
     }
 
@@ -104,15 +109,19 @@ public class MoveListener extends AbstractListener {
             }
           }
         }
-        // Play a sound if there are others to hear it or this person has not heard it recently.
-        if (VoiceUtils.numUsersInVoiceChannels(guild) > 1 || !userHasHeardEntranceRecently) {
+        // Play a sound if there are others to hear.
+        if (VoiceUtils.numUsersInVoiceChannels(guild) > 1
+            || !userHasHeardEntranceRecently) {
           try {
             if (bot.playFileForEntrance(fileToPlay, user, voiceChannel)) {
-              SoundFile sound = bot.getDispatcher().getSoundFileByName(fileToPlay);
+              SoundFile sound = bot.getDispatcher().getSoundFileByName(
+                                  fileToPlay);
               soundInfo = "Played sound " + formatString(Strings.SOUND_DESC,
-                          fileToPlay, sound.getCategory(), sound.getNumberOfPlays()) + ".";
+                          fileToPlay, sound.getCategory(),
+                          sound.getNumberOfPlays()) + ".";
             } else {
-              LOG.info("Wanted to play entrance \"" + fileToPlay + "\" for user but did not play a sound.");
+              LOG.info("Wanted to play entrance \"" + fileToPlay +
+                       "\" for user but did not play a sound.");
             }
           } catch (Exception e) { e.printStackTrace(); }
         } else if (bot.getConnectedChannel(guild) == null) {
@@ -121,11 +130,15 @@ public class MoveListener extends AbstractListener {
         // Send a message greeting them into the server.
         VoiceChannel joined = bot.getConnectedChannel(guild);
         if (joined != null && joined.equals(voiceChannel)) {
-          if (bot.hasPermissionInChannel(guild.getPublicChannel(), Permission.MESSAGE_WRITE)) {
-            embed(guild.getPublicChannel(), welcomeMessage(user, voiceChannel, soundInfo),
-                  (Message m)-> pastEntrances.get(guild).add(new EntranceEvent(m, user)));
+          if (bot.hasPermissionInChannel(guild.getPublicChannel(),
+                                         Permission.MESSAGE_WRITE)) {
+            embed(guild.getPublicChannel(),
+                  welcomeMessage(user, voiceChannel, soundInfo),
+                  (Message m)-> pastEntrances.get(guild).add(
+                    new EntranceEvent(m, user)));
           } else {
-            LOG.warn("Did not have permission to write messages in server " + guild.getName());
+            LOG.warn("Did not have permission to write messages in server " +
+                     guild.getName());
           }
         }
       }
@@ -143,20 +156,26 @@ public class MoveListener extends AbstractListener {
     // Ignore if it is just the bot or not even connected.
     if (botsChannel == null || bot.isUser(user)) return;
 
-    LOG.info(user.getName() + " left " + channel.getName() + " in " + guild.getName() + ".");
+    LOG.info(user.getName() + " left " + channel.getName() + " in " +
+             guild.getName() + ".");
 
     if (botsChannel != null && VoiceUtils.numUsersInVoiceChannels(guild) == 0) {
-      LOG.info("No more users! Leaving voice channel in server " + guild.getName());
+      LOG.info("No more users in " + guild.getName());
       leaveVoiceInGuild(guild);
     } else if (botsChannel != null && botsChannel.getMembers().size() == 1) {
       for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
         if (botsChannel != null && botsChannel.equals(voiceChannel)) continue;
-        else if (voiceChannel.getMembers().size() > 0 && (guild.getAfkChannel() == null || !voiceChannel.getId().equals(guild.getAfkChannel().getId()))) {
-          if (voiceChannel.getMembers().size() == 1 && voiceChannel.getMembers().get(0).getUser().isBot()) {
+        else if (voiceChannel.getMembers().size() > 0
+                 && (guild.getAfkChannel() == null
+                     || !voiceChannel.getId().equals(
+                       guild.getAfkChannel().getId()))) {
+          if (voiceChannel.getMembers().size() == 1
+              && voiceChannel.getMembers().get(0).getUser().isBot()) {
             continue;
           }
           if (bot.moveToChannel(voiceChannel)) {
-            LOG.info("Moving to voice channel " + voiceChannel.getName() + " in server " + guild.getName());
+            LOG.info("Moving to voice channel " + voiceChannel.getName() +
+                     " in server " + guild.getName());
             return;
           }
         }
@@ -175,26 +194,31 @@ public class MoveListener extends AbstractListener {
 
   public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event) {
     if (bot.isUser(event.getMember().getUser())) {
-      LOG.info("Was guild muted. Leaving voice channel.");
+      LOG.info("Was guild muted.");
       leaveVoiceInGuild(event.getGuild());
     }
   }
 
   private void leaveVoiceInGuild(Guild guild) {
     if (guild.getAudioManager() != null) {
+      LOG.info("Leaving voice channel in " + guild.getName());
       guild.getAudioManager().closeAudioConnection();
     }
   }
 
-  public StyledEmbedMessage welcomeMessage(User user, Channel channel, String soundInfo) {
-    StyledEmbedMessage m = new StyledEmbedMessage("Welcome, " + user.getName() + "!", bot);
+  public StyledEmbedMessage welcomeMessage(User user, Channel channel,
+      String soundInfo) {
+    StyledEmbedMessage m = new StyledEmbedMessage(
+      StringUtils.randomString(WELCOMES) + ", " + user.getName() + "!", bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     if (!soundInfo.isEmpty()) {
-      m.addDescription(soundInfo + " \u2014 " + user.getAsMention());
+      m.addDescription(soundInfo + Strings.SEPARATOR + user.getAsMention());
     } else {
-      m.addDescription("Hey, how you doin'? \u2014 " + user.getAsMention());
+      m.addDescription("Hey, how you doin'?" + Strings.SEPARATOR +
+                       user.getAsMention());
     }
-    m.addContent("What Am I?", "I am a bot that plays sounds. Type `.about` or `.help` for more information.", false);
+    m.addContent("What Am I?", "I am a bot (*beep boop*). I play sounds. " +
+                 "Type `.help` for more information.", false);
     return m;
   }
 

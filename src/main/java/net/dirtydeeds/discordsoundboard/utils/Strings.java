@@ -2,6 +2,8 @@ package net.dirtydeeds.discordsoundboard.utils;
 
 public class Strings {
 
+	public static final String SEPARATOR = " \u2014 ";
+
 	public static final String USER_NOT_FOUND = "USER_NOT_FOUND";
 	public static final String USER_NOT_FOUND_DISALLOWED = "USER_NOT_FOUND_DISALLOWED";
 	public static final String USER_NOT_FOUND_ALLOWED = "USER_NOT_FOUND_ALLOWED";

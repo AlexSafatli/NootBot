@@ -40,9 +40,9 @@ public class DescribeSoundProcessor extends
 			                          user.getAsMention());
 			embedForUser(event, em);
 			if (bot.getOwner().equals(user.getName())) {
-				pm(event, "Sound `" + name + "` is" + (file.isExcludedFromRandom() ?
-				                                       "" : " not") +
-				   " excluded from random.");
+				pm(event, "Sound `" + name + "` is" +
+				   (file.isExcludedFromRandom() ?
+				    "" : " not") + " excluded from random.");
 			}
 		}
 	}

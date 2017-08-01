@@ -438,13 +438,16 @@ public class SoundboardBot {
   public void stopPlayingSound(Guild guild) {
     AudioManager audio = guild.getAudioManager();
     AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
-    AudioPlayer player = ((AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
+    AudioPlayer player = ((AudioPlayerSendHandler)(
+                            audio.getSendingHandler())).getPlayer();
     player.stopTrack();
     List<String> files = scheduler.getIdentifiers();
     if (files.size() > 1) {
       for (String name : files) {
         File f = new File(name);
-        SoundFile s = dispatcher.getAvailableSoundFiles().get(f.getName());
+        String id = f.getName();
+        id = id.substring(0, id.indexOf("."));
+        SoundFile s = dispatcher.getAvailableSoundFiles().get(id);
         if (s != null) {
           s.subtractOneFromNumberOfPlays();
           dispatcher.saveSound(s);
@@ -465,7 +468,8 @@ public class SoundboardBot {
     audio.setSelfMuted(false);
   }
 
-  public String playRandomFile(net.dv8tion.jda.core.entities.User user) throws Exception {
+  public String playRandomFile(net.dv8tion.jda.core.entities.User user) throws
+    Exception {
     if (user != null && isAllowedToPlaySound(user)) {
       String toPlay = getRandomSoundName();
       VoiceChannel toJoin = getUsersVoiceChannel(user);
@@ -481,7 +485,8 @@ public class SoundboardBot {
     return null;
   }
 
-  public String playRandomFileForCategory(net.dv8tion.jda.core.entities.User user, String category) throws Exception {
+  public String playRandomFileForCategory(
+    net.dv8tion.jda.core.entities.User user, String category) throws Exception {
     if (user != null && isAllowedToPlaySound(user)) {
       if (!isASoundCategory(category)) return null;
       VoiceChannel toJoin = getUsersVoiceChannel(user);
