@@ -728,8 +728,7 @@ public class SoundboardBot {
 
   public void clearPreviousMessages() {
     for (Guild guild : getGuilds()) {
-      for (TextChannel t : guild.getTextChannels())
-        ChatUtils.clearBotMessagesInChannel(this, t);
+      ChatUtils.clearBotMessagesInChannel(this, guild.getPublicChannel());
     }
   }
 
