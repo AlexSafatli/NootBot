@@ -13,6 +13,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class DescribeSoundProcessor extends
 	SingleArgumentChatCommandProcessor {
 
+	private static final String DEFAULT_SUGGESTION = "Check your spelling";
+
 	public DescribeSoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Sound Info", bot);
 	}
@@ -25,11 +27,10 @@ public class DescribeSoundProcessor extends
 			e(event, formatString(Strings.NEED_NAME, getPrefix() +
 			                      " " + StringUtils.randomString(soundNames)));
 		} else if (!soundNames.contains(name)) {
-			String suggestion = "Check your spelling.",
-			       possibleName = bot.getClosestMatchingSoundName(name);
-			if (possibleName != null) {
-				suggestion = "Did you mean `" + possibleName + "`?";
-			}
+			String possibleName = bot.getClosestMatchingSoundName(name),
+			       suggestion = (possibleName != null) ?
+			                    "Did you mean `" + possibleName + "`?" :
+			                    DEFAULT_SUGGESTION;
 			w(event, formatString(Strings.NOT_FOUND, name) +
 			  " *" + suggestion + "* " + user.getAsMention());
 		} else {

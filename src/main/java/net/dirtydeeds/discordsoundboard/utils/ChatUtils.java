@@ -15,13 +15,17 @@ public class ChatUtils {
   public static final int NUM_MESSAGES_TO_GO_BACK = 1000;
   public static final int MAX_NUM_MESSAGES_TO_GO_BACK = 99;
 
-  public static void clearBotMessagesInChannel(SoundboardBot bot, TextChannel channel) {
+  public static void clearBotMessagesInChannel(SoundboardBot bot,
+      TextChannel channel) {
     MessageHistory history = new MessageHistory(channel);
-    for (int i = 0; i < NUM_MESSAGES_TO_GO_BACK; i += MAX_NUM_MESSAGES_TO_GO_BACK) {
-      RestAction<List<Message>> a = history.retrievePast(MAX_NUM_MESSAGES_TO_GO_BACK);
+    for (int i = 0; i < NUM_MESSAGES_TO_GO_BACK;
+         i += MAX_NUM_MESSAGES_TO_GO_BACK) {
+      RestAction<List<Message>> a =
+        history.retrievePast(MAX_NUM_MESSAGES_TO_GO_BACK);
       a.queue(msgs -> {
         for (Message msg : msgs) {
-          if (msg.getAuthor().equals(bot.getAPI().getSelfUser())) msg.deleteMessage().queue();
+          if (msg.getAuthor().equals(bot.getAPI().getSelfUser()))
+            msg.deleteMessage().queue();
         }
       });
     }

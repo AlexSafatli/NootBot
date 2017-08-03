@@ -10,6 +10,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class FilterChatProcessor implements ChatCommandProcessor {
 
+	private static final String FILTER_FORMAT_STRING = "%s\n\u2014\nOriginally " +
+	    "posted by %s.\n*This was filtered to this channel because it " +
+	    "contained %s.*";
+
 	private final Pattern regexp;
 	private final String channelname;
 	private final String patternname;
@@ -41,7 +45,9 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 	protected void copyMessage(MessageReceivedEvent event, String message) {
 		List<TextChannel> textChannels =
 		  event.getGuild().getTextChannelsByName(channelname, true);
-		String modified = String.format("%s\n\u2014\nOriginally posted by %s.\n*This was filtered to this channel because it contained %s.*", message, event.getAuthor().getAsMention(), patternname);
+		String modified = String.format(FILTER_FORMAT_STRING, message,
+		                                event.getAuthor().getAsMention(),
+		                                patternname);
 		for (TextChannel channel : textChannels) {
 			channel.sendMessage(modified).queue();
 		}

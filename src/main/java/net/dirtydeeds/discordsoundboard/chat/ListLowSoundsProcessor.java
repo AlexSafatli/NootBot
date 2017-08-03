@@ -20,21 +20,22 @@ public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
 
   private List<String> getLowSounds() {
     int numberOfSoundFiles = 0;
-    MessageBuilder sb = new MessageBuilder();
-    sb.append("The **" + NUMBER_TO_SHOW +
+    MessageBuilder mb = new MessageBuilder();
+    mb.append("The **" + NUMBER_TO_SHOW +
               " least played sound files** are, in ascending order:\n\n");
-    List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByNumberOfPlays();
+    List<SoundFile> soundFiles =
+      bot.getDispatcher().getSoundFilesOrderedByNumberOfPlays();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (int i = soundFiles.size() - 1; i >= 0; --i) {
       if (numberOfSoundFiles >= NUMBER_TO_SHOW) break;
       SoundFile file = soundFiles.get(i);
       String name = file.getSoundFileId();
       if (activeFileNames.contains(name)) {
-        sb.append("`?" + name + "` (" + file.getNumberOfPlays() + ") ");
+        mb.append("`?" + name + "` (" + file.getNumberOfPlays() + ") ");
         ++numberOfSoundFiles;
       }
     }
-    return sb.getStrings();
+    return mb.getStrings();
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {

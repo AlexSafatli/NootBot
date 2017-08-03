@@ -160,8 +160,8 @@ public class SoundboardDispatcher {
 		bots = new SoundboardBot[num];
 		for (int i = 1; i <= num; ++i) startBot(i);
 		// Async jobs
-		//LOG.info("Starting async jobs.");
-		//asyncService.addJob(PeriodicLambdas.askForDonation());
+		LOG.info("Starting async jobs.");
+		asyncService.addJob(PeriodicLambdas.cleanOldBotMessages());
 		// Audio Playing
 		LOG.info("Adding sources to audio manager.");
 		audioManager.registerSourceManager(new YoutubeAudioSourceManager());

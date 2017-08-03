@@ -16,4 +16,10 @@ public class PeriodicLambdas {
     }, EVERY_TWO_DAYS);
   }
 
+  public static PeriodicLambdaJob cleanOldBotMessages() {
+    return new PeriodicLambdaJob((SoundboardBot b) -> {
+      b.clearPreviousMessages();
+    }, EVERY_TWO_DAYS);
+  }
+
 }
