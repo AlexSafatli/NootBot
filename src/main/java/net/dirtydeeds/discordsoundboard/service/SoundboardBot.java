@@ -187,6 +187,7 @@ public class SoundboardBot {
   public String getRandomTopPlayedSoundName(int maxDuration) {
     List<SoundFile> sounds = dispatcher.getSoundFilesOrderedByNumberOfPlays();
     Map<String, Boolean> seen = new HashMap<>();
+    Map<String, SoundFile> map = getSoundMap();
     if (sounds == null || sounds.isEmpty()) return null;
     Random rng = new Random();
     SoundFile file = null;
@@ -196,7 +197,8 @@ public class SoundboardBot {
         ceiling = top;
     while (file == null
            || file.isExcludedFromRandom()
-           || file.getDuration() > maxDuration) {
+           || file.getDuration() > maxDuration
+           || map.get(file.getSoundFileId()) == null) {
       // No sounds that can actually be played.
       if (seen.size() == sounds.size()) return null;
       index = rng.nextInt(Math.min(ceiling, sounds.size()));

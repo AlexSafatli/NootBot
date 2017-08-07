@@ -26,6 +26,7 @@ public class StringUtils {
 	}
 
 	public static boolean containsAny(String str, char c) {
+		if (str == null) return false;
 		for (char s : str.toCharArray()) {
 			if (s == c) return true;
 		}

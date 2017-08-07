@@ -21,6 +21,11 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		User user = event.getAuthor();
 		String query = getArgument();
+		if (query == null) {
+			w(event, "I need something to search for. *Baka*.");
+			return;
+		}
+
 		List<String> possibilities = new LinkedList<>();
 
 		if (StringUtils.containsAny(query, '?')) {
