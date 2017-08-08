@@ -45,10 +45,9 @@ public class PlaySoundsJob implements SoundboardJob {
 		return true;
 	}
 
-	private long schedule(
-	  SoundboardDispatcher dispatcher, AudioTrackScheduler scheduler,
-	  String name) throws InterruptedException, ExecutionException,
-		TimeoutException {
+	private long schedule(SoundboardDispatcher dispatcher,
+	                      AudioTrackScheduler scheduler, String name) throws
+		InterruptedException, ExecutionException, TimeoutException {
 		long time = 0;
 		SoundFile f = bot.getSoundMap().get(name);
 		f.addOneToNumberOfPlays();
