@@ -11,22 +11,17 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
 
   private static final int MIN_DICE_HEADS = 1;
   private static final int MAX_DICE_HEADS = 100;
-  private static final int MIN_DICE = 1;
-  private static final int MAX_DICE = 100;
-  private static final String NULL = "null";
+  private static final int MIN_DICE       = 1;
+  private static final int MAX_DICE       = 100;
+  private static final String NULL        = "null";
 
   private final Random rng;
   private final Pattern dice;
 
   public RollDiceProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Roll Dice", bot);
-    rng = new Random();
+    rng  = new Random();
     dice = Pattern.compile("(\\d+)d(\\d+)\\+?(\\d+)?");
-  }
-
-  @Override
-  protected void clearBuffer() {
-    buffer.clear(); // Do not delete past messages.
   }
 
   private String roll(int dice, int sides, int add) {
@@ -47,9 +42,9 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
   protected void handleEvent(MessageReceivedEvent event, String message) {
     Matcher m = dice.matcher(event.getMessage().getContent().trim());
     if (m.find()) {
-      int dice = Math.max(Integer.valueOf(m.group(1)), MIN_DICE);
-      int sides = Math.max(Integer.valueOf(m.group(2)), MIN_DICE_HEADS);
-      int add = 0;
+      int dice  = Math.max(Integer.valueOf(m.group(1)), MIN_DICE),
+          sides = Math.max(Integer.valueOf(m.group(2)), MIN_DICE_HEADS),
+          add   = 0;
       if (dice > MAX_DICE) {
         w(event, "Max number of dice that can be rolled is **" +
           MAX_DICE + "**.");
@@ -62,9 +57,9 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
       if (m.group(3) != null && !NULL.equals(m.group(3))) {
         add = Math.max(Integer.valueOf(m.group(3)), 0);
       }
-      m(event, "Rolling `" + getArgument() + "` and got:\n" +
-        roll(dice, sides, add)
-       );
+      String rolled =
+        "Rolling `" + getArgument() + "` and got:\n" + roll(dice, sides, add);
+      m(event, rolled);
     } else {
       w(event, "This command needs syntax in the form `xdy+z` \u2014 " +
         "e.g., `2d5+2` rolls 2 dice with possible sides ranging from 1 " +

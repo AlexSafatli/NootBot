@@ -27,7 +27,8 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
       bot.getDispatcher().getSoundFilesOrderedByNumberOfPlays();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (SoundFile file : soundFiles) {
-      if (numberOfSoundFiles >= NUMBER_TO_SHOW) break;
+      if (numberOfSoundFiles >= NUMBER_TO_SHOW)
+        break;
       String name = file.getSoundFileId();
       if (activeFileNames.contains(name)) {
         sb.append("`?" + name + "` (" + file.getNumberOfPlays() + ") ");

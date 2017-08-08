@@ -20,8 +20,8 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog(
-	                                      "SoundAttachmentProcessor");
+	public static final SimpleLog LOG =
+	  SimpleLog.getLog("SoundAttachmentProcessor");
 	private static final int MAX_FILE_SIZE_IN_BYTES = 2000000; // 2MB
 	private static final int MAX_DURATION_IN_SECONDS = 12; // 12s
 	private static final String WAS_THIS_FOR_ME =
@@ -47,8 +47,10 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 			LOG.info("File " + file.name + " is too large.");
 			String end = (event.isFromType(ChannelType.PRIVATE)) ?
 			             "" : WAS_THIS_FOR_ME;
-			pm(event, "File `" + file.name +
-			   "` is too large to add to sound list (my capacity is finite)." + end);
+			pm(event,
+			   "File `" + file.name +
+			   "` is too large to add to sound list (*my capacity is finite*)." +
+			   end);
 			event.getMessage().addReaction("😶").queue();
 			return false;
 		}
@@ -74,11 +76,10 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		LOG.info("Will download file with path: " +
 		         downloadPath.toString() + " and name: " + file.name);
 		if (target.exists() || bot.getSoundMap().get(file.name) != null) {
-			LOG.info(user.getName() +
-			         " tried to upload a file whose name already exists.");
+			LOG.info(user.getName() + " tried to upload a file that already exists.");
 			pm(event, "A sound with the name `" + file.shortName +
-			   "` already exists! Type `.whatis " +
-			   file.shortName + "` for details.");
+			   "` already exists! Type `.whatis " + file.shortName +
+			   "` for details.");
 			return false;
 		}
 
@@ -102,7 +103,6 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 				return false;
 			}
 			// Send message(s).
-			if (category == null || category.isEmpty()) category = "Uncategorized";
 			pm(event, getDownloadedMessage(
 			     file.name, category, soundFile, attachment.getSize()));
 			StyledEmbedMessage publishMessage = getPublishMessage(category,
@@ -132,7 +132,6 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		List<Attachment> attachments = event.getMessage().getAttachments();
 		for (Attachment attachment : attachments) {
 			AttachmentFile file = getAttachmentDetails(attachment);
-			// Only allow wav/mp3 uploads.
 			if (file.extension.equals("wav") || file.extension.equals("mp3") ||
 			    file.extension.equals("flac") || file.extension.equals("m4a"))
 				return true;
@@ -142,14 +141,13 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 	private StyledEmbedMessage getPublishMessage(String category, String name,
 	    User author, SoundFile file) {
-		StyledEmbedMessage msg = new StyledEmbedMessage("A New Sound Was Added!",
-		    bot);
-		msg.addDescription("A new sound was added to the bot by " +
-		                   author.getAsMention() + ".");
+		StyledEmbedMessage msg =
+		  new StyledEmbedMessage("A New Sound Was Added!", bot);
+		msg.addDescription(
+		  "A new sound was added by " + author.getAsMention() + ".");
 		msg.addContent("Name", "`" + name + "`", true);
 		msg.addContent("Category",
-		               (category != null &&
-		                !category.isEmpty() &&
+		               (category != null && !category.isEmpty() &&
 		                !category.equals("Uncategorized")) ? category : "\u2014",
 		               true);
 		msg.addContent("Duration", file.getDuration() + " seconds", true);
@@ -158,14 +156,12 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 	private String getDownloadedMessage(String name, String category,
 	                                    SoundFile file, long size) {
-		String msg = "`" + name +
-		             "` downloaded and added to sounds! Play with `?" +
-		             file.getSoundFileId() + "`.\n\u2014\n";
+		String msg = "`" + name + "` added! Play with `?" + file.getSoundFileId() +
+		             "`.\n\u2014\n";
 		if (category != null && !category.isEmpty() &&
 		    !category.equals("Uncategorized"))
 			msg += "Category: **" + category + "**\n";
-		else
-			msg += "**No category given** (or given didn't match an existing one)!\n";
+		else msg += "No category given (or given didn't match an existing one)!\n";
 		msg += "File Size: **" + size / 1000 + " kB**";
 		return msg;
 	}
@@ -174,14 +170,13 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 		User owner = bot.getUserByName(bot.getOwner());
 		if (owner != null) {
 			if (!owner.hasPrivateChannel()) {
-				try {
-					owner.openPrivateChannel().block();
-					owner.getPrivateChannel().sendMessage(msg.getMessage()).queue();
-				} catch (RateLimitedException e) {
+				try { owner.openPrivateChannel().block(); }
+				catch (RateLimitedException e) {
 					LOG.fatal("Rate-limited when trying to open PM channel with " +
 					          owner.getName());
 				}
 			}
+			owner.getPrivateChannel().sendMessage(msg.getMessage()).queue();
 		}
 	}
 

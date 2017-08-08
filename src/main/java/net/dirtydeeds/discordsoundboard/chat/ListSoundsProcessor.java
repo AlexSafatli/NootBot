@@ -97,7 +97,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
                    cat + " but it wasn't found.");
         }
       }
-    } else e(event, "There are **no sounds** that can be played! Add some.");
+    } else e(event, "There are **no sounds**! Add some.");
   }
 
   private void listByCategory(Category category, Category parent,

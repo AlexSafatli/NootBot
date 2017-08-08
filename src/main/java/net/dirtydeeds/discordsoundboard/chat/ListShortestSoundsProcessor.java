@@ -23,7 +23,8 @@ public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
     MessageBuilder sb = new MessageBuilder();
     sb.append("The **" + NUMBER_TO_SHOW +
               " shortest sound files** are, in ascending order:\n\n");
-    List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByDuration();
+    List<SoundFile> soundFiles =
+      bot.getDispatcher().getSoundFilesOrderedByDuration();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (int i = soundFiles.size() - 1; i >= 0; --i) {
       if (numberOfSoundFiles >= NUMBER_TO_SHOW) break;
