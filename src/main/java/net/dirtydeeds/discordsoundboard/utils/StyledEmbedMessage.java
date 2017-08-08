@@ -18,7 +18,7 @@ import net.dv8tion.jda.core.entities.Icon;
 
 public class StyledEmbedMessage {
 
-	public static final String FOR_USER_FOOTER_PREFIX = "Request for ";
+	public static final String FOR_USER_FOOTER_PREFIX = " ";
 
 	private EmbedBuilder builder;
 	private String footer;
@@ -26,14 +26,13 @@ public class StyledEmbedMessage {
 	private String errorTitle;
 
 	private static final List<String> ERROR_STRINGS = Arrays.asList(new String[] {
-	      "Fwubbed it.", "Gao~", "DELETE DELETE DELETTTTTTT",
-	      "Excuse me, I stuttered.", "Nani?"
+	      "Fwubbed it.", "DELETE DELETE DELETTTTTTT", "Excuse me, I stuttered.",
+	      "Nani?"
 	    });
 
 	private static final String FOOTER_TEXT = Version.NAME + " " +
 	    Version.VERSION + " by " + Version.AUTHOR;
 	private static final String DEFAULT_TOP = " ";
-	private static final String SEPERATOR = " \u2014 ";
 	private static final Color  EMBED_COLOR = new Color(87, 70, 158);
 	private static final Color  ERROR_COLOR = new Color(179, 0,   0);
 	private static final Color  WARN_COLOR  = new Color(255, 217, 0);
@@ -56,7 +55,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage(String title, SoundboardBot bot) {
 		this(title);
 		String numSounds = bot.getSoundMap().size() + " sounds";
-		this.footer = FOOTER_TEXT + SEPERATOR + numSounds;
+		this.footer = FOOTER_TEXT + Strings.SEPARATOR + numSounds;
 		updateFooter();
 	}
 
@@ -95,7 +94,7 @@ public class StyledEmbedMessage {
 	}
 
 	public void addFooterText(String text) {
-		footer += SEPERATOR + text;
+		footer += Strings.SEPARATOR + text;
 		updateFooter();
 	}
 
