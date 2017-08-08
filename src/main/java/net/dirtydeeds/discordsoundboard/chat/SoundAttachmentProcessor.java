@@ -84,8 +84,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 		// Download the file.
 		if (attachment.download(target)) {
-			LOG.info("Download succeeded for attachment: " +
-			         attachment.getFileName());
+			LOG.info("Download succeeded: " + attachment.getFileName());
 			dispatcher.updateFileList();
 			SoundFile soundFile = dispatcher.getSoundFileByName(file.shortName);
 			// Check duration.
@@ -96,29 +95,28 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 				LOG.info("File was too long! Deleting the file.");
 				target.delete();
 				dispatcher.updateFileList();
-				pm(event, "File `" + file.name +
-				   "` is *too long* to add to sound list. Duration: **" +
-				   soundFile.getDuration() + "s**. Want *less than or equal to* **" +
+				pm(event,
+				   "File `" + file.name + "` is *too long* (**" +
+				   soundFile.getDuration() + "s**). Want *less than or equal to* **" +
 				   MAX_DURATION_IN_SECONDS + "s**.");
 				return false;
 			}
 			// Send message(s).
-			if (category == null || category.isEmpty())
-				category = "Uncategorized";
+			if (category == null || category.isEmpty()) category = "Uncategorized";
 			pm(event, getDownloadedMessage(
 			     file.name, category, soundFile, attachment.getSize()));
+			StyledEmbedMessage publishMessage = getPublishMessage(category,
+			                                    file.shortName, user, soundFile);
 			if (!event.isFromType(ChannelType.PRIVATE)) {
-				StyledEmbedMessage publishMessage = getPublishMessage(category,
-				                                    file.shortName, user, soundFile);
 				embed(event, publishMessage);
-				LOG.info("Sending announcement for uploaded file.");
-				if (!user.getName().equals(bot.getOwner())) { // Alert bot owner too.
-					sendPublishMessageToOwner(publishMessage);
-				}
+				LOG.info("Sent announcement for uploaded file.");
+			}
+			if (!user.getName().equals(bot.getOwner())) { // Alert bot owner too.
+				sendPublishMessageToOwner(publishMessage);
+				LOG.info("Sent information for uploaded file to owner.");
 			}
 		} else {
-			e(event, "Download of file `" + file.name +
-			  "` **failed** for an unknown reason!");
+			e(event, "Download of file `" + file.name + "` failed!");
 			return false;
 		}
 

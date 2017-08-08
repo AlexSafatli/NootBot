@@ -540,7 +540,8 @@ public class SoundboardBot {
 
   public void playURLForChatCommand(
     String url, MessageReceivedEvent event) throws Exception {
-    if (event != null && !url.isEmpty() && isAllowedToPlaySound(event.getAuthor())) {
+    if (event != null && !url.isEmpty()
+        && isAllowedToPlaySound(event.getAuthor())) {
       VoiceChannel toJoin = getUsersVoiceChannel(event.getAuthor());
       if (toJoin == null) {
         sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, event.getAuthor());
@@ -707,7 +708,8 @@ public class SoundboardBot {
     return bot.getGuilds();
   }
 
-  public List<Guild> getGuildsWithUser(net.dv8tion.jda.core.entities.User user) {
+  public List<Guild> getGuildsWithUser(
+    net.dv8tion.jda.core.entities.User user) {
     List<Guild> guilds = new LinkedList<>();
     for (Guild guild : getGuilds()) {
       List<Member> members = guild.getMembersByName(user.getName(), false);
