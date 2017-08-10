@@ -79,7 +79,7 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 	private void delete(Message m) {
 		if (bot.hasPermissionInChannel(m.getTextChannel(),
 		                               Permission.MESSAGE_MANAGE))
-			m.deleteMessage().queue();
+			m.delete().queue();
 	}
 
 	public String getTitle() {
