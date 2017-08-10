@@ -12,6 +12,7 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.Message.Attachment;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -169,7 +170,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 	private void sendPublishMessageToOwner(StyledEmbedMessage msg) {
 		User owner = bot.getUserByName(bot.getOwner());
 		if (owner != null) {
-			owner.openPrivateChannel().queue((Channel c)-> {
+			owner.openPrivateChannel().queue((PrivateChannel c)-> {
 				c.sendMessage(msg.getMessage()).queue();
 			});
 		}

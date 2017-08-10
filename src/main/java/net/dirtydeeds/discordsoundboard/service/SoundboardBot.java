@@ -22,6 +22,7 @@ import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
@@ -420,7 +421,7 @@ public class SoundboardBot {
 
   public void sendMessageToUser(String msg,
                                 net.dv8tion.jda.core.entities.User user) {
-    user.openPrivateChannel().queue((Channel c)-> {
+    user.openPrivateChannel().queue((PrivateChannel c)-> {
       c.sendMessage(msg).queue();
     });
   }

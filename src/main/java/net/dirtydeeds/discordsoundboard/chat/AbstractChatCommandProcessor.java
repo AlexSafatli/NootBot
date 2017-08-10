@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -97,7 +97,7 @@ public abstract class AbstractChatCommandProcessor implements
 	}
 
 	protected void pm(MessageReceivedEvent event, StyledEmbedMessage message) {
-		event.getAuthor().openPrivateChannel().queue((Channel c)-> {
+		event.getAuthor().openPrivateChannel().queue((PrivateChannel c)-> {
 			c.sendMessage(message.getMessage()).queue();
 		});
 	}
