@@ -169,7 +169,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 	private void sendPublishMessageToOwner(StyledEmbedMessage msg) {
 		User owner = bot.getUserByName(bot.getOwner());
 		if (owner != null) {
-			owner.openPrivateChannel().queue(Channel c-> {
+			owner.openPrivateChannel().queue((Channel c)-> {
 				c.sendMessage(msg.getMessage()).queue();
 			});
 		}

@@ -420,7 +420,7 @@ public class SoundboardBot {
 
   public void sendMessageToUser(String msg,
                                 net.dv8tion.jda.core.entities.User user) {
-    user.openPrivateChannel().queue(Channel c-> {
+    user.openPrivateChannel().queue((Channel c)-> {
       c.sendMessage(msg).queue();
     });
   }

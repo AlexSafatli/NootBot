@@ -21,7 +21,7 @@ public class DownloadSoundProcessor extends SingleArgumentChatCommandProcessor {
 			if (file == null) {
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			} else {
-				event.getAuthor().openPrivateChannel().queue(Channel c-> {
+				event.getAuthor().openPrivateChannel().queue((Channel c)-> {
 					c.sendFile(file.getSoundFile(), null).queue();
 				});
 			}

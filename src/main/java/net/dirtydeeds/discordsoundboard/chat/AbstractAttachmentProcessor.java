@@ -103,7 +103,7 @@ public abstract class AbstractAttachmentProcessor implements
   }
 
   protected void pm(MessageReceivedEvent event, StyledEmbedMessage message) {
-    event.getAuthor().openPrivateChannel().queue(Channel c-> {
+    event.getAuthor().openPrivateChannel().queue((Channel c)-> {
       c.sendMessage(message.getMessage()).queue();
     });
   }
