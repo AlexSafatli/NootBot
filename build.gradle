@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compile('net.dv8tion:JDA:3.2.0_242')
+    compile('net.dv8tion:JDA:3.2.0_226')
     compile('com.sedmelluq:lavaplayer:1.2.42')
     compile("commons-io:commons-io:2.4")
     compile("com.h2database:h2")
