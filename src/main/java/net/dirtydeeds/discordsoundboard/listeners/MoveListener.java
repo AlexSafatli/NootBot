@@ -4,10 +4,7 @@ import java.util.*;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
-import net.dirtydeeds.discordsoundboard.utils.VoiceUtils;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
@@ -21,17 +18,12 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceGuildMuteEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-/**
- * @author asafatli.
- *
- * This class handles waiting for people to enter a discord voice channel and responding to their entrance.
- */
 public class MoveListener extends AbstractListener {
 
   public static final SimpleLog LOG = SimpleLog.getLog("Move");
 
   private static final List<String> WELCOMES = Arrays.asList(new String[] {
-        "Welcome", "Hello", "Greetings", "Yo"
+        "Welcome", "Hello", "Yo", "Hiya", "Heya", "Sup"
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
@@ -45,7 +37,8 @@ public class MoveListener extends AbstractListener {
     public Message message;
     public User user;
     public EntranceEvent(Message m, User u) {
-      message = m; user = u;
+      message = m;
+      user = u;
     }
   }
 
@@ -127,15 +120,11 @@ public class MoveListener extends AbstractListener {
         // Send a message greeting them into the server.
         VoiceChannel joined = bot.getConnectedChannel(guild);
         if (joined != null && joined.equals(voiceChannel)) {
-          if (bot.hasPermissionInChannel(guild.getPublicChannel(),
-                                         Permission.MESSAGE_WRITE)) {
-            embed(guild.getPublicChannel(),
+          if (bot.getBotChannel(guild) != null) {
+            embed(bot.getBotChannel(guild),
                   welcomeMessage(user, voiceChannel, soundInfo),
                   (Message m)-> pastEntrances.get(guild).add(
                     new EntranceEvent(m, user)));
-          } else {
-            LOG.warn("Did not have permission to write messages in server " +
-                     guild.getName());
           }
         }
       }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.requests.RestAction;
@@ -29,6 +30,19 @@ public class ChatUtils {
         }
       });
     }
+  }
+
+  public static TextChannel getDiscussionChannel(SoundboardBot bot,
+      Guild guild) {
+    TextChannel channel = guild.getPublicChannel();
+    if (channel == null) {
+      for (TextChannel c : guild.getTextChannels()) {
+        if (bot.hasPermissionInChannel(c, Permission.MESSAGE_WRITE)) {
+          channel = c; break;
+        }
+      }
+    }
+    return channel;
   }
 
 }

@@ -280,7 +280,7 @@ public class SoundboardBot {
     if (guild == null) return null;
     List<TextChannel> botChannels = guild.getTextChannelsByName("bot", true);
     if (!botChannels.isEmpty()) return botChannels.get(0);
-    return guild.getPublicChannel();
+    return ChatUtils.getDiscussionChannel(this, guild);
   }
 
   public net.dv8tion.jda.core.entities.User getUserByName(String username) {
@@ -439,13 +439,13 @@ public class SoundboardBot {
 
   public void sendMessageToAllGuilds(Message message) {
     for (Guild guild : bot.getGuilds()) {
-      guild.getPublicChannel().sendMessage(message).queue();
+      getBotChannel(guild).sendMessage(message).queue();
     }
   }
 
   public void sendMessageToAllGuilds(String msg) {
     for (Guild guild : bot.getGuilds()) {
-      guild.getPublicChannel().sendMessage(msg).queue();
+      getBotChannel(guild).sendMessage(msg).queue();
     }
   }
 
@@ -732,7 +732,7 @@ public class SoundboardBot {
 
   public void clearPreviousMessages() {
     for (Guild guild : getGuilds()) {
-      ChatUtils.clearBotMessagesInChannel(this, guild.getPublicChannel());
+      ChatUtils.clearBotMessagesInChannel(this, getBotChannel(guild));
     }
   }
 

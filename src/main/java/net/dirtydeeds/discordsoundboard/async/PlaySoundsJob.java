@@ -12,13 +12,12 @@ import net.dirtydeeds.discordsoundboard.audio.AudioTrackScheduler;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
-import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
-import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.requests.RestAction;
 
@@ -133,11 +132,14 @@ public class PlaySoundsJob implements SoundboardJob {
 			}
 
 			for (Message msg : msgs) {
-				RestAction<Message> m = guild.getPublicChannel().sendMessage(msg);
-				if (m != null) {
-					m.queue((Message s)-> {
-						dispatcher.getAsyncService().runJob(new DeleteMessageJob(s, 1024));
-					});
+				TextChannel c = ChatUtils.getDiscussionChannel(bot, guild);
+				if (c != null) {
+					RestAction<Message> m = c.sendMessage(msg);
+					if (m != null) {
+						m.queue((Message s)-> {
+							dispatcher.getAsyncService().runJob(new DeleteMessageJob(s, 1024));
+						});
+					}
 				}
 			}
 		}

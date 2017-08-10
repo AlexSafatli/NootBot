@@ -4,10 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Message.Attachment;
 import net.dv8tion.jda.core.entities.User;
@@ -147,8 +148,8 @@ public abstract class AbstractAttachmentProcessor implements
   protected void embed(MessageReceivedEvent event, StyledEmbedMessage
                        embed) {
     if (!event.isFromType(ChannelType.PRIVATE)) {
-      event.getGuild().getPublicChannel().sendMessage(
-        embed.getMessage()).queue();
+      TextChannel channel = bot.getBotChannel(event.getGuild());
+      if (channel != null) channel.sendMessage(embed.getMessage()).queue();
     } else {
       event.getChannel().sendMessage(embed.getMessage()).queue();
     }

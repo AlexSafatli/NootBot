@@ -3,7 +3,7 @@ package net.dirtydeeds.discordsoundboard.games;
 import java.util.function.Consumer;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -63,7 +63,7 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 		msg.addContent("Triggering User", event.getUser().getName(), true);
 		msg.addContent("Game", game.getName(), true);
 		msg.addContent("Processor", this.toString(), true);
-		embed(guild.getPublicChannel(), msg);
+		embed(bot.getBotChannel(guild), msg);
 		e.printStackTrace();
 	}
 

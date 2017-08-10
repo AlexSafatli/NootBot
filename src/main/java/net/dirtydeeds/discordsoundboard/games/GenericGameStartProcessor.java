@@ -4,8 +4,7 @@ import java.util.Date;
 
 import net.dirtydeeds.discordsoundboard.games.AbstractGameUpdateProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
@@ -112,7 +111,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
 			String filePlayed = bot.getRandomTopPlayedSoundName(MAX_DURATION);
 			if (filePlayed != null) {
-				TextChannel publicChannel = channel.getGuild().getPublicChannel();
+				TextChannel publicChannel = bot.getBotChannel(channel.getGuild());
 				SoundFile f = bot.getSoundMap().get(filePlayed);
 				long numPlays = (f != null) ? f.getNumberOfPlays() : 0;
 				try {
