@@ -132,7 +132,7 @@ public class PlaySoundsJob implements SoundboardJob {
 			}
 
 			for (Message msg : msgs) {
-				TextChannel c = ChatUtils.getDiscussionChannel(bot, guild);
+				TextChannel c = bot.getBotChannel(guild);
 				if (c != null) {
 					RestAction<Message> m = c.sendMessage(msg);
 					if (m != null) {
