@@ -34,16 +34,16 @@ public class ChatListener extends AbstractListener {
     this.tick = new Date(System.currentTimeMillis());
     this.requests = new HashMap<>();
     this.processors = new LinkedList<>();
-    initializeProcessors();
+    setupChatProcessors();
   }
 
 //    private ChatCommandProcessor WithCommonPrefix(Class<ChatCommandProcessor> c, String prefix) {
 //      return c.newInstance(CommonPrefix + prefix, bot);
 //    }
 
-  private void initializeProcessors() {
-
+  private void setupChatProcessors() {
     processors.add(new PlaySoundProcessor("?",                        bot));
+    processors.add(new PlayUrlProcessor("~~",                         bot));
     processors.add(new ListSoundsProcessor(".list",                   bot));
     processors.add(new SearchProcessor(".search",                     bot));
     processors.add(new DescribeSoundProcessor(".whatis",              bot));
@@ -101,6 +101,7 @@ public class ChatListener extends AbstractListener {
     this.helpProcessor = new HelpProcessor(".help", bot, processors);
     this.noOpProcessor = new NoOpProcessor(bot);
 
+    LOG.info("Registered " + processors.size() + " processors.");
   }
 
   private void updateTick() {
@@ -109,26 +110,31 @@ public class ChatListener extends AbstractListener {
     if (minutesSince >= THROTTLE_TIME_IN_MINUTES) {
       this.tick = now;
       if (requests.size() > 0) {
-        LOG.info(minutesSince + " min have passed. Clearing request counts for " +
-                 requests.size() + " users (" + totalRequests + " total requests).");
+        LOG.info(minutesSince +
+                 " min have passed. Clearing request counts for " +
+                 requests.size() + " users (" + totalRequests +
+                 " total requests).");
         requests.clear();
         totalRequests = 0;
       }
     }
   }
 
-  private void process(ChatCommandProcessor processor, MessageReceivedEvent event) {
+  private void process(ChatCommandProcessor processor,
+                       MessageReceivedEvent event) {
     User user = event.getAuthor();
-
-    // Get number of requests for this user.
     Integer numRequests = requests.get(user);
     if (numRequests == null) numRequests = 0;
 
-    if (numRequests >= MAX_NUMBER_OF_REQUESTS_PER_TIME && bot.isThrottled(user)) {
-      bot.sendMessageToUser("Please wait a little before sending another command.", user);
+    if (numRequests >= MAX_NUMBER_OF_REQUESTS_PER_TIME
+        && bot.isThrottled(user)) {
+      bot.sendMessageToUser(
+        "Please wait a little before sending another command.", user);
       return;
-    } else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME && !bot.isOwner(user)) {
-      LOG.info("Throttling user " + user.getName() + " because they sent too many requests.");
+    } else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME
+               && !bot.isOwner(user)) {
+      LOG.info("Throttling user " + user.getName() +
+               " because they sent too many requests.");
       bot.throttleUser(user);
       bot.sendMessageToUser("Throttling **" + user.getName() +
                             "** automatically because of too many requests.",
@@ -139,17 +145,18 @@ public class ChatListener extends AbstractListener {
     processor.process(event);
     requests.put(user, numRequests + 1); // Increment number of requests.
     ++totalRequests;
-    LOG.info("Processed chat message event with processor " +
-             processor.getClass().getSimpleName() + " for user " +
-             user.getName() + " with content \"" +
-             event.getMessage().getContent() + "\".");
+    LOG.info("Processed message using " + processor.getClass().getSimpleName() +
+             " for user " + user.getName() + " with content \"" +
+             event.getMessage().getContent() + "\" (request: " + totalRequests +
+             ").");
   }
 
   public void onMessageReceived(MessageReceivedEvent event) {
 
     updateTick();
 
-    // See if a help command first. Process it here if that is the case. This does not count against requests.
+    // See if a help command first. Process it here if that is the case.
+    // This does not count against requests.
     if (helpProcessor.isApplicableCommand(event)) {
       helpProcessor.process(event);
       return;
@@ -177,8 +184,11 @@ public class ChatListener extends AbstractListener {
   }
 
   private boolean isTypoCommand(MessageReceivedEvent event) {
-    String content = event.getMessage().getContent(), prefix = CommonPrefix + "";
-    return (content.length() > 1 && content.startsWith(prefix) && !content.substring(1).contains(prefix));
+    String content = event.getMessage().getContent(),
+           prefix = CommonPrefix + "";
+    return (content.length() > 1
+            && content.startsWith(prefix)
+            && !content.substring(1).contains(prefix));
   }
 
 }

@@ -108,7 +108,8 @@ public class SoundboardBot {
   public String getUptimeAsString() {
     String uptime = "";
     long minutes = getUptimeInMinutes();
-    if (minutes >= MIN_MINUTES_TO_SHOW_AS_DAYS) {
+    if (minutes == 0) return "just now";
+    else if (minutes >= MIN_MINUTES_TO_SHOW_AS_DAYS) {
       uptime = (minutes / (60 * 24) + " days");
     } else if (minutes >= MIN_MINUTES_TO_SHOW_AS_HOURS) {
       uptime = (minutes / 60 + " hours");
@@ -132,7 +133,7 @@ public class SoundboardBot {
 
   public boolean isMuted(Guild guild) {
     Member self = guild.getMemberById(bot.getSelfUser().getId());
-    return (self.getVoiceState().isMuted());
+    return self.getVoiceState().isMuted();
   }
 
   public AudioTrackScheduler getSchedulerForGuild(Guild guild) {
@@ -779,9 +780,9 @@ public class SoundboardBot {
       ChatListener chatListener = new ChatListener(this);
       MoveListener moveListener = new MoveListener(this);
       GameListener gameListener = new GameListener(this);
-      this.addListener(chatListener);
-      this.addListener(moveListener);
-      this.addListener(gameListener);
+      addListener(chatListener);
+      addListener(moveListener);
+      addListener(gameListener);
       this.chatListener = chatListener;
       LOG.info("Finished initializing bot with name " + getBotName());
       for (Guild guild : getGuilds())
