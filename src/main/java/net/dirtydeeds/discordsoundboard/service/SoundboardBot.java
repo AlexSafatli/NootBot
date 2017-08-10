@@ -25,6 +25,7 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.core.utils.PermissionUtil;
 
 import javax.security.auth.login.LoginException;
 
@@ -252,7 +253,7 @@ public class SoundboardBot {
     if (textChannel == null || textChannel.getGuild() == null) return false;
     String id = bot.getSelfUser().getId();
     Member self = textChannel.getGuild().getMemberById(id);
-    return self.hasPermission(p);
+    return PermissionUtil.checkPermission(textChannel, self, p);
   }
 
   public boolean hasPermissionInVoiceChannel(
@@ -260,7 +261,7 @@ public class SoundboardBot {
     if (voiceChannel == null || voiceChannel.getGuild() == null) return false;
     String id = bot.getSelfUser().getId();
     Member self = voiceChannel.getGuild().getMemberById(id);
-    return self.hasPermission(p);
+    return PermissionUtil.checkPermission(voiceChannel, self, p);
   }
 
   public String getBotName() {

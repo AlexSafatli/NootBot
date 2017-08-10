@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
@@ -75,8 +76,8 @@ public abstract class AbstractChatCommandProcessor implements
 	}
 
 	private void delete(Message m) {
-		if (bot.hasPermissionInChannel(m.getTextChannel(),
-		                               Permission.MESSAGE_MANAGE))
+		if (bot.hasPermissionInChannel(
+		      m.getTextChannel(), Permission.MESSAGE_MANAGE))
 			m.deleteMessage().queue();
 	}
 
@@ -113,18 +114,27 @@ public abstract class AbstractChatCommandProcessor implements
 
 	private void sendEmbed(MessageReceivedEvent event, String message,
 	                       boolean error, boolean warning) {
-		if (event.isFromType(ChannelType.PRIVATE)
-		    || !bot.hasPermissionInChannel(event.getTextChannel(),
-		                                   Permission.MESSAGE_WRITE)) {
+		TextChannel channel;
+		if (event.isFromType(ChannelType.PRIVATE)) {
 			pm(event, message);
+			return;
+		} else if (!bot.hasPermissionInChannel(
+		             event.getTextChannel(), Permission.MESSAGE_WRITE)) {
+			if (bot.getBotChannel(event.getGuild()) != null) {
+				channel = bot.getBotChannel(event.getGuild());
+			} else {
+				pm(event, message);
+				return;
+			}
 		} else {
-			event.getChannel().sendMessage(
-			  makeEmbed(message, event.getAuthor()).isWarning(
-			    warning).isError(error).getMessage()
-			).queue((Message msg)-> {
-				buffer.add(msg);
-			});
+			channel = event.getTextChannel();
 		}
+		channel.sendMessage(
+		  makeEmbed(message, event.getAuthor()).isWarning(
+		    warning).isError(error).getMessage()
+		).queue((Message msg)-> {
+			buffer.add(msg);
+		});
 	}
 
 	protected void m(MessageReceivedEvent event, String message) {
@@ -145,8 +155,11 @@ public abstract class AbstractChatCommandProcessor implements
 	}
 
 	protected void embed(MessageReceivedEvent event, StyledEmbedMessage em) {
-		event.getChannel().sendMessage(em.getMessage()).queue(
-		  (Message msg)-> buffer.add(msg));
+		TextChannel channel =
+		  (bot.hasPermissionInChannel(
+		     event.getTextChannel(), Permission.MESSAGE_WRITE)) ?
+		  event.getTextChannel() : bot.getBotChannel(event.getGuild());
+		channel.sendMessage(em.getMessage()).queue((Message msg)-> buffer.add(msg));
 	}
 
 	protected void embedForUser(MessageReceivedEvent event,
