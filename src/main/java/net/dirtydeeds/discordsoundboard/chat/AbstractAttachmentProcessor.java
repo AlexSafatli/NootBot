@@ -8,6 +8,7 @@ import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Message.Attachment;
@@ -94,7 +95,7 @@ public abstract class AbstractAttachmentProcessor implements
   private void delete(Message m) {
     if (bot.hasPermissionInChannel(m.getTextChannel(),
                                    Permission.MESSAGE_MANAGE))
-      m.deleteMessage().queue();
+      m.delete().queue();
   }
 
   protected void pm(MessageReceivedEvent event, String message) {
@@ -102,16 +103,9 @@ public abstract class AbstractAttachmentProcessor implements
   }
 
   protected void pm(MessageReceivedEvent event, StyledEmbedMessage message) {
-    if (!event.getAuthor().hasPrivateChannel()) {
-      try {
-        event.getAuthor().openPrivateChannel().block();
-      } catch (RateLimitedException e) {
-        embed(event, message);
-        return;
-      }
-    }
-    event.getAuthor().getPrivateChannel().sendMessage(
-      message.getMessage()).queue();
+    event.getAuthor().openPrivateChannel().queue(Channel c-> {
+      c.sendMessage(message.getMessage()).queue();
+    });
   }
 
   private StyledEmbedMessage makeEmbed(String message) {

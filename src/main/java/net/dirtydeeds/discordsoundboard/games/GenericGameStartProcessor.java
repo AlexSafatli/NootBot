@@ -49,7 +49,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		}
 		public void clear() {
 			if (message != null) {
-				message.deleteMessage().queue();
+				message.delete().queue();
 			}
 		}
 	}

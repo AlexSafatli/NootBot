@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.requests.RestAction;
-import net.dv8tion.jda.core.MessageHistory;
+import net.dv8tion.jda.core.entities.MessageHistory;
 import net.dv8tion.jda.core.entities.Message;
 
 public class ChatUtils {
@@ -26,7 +26,7 @@ public class ChatUtils {
       a.queue(msgs -> {
         for (Message msg : msgs) {
           if (msg.getAuthor().equals(bot.getAPI().getSelfUser()))
-            msg.deleteMessage().queue();
+            msg.delete().queue();
         }
       });
     }

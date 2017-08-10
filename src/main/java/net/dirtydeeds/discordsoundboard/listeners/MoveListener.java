@@ -92,7 +92,7 @@ public class MoveListener extends AbstractListener {
           Queue<EntranceEvent> entrances = pastEntrances.get(guild);
           while (!entrances.isEmpty()) {
             EntranceEvent entrance = entrances.poll();
-            entrance.message.deleteMessage().queue();
+            entrance.message.delete().queue();
             if (entrance.user.equals(user) && !userHasHeardEntranceRecently) {
               userHasHeardEntranceRecently = true;
               LOG.info("User has heard entrance recently.");

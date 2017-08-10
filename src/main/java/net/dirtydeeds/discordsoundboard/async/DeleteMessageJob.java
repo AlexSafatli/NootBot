@@ -30,6 +30,6 @@ public class DeleteMessageJob implements SoundboardJob {
   }
 
   public void run(SoundboardDispatcher dispatcher) {
-    message.deleteMessage().queue();
+    message.delete().queue();
   }
 }
