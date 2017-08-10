@@ -53,6 +53,11 @@ jar {
     exclude('/src/main/resources/**')
 }
 
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
 def distributionsCopySpec = copySpec {
     def baseName = "${jar.baseName}"
     def fileName = "${baseName}-$version"
