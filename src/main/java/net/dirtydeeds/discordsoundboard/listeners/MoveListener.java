@@ -106,7 +106,7 @@ public class MoveListener extends AbstractListener {
             if (bot.playFileForEntrance(fileToPlay, user, voiceChannel)) {
               SoundFile sound = bot.getDispatcher().getSoundFileByName(
                                   fileToPlay);
-              soundInfo = "Played sound " + formatString(Strings.SOUND_DESC,
+              soundInfo = "Played " + formatString(Strings.SOUND_DESC,
                           fileToPlay, sound.getCategory(),
                           sound.getNumberOfPlays()) + ".";
             } else {
@@ -179,7 +179,7 @@ public class MoveListener extends AbstractListener {
   }
 
   public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event) {
-    if (bot.isUser(event.getMember().getUser())) {
+    if (bot.isUser(event.getMember().getUser()) && bot.isMuted()) {
       LOG.info("Was guild muted.");
       leaveVoiceInGuild(event.getGuild());
     }
@@ -203,8 +203,8 @@ public class MoveListener extends AbstractListener {
       m.addDescription("Hey, how you doin'?" + Strings.SEPARATOR +
                        user.getAsMention());
     }
-    m.addContent("What Am I?", "I am a bot (*beep boop*). I play sounds. " +
-                 "Type `.help` for more information.", false);
+    m.addContent("What Am I?", "I am a bot. I play sounds. " +
+                 "Type`.help` for more.", false);
     return m;
   }
 
