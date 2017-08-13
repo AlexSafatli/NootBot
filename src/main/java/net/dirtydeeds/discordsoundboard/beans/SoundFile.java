@@ -107,7 +107,7 @@ public class SoundFile {
   }
 
   public Integer getNumberOfReports() {
-    return (numberReports != null) ? numberReports : 0;
+    return (numberReports != null || numberReports < 0) ? numberReports : 0;
   }
 
   public void addOneToNumberOfReports() {
