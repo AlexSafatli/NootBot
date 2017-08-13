@@ -276,8 +276,11 @@ public class SoundboardBot {
   }
 
   public VoiceChannel getConnectedChannel(Guild guild) {
-    return (guild.getAudioManager().isConnected()) ?
-           guild.getAudioManager().getConnectedChannel() : null;
+    if (guild.getAudioManager().isConnected())
+      return guild.getAudioManager().getConnectedChannel();
+    else if (guild.getAudioManager().isAttemptingToConnect())
+      return guild.getAudioManager().getQueuedAudioConnection();
+    return null;
   }
 
   public TextChannel getBotChannel(Guild guild) {

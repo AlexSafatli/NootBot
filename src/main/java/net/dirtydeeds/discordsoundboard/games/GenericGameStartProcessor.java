@@ -25,7 +25,6 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
 	private static final int MIN_NUM_PLAYERS = 3;
 	private static final int NUMBER_SEC_BETWEEN = 60;
-	private static final int MAX_DURATION = 2;
 
 	private GameStartEvent pastEvent;
 	private String thumbnail;
@@ -109,7 +108,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				pastEvent.clear();
 			}
 
-			String filePlayed = bot.getRandomTopPlayedSoundName(MAX_DURATION);
+			String filePlayed = bot.getRandomSoundName();
 			if (filePlayed != null) {
 				TextChannel publicChannel = bot.getBotChannel(channel.getGuild());
 				SoundFile f = bot.getSoundMap().get(filePlayed);
@@ -117,7 +116,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				try {
 					bot.playFileForUser(filePlayed, user);
 					pastEvent = new GameStartEvent(channel, new Date(System.currentTimeMillis()), null);
-					LOG.info("Played random top sound in channel: \"" + filePlayed + "\".");
+					LOG.info("Played random sound in channel: \"" + filePlayed + "\".");
 					embed(publicChannel, announcement(filePlayed, game, users, numPlayers, numPlays), (Message m)-> {
 						pastEvent.message = m;
 					});
