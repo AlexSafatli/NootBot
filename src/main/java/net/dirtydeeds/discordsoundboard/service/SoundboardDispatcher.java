@@ -349,6 +349,7 @@ public class SoundboardDispatcher {
 	}
 
 	public void saveSound(SoundFile soundFile) {
+		availableSounds.put(soundFile.getSoundFileId(), soundFile);
 		soundDao.saveAndFlush(soundFile);
 	}
 

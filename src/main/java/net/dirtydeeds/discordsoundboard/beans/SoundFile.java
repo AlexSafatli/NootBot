@@ -115,11 +115,11 @@ public class SoundFile {
   }
 
   public void setNumberOfReports(Integer numberReports) {
-    this.numberReports = (numberReports != null) ? numberReports : 0;
+    this.numberReports = (numberReports != null) ? numberReports : this.numberReports;
   }
 
   public void setNumberOfPlays(Long plays) {
-    numberPlays = (plays != null) ? plays : 0;
+    this.numberPlays = (plays != null) ? plays : this.numberPlays;
   }
 
   public void addOneToNumberOfPlays() {
