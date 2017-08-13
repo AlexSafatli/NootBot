@@ -22,6 +22,7 @@ public class ModifySoundPlayCountProcessor extends
 		if (sound != null) {
 			sound.setNumberOfPlays(count);
 			bot.getDispatcher().saveSound(sound);
+			bot.getDispatcher().getAvailableSoundFiles().get(sound.getSoundFileId()).setNumberOfPlays(count);
 			pm(event, "Set `" + name + "` to play count: **" + count + "**.");
 		}
 	}
