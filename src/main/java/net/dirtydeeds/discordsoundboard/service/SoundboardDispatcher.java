@@ -130,7 +130,7 @@ public class SoundboardDispatcher {
 			for (Object listener : bots[index].getAPI().getRegisteredListeners()) {
 				bots[index].getAPI().removeEventListener(listener);
 			}
-			bots[index].getAPI().shutdown(false);
+			bots[index].getAPI().shutdown();
 			bots[index] = null;
 		}
 		String token = getProperty("token_" + i), owner = getProperty("owner_" + i);
@@ -183,35 +183,29 @@ public class SoundboardDispatcher {
 	private void getFileList() {
 		Map<String, SoundFile> sounds = new TreeMap<>();
 		try {
-			if (!soundFilePath.toFile().exists()) {
-				LOG.info("Creating directory: " + soundFilePath.toFile());
+			if (!soundFilePath.toFile().exists())
 				soundFilePath.toFile().mkdir();
-			}
-			if (!tmpFilePath.toFile().exists()) {
-				LOG.info("Creating directory: " + tmpFilePath.toFile());
+			if (!tmpFilePath.toFile().exists())
 				tmpFilePath.toFile().mkdir();
-			}
+
 			Files.walk(soundFilePath).forEach(filePath -> {
 				if (Files.isRegularFile(filePath)) {
-					// Sound file case
-					String fileName = filePath.getFileName().toString();
-					fileName = fileName.substring(
-					  fileName.indexOf("/") + 1, fileName.length());
-					fileName = fileName.substring(0, fileName.indexOf("."));
+					String name = filePath.getFileName().toString();
+					name = name.substring(name.indexOf("/") + 1, name.length());
+					name = name.substring(0, name.indexOf("."));
+
 					File file = filePath.toFile();
 					String parent = file.getParentFile().getName(); // Category name.
-					SoundFile soundFile = new SoundFile(
-					  fileName, filePath.toFile(), parent);
-					SoundFile _soundFile = soundDao.findOne(fileName);
-					if (_soundFile != null) {
-						// Resolve conflicts between persistence object and new
-						// object.
-						soundFile.setNumberOfPlays(_soundFile.getNumberOfPlays());
-						soundFile.setNumberOfReports(_soundFile.getNumberOfReports());
-						soundFile.setExcludedFromRandom(_soundFile.isExcludedFromRandom());
+					SoundFile soundFile = new SoundFile(name, filePath.toFile(), parent);
+					SoundFile db = soundDao.findOne(name);
+					if (db != null) {
+						// Resolve conflicts between persistence object and new object.
+						soundFile.setNumberOfPlays(db.getNumberOfPlays());
+						soundFile.setNumberOfReports(db.getNumberOfReports());
+						soundFile.setExcludedFromRandom(db.isExcludedFromRandom());
 					}
 					saveSound(soundFile);
-					sounds.put(fileName, soundFile);
+					sounds.put(name, soundFile);
 				}
 			});
 			availableSounds = sounds;
@@ -220,6 +214,7 @@ public class SoundboardDispatcher {
 			soundNameTrie = new LowercaseTrie(sounds.keySet());
 		} catch (Exception e) {
 			LOG.fatal(e.toString());
+			e.printStackTrace();
 		}
 	}
 
@@ -236,6 +231,7 @@ public class SoundboardDispatcher {
 			});
 		} catch (IOException e) {
 			LOG.fatal(e.toString());
+			e.printStackTrace();
 		}
 	}
 

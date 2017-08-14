@@ -29,8 +29,8 @@ public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
 		return false;
 	}
 
-	protected abstract void handleEvent(MessageReceivedEvent event,
-	                                    String message);
+	protected abstract void handleEvent(
+	  MessageReceivedEvent event, String message);
 
 	@Override
 	public boolean canBeRunByAnyone() {

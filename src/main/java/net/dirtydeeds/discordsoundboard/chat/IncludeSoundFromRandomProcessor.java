@@ -32,12 +32,10 @@ public class IncludeSoundFromRandomProcessor extends
     } else {
       SoundFile file = bot.getDispatcher().getSoundFileByName(name);
       if (!file.isExcludedFromRandom()) {
-        pm(event, "That sound was not excluded! Use the pair to this command" +
-           " to exclude it.");
+        pm(event, "That sound was *not excluded*!");
       } else {
         file.setExcludedFromRandom(false);
-        pm(event, "Sound `" + name + "` is no longer been excluded from being" +
-           " played through random events.");
+        pm(event, "Sound `" + name + "` is no longer been excluded.");
       }
       bot.getDispatcher().saveSound(file);
     }

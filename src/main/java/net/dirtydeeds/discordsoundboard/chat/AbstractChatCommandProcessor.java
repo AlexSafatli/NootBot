@@ -33,10 +33,9 @@ public abstract class AbstractChatCommandProcessor implements
 
 	public void process(MessageReceivedEvent event) {
 		if (!isApplicableCommand(event)) return;
-		String message = event.getMessage().getContent().toLowerCase();
 		clearBuffer();
 		try {
-			handleEvent(event, message);
+			handleEvent(event, event.getMessage().getContent().toLowerCase());
 		} catch (Exception ex) {
 			e(event, ex.toString());
 			ex.printStackTrace();
@@ -124,8 +123,8 @@ public abstract class AbstractChatCommandProcessor implements
 			channel = event.getTextChannel();
 		}
 		channel.sendMessage(
-		  makeEmbed(message, event.getAuthor()).isWarning(
-		    warning).isError(error).getMessage()
+		  makeEmbed(message, event.getAuthor()).isWarning(warning).isError(
+		    error).getMessage()
 		).queue((Message msg)-> {
 			buffer.add(msg);
 		});

@@ -32,8 +32,7 @@ public class ExcludeSoundFromRandomProcessor extends
 		} else {
 			SoundFile file = bot.getDispatcher().getSoundFileByName(name);
 			if (file.isExcludedFromRandom()) {
-				pm(event, "That sound was *already excluded*! Use the pair to this " +
-				   "command to include it again.");
+				pm(event, "That sound was *already excluded*!");
 			} else {
 				file.setExcludedFromRandom(true);
 				pm(event, "Sound `" + name + "` has been excluded from being played " +

@@ -46,7 +46,10 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 		}
 
 		// Send all buffered data.
-		for (String s : mb) pm(event, s);
+		for (String s : mb) {
+			if (canRunAuthenticated) pm(event, s);
+			else m(event, s);
+		}
 		LOG.info("Responded to help command from " + event.getAuthor().getName());
 	}
 
