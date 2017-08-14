@@ -152,7 +152,10 @@ public abstract class AbstractChatCommandProcessor implements
 		  (bot.hasPermissionInChannel(
 		     event.getTextChannel(), Permission.MESSAGE_WRITE)) ?
 		  event.getTextChannel() : bot.getBotChannel(event.getGuild());
-		channel.sendMessage(em.getMessage()).queue((Message msg)-> buffer.add(msg));
+		if (channel != null && em != null) {
+			channel.sendMessage(em.getMessage()).queue(
+			  (Message msg)-> buffer.add(msg));
+		}
 	}
 
 	protected void embedForUser(MessageReceivedEvent event,

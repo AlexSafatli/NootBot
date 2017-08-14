@@ -21,8 +21,7 @@ public class PlaySoundLoopedProcessor extends
   protected void handleEvent(MessageReceivedEvent event, String message) {
     User user = event.getAuthor();
     if (getArguments().length != 2) {
-      e(event,
-        "Need **sound name** and **number of times** to play that sound.");
+      e(event, "Need **sound name** and **number of times** to play it.");
       return;
     }
     boolean privileged = bot.getUser(user).isPrivileged();

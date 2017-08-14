@@ -201,6 +201,7 @@ public class SoundboardBot {
         ceiling = top;
     while (file == null
            || file.isExcludedFromRandom()
+           || file.getDuration() == null
            || file.getDuration() > maxDuration
            || map.get(file.getSoundFileId()) == null) {
       // No sounds that can actually be played.
@@ -208,7 +209,7 @@ public class SoundboardBot {
       index = rng.nextInt(Math.min(ceiling, sounds.size()));
       file = sounds.get(index);
       if (ceiling + 1 < sounds.size()) ++ceiling;
-      if (seen.get(file.getSoundFileId()) == null)
+      if (file != null && seen.get(file.getSoundFileId()) == null)
         seen.put(file.getSoundFileId(), true);
     }
     return file.getSoundFileId();
