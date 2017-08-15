@@ -2,9 +2,10 @@ package net.dirtydeeds.discordsoundboard.chat;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.io.*;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Guild;
@@ -37,8 +38,11 @@ public abstract class AbstractChatCommandProcessor implements
 		try {
 			handleEvent(event, event.getMessage().getContent().toLowerCase());
 		} catch (Exception ex) {
-			e(event, ex.toString());
-			ex.printStackTrace();
+			StringWriter sw = new StringWriter();
+			ex.printStackTrace(new PrintWriter(sw));
+			String err = sw.toString();
+			e(event, "```" + StringUtils.truncate(err, 256) + "```");
+			System.err.println(err);
 		}
 		deleteOriginalMessage(event);
 	}

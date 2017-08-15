@@ -20,8 +20,15 @@ public class GameListener extends AbstractListener {
   public static final SimpleLog LOG = SimpleLog.getLog("Game");
 
   private List<GameUpdateProcessor> processors;
-  private static final List<String> MONITORED_GAMES = Arrays.asList(new String[] {"League of Legends", "PUBG", "Endless Space 2", "Mass Effect: Andromeda"});
-  private static final String[] THUMBNAIL_URLS = new String[] {Thumbnails.LEAGUE, Thumbnails.PUBG, "", Thumbnails.MEA};
+  private static final List<String> MONITORED_GAMES = Arrays.asList(
+        new String[] {
+          "League of Legends", "PUBG", "Endless Space 2",
+          "Mass Effect: Andromeda"
+        }
+      );
+  private static final String[] THUMBNAIL_URLS = new String[] {
+    Thumbnails.LEAGUE, Thumbnails.PUBG, "", Thumbnails.MEA
+  };
 
   public GameListener(SoundboardBot bot) {
     this.bot = bot;
@@ -42,32 +49,34 @@ public class GameListener extends AbstractListener {
     }
   }
 
-  private void logGameChange(String name, Guild guild, Game previousGame, Game currentGame) {
-    if (guild == null) return;
+  private void logGameChange(String name, Guild guild, Game previousGame,
+                             Game currentGame) {
+    String guildName = (guild != null) ? guild.getName() : null;
     if (currentGame == null && previousGame != null)
-      LOG.info(name + " stopped playing " + previousGame.getName() + " in server " + guild.getName() + ".");
+      LOG.info(name + " stopped playing " + previousGame.getName() +
+               " in server " + guildName + ".");
     else if (previousGame == null)
-      LOG.info(name + " started playing " + currentGame.getName() + " in server " + guild.getName() + ".");
+      LOG.info(name + " started playing " + currentGame.getName() +
+               " in server " + guildName + ".");
     else
-      LOG.info(name + " changed to " + currentGame.getName() + " from " + previousGame.getName() + " in server " + guild.getName() + ".");
+      LOG.info(name + " changed to " + currentGame.getName() + " from " +
+               previousGame.getName() + " in server " + guildName + ".");
   }
 
   public void onUserGameUpdate(UserGameUpdateEvent event) {
-
     User user = event.getUser();
+    if (user.isBot()) return; // Ignore bots.
     Guild guild = event.getGuild();
     Member member = guild.getMemberById(user.getId());
-    if (user.isBot()) return; // Ignore bots.
 
-    boolean processed = false;
     String name = user.getName();
-    Game previousGame = event.getPreviousGame(), currentGame = member.getGame();
+    Game previousGame = event.getPreviousGame(),
+         currentGame = member.getGame();
+    logGameChange(name, guild, previousGame, currentGame);
 
     for (GameUpdateProcessor processor : processors) {
       if (processor.isApplicableUpdateEvent(event, user)) {
         processor.process(event);
-        if (!processed) logGameChange(name, guild, previousGame, currentGame);
-        processed = true;
         LOG.info("Processed game update event with " + processor);
         if (processor.isMutuallyExclusive()) {
           LOG.info("That processor cannot be run with others. Stopping.");
