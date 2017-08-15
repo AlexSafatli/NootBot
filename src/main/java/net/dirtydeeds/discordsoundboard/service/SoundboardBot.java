@@ -108,7 +108,7 @@ public class SoundboardBot {
   public String getUptimeAsString() {
     String uptime = "";
     long minutes = getUptimeInMinutes();
-    if (minutes == 0) return "just now";
+    if (minutes == 0) return "less than a minute";
     else if (minutes >= MIN_MINUTES_TO_SHOW_AS_DAYS) {
       uptime = (minutes / (60 * 24) + " days");
     } else if (minutes >= MIN_MINUTES_TO_SHOW_AS_HOURS) {
