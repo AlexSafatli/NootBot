@@ -24,7 +24,6 @@ public class PlayRandomTopSoundProcessor extends
                " tried to play a sound file but is not allowed.");
       return;
     }
-    try {
       String filePlayed = bot.getRandomTopPlayedSoundName();
       if (filePlayed != null &&
           bot.getUsersVoiceChannel(event.getAuthor()) != null) {
@@ -38,9 +37,6 @@ public class PlayRandomTopSoundProcessor extends
                                 event.getAuthor().getAsMention());
         embedForUser(event, em);
       }
-    } catch (Exception e) {
-      e(event, e.toString());
-    }
   }
 
   @Override
