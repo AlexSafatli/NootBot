@@ -131,6 +131,7 @@ public class SoundFile {
   }
 
   public Boolean isExcludedFromRandom() {
+    if (this.excludedFromRandom == null) this.excludedFromRandom = false;
     return this.excludedFromRandom;
   }
 
