@@ -461,7 +461,7 @@ public class SoundboardBot {
     AudioPlayer player = ((AudioPlayerSendHandler)(
                             audio.getSendingHandler())).getPlayer();
     player.stopTrack();
-    List<String> files = scheduler.getIdentifiers();
+    List<String> files = scheduler.clear();
     if (files.size() > 1) {
       for (String name : files) {
         File f = new File(name);
@@ -474,7 +474,6 @@ public class SoundboardBot {
         }
       }
     }
-    scheduler.clear();
   }
 
   public void muteSound(Guild guild) {

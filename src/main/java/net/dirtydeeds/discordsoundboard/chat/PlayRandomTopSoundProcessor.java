@@ -27,15 +27,16 @@ public class PlayRandomTopSoundProcessor extends
       String filePlayed = bot.getRandomTopPlayedSoundName();
       if (filePlayed != null &&
           bot.getUsersVoiceChannel(event.getAuthor()) != null) {
-        bot.playFileForUser(filePlayed, event.getAuthor());
-        SoundFile file = bot.getDispatcher().getSoundFileByName(filePlayed);
-        LOG.info("Played \"" + filePlayed + "\" in server " +
-                 event.getGuild().getName());
-        StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file,
-                                "You've Played a Random Top Sound",
-                                desc + " \u2014 " +
-                                event.getAuthor().getAsMention());
-        embedForUser(event, em);
+        if (bot.playFileForUser(filePlayed, event.getAuthor()) != null) {
+          SoundFile file = bot.getDispatcher().getSoundFileByName(filePlayed);
+          LOG.info("Played \"" + filePlayed + "\" in server " +
+                   event.getGuild().getName());
+          StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file,
+                                  "You've Played a Random Top Sound",
+                                  desc + " \u2014 " +
+                                  event.getAuthor().getAsMention());
+          embedForUser(event, em);
+        }
       }
   }
 

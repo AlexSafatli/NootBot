@@ -37,8 +37,10 @@ public class AudioTrackScheduler extends AudioEventAdapter {
 		}
 	}
 
-	public void clear() {
+	public List<String> clear() {
+		List<String> ids = getIdentifiers();
 		tracks.clear();
+		return ids;
 	}
 
 	public List<String> getIdentifiers() {
