@@ -4,8 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
-import net.dirtydeeds.discordsoundboard.utils.StringUtils;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -29,17 +28,17 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 		List<String> possibilities = new LinkedList<>();
 
 		if (StringUtils.containsAny(query, '?')) {
-			w(event, "No sound file contains question marks `?`. *Baka*.");
+			w(event, lookupString(Strings.SOUND_NO_QUESTION_MARKS));
 			return;
 		} else if (query.length() <= 1) {
-			w(event, "That search keyword is too short. *Baka*.");
+			w(event, "`" + query + "` is too short. *Baka*.");
 			return;
 		}
 
 		// Leverage trie first.
 		String possibleName = bot.getClosestMatchingSoundName(query);
 		if (possibleName != null) {
-			LOG.info("A close matching sound name from trie is: " + possibleName);
+			LOG.info("Closest matching sound name from trie: " + possibleName);
 			possibilities.add(possibleName);
 		}
 
@@ -54,7 +53,7 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 		mb.append("Found **" + possibilities.size() +
 		          "** possible sounds for query `" + query + "` \u2014 " +
 		          user.getAsMention() + ".\n\n");
-		LOG.info("Found " + possibilities.size() + " possible sounds for query.");
+		LOG.info("Found " + possibilities.size() + " possible sounds.");
 		if (!possibilities.isEmpty()) {
 			for (String possibility : possibilities)
 				mb.append("`?" + possibility + "` ");

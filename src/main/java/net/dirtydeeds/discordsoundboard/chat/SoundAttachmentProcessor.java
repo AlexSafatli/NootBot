@@ -34,13 +34,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 	protected boolean handleAttachment(MessageReceivedEvent event,
 	                                   Attachment attachment) {
-		// Get the user.
 		User user = event.getAuthor();
-
-		// Get the category to upload to.
 		String category = event.getMessage().getContent();
-
-		// Get the details for the file.
 		AttachmentFile file = getAttachmentDetails(attachment);
 
 		// Check for maximum file size allowed.
@@ -103,15 +98,13 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 				   MAX_DURATION_IN_SECONDS + "s**.");
 				return false;
 			}
+
 			// Send message(s).
 			pm(event, getDownloadedMessage(
 			     file.name, category, soundFile, attachment.getSize()));
 			StyledEmbedMessage publishMessage = getPublishMessage(category,
 			                                    file.shortName, user, soundFile);
-			if (!event.isFromType(ChannelType.PRIVATE)) {
-				embed(event, publishMessage);
-				LOG.info("Sent announcement for uploaded file.");
-			}
+			if (!event.isFromType(ChannelType.PRIVATE)) embed(event, publishMessage);
 			if (!user.getName().equals(bot.getOwner())) { // Alert bot owner too.
 				sendPublishMessageToOwner(publishMessage);
 				LOG.info("Sent information for uploaded file to owner.");
@@ -157,8 +150,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 	private String getDownloadedMessage(String name, String category,
 	                                    SoundFile file, long size) {
-		String msg = "`" + name + "` added! Play with `?" + file.getSoundFileId() +
-		             "`.\n\u2014\n";
+		String msg = "`" + name + "` downloaded (**nom nom**) and added!" +
+		             " Play with `?" + file.getSoundFileId() + "`.\n\u2014\n";
 		if (category != null && !category.isEmpty() &&
 		    !category.equals("Uncategorized"))
 			msg += "Category: **" + category + "**\n";
@@ -183,7 +176,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
 	@Override
 	public String getCommandHelpString() {
-		return "Upload (an) .mp3 OR .wav file(s) to add sounds. Use the Comment " +
-		       "field to specify category.";
+		return "Upload (an) .mp3, .flac, .m4a OR .wav file(s) to add sounds." +
+		       " Use the Comment field to specify category.";
 	}
 }

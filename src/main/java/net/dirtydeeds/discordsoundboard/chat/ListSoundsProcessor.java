@@ -58,14 +58,16 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
     if (soundFiles.size() > 0) {
       if (cat == null) {
         if (soundFiles.size() > BIG_NUMBER_OF_SOUNDS) {
-          w(event, "**" + soundFiles.size() + " files are stored** " +
+          w(event, "**" + soundFiles.size() + " files are stored** (" +
+            bot.getDispatcher().sizeOfLibrary() + ") " +
             "\u2014 that's a lot of files! Listing them will *flood this" +
             " channel*. List sounds by category using `" + getPrefix() +
             " <category>` instead.");
           return;
         }
-        m(event, "**" + soundFiles.size() + " files are stored**. " +
-          "They are organized in **" +
+        m(event, "**" + soundFiles.size() + " files (" +
+          bot.getDispatcher().sizeOfLibrary() +
+          ") are stored**. They are organized in **" +
           bot.getDispatcher().getNumberOfCategories() +
           "** categories \u2014 type any of these to play them.");
         // List everything uncategorized.

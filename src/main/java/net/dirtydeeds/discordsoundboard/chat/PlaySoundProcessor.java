@@ -23,11 +23,10 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	private void sendBadSoundMessage(MessageReceivedEvent event, String name,
 	                                 String suggestion, User user) {
 		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
-		msg.setTitle("No Sound `" + name + "` Found");
+		msg.setTitle("Sound `" + name + "` Not Found!");
 		msg.addDescription((suggestion != null && !suggestion.isEmpty()) ?
 		                   suggestion : "What are you looking for?");
-		msg.addContent("Search For It",
-		               "Use `.search` with a keyword to find sounds.", true);
+		msg.addContent("Search For It", lookupString(Strings.USE_SEARCH), true);
 		embed(event, msg.isWarning(true));
 	}
 
@@ -52,18 +51,19 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 		} else if (StringUtils.containsAny(name, '?')) {
 			return; // File names cannot contain question marks.
 		} else if (bot.getSoundMap().get(name) == null) {
-			LOG.info("Sound not found.");
-			String suggestion = "Check your spelling.",
+			LOG.info("Sound was not found.");
+			String suggestion = lookupString(Strings.CHECK_SPELLING),
 			       possibleName = bot.getClosestMatchingSoundName(name);
 			if (name.equals("help")) {
-				suggestion = "Were you trying to access the `.help` command?";
+				suggestion = lookupString(Strings.SOUND_NOT_FOUND_HELP);
 			} else if (possibleName != null) {
-				suggestion = "Did you mean `" + possibleName + "`?";
+				suggestion = formatString(Strings.DID_YOU_MEAN, possibleName);
 			} else {
 				// Do a naive search to see if something contains this name. Stop early.
 				for (String s : bot.getSoundMap().keySet()) {
 					if (s.contains(name)) {
-						suggestion = "Did you mean `" + s + "`?"; break;
+						suggestion = formatString(Strings.DID_YOU_MEAN, s);
+						break;
 					}
 				}
 			}
@@ -84,8 +84,8 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 		String help = getPrefix() + "soundfile - play a sound by name";
 		Set<String> soundFileNames = bot.getSoundMap().keySet();
 		if (!soundFileNames.isEmpty()) {
-			help += " - e.g., " + getPrefix() +
-			        StringUtils.randomString(soundFileNames);
+			help += " - e.g., " +
+			        getPrefix() + StringUtils.randomString(soundFileNames);
 		}
 		return help;
 	}

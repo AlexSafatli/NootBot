@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
@@ -38,12 +39,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-/**
- * @author asafatli.
- *
- *         Allows for multiple copies of this service across >= 1 Discord
- *         accounts.
- */
 @Service
 public class SoundboardDispatcher {
 
@@ -65,6 +60,11 @@ public class SoundboardDispatcher {
 	  Paths.get(System.getProperty("user.dir") + "/sounds");
 	private final Path tmpFilePath =
 	  Paths.get(System.getProperty("user.dir") + "/tmp");
+
+	private static final String[] UNITS = new String[] {
+	  "B", "KB", "MB", "GB", "TB"
+	};
+	private static final String LIBRARY_TOO_BIG = "**TOO BIG**";
 
 	@Inject
 	public SoundboardDispatcher(UserRepository userDao,
@@ -355,6 +355,26 @@ public class SoundboardDispatcher {
 		getFileList();
 		LOG.info("Getting list of categories.");
 		getCategoryList(soundFilePath, categoryTree);
+	}
+
+	private long getFolderSize(File target) {
+		long len = 0;
+		File[] files = target.listFiles();
+		for (int i = 0; i < files.length; ++i) {
+			if (files[i].isFile()) len += files[i].length();
+			else len += getFolderSize(files[i]);
+		}
+		return len;
+	}
+
+	public String sizeOfLibrary() {
+		long size = getFolderSize(soundFilePath);
+		int index = (int) (Math.log10(size) / 3);
+		if (index >= UNITS.length) {
+			return LIBRARY_TOO_BIG;
+		}
+		double val = 1 << (index * 10);
+		return new DecimalFormat("#,##0.#").format(size / val) + " " + UNITS[index];
 	}
 
 }

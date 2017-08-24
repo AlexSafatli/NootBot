@@ -61,8 +61,7 @@ public class PlaySoundForUserProcessor extends
         } else pm(event, formatString(Strings.USER_PLAY_SOUND_FAILURE,
                                         filename));
       } catch (Exception e) {
-        LOG.fatal("Could not play file.");
-        e.printStackTrace();
+        throw e;
       }
     }
   }

@@ -86,19 +86,19 @@ public class PlaySoundsJob implements SoundboardJob {
 						sound = bot.getRandomSoundName();
 						if (sound != null)
 							timePlaying += schedule(dispatcher, scheduler, sound);
-					} catch (Exception e) { e.printStackTrace(); continue; }
+					} catch (Exception e) continue;
 				else try {
 						sound = bot.getRandomSoundNameForCategory(category);
 						if (sound != null)
 							timePlaying += schedule(dispatcher, scheduler, sound);
-					} catch (Exception e) { e.printStackTrace(); continue; }
+					} catch (Exception e) continue;
 				randomed = true;
 			} else {
 				if (allRandomed) allRandomed = false;
 				try {
 					if (sound != null)
 						timePlaying += schedule(dispatcher, scheduler, sound);
-				} catch (Exception e) { e.printStackTrace(); continue; }
+				} catch (Exception e) continue;
 			}
 			if (sound != null) {
 				try {
@@ -106,10 +106,10 @@ public class PlaySoundsJob implements SoundboardJob {
 					if (!sound.equals(firstSound)) same = false;
 					mb.append("`" + sound + "` (**" +
 					          dispatcher.getSoundFileByName(sound).getNumberOfPlays() +
-					          "** plays)");
+					          "**)");
 					if (i == sounds.length - 2 && sounds.length > 1) mb.append(", and ");
 					else if (i < sounds.length - 1) mb.append(", ");
-				} catch (Exception e) { e.printStackTrace(); continue; }
+				} catch (Exception e) continue;
 			}
 		}
 
@@ -131,8 +131,8 @@ public class PlaySoundsJob implements SoundboardJob {
 				                    user.getAsMention(), user, null, timePlaying);
 			}
 
+			TextChannel c = bot.getBotChannel(guild);
 			for (Message msg : msgs) {
-				TextChannel c = bot.getBotChannel(guild);
 				if (c != null) {
 					RestAction<Message> m = c.sendMessage(msg);
 					if (m != null) {
@@ -162,8 +162,8 @@ public class PlaySoundsJob implements SoundboardJob {
 				msgs.add(msg.getMessage());
 			}
 		} else {
-			msgs.add(StyledEmbedMessage.forUser(bot, user, "Loop",
-			                                    description).getMessage());
+			msgs.add(StyledEmbedMessage.forUser(
+			           bot, user, "Loop", description).getMessage());
 		}
 		return msgs;
 	}

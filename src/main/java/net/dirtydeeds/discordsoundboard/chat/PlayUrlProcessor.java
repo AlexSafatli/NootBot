@@ -20,7 +20,6 @@ public class PlayUrlProcessor extends OwnerSingleArgumentChatCommandProcessor {
       bot.playURLForChatCommand(url, event);
     } catch (Exception e) {
       played = false;
-      LOG.warn("Did not play sound.");
     }
     return played;
   }
@@ -29,8 +28,7 @@ public class PlayUrlProcessor extends OwnerSingleArgumentChatCommandProcessor {
     User user = event.getAuthor();
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
-      LOG.info(String.format("%s isn't allowed to play sounds.",
-                             user.getName()));
+      LOG.info(String.format("%s not allowed to play sounds.", user.getName()));
     } else {
       play(event, message.substring(getPrefix().length(), message.length()));
     }

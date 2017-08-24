@@ -61,7 +61,7 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
         "Rolling `" + getArgument() + "` and got:\n" + roll(dice, sides, add);
       m(event, rolled);
     } else {
-      w(event, "This command needs syntax in the form `xdy+z` \u2014 " +
+      pm(event, "This command needs syntax in the form `xdy+z` \u2014 " +
         "e.g., `2d5+2` rolls 2 dice with possible sides ranging from 1 " +
         "to 5 and returns the result plus 2.");
     }

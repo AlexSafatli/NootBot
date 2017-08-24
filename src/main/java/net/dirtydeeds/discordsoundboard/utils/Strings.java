@@ -28,6 +28,8 @@ public class Strings {
 
 	public static final String SOUND_NOT_FOUND = "SOUND_NOT_FOUND";
 	public static final String SOUND_NOT_FOUND_SUGGESTION = "SOUND_NOT_FOUND_SUGGESTION";
+	public static final String SOUND_NOT_FOUND_HELP = "SOUND_NOT_FOUND_HELP";
+	public static final String SOUND_NO_QUESTION_MARKS = "SOUND_NO_QUESTION_MARKS";
 	public static final String SOUND_PLAY_COUNT_ANNOUNCEMENT = "SOUND_PLAY_COUNT_ANNOUNCEMENT";
 	public static final String SOUND_DESC = "SOUND_DESC";
 	public static final String SOUND_REPORT_INFO = "SOUND_REPORT_INFO";
@@ -39,11 +41,15 @@ public class Strings {
 	public static final String GAME_START_MESSAGE = "GAME_START_MESSAGE";
 
 	public static final String NOT_FOUND = "NOT_FOUND";
+	public static final String DID_YOU_MEAN = "DID_YOU_MEAN";
 
 	public static final String DELETED_SUCCESS = "DELETED_SUCCESS";
 	public static final String DELETED_FAILURE = "DELETED_FAILURE";
 
 	public static final String NEED_NAME = "NEED_NAME";
 	public static final String NO_NAME = "NO_NAME";
+	public static final String CHECK_SPELLING = "CHECK_SPELLING";
+
+	public static final String USE_SEARCH = "USE_SEARCH";
 
 }
