@@ -61,7 +61,7 @@ public class PlaySoundForUserProcessor extends
         } else pm(event, formatString(Strings.USER_PLAY_SOUND_FAILURE,
                                         filename));
       } catch (Exception e) {
-        throw e;
+        return;
       }
     }
   }
