@@ -23,7 +23,7 @@ public class MoveListener extends AbstractListener {
   public static final SimpleLog LOG = SimpleLog.getLog("Move");
 
   private static final List<String> WELCOMES = Arrays.asList(new String[] {
-        "Welcome", "Hello", "Yo", "Hiya", "Heya", "Sup"
+        "Welcome", "Hello", "Yo", "Heya"
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
@@ -99,19 +99,15 @@ public class MoveListener extends AbstractListener {
             }
           }
         }
-        // Play a sound if there are others to hear.
-        if (VoiceUtils.numUsersInVoiceChannels(guild) > 1
-            || !userHasHeardEntranceRecently) {
+        // Play a sound.
+        if (!userHasHeardEntranceRecently) {
           try {
             if (bot.playFileForEntrance(fileToPlay, user, voiceChannel)) {
               SoundFile sound = bot.getDispatcher().getSoundFileByName(
                                   fileToPlay);
               soundInfo = "Played " + formatString(Strings.SOUND_DESC,
                           fileToPlay, sound.getCategory(),
-                          sound.getNumberOfPlays()) + ".";
-            } else {
-              LOG.info("Wanted to play entrance \"" + fileToPlay +
-                       "\" for user but did not play a sound.");
+                          sound.getNumberOfPlays());
             }
           } catch (Exception e) { e.printStackTrace(); }
         } else if (bot.getConnectedChannel(guild) == null) {
@@ -180,7 +176,7 @@ public class MoveListener extends AbstractListener {
 
   public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event) {
     if (bot.isUser(event.getMember().getUser()) && bot.isMuted(event.getGuild())) {
-      LOG.info("Was guild muted.");
+      LOG.info("Was server muted.");
       leaveVoiceInGuild(event.getGuild());
     }
   }
