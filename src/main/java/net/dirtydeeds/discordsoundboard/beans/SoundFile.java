@@ -103,7 +103,7 @@ public class SoundFile {
   }
 
   public Long getNumberOfPlays() {
-    if (numberPlays < 0) numberPlays = 0;
+    if (numberPlays < 0) numberPlays = 0L;
     return numberPlays;
   }
 

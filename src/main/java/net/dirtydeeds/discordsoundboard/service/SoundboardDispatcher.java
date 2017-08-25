@@ -368,7 +368,7 @@ public class SoundboardDispatcher {
 	}
 
 	public String sizeOfLibrary() {
-		long size = getFolderSize(soundFilePath);
+		long size = getFolderSize(soundFilePath.toFile());
 		int index = (int) (Math.log10(size) / 3);
 		if (index >= UNITS.length) {
 			return LIBRARY_TOO_BIG;
