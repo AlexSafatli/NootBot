@@ -64,7 +64,7 @@ public class SoundboardDispatcher {
 	private static final String[] UNITS = new String[] {
 	  "B", "KB", "MB", "GB", "TB"
 	};
-	private static final String LIBRARY_TOO_BIG = "**TOO BIG**";
+	private static final String LIBRARY_TOO_BIG = "**CANNOT COMPUTE**";
 
 	@Inject
 	public SoundboardDispatcher(UserRepository userDao,
@@ -102,8 +102,8 @@ public class SoundboardDispatcher {
 		appProperties = new Properties();
 		InputStream stream = null;
 		try {
-			stream = new FileInputStream(
-			  System.getProperty("user.dir") + "/app.properties");
+			stream = new FileInputStream(System.getProperty("user.dir") +
+			                             "/app.properties");
 			appProperties.load(stream);
 			stream.close();
 			return;
@@ -119,6 +119,7 @@ public class SoundboardDispatcher {
 				appProperties.load(stream);
 				stream.close();
 			} catch (IOException e) {
+				LOG.fatal("Could not load properties.");
 				e.printStackTrace();
 			}
 		}
@@ -133,15 +134,16 @@ public class SoundboardDispatcher {
 			bots[index].getAPI().shutdown();
 			bots[index] = null;
 		}
-		String token = getProperty("token_" + i), owner = getProperty("owner_" + i);
+		String token = getProperty("token_" + i),
+		       owner = getProperty("owner_" + i);
 		if (token == null || owner == null) {
 			LOG.fatal("Config not populated! Need API token and owner for bot " + i);
 			return;
 		} else {
-			LOG.info("Initializing bot " + i);
+			LOG.info("Initializing bot " + i +
+			         " (token: " + token + ", owner: " + owner + ")");
 		}
-		SoundboardBot bot = new SoundboardBot(token, owner, this);
-		bots[index] = bot;
+		bots[index] = new SoundboardBot(token, owner, this);
 	}
 
 	public void restartBot(SoundboardBot bot) {
@@ -210,7 +212,7 @@ public class SoundboardDispatcher {
 			});
 			availableSounds = sounds;
 			LOG.info("Instantiating trie with " + availableSounds.size() +
-			         " sound file names.");
+			         " sound names.");
 			soundNameTrie = new LowercaseTrie(sounds.keySet());
 		} catch (Exception e) {
 			LOG.fatal(e.toString());
@@ -242,9 +244,7 @@ public class SoundboardDispatcher {
 	public List<SoundboardBot> getBots() {
 		List<SoundboardBot> bots = new LinkedList<>();
 		for (int i = 0; i < this.bots.length; ++i) {
-			if (this.bots[i] != null) {
-				bots.add(this.bots[i]);
-			}
+			if (this.bots[i] != null) bots.add(this.bots[i]);
 		}
 		return bots;
 	}
@@ -310,8 +310,7 @@ public class SoundboardDispatcher {
 
 	public Category getCategory(String name) {
 		for (Category category : getCategories())
-			if (category.getName().equalsIgnoreCase(name))
-				return category;
+			if (category.getName().equalsIgnoreCase(name)) return category;
 		return null;
 	}
 

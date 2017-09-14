@@ -11,6 +11,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
@@ -57,12 +58,13 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
     Map<String, List<SoundFile>> categoryFiles = getCategoryMappings();
     if (soundFiles.size() > 0) {
       if (cat == null) {
-        if (soundFiles.size() > BIG_NUMBER_OF_SOUNDS) {
+        if (soundFiles.size() > BIG_NUMBER_OF_SOUNDS &&
+            !event.isFromType(ChannelType.PRIVATE)) {
           w(event, "**" + soundFiles.size() + " files are stored** (" +
             bot.getDispatcher().sizeOfLibrary() + ") " +
             "\u2014 that's a lot of files! Listing them will *flood this" +
             " channel*. List sounds by category using `" + getPrefix() +
-            " <category>` instead.");
+            " <category>` instead. To list categories, use `.categories`.");
           return;
         }
         m(event, "**" + soundFiles.size() + " files (" +
