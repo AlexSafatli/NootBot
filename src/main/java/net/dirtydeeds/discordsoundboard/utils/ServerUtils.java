@@ -1,5 +1,7 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
+import java.util.function.Consumer;
+
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 
 import net.dv8tion.jda.core.entities.Icon;

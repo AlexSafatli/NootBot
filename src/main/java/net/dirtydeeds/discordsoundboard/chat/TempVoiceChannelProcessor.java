@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.chat;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.async.DeleteInactiveChannelJob;
 import net.dirtydeeds.discordsoundboard.utils.*;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class TempVoiceChannelProcessor extends
