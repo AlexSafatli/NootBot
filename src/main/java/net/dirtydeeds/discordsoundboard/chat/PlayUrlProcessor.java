@@ -6,7 +6,7 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class PlayUrlProcessor extends OwnerSingleArgumentChatCommandProcessor {
+public class PlayUrlProcessor extends SingleArgumentChatCommandProcessor {
 
   public static final SimpleLog LOG = SimpleLog.getLog("URL");
 
@@ -18,6 +18,7 @@ public class PlayUrlProcessor extends OwnerSingleArgumentChatCommandProcessor {
     boolean played = true;
     try {
       bot.playURLForChatCommand(url, event);
+      m(event, "Playing `" + url + "`.");
     } catch (Exception e) {
       played = false;
     }

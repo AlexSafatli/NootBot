@@ -1,12 +1,16 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
 import java.text.SimpleDateFormat;
+import java.text.BreakIterator;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 public class StringUtils {
+
+	private static final int MAX_NUMBER_OF_CACHED_WORDS = 1000;
+	public static List<String> wordCache = new LimitedQueue<>(MAX_NUMBER_OF_CACHED_WORDS);
 
 	public static String truncate(String str) {
 		return truncate(str, 10);
@@ -43,6 +47,10 @@ public class StringUtils {
 		return null;
 	}
 
+	public static String randomWord() {
+		return randomString(wordCache);
+	}
+
 	public static <T> String listToString(List<T> list) {
 		if (list.size() == 1) {
 			return list.get(0).toString();
@@ -66,6 +74,23 @@ public class StringUtils {
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 		String f = formatter.format(date);
 		return (f != null) ? f : "";
+	}
+
+	public static void cacheString(String s) {
+		if (!wordCache.contains(s)) wordCache.add(s);
+	}
+
+	public static void cacheWords(String message) {
+		BreakIterator iter = BreakIterator.getWordInstance();
+		iter.setText(message);
+		int last = iter.first();
+		while (BreakIterator.DONE != last) {
+			int first = last;
+			last = iter.next();
+			if (last != BreakIterator.DONE && Character.isLetterOrDigit(message.charAt(first))) {
+				cacheString(message.substring(first, last));
+			}
+		}
 	}
 
 }

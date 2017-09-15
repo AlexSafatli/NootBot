@@ -2,7 +2,7 @@ package net.dirtydeeds.discordsoundboard.listeners;
 
 import net.dirtydeeds.discordsoundboard.chat.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -94,6 +94,7 @@ public class ChatListener extends AbstractListener {
     processors.add(new ReportBugProcessor(".bug",                     bot));
     processors.add(new InviteBotProcessor(".invite",                  bot));
     processors.add(new ServerDonationMessageProcessor(".donate",      bot));
+    processors.add(new TempVoiceChannelProcessor(".tmpvoice",         bot));
     processors.add(new SoundAttachmentProcessor(                      bot));
     processors.add(new FilterTwitchClipProcessor(                     bot));
     processors.add(new FilterYoutubeClipProcessor(                    bot));
@@ -181,6 +182,7 @@ public class ChatListener extends AbstractListener {
       return;
     }
 
+    StringUtils.cacheWords(event.getMessage().getContent());
   }
 
   private boolean isTypoCommand(MessageReceivedEvent event) {
