@@ -23,11 +23,11 @@ public class GameListener extends AbstractListener {
   private static final List<String> MONITORED_GAMES = Arrays.asList(
         new String[] {
           "League of Legends", "PUBG", "Endless Space 2",
-          "Mass Effect: Andromeda"
+          "Mass Effect: Andromeda", "Divinity: Original Sin 2"
         }
       );
   private static final String[] THUMBNAIL_URLS = new String[] {
-    Thumbnails.LEAGUE, Thumbnails.PUBG, "", Thumbnails.MEA
+    Thumbnails.LEAGUE, Thumbnails.PUBG, "", Thumbnails.MEA, Thumbnails.DOS2
   };
 
   public GameListener(SoundboardBot bot) {

@@ -10,7 +10,9 @@ import java.util.Random;
 public class StringUtils {
 
 	private static final int MAX_NUMBER_OF_CACHED_WORDS = 1000;
-	public static List<String> wordCache = new LimitedQueue<>(MAX_NUMBER_OF_CACHED_WORDS);
+	private static final int MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR = 3;
+	private static final String STARTING_CACHE_WORD = "Noot";
+	public static List<String> wordCache = initializeCache();
 
 	public static String truncate(String str) {
 		return truncate(str, 10);
@@ -49,6 +51,13 @@ public class StringUtils {
 
 	public static String randomWord() {
 		return randomString(wordCache);
+	}
+
+	public static String randomWordPair() {
+		String a = "", b = "";
+		while (a.size() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) a = randomWord();
+		while (b.size() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) b = randomWord();
+		return humanize(a) + " " + humanize(b);
 	}
 
 	public static <T> String listToString(List<T> list) {
@@ -91,6 +100,13 @@ public class StringUtils {
 				cacheString(message.substring(first, last));
 			}
 		}
+	}
+
+	private static LimitedQueue<String> initializeCache() {
+		LimitedQueue<String> cache = new LimitedQueue<>(MAX_NUMBER_OF_CACHED_WORDS);
+		for (int i = 0; i < MAX_NUMBER_OF_CACHED_WORDS; ++i)
+			cacheString(STARTING_CACHE_WORD);
+		return cache;
 	}
 
 }

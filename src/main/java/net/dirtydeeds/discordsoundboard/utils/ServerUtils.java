@@ -20,9 +20,8 @@ public class ServerUtils {
   public static void addVoiceChannel(Guild guild, String name, Consumer<Channel> after) {
     if (guild == null) return;
     if (name == null || name.isEmpty()) {
-      name = StringUtils.randomWord();
+      name = StringUtils.randomWordPair();
     }
-    name = StringUtils.humanize(name);
     GuildController ctrl = guild.getController();
     ctrl.createVoiceChannel(name).queue(after);
   }
