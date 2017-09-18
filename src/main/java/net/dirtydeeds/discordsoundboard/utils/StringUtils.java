@@ -55,8 +55,8 @@ public class StringUtils {
 
 	public static String randomWordPair() {
 		String a = "", b = "";
-		while (a.size() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) a = randomWord();
-		while (b.size() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) b = randomWord();
+		while (a.length() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) a = randomWord();
+		while (b.length() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) b = randomWord();
 		return humanize(a) + " " + humanize(b);
 	}
 
