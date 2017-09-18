@@ -5,6 +5,7 @@ import net.dirtydeeds.discordsoundboard.Thumbnails;
 import net.dirtydeeds.discordsoundboard.games.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.User;
@@ -52,15 +53,20 @@ public class GameListener extends AbstractListener {
   private void logGameChange(String name, Guild guild, Game previousGame,
                              Game currentGame) {
     String guildName = (guild != null) ? guild.getName() : null;
-    if (currentGame == null && previousGame != null)
+    if (currentGame == null && previousGame != null) {
+      if (previousGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " stopped playing " + previousGame.getName() +
                " in server " + guildName + ".");
-    else if (previousGame == null)
+    } else if (previousGame == null) {
+      if (currentGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " started playing " + currentGame.getName() +
                " in server " + guildName + ".");
-    else
+    } else {
+      if (currentGame.getType().equals(GameType.STREAMING) ||
+          previousGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " changed to " + currentGame.getName() + " from " +
                previousGame.getName() + " in server " + guildName + ".");
+    }
   }
 
   public void onUserGameUpdate(UserGameUpdateEvent event) {

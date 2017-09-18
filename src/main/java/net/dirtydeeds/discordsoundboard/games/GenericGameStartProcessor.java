@@ -7,6 +7,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -69,7 +70,8 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		if (guild == null || userChannel == null || botChannel == null || !userChannel.equals(botChannel))
 			return false;
 		Game game = guild.getMemberById(user.getId()).getGame();
-		return (game != null && userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
+		return (game != null && !game.getType().equals(GameType.STREAMING) &&
+		        userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
 	}
 
 	protected void handleEvent(UserGameUpdateEvent event, User user) {
