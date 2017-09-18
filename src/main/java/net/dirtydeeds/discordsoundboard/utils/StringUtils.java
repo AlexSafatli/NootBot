@@ -105,7 +105,7 @@ public class StringUtils {
 	private static LimitedQueue<String> initializeCache() {
 		LimitedQueue<String> cache = new LimitedQueue<>(MAX_NUMBER_OF_CACHED_WORDS);
 		for (int i = 0; i < MAX_NUMBER_OF_CACHED_WORDS; ++i)
-			cacheString(STARTING_CACHE_WORD);
+			cache.add(STARTING_CACHE_WORD);
 		return cache;
 	}
 
