@@ -54,16 +54,16 @@ public class GameListener extends AbstractListener {
                              Game currentGame) {
     String guildName = (guild != null) ? guild.getName() : null;
     if (currentGame == null && previousGame != null) {
-      if (previousGame.getType().equals(GameType.STREAMING)) return;
+      if (previousGame.getType().equals(GameType.TWITCH)) return;
       LOG.info(name + " stopped playing " + previousGame.getName() +
                " in server " + guildName + ".");
     } else if (previousGame == null) {
-      if (currentGame.getType().equals(GameType.STREAMING)) return;
+      if (currentGame.getType().equals(GameType.TWITCH)) return;
       LOG.info(name + " started playing " + currentGame.getName() +
                " in server " + guildName + ".");
     } else {
-      if (currentGame.getType().equals(GameType.STREAMING) ||
-          previousGame.getType().equals(GameType.STREAMING)) return;
+      if (currentGame.getType().equals(GameType.TWITCH) ||
+          previousGame.getType().equals(GameType.TWITCH)) return;
       LOG.info(name + " changed to " + currentGame.getName() + " from " +
                previousGame.getName() + " in server " + guildName + ".");
     }
