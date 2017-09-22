@@ -19,6 +19,7 @@ public class TempVoiceChannelProcessor extends
       return;
     }
     ServerUtils.addVoiceChannel(event.getGuild(), null, (Channel c) -> {
+      m(event, "Created channel with name *" + c.getName() + "*.");
       bot.getDispatcher().getAsyncService().runJob(
         new DeleteInactiveChannelJob(c));
     });
