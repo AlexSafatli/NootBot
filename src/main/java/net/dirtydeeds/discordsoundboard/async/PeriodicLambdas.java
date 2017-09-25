@@ -19,7 +19,7 @@ public class PeriodicLambdas {
   public static PeriodicLambdaJob cleanOldBotMessages() {
     return new PeriodicLambdaJob((SoundboardBot b) -> {
       b.clearPreviousMessages();
-    }, EVERY_TWO_DAYS);
+    }, EVERY_SIX_HOURS);
   }
 
 }

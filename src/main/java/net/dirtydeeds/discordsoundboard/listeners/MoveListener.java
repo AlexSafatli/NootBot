@@ -23,7 +23,13 @@ public class MoveListener extends AbstractListener {
   public static final SimpleLog LOG = SimpleLog.getLog("Move");
 
   private static final List<String> WELCOMES = Arrays.asList(new String[] {
-        "Welcome", "Hello", "Yo", "Heya"
+        "Welcome", "Hello", "Yo", "Heya", "Sup", "Ahoy"
+      });
+
+  private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
+        "Hey, how you doin'?", "You okay there?", "What's kickin'?",
+        "Ahoy matey!", "NUUUUUUDIST BEACH~",
+        "Calm down! I charge by the minute.", "You're back..."
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
@@ -106,8 +112,9 @@ public class MoveListener extends AbstractListener {
               SoundFile sound = bot.getDispatcher().getSoundFileByName(
                                   fileToPlay);
               soundInfo = "Played " + formatString(Strings.SOUND_DESC,
-                          fileToPlay, sound.getCategory(),
-                          sound.getNumberOfPlays());
+                                                   fileToPlay,
+                                                   sound.getCategory(),
+                                                   sound.getNumberOfPlays());
             }
           } catch (Exception e) { e.printStackTrace(); }
         } else if (bot.getConnectedChannel(guild) == null) {
@@ -184,6 +191,11 @@ public class MoveListener extends AbstractListener {
   private void leaveVoiceInGuild(Guild guild) {
     if (guild.getAudioManager() != null) {
       LOG.info("Leaving voice channel in " + guild.getName());
+      Queue<EntranceEvent> entrances = pastEntrances.get(guild);
+      while (!entrances.isEmpty()) {
+        EntranceEvent entrance = entrances.poll();
+        if (entrance.message != null) entrance.message.delete().queue();
+      }
       guild.getAudioManager().closeAudioConnection();
     }
   }
@@ -196,8 +208,8 @@ public class MoveListener extends AbstractListener {
     if (!soundInfo.isEmpty()) {
       m.addDescription(soundInfo + Strings.SEPARATOR + user.getAsMention());
     } else {
-      m.addDescription("Hey, how you doin'?" + Strings.SEPARATOR +
-                       user.getAsMention());
+      m.addDescription(StringUtils.randomString(WELCOME_BACKS) +
+                       Strings.SEPARATOR + user.getAsMention());
     }
     m.addContent("What Am I?", "I am a bot. I play sounds. " +
                  "Type`.help` for more.", false);
