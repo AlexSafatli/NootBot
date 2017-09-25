@@ -143,7 +143,12 @@ public class SoundboardDispatcher {
 			LOG.info("Initializing bot " + i +
 			         " (token: " + token + ", owner: " + owner + ")");
 		}
-		bots[index] = new SoundboardBot(token, owner, this);
+		try {
+			bots[index] = new SoundboardBot(token, owner, this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			bots[index] = null;
+		}
 	}
 
 	public void restartBot(SoundboardBot bot) {
