@@ -34,7 +34,7 @@ public class ChatUtils {
 
   public static TextChannel getDiscussionChannel(SoundboardBot bot,
       Guild guild) {
-    TextChannel channel = guild.getPublicChannel();
+    TextChannel channel = guild.getDefaultChannel();
     if (channel == null) {
       for (TextChannel c : guild.getTextChannels()) {
         if (bot.hasPermissionInChannel(c, Permission.MESSAGE_WRITE)) {

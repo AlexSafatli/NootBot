@@ -14,7 +14,7 @@ public class ServerUtils {
 
   public static void changePublicChannelTopic(Guild guild, String topic) {
     if (guild == null) return;
-    guild.getPublicChannel().getManager().setTopic(topic).queue();
+    guild.getDefaultChannel().getManager().setTopic(topic).queue();
   }
 
   public static void addVoiceChannel(Guild guild, String name, Consumer<Channel> after) {
