@@ -23,13 +23,12 @@ public class MoveListener extends AbstractListener {
   public static final SimpleLog LOG = SimpleLog.getLog("Move");
 
   private static final List<String> WELCOMES = Arrays.asList(new String[] {
-        "Welcome", "Hello", "Yo", "Heya", "Sup", "Ahoy"
+        "Welcome", "Hello", "Yo", "Heya", "Sup"
       });
 
   private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
-        "Hey, how you doin'?", "You okay there?", "What's kickin'?",
-        "Ahoy matey!", "NUUUUUUDIST BEACH~",
-        "Calm down! I charge by the minute.", "You're back..."
+       "You okay there?", "Need some help?",
+        "Calm down!", "What has you so spooked?", "😪", "😴", "😡", "🖕"
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;

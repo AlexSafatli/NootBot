@@ -25,7 +25,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
 		msg.setTitle("Sound `" + name + "` Not Found!");
 		msg.addDescription((suggestion != null && !suggestion.isEmpty()) ?
-		                   suggestion : "What are you looking for?");
+		                   suggestion : "Derp.");
 		msg.addContent("Search For It", lookupString(Strings.USE_SEARCH), true);
 		embed(event, msg.isWarning(true));
 	}
