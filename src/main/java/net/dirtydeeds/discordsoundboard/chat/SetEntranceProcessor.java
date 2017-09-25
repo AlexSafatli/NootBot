@@ -26,7 +26,8 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
 			SoundFile file = bot.getSoundMap().get(fileName);
 			boolean authenticated = bot.isAuthenticated(event.getAuthor(),
 			                        event.getGuild());
-			if (!authenticated && file.getDuration() > MAX_DURATION_IN_SECONDS) {
+			if (!authenticated && file.getDuration() != null &&
+			    file.getDuration() > MAX_DURATION_IN_SECONDS) {
 				pm(event, "The file `" + fileName +
 				   "` is far too **long**! *Pick something shorter*.");
 				return;
