@@ -26,8 +26,7 @@ public class StyledEmbedMessage {
 	private String errorTitle;
 
 	private static final List<String> ERROR_STRINGS = Arrays.asList(new String[] {
-	      "Fwubbed it.", "DELETE DELETE DELETTTTTTT", "Excuse me, I stuttered.",
-	      "Nani?"
+	      "Fwubbed it.", "Excuse me, I stuttered.", "Nani?", "Derp"
 	    });
 
 	private static final String FOOTER_TEXT = Version.NAME + " " +
@@ -101,7 +100,7 @@ public class StyledEmbedMessage {
 	public StyledEmbedMessage isWarning(boolean warning) {
 		if (warning) {
 			builder.setColor(WARN_COLOR);
-			builder.setAuthor(errorTitle, null, Icons.WARNING);
+			builder.setAuthor(DEFAULT_TOP, null, null);
 		}
 		return this;
 	}
@@ -138,7 +137,7 @@ public class StyledEmbedMessage {
 		}
 		if (file.getSoundFile() != null) {
 			String stamp = StringUtils.dayTimeStamp(file.getLastModified());
-			if (!stamp.isEmpty()) msg.addContent("Added", stamp, true);
+			if (!stamp.isEmpty()) msg.addContent("Added", stamp, false);
 		}
 		List<net.dirtydeeds.discordsoundboard.beans.User> usersWithEntrance =
 		  bot.getDispatcher().getUsersWithEntrance(file.getSoundFileId());

@@ -14,7 +14,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("Sound");
-	private static final long PLAY_COUNT_FOR_ANNOUNCEMENT = 50;
+	private static final long PLAY_COUNT_FOR_ANNOUNCEMENT = 100;
 
 	public PlaySoundProcessor(String prefix, SoundboardBot bot) {
 		super(prefix, "Play Sound", bot);
@@ -67,6 +67,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 					}
 				}
 			}
+			LOG.info("Suggestion: " + suggestion);
 			sendBadSoundMessage(event, name, suggestion, user);
 		} else {
 			SoundFile sound = bot.getDispatcher().getSoundFileByName(name);
