@@ -72,7 +72,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		    || !userChannel.equals(botChannel))
 			return false;
 		Game game = guild.getMemberById(user.getId()).getGame();
-		return (game != null && !game.getType().equals(GameType.TWITCH) &&
+		return (game != null && !game.getType().equals(GameType.STREAMING) &&
 		        userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
 	}
 
