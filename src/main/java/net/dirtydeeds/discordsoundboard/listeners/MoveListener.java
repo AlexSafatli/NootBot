@@ -60,9 +60,8 @@ public class MoveListener extends AbstractListener {
       if (voiceChannel.getMembers().size() == 1) {
         LOG.info("Moved to an empty channel.");
         leaveVoiceInGuild(guild);
-        return;
       }
-      welcomeUserInTitle = false;
+      return;
     } else if (user.isBot()) {
       return;
     }
