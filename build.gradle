@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'distribution'
 apply plugin: 'spring-boot'
 
-version = '2.5.5'
+version = '2.5.6'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compile('net.dv8tion:JDA:3.3.1_280')
+    compile('net.dv8tion:JDA:3.3.1_284')
     compile('com.sedmelluq:lavaplayer:1.2.43')
     compile("commons-io:commons-io:2.5")
     compile("com.h2database:h2")

@@ -19,9 +19,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 		int i = 0;
 		while (files != null && !files.isEmpty() && i < files.size()) {
 			SoundFile f = files.get(i++);
-			if (bot.getSoundMap().get(f.getSoundFileId()) != null) {
-				return f;
-			}
+			if (bot.getSoundMap().get(f.getSoundFileId()) != null) return f;
 		}
 		return null;
 	}

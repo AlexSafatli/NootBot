@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
-  private static final int BIG_NUMBER_OF_SOUNDS = 1000;
+  private static final int BIG_NUMBER_OF_SOUNDS = 1024;
   public static final SimpleLog LOG = SimpleLog.getLog("ListSounds");
 
   public ListSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
@@ -116,7 +116,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
     for (String s : strings) {
       int k = i + 1;
       StyledEmbedMessage em = new StyledEmbedMessage((i == 0) ? title : title +
-          " (" + k + ")", bot);
+          " [" + k + "]", bot);
       em.addDescription(s);
       embed(event, em);
       ++i;

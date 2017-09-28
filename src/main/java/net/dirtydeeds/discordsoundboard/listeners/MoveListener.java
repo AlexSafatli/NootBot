@@ -27,8 +27,8 @@ public class MoveListener extends AbstractListener {
       });
 
   private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
-       "You okay there?", "Need some help?",
-        "Calm down!", "What has you so spooked?", "😪", "😴", "😡", "🖕"
+        "You okay there?", "Need some help?",
+        "Calm down!", "What's got you so spooked?", "😪", "😴", "😡", "🖕"
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
@@ -54,13 +54,15 @@ public class MoveListener extends AbstractListener {
   private void onJoin(VoiceChannel voiceChannel, User user) {
     Guild guild = voiceChannel.getGuild();
     VoiceChannel afkChannel = guild.getAfkChannel();
+    boolean welcomeUserInTitle = true;
 
     if (bot.isUser(user)) {
       if (voiceChannel.getMembers().size() == 1) {
         LOG.info("Moved to an empty channel.");
         leaveVoiceInGuild(guild);
+        return;
       }
-      return;
+      welcomeUserInTitle = false;
     } else if (user.isBot()) {
       return;
     }
@@ -124,7 +126,8 @@ public class MoveListener extends AbstractListener {
         if (joined != null && joined.equals(voiceChannel)) {
           if (bot.getBotChannel(guild) != null) {
             embed(bot.getBotChannel(guild),
-                  welcomeMessage(user, voiceChannel, soundInfo),
+                  welcomeMessage(user, voiceChannel, soundInfo,
+                                 welcomeUserInTitle),
                   (Message m)-> pastEntrances.get(guild).add(
                     new EntranceEvent(m, user)));
           }
@@ -188,6 +191,10 @@ public class MoveListener extends AbstractListener {
   }
 
   private void leaveVoiceInGuild(Guild guild) {
+    if (guild == null) return;
+    if (pastEntrances.get(guild) == null) {
+      pastEntrances.put(guild, new LinkedList<EntranceEvent>());
+    }
     if (guild.getAudioManager() != null) {
       LOG.info("Leaving voice channel in " + guild.getName());
       Queue<EntranceEvent> entrances = pastEntrances.get(guild);
@@ -200,9 +207,11 @@ public class MoveListener extends AbstractListener {
   }
 
   public StyledEmbedMessage welcomeMessage(User user, Channel channel,
-      String soundInfo) {
-    StyledEmbedMessage m = new StyledEmbedMessage(
-      StringUtils.randomString(WELCOMES) + ", " + user.getName() + "!", bot);
+      String soundInfo, boolean welcomeInTitle) {
+    String title = (welcomeInTitle) ? 
+      StringUtils.randomString(WELCOMES) + ", " + user.getName() + "!" :
+      user.getName() + " has entered the channel.";
+    StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     if (!soundInfo.isEmpty()) {
       m.addDescription(soundInfo + Strings.SEPARATOR + user.getAsMention());
@@ -210,8 +219,7 @@ public class MoveListener extends AbstractListener {
       m.addDescription(StringUtils.randomString(WELCOME_BACKS) +
                        Strings.SEPARATOR + user.getAsMention());
     }
-    m.addContent("What Am I?", "I am a bot. I play sounds. " +
-                 "Type`.help` for more.", false);
+    m.addContent("What Am I?", "I play sounds. Type `.help` for more.", false);
     return m;
   }
 

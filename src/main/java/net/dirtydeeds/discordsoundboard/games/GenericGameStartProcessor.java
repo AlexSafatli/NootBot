@@ -69,8 +69,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		try { userChannel = bot.getUsersVoiceChannel(user); }
 		catch (Exception e) { return false; }
 		if (guild == null || userChannel == null || botChannel == null
-		    || !userChannel.equals(botChannel))
-			return false;
+		    || !userChannel.equals(botChannel)) return false;
 		Game game = guild.getMemberById(user.getId()).getGame();
 		return (game != null && !game.getType().equals(GameType.STREAMING) &&
 		        userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
@@ -88,8 +87,8 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			return;
 		}
 
-		// See if there have been multiple people that started playing the game in a channel.
-		// If so: play a sound randomly from top played sounds.
+		// See if there are multiple people that are playing the game in channel.
+		// If so: play a sound randomly.
 		User[] users = new User[channel.getMembers().size()];
 		for (Member m : channel.getMembers()) {
 			if (m.getGame() != null && m.getGame().getName().equals(game) &&
@@ -112,12 +111,9 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				pastEvent.clear();
 			}
 
-			String filePlayed;
-			if (bot.isASoundCategory(game)) {
-				filePlayed = bot.getRandomSoundNameForCategory(game);
-			} else {
-				filePlayed = bot.getRandomSoundName();
-			}
+			String filePlayed = (bot.isASoundCategory(game)) ?
+			                    bot.getRandomSoundNameForCategory(game) :
+			                    bot.getRandomSoundName();
 			if (filePlayed != null) {
 				TextChannel publicChannel = bot.getBotChannel(channel.getGuild());
 				SoundFile f = bot.getSoundMap().get(filePlayed);
@@ -127,12 +123,10 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 					pastEvent = new GameStartEvent(channel,
 					                               new Date(System.currentTimeMillis()),
 					                               null);
-					LOG.info("Played random sound in channel: \"" + filePlayed + "\".");
+					LOG.info("Played random sound: \"" + filePlayed + "\".");
 					embed(publicChannel,
 					      announcement(filePlayed, game, users, numPlayers, numPlays),
-					(Message m)-> {
-						pastEvent.message = m;
-					});
+					      (Message m)-> { pastEvent.message = m; });
 				} catch (Exception e) {
 					error(event, e);
 				}

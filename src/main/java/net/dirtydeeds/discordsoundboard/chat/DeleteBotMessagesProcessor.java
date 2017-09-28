@@ -18,6 +18,6 @@ public class DeleteBotMessagesProcessor extends
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " (*) - clear all bot messages in channel";
+    return getPrefix() + " - clear all bot messages in channel";
   }
 }
