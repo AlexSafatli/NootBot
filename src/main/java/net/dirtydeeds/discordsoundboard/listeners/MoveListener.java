@@ -28,7 +28,7 @@ public class MoveListener extends AbstractListener {
 
   private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
         "You okay there?", "Need some help?",
-        "Calm down!", "What's got you so spooked?", "😪", "😴", "😡", "🖕"
+        "What's got you so spooked?", "😪", "😴", "😡", "🖕"
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
@@ -70,11 +70,9 @@ public class MoveListener extends AbstractListener {
              " in " + guild.getName() + ".");
 
     if (!bot.isAllowedToPlaySound(user)) {
-      LOG.info("User " + user.getName() + " cannot play sounds. Ignoring.");
       return;
     } else if (afkChannel != null && afkChannel.getId().equals(
                  voiceChannel.getId())) {
-      LOG.info("User " + user.getName() + " joined an AFK channel. Ignoring.");
       return;
     } else if (bot.isMuted(guild)) {
       LOG.info("Bot is currently muted. Doing nothing.");
@@ -183,7 +181,8 @@ public class MoveListener extends AbstractListener {
   }
 
   public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event) {
-    if (bot.isUser(event.getMember().getUser()) && bot.isMuted(event.getGuild())) {
+    if (bot.isUser(event.getMember().getUser()) &&
+        bot.isMuted(event.getGuild())) {
       LOG.info("Was server muted.");
       leaveVoiceInGuild(event.getGuild());
     }
@@ -195,7 +194,7 @@ public class MoveListener extends AbstractListener {
       pastEntrances.put(guild, new LinkedList<EntranceEvent>());
     }
     if (guild.getAudioManager() != null) {
-      LOG.info("Leaving voice channel in " + guild.getName());
+      LOG.info("Leaving voice in " + guild.getName());
       Queue<EntranceEvent> entrances = pastEntrances.get(guild);
       while (!entrances.isEmpty()) {
         EntranceEvent entrance = entrances.poll();
@@ -207,9 +206,9 @@ public class MoveListener extends AbstractListener {
 
   public StyledEmbedMessage welcomeMessage(User user, Channel channel,
       String soundInfo, boolean welcomeInTitle) {
-    String title = (welcomeInTitle) ? 
-      StringUtils.randomString(WELCOMES) + ", " + user.getName() + "!" :
-      user.getName() + " has entered the channel.";
+    String title = (welcomeInTitle) ?
+                   StringUtils.randomString(WELCOMES) + ", " + user.getName() + "!" :
+                   user.getName() + " has entered the channel.";
     StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     if (!soundInfo.isEmpty()) {
@@ -218,7 +217,7 @@ public class MoveListener extends AbstractListener {
       m.addDescription(StringUtils.randomString(WELCOME_BACKS) +
                        Strings.SEPARATOR + user.getAsMention());
     }
-    m.addContent("What Am I?", "I play sounds. Type `.help` for more.", false);
+    m.addContent("What?", "I play sounds. Type `.help` for commands.", false);
     return m;
   }
 

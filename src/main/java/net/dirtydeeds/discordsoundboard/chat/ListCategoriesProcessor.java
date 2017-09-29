@@ -35,8 +35,7 @@ public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
   }
 
   private String listCategories(Category root) {
-    LinkedList<Category> categories = getCategories(root);
-    return StringUtils.listToString(categories);
+    return StringUtils.listToString(getCategories(root));
   }
 
   @Override

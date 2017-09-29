@@ -40,6 +40,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
 		msg.addDescription("*Noot noot*.");
 		int numberOfSounds = bot.getSoundMap().size();
+		int numberOfServers = bot.getGuilds().size();
 		msg.addContent("Number of Sounds", "" + numberOfSounds, true);
 		msg.addContent("Number of Categories", "" +
 		               bot.getDispatcher().getNumberOfCategories(), true);
@@ -54,8 +55,10 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 			               bot.getDispatcher().sizeOfLibrary(), true);
 		}
 		msg.addContent("Bot Uptime", bot.getUptimeAsString(), true);
-		msg.addContent("Number of Servers", "" + bot.getGuilds().size(), true);
-		msg.addContent("Developer", Version.getAuthor(bot), true);
+		if (numberOfServers > 1) {
+			msg.addContent("Number of Servers", "" + numberOfServers, true);
+		}
+		msg.addContent("Developer", Version.getAuthor(bot), false);
 		embed(event, msg);
 	}
 
