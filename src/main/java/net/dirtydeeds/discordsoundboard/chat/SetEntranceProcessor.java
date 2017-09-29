@@ -20,10 +20,13 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
 			if (fileName == null) {
 				bot.setEntranceForUser(event.getAuthor(), null, null);
 				pm(event, "Cleared your entrance.");
-			} else if (bot.getSoundMap().get(fileName) == null) {
-				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
-			}
+				return;
+			} 
 			SoundFile file = bot.getSoundMap().get(fileName);
+			if (file == null) {
+				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
+				return;
+			}
 			boolean authenticated = bot.isAuthenticated(event.getAuthor(),
 			                        event.getGuild());
 			if (!authenticated && file.getDuration() != null &&
