@@ -15,10 +15,10 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("ListNewSounds");
+	public static final SimpleLog LOG = SimpleLog.getLog("New");
 
 	private static final int MIN_NUMBER_OF_HOURS = 168; // 7 days
-	private static final int MAX_NUMBER_OF_HOURS = 504; // 3 weeks
+	private static final int MAX_NUMBER_OF_HOURS = 1152; // 48 days
 	private static final int NUM_HOURS_FOR_DAY_TRANSFORM = 72; // 3 days
 	private static final int DAYS = 24;
 
@@ -70,10 +70,32 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 		return newSounds;
 	}
 
+	private void listNewSounds(Collection<SoundFile> newSounds,
+	                           MessageReceivedEvent event, int numHours) {
+		MessageBuilder b = new MessageBuilder();
+		String timeType = "hours";
+		int numTime = numHours;
+		if (numHours > NUM_HOURS_FOR_DAY_TRANSFORM) {
+			numTime /= DAYS;
+			timeType = "days";
+		}
+		b.append("The **newest sound files** added (in the last " + numTime +
+		          " " + timeType + ") were:\n\n");
+		Map<String, List<SoundFile>> catMap = getCategoryMappings(newSounds);
+		for (String category : catMap.keySet()) {
+			for (String msg : getMessagesForCategory(
+			       category, catMap.get(category))) {
+				b.append(msg);
+			}
+		}
+		for (String msg : b.getStrings()) m(event, msg);
+		LOG.info("Listed new sounds in last " + numHours + " hours.");
+	}
+
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		Map<String, SoundFile> soundFiles = bot.getSoundMap();
 		if (soundFiles.isEmpty()) {
-			e(event, "There are **no sound files** at all!");
+			e(event, "There are **no sound files** stored yet.");
 			return;
 		}
 		String timeType = "hours";
@@ -82,24 +104,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 		while (numHours <= MAX_NUMBER_OF_HOURS && newSounds == null) {
 			newSounds = getNewSounds(soundFiles.values(), numHours);
 			if (newSounds != null && !newSounds.isEmpty()) {
-				int numTime = numHours;
-				if (numHours > NUM_HOURS_FOR_DAY_TRANSFORM) {
-					numTime /= DAYS;
-					timeType = "days";
-				}
-				MessageBuilder mb = new MessageBuilder();
-				mb.append("The **newest sound files** added (in the last " + numTime +
-				          " " + timeType + ") were:\n\n");
-				Map<String, List<SoundFile>> catMap = getCategoryMappings(newSounds);
-				for (String category : catMap.keySet()) {
-					for (String msg : getMessagesForCategory(
-					       category, catMap.get(category))) {
-						mb.append(msg);
-					}
-				}
-				for (String msg : mb.getStrings()) m(event, msg);
-				LOG.info("Listed new sounds in last " + numHours + " hours for user " +
-				         event.getAuthor().getName());
+				listNewSounds(newSounds, event, numHours);
 			} else {
 				numHours += 48; // Add 2 days.
 			}
@@ -110,8 +115,10 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 				numTime /= DAYS;
 				timeType = "days";
 			}
-			w(event, "There were no **new sounds** found (from the last " +
-			  numTime + " " + timeType + ").");
+			w(event, "There were no **new sounds** found from the last " +
+			  numTime + " " + timeType + ".");
+		} else {
+			listNewSounds(newSounds, event, numHours);
 		}
 	}
 

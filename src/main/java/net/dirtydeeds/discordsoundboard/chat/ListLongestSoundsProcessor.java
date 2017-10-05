@@ -23,7 +23,8 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
     MessageBuilder sb = new MessageBuilder();
     sb.append("The **" + NUMBER_TO_SHOW +
               " longest sound files** are, in descending order:\n\n");
-    List<SoundFile> soundFiles = bot.getDispatcher().getSoundFilesOrderedByDuration();
+    List<SoundFile> soundFiles =
+      bot.getDispatcher().getSoundFilesOrderedByDuration();
     Set<String> activeFileNames = bot.getSoundMap().keySet();
     for (SoundFile file : soundFiles) {
       if (numberOfSoundFiles >= NUMBER_TO_SHOW) break;

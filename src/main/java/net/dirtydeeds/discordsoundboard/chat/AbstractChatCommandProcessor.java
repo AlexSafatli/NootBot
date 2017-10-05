@@ -152,8 +152,11 @@ public abstract class AbstractChatCommandProcessor implements
 	}
 
 	protected void embed(MessageReceivedEvent event, StyledEmbedMessage em) {
-		TextChannel channel =
-		  (bot.hasPermissionInChannel(
+		if (event.isFromType(ChannelType.PRIVATE)) {
+			pm(event, em);
+			return;
+		}
+		TextChannel channel = (bot.hasPermissionInChannel(
 		     event.getTextChannel(), Permission.MESSAGE_WRITE)) ?
 		  event.getTextChannel() : bot.getBotChannel(event.getGuild());
 		if (channel != null && em != null) {
