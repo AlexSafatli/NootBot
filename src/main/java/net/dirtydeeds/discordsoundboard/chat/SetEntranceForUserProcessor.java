@@ -19,20 +19,20 @@ public class SetEntranceForUserProcessor extends
 			pm(event, "Need a **username** and **sound name**.");
 			return;
 		}
-		String username = args[0], fileName = args[1];
-		if (fileName.isEmpty()) fileName = null; // Too lazy to change logic.
+		String username = args[0], filename = args[1];
+		if (filename.isEmpty()) filename = null; // Too lazy to change logic.
 		User user = null;
 		if (username != null) user = bot.getUserByName(username);
 
-		if (fileName != null && user != null) {
-			if (bot.getSoundMap().get(fileName) != null) {
-				bot.setEntranceForUser(user, fileName, event.getAuthor());
+		if (filename != null && user != null) {
+			if (bot.getSoundMap().get(filename) != null) {
+				bot.setEntranceForUser(user, filename, event.getAuthor());
 				pm(event, "User **" + user.getName() + "** had entrance updated" +
-				   " to sound `" + fileName + "`.");
+				   " to sound `" + filename + "`.");
 			} else {
 				pm(event, lookupString(Strings.SOUND_NOT_FOUND));
 			}
-		} else if (fileName == null) {
+		} else if (filename == null) {
 			bot.setEntranceForUser(user, null, null);
 			pm(event, "User **" + user.getName() + "** had their entrance cleared.");
 		} else if (user == null) {

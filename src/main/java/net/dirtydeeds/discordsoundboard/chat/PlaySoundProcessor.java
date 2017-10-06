@@ -23,21 +23,17 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	                                 String suggestion, User user) {
 		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
 		msg.setTitle("Sound `" + name + "` Not Found!");
-		msg.addDescription((suggestion != null && !suggestion.isEmpty()) ?
-		                   suggestion : "Derp.");
+		msg.addDescription(suggestion);
 		msg.addContent("Search For It", lookupString(Strings.USE_SEARCH), true);
 		embed(event, msg.isWarning(true));
 	}
 
-	private boolean play(MessageReceivedEvent event, String name) {
-		boolean played = true;
+	private void play(MessageReceivedEvent event, String name) {
 		try {
 			bot.playFileForChatCommand(name, event);
 		} catch (Exception e) {
-			played = false;
 			LOG.warn("Did not play sound.");
 		}
-		return played;
 	}
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -45,10 +41,10 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 		String name = message.substring(1, message.length());
 		if (!bot.isAllowedToPlaySound(user)) {
 			pm(event, lookupString(Strings.NOT_ALLOWED));
-			LOG.info(String.format("%s isn't allowed to play sounds.",
-			                       user.getName()));
+			LOG.info(
+			  String.format("%s isn't allowed to play sounds.", user.getName()));
 		} else if (StringUtils.containsAny(name, '?')) {
-			return; // File names cannot contain question marks.
+			return;
 		} else if (bot.getSoundMap().get(name) == null) {
 			LOG.info("Sound was not found.");
 			String suggestion = lookupString(Strings.CHECK_SPELLING),
