@@ -207,7 +207,8 @@ public class MoveListener extends AbstractListener {
   public StyledEmbedMessage welcomeMessage(User user, Channel channel,
       String soundInfo, boolean welcomeInTitle) {
     String title = (welcomeInTitle) ?
-                   StringUtils.randomString(WELCOMES) + ", " + user.getName() + "!" :
+                   StringUtils.randomString(WELCOMES) + ", " +
+                   user.getName() + "!" :
                    user.getName() + " has entered the channel.";
     StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());

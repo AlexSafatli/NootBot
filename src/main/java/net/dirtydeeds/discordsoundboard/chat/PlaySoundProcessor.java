@@ -68,6 +68,8 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 			}
 			LOG.info("Suggestion: " + suggestion);
 			sendBadSoundMessage(event, name, suggestion, user);
+		} else if (bot.isMuted()) {
+			w(event, "I'm muted! \u2014 " + user.getName());
 		} else play(event, name);
 	}
 

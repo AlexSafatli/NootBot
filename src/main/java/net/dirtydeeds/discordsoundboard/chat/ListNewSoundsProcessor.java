@@ -105,11 +105,12 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 			newSounds = getNewSounds(soundFiles.values(), numHours);
 			if (newSounds != null && !newSounds.isEmpty()) {
 				listNewSounds(newSounds, event, numHours);
+				return;
 			} else {
 				numHours += 48; // Add 2 days.
 			}
 		}
-		if (newSounds == null) {
+		if (newSounds == null || newSounds.isEmpty()) {
 			int numTime = numHours;
 			if (numHours > NUM_HOURS_FOR_DAY_TRANSFORM) {
 				numTime /= DAYS;
