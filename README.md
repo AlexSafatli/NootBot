@@ -2,7 +2,7 @@
 
 A soundboard Discord bot written in Java able to be deployed to multiple servers and over multiple Bot users.
 
-Much of the foundation code was taken from an early commit of [Darkside138/DiscordSoundboard](https://github.com/Darkside138/DiscordSoundboard) but has since diverged.
+Much of the foundation code was taken from an early commit of [Darkside138/DiscordSoundboard](https://github.com/Darkside138/DiscordSoundboard) but has since wildly diverged.
 
 ## Changelog
 
@@ -29,8 +29,6 @@ Much of the foundation code was taken from an early commit of [Darkside138/Disco
 - Added permission system for uploading sounds and authenticated commands. Currently based on roles (Administrator, Server Management permissions).
 - Entrances no longer add to play count.
 - Removed Reddit integration due to lack of popularity.
-
-## Planned Milestones
 
 ### 2.2.0
 
