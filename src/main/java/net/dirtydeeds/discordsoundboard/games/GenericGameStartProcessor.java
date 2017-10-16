@@ -21,11 +21,11 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
 	public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 
-	private static final String MESSAGE_TITLE = "Whoa! You're all playing.";
+	private static final String MESSAGE_TITLE = "Whoa! You're all playing %s.";
 	private static final String MESSAGE_REPORT_SUBTITLE = "Annoying?";
 
 	private static final int MIN_NUM_PLAYERS = 3;
-	private static final int NUMBER_SEC_BETWEEN = 60;
+	private static final int NUMBER_SEC_BETWEEN = 20;
 
 	private GameStartEvent pastEvent;
 	private String thumbnail;
@@ -40,8 +40,8 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 			this.message = msg;
 		}
 		public boolean isTooSoon(VoiceChannel in) {
-			Date now = new Date(System.currentTimeMillis());
 			if (channel != null && channel.equals(in)) {
+				Date now = new Date(System.currentTimeMillis());
 				long secSince = (now.getTime() - time.getTime()) / 1000;
 				return (secSince < NUMBER_SEC_BETWEEN);
 			}
@@ -111,9 +111,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				pastEvent.clear();
 			}
 
-			String filePlayed = (bot.isASoundCategory(game)) ?
-			                    bot.getRandomSoundNameForCategory(game) :
-			                    bot.getRandomSoundName();
+			String filePlayed = bot.getRandomSoundName();
 			if (filePlayed != null) {
 				TextChannel publicChannel = bot.getBotChannel(channel.getGuild());
 				SoundFile f = bot.getSoundMap().get(filePlayed);
@@ -137,7 +135,8 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 	public StyledEmbedMessage announcement(String soundPlayed, String game,
 	                                       User[] users, int numPlaying,
 	                                       long numPlays) {
-		StyledEmbedMessage m = new StyledEmbedMessage(MESSAGE_TITLE, bot);
+		StyledEmbedMessage m = new StyledEmbedMessage(
+		  String.format(MESSAGE_TITLE, game), bot);
 		String mentions = "";
 		for (int i = 0; i < numPlaying; ++i) {
 			if (users[i] != null) {
