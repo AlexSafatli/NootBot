@@ -153,14 +153,15 @@ public class SoundboardBot {
     return dispatcher.getSoundNameTrie().getWordWithPrefix(str);
   }
 
-  public String getRandomSoundName() {
+  public String getRandomSoundName(int maxDuration) {
     Random rng = new Random();
     SoundFile file = null;
     Map<String, Boolean> seen = new HashMap<>();
+    maxDuration = Math.min(MAX_DURATION_FOR_RANDOM, maxDuration);
     Object[] files = dispatcher.getAvailableSoundFiles().values().toArray();
     while (file == null
            || file.isExcludedFromRandom()
-           || file.getDuration() > MAX_DURATION_FOR_RANDOM) {
+           || file.getDuration() > maxDuration) {
       // No sounds that can actually be played.
       if (seen.size() == files.length) return null;
       file = (SoundFile)files[rng.nextInt(files.length)];
@@ -168,6 +169,10 @@ public class SoundboardBot {
         seen.put(file.getSoundFileId(), true);
     }
     return file.getSoundFileId();
+  }
+
+  public String getRandomSoundName() {
+    return getRandomSoundName(MAX_DURATION_FOR_RANDOM);
   }
 
   public String getRandomSoundNameForCategory(String category) {

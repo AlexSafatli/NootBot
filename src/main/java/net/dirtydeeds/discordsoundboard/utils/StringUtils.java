@@ -89,6 +89,13 @@ public class StringUtils {
 		if (!wordCache.contains(s)) wordCache.add(s);
 	}
 
+	public static boolean containsDigit(String s) {
+		for (int i = 0; i < s.length(); ++i) {
+			if (Character.isDigit(s.charAt(i))) return true;
+		}
+		return false;
+	}
+
 	public static void cacheWords(String message) {
 		BreakIterator iter = BreakIterator.getWordInstance();
 		iter.setText(message);
@@ -96,8 +103,10 @@ public class StringUtils {
 		while (BreakIterator.DONE != last) {
 			int first = last;
 			last = iter.next();
-			if (last != BreakIterator.DONE && Character.isLetterOrDigit(message.charAt(first))) {
-				cacheString(message.substring(first, last));
+			if (last == BreakIterator.DONE) continue;
+			String word = message.substring(first, last);
+			if (!containsDigit(word)) {
+				cacheString(word);
 			}
 		}
 	}

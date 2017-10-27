@@ -2,6 +2,8 @@ package net.dirtydeeds.discordsoundboard.games;
 
 import java.util.Date;
 
+import java.awt.Color;
+
 import net.dirtydeeds.discordsoundboard.games.AbstractGameUpdateProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.*;
@@ -23,9 +25,11 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
 	private static final String MESSAGE_TITLE = "Whoa! You're all playing %s.";
 	private static final String MESSAGE_REPORT_SUBTITLE = "Annoying?";
+	private static final Color MESSAGE_COLOR = new Color(0, 0, 0);
 
 	private static final int MIN_NUM_PLAYERS = 3;
-	private static final int NUMBER_SEC_BETWEEN = 20;
+	private static final int NUMBER_SEC_BETWEEN = 8;
+	private static final int MAX_DURATION = 4;
 
 	private GameStartEvent pastEvent;
 	private String thumbnail;
@@ -111,7 +115,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 				pastEvent.clear();
 			}
 
-			String filePlayed = bot.getRandomSoundName();
+			String filePlayed = bot.getRandomSoundName(MAX_DURATION);
 			if (filePlayed != null) {
 				TextChannel publicChannel = bot.getBotChannel(channel.getGuild());
 				SoundFile f = bot.getSoundMap().get(filePlayed);
@@ -147,6 +151,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 		                              numPlays, game, mentions));
 		m.addContent(MESSAGE_REPORT_SUBTITLE,
 		             lookupString(Strings.SOUND_REPORT_INFO), false);
+		m.setColor(MESSAGE_COLOR);
 		if (thumbnail != null) m.setThumbnail(thumbnail);
 		return m;
 	}
