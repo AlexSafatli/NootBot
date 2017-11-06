@@ -87,7 +87,7 @@ public class StringUtils {
 	}
 
 	public static Color toColor(String s) {
-		int hash = s.getHashCode(),
+		int hash = s.hashCode(),
 		    r = (hash & 0xFF0000) >> 16,
 		    g = (hash & 0x00FF00) >> 8,
 		    b = (hash & 0x0000FF);
