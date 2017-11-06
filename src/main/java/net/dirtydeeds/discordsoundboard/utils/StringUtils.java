@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.awt.Color;
 
 public class StringUtils {
 
@@ -83,6 +84,14 @@ public class StringUtils {
 		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 		String f = formatter.format(date);
 		return (f != null) ? f : "";
+	}
+
+	public static Color toColor(String s) {
+		int hash = string.getHashCode(),
+		    r = (hash & 0xFF0000) >> 16,
+		    g = (hash & 0x00FF00) >> 8,
+		    b = (hash & 0x0000FF);
+		return new Color(r, g, b);
 	}
 
 	public static void cacheString(String s) {

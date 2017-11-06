@@ -27,8 +27,11 @@ public class MoveListener extends AbstractListener {
       });
 
   private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
-        "You okay there?", "Need some help?",
-        "What's got you so spooked?", "😪", "😴", "😡", "🖕"
+        "You okay there?", "Need some help?", "😪", "😴", "😡", "🖕"
+      });
+
+  private static final List<String> WHATS = Arrays.asList(new String[] {
+        "What?", "Nani?", "Huh?", "WTF?"
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
@@ -76,6 +79,10 @@ public class MoveListener extends AbstractListener {
       return;
     } else if (bot.isMuted(guild)) {
       LOG.info("Bot is currently muted. Doing nothing.");
+      return;
+    } else if (voiceChannel.getUserLimit() ==
+               voiceChannel.getMembers().size()) {
+      LOG.info("Channel is full.");
       return;
     }
 
@@ -218,7 +225,9 @@ public class MoveListener extends AbstractListener {
       m.addDescription(StringUtils.randomString(WELCOME_BACKS) +
                        Strings.SEPARATOR + user.getAsMention());
     }
-    m.addContent("What?", "I play sounds. Type `.help` for commands.", false);
+    m.addContent(StringUtils.randomString(WHATS),
+                 "I play sounds. Type `.help` for commands.", false);
+    m.setColor(StringUtils.toColor(user.getName()));
     return m;
   }
 

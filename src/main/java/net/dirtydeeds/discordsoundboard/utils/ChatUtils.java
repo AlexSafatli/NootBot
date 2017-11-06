@@ -32,6 +32,22 @@ public class ChatUtils {
     }
   }
 
+  public static void cacheMessagesInChannel(SoundboardBot bot,
+      TextChannel channel) {
+    MessageHistory history = new MessageHistory(channel);
+    for (int i = 0; i < NUM_MESSAGES_TO_GO_BACK;
+         i += MAX_NUM_MESSAGES_TO_GO_BACK) {
+      RestAction<List<Message>> a =
+        history.retrievePast(MAX_NUM_MESSAGES_TO_GO_BACK);
+      a.queue(msgs -> {
+        for (Message msg : msgs) {
+          if (!msg.getAuthor().equals(bot.getAPI().getSelfUser()))
+            StringUtils.cacheWords(msg.getContent());
+        }
+      });
+    }
+  }
+
   public static TextChannel getDiscussionChannel(SoundboardBot bot,
       Guild guild) {
     TextChannel channel = guild.getDefaultChannel();
