@@ -10,7 +10,7 @@ import java.awt.Color;
 
 public class StringUtils {
 
-	private static final int MAX_NUMBER_OF_CACHED_WORDS = 1000;
+	private static final int MAX_NUMBER_OF_CACHED_WORDS = 275;
 	private static final int MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR = 3;
 	private static final String STARTING_CACHE_WORD = "Noot";
 	public static List<String> wordCache = initializeCache();
@@ -88,9 +88,9 @@ public class StringUtils {
 
 	public static Color toColor(String s) {
 		int hash = s.hashCode(),
-		    r = (hash & 0xFF0000) >> 16,
+		    r = (hash & 0x0000FF),
 		    g = (hash & 0x00FF00) >> 8,
-		    b = (hash & 0x0000FF);
+		    b = (hash & 0xFF0000) >> 16;
 		return new Color(r, g, b);
 	}
 

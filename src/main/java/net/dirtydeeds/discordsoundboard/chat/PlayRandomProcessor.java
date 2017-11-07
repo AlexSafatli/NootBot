@@ -20,8 +20,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
            desc = "Played a random sound ";
     if (!bot.isAllowedToPlaySound(event.getAuthor())) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
-      LOG.info(event.getAuthor() +
-               " tried to play a sound file but is not allowed.");
+      LOG.info(event.getAuthor() + " is not allowed to play sounds.");
       return;
     }
     try {

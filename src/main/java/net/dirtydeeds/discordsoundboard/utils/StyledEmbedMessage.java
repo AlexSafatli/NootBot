@@ -130,20 +130,20 @@ public class StyledEmbedMessage {
 		msg.addContent("Category", (!file.getCategory().equals("sounds")) ?
 		               file.getCategory() : "\u2014", true);
 		msg.addContent("Name", "`" + file.getSoundFileId() + "`", true);
-		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		msg.addContent("Played", file.getNumberOfPlays() + " times", true);
+		msg.addContent("Duration", file.getDuration() + " seconds", true);
 		if (file.getNumberOfReports() > 0) {
 			msg.addContent("Reported", file.getNumberOfReports() + " times", true);
 		}
 		if (file.getSoundFile() != null) {
 			String stamp = StringUtils.dayTimeStamp(file.getLastModified());
-			if (!stamp.isEmpty()) msg.addContent("Added", stamp, false);
+			if (!stamp.isEmpty()) msg.addContent("Added", stamp, true);
 		}
 		List<net.dirtydeeds.discordsoundboard.beans.User> usersWithEntrance =
 		  bot.getDispatcher().getUsersWithEntrance(file.getSoundFileId());
 		if (!usersWithEntrance.isEmpty()) {
 			msg.addContent("Entrance For",
-			               StringUtils.listToString(usersWithEntrance), false);
+			               StringUtils.listToString(usersWithEntrance), true);
 		}
 		return msg;
 	}
