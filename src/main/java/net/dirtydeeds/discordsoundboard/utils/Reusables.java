@@ -2,6 +2,8 @@ package net.dirtydeeds.discordsoundboard.utils;
 
 import java.awt.Color;
 
+import net.dv8tion.jda.core.entities.Game;
+
 import net.dirtydeeds.discordsoundboard.Icons;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 
@@ -23,6 +25,10 @@ public class Reusables {
     msg.addContent(DONATION_BUG_TITLE, DONATION_BUG, false);
     msg.addContent(DONATION_DONATE_TITLE, DONATION_DONATE, false);
     b.sendMessageToAllGuilds(msg.getMessage());
+  }
+
+  public static void setRandomGame(SoundboardBot b) {
+    b.getAPI().getPresence().setGame(Game.of(StringUtils.randomWordPair()));
   }
 
 }

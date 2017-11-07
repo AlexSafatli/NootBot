@@ -169,6 +169,7 @@ public class SoundboardDispatcher {
 		// Async jobs
 		LOG.info("Starting async jobs.");
 		asyncService.addJob(PeriodicLambdas.cleanOldBotMessages());
+		asyncService.addJob(PeriodicLambdas.changeToRandomGame());
 		// Audio Playing
 		LOG.info("Adding sources to audio manager.");
 		audioManager.registerSourceManager(new YoutubeAudioSourceManager());

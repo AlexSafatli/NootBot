@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.listeners;
 import net.dirtydeeds.discordsoundboard.Thumbnails;
 
 import net.dirtydeeds.discordsoundboard.games.*;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
@@ -69,6 +70,11 @@ public class GameListener extends AbstractListener {
     }
   }
 
+  private void cacheGameName(Game game) {
+    if (game == null || game.getType().equals(GameType.STREAMING)) return;
+    StringUtils.cacheWords(game.getName());
+  }
+
   public void onUserGameUpdate(UserGameUpdateEvent event) {
     User user = event.getUser();
     if (user.isBot()) return; // Ignore bots.
@@ -79,6 +85,7 @@ public class GameListener extends AbstractListener {
     Game previousGame = event.getPreviousGame(),
          currentGame = member.getGame();
     logGameChange(name, guild, previousGame, currentGame);
+    cacheGameName(currentGame);
 
     for (GameUpdateProcessor processor : processors) {
       if (processor.isApplicableUpdateEvent(event, user)) {

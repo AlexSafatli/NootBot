@@ -15,6 +15,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -663,6 +664,7 @@ public class SoundboardBot {
       voice.closeAudioConnection();
       LOG.warn("Closed audio connection because of an error.");
       e.printStackTrace();
+      return false;
     }
     return true;
   }
@@ -792,6 +794,7 @@ public class SoundboardBot {
       addListener(moveListener);
       addListener(gameListener);
       this.chatListener = chatListener;
+      bot.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
       LOG.info("Finished initializing bot with name " + getBotName());
       for (Guild guild : getGuilds())
         LOG.info("Connected to guild " + guild.getName());
