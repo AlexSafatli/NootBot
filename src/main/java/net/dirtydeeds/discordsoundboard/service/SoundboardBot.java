@@ -10,7 +10,7 @@ import net.dirtydeeds.discordsoundboard.listeners.ChatListener;
 import net.dirtydeeds.discordsoundboard.listeners.MoveListener;
 import net.dirtydeeds.discordsoundboard.listeners.GameListener;
 import net.dirtydeeds.discordsoundboard.org.Category;
-import net.dirtydeeds.discordsoundboard.utils.ChatUtils;
+import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -611,8 +611,7 @@ public class SoundboardBot {
       LOG.info("Playing entrance \"" + fileName + "\" for user " +
                user.getName() + " in " + joined.getName());
       SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
-      // Do not add to count for entrances.
-      playFile(fileToPlay, joined.getGuild(), false);
+      playFile(fileToPlay, joined.getGuild(), false); // Entrances don't count.
       return true;
     }
     return false;
@@ -645,8 +644,7 @@ public class SoundboardBot {
         voice.getConnectedChannel().equals(channel))
       return false;
     if (!hasPermissionInVoiceChannel(channel, Permission.VOICE_CONNECT)) {
-      LOG.info("Could not move to channel " + channel +
-               " because no permission to join.");
+      LOG.info("No permission to join " + channel);
       return false;
     }
     LOG.info("Moving to channel " + channel);
@@ -793,11 +791,11 @@ public class SoundboardBot {
       addListener(chatListener);
       addListener(moveListener);
       addListener(gameListener);
-      this.chatListener = chatListener;
       bot.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
+      Reusables.setRandomGame(this);
       LOG.info("Finished initializing bot with name " + getBotName());
-      for (Guild guild : getGuilds())
-        LOG.info("Connected to guild " + guild.getName());
+      for (Guild guild : getGuilds()) LOG.info("Connected: " + guild.getName());
+      this.chatListener = chatListener;
     } catch (LoginException | IllegalArgumentException |
                InterruptedException | RateLimitedException e) {
       LOG.fatal("Could not initialize bot " + getBotName());
