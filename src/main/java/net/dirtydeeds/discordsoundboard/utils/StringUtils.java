@@ -58,7 +58,7 @@ public class StringUtils {
 		String a = "", b = "";
 		while (a.length() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) a = randomWord();
 		while (b.length() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) b = randomWord();
-		return humanize(a) + " " + humanize(b);
+		return capitalize(a) + " " + capitalize(b);
 	}
 
 	public static <T> String listToString(List<T> list) {
@@ -77,6 +77,11 @@ public class StringUtils {
 	public static String humanize(String s) {
 		if (s.length() == 1) return s.toUpperCase();
 		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	}
+
+	public static String capitalize(String s) {
+		if (s.length() == 1) return s.toUpperCase();
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
 
 	public static String dayTimeStamp(Date date) {

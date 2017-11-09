@@ -135,10 +135,10 @@ public class ChatListener extends AbstractListener {
     } else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME
                && !bot.isOwner(user)) {
       LOG.info("Throttling user " + user.getName() +
-               " because they sent too many requests.");
+               " because sent too many requests.");
       bot.throttleUser(user);
       bot.sendMessageToUser("Throttling **" + user.getName() +
-                            "** automatically because of too many requests.",
+                            "** automatically because too many requests.",
                             bot.getOwner());
       return;
     }
@@ -182,7 +182,6 @@ public class ChatListener extends AbstractListener {
       return;
     }
 
-    StringUtils.cacheWords(event.getMessage().getContent());
   }
 
   private boolean isTypoCommand(MessageReceivedEvent event) {
