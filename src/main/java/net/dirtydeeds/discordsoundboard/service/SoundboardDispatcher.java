@@ -168,8 +168,10 @@ public class SoundboardDispatcher {
 	}
 
 	private void startServices() {
-		int num = Integer.valueOf(getProperty("number_of_users"));
+		// Add some starting phrases to the phrase repository.
+		addStartingPhrases();
 		// Bots
+		int num = Integer.valueOf(getProperty("number_of_users"));
 		LOG.info("Starting " + num + " bots.");
 		bots = new SoundboardBot[num];
 		for (int i = 1; i <= num; ++i) startBot(i);
@@ -189,8 +191,6 @@ public class SoundboardDispatcher {
 		stringService.addFile(
 		  Paths.get(System.getProperty("user.dir") + "/strings.txt")
 		);
-		// Add some starting phrases to the phrase repository.
-		addStartingPhrases();
 	}
 
 	// This method loads the files. This checks if you are running from a .jar
