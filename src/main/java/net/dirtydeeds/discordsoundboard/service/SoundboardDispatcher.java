@@ -61,9 +61,8 @@ public class SoundboardDispatcher {
 	private static final List<String> STARTING_PHRASES = Arrays.asList(
 	      new String[] {
 	        "Forza Battlegrounds", "World of American Trucks",
-	        "Black Space Online", "Divinity Thunder Souls III",
-	        "Tyranny of Warcraft", "Divinity: Enemy Unknown",
-	        "Nioh: Injustice Offensive"
+	        "Black Space Online", "Tyranny of Warcraft",
+	        "Nioh: Injustice Offensive", "Tom Clancy's Farming Simulator"
 	      }
 	    );
 	private static final String[] UNITS = new String[] {
