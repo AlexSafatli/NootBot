@@ -32,8 +32,8 @@ public class Reusables {
   }
 
   private static String getRandomGameName() {
-    return RandomUtils.chooseOne(StringUtils.randomWordPair(),
-                                 StringUtils.randomFavoritePhrase());
+    return (String) RandomUtils.chooseOne(StringUtils.randomWordPair(),
+                                          StringUtils.randomFavoritePhrase());
   }
 
 }
