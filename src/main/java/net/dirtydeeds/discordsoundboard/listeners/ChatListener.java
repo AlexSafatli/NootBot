@@ -95,6 +95,7 @@ public class ChatListener extends AbstractListener {
     processors.add(new InviteBotProcessor(".invite",                  bot));
     processors.add(new ServerDonationMessageProcessor(".donate",      bot));
     processors.add(new ListPhrasesProcessor(".phrases",               bot));
+    processors.add(new RandomPhraseProcessor(".phrase",               bot));
     processors.add(new FavoritePhraseProcessor(".addphrase",          bot));
     processors.add(new UnfavoritePhraseProcessor(".rmphrase",         bot));
     processors.add(new TempVoiceChannelProcessor(".tmpvoice",         bot));
