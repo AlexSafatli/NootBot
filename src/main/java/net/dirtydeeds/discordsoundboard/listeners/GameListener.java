@@ -85,6 +85,7 @@ public class GameListener extends AbstractListener {
     Game previousGame = event.getPreviousGame(),
          currentGame = member.getGame();
     logGameChange(name, guild, previousGame, currentGame);
+    cacheGameName(previousGame);
     cacheGameName(currentGame);
 
     for (GameUpdateProcessor processor : processors) {

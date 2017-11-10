@@ -10,7 +10,7 @@ import java.awt.Color;
 
 public class StringUtils {
 
-	private static final int MAX_NUMBER_OF_CACHED_WORDS = 275;
+	private static final int MAX_NUMBER_OF_CACHED_WORDS = 25;
 	private static final int MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR = 3;
 	private static final String STARTING_CACHE_WORD = "Noot";
 	public static List<String> wordCache = initializeCache();

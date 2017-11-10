@@ -25,7 +25,6 @@ public class MoveListener extends AbstractListener {
   private static final List<String> WELCOMES = Arrays.asList(new String[] {
         "Welcome, %s!",
         "%s has joined. Brace yourselves.",
-        "%s has joined. Ermagherd.",
         "Leave your weapons by the door, %s.",
         "%s just appeared. Seems OP - nerf.",
         "You're killing it, %s.",
@@ -36,7 +35,7 @@ public class MoveListener extends AbstractListener {
       });
 
   private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
-        "😪", "😴", "😡", "🖕", "Uh, hi.", "Welcome... back?", "glhf"
+        "😪", "😴", "😡", "🖕", "Uh, hi.", "Welcome... back?", "gg"
       });
 
   private static final List<String> WHATS = Arrays.asList(new String[] {
