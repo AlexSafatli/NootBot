@@ -24,7 +24,7 @@ public class GameListener extends AbstractListener {
   private List<GameUpdateProcessor> processors;
   private static final List<String> MONITORED_GAMES = Arrays.asList(
         new String[] {
-          "League of Legends", "PUBG",
+          "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
           "Divinity Original Sin 2", "Destiny 2", "Dead by Daylight"
         }
       );
