@@ -9,7 +9,7 @@ public class UnfavoritePhraseProcessor extends
   SingleArgumentChatCommandProcessor {
 
   public UnfavoritePhraseProcessor(String prefix, SoundboardBot bot) {
-    super(prefix, "Unfavorite Phrase", bot);
+    super(prefix, "Remove Phrase", bot);
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -19,11 +19,9 @@ public class UnfavoritePhraseProcessor extends
       pm(event, "You didn't give me anything.");
     } else {
       if (bot.getDispatcher().removePhrase(phrase)) {
-        pm(event, "Excluded phrase `" + phrase +
-           "` from list of possible game names!");
+        m(event, "Removed phrase `" + phrase + "` from list of phrases!");
       } else {
-        pm(event, "Didn't have phrase `" + phrase +
-           "` in list of possible game names!");
+        pm(event, "Didn't have phrase `" + phrase + "` in list of phrases!");
       }
     }
   }

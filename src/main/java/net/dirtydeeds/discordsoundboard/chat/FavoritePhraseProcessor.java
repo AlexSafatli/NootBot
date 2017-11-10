@@ -9,7 +9,7 @@ public class FavoritePhraseProcessor extends
   SingleArgumentChatCommandProcessor {
 
   public FavoritePhraseProcessor(String prefix, SoundboardBot bot) {
-    super(prefix, "Favorite Phrase", bot);
+    super(prefix, "Add Phrase", bot);
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -19,8 +19,7 @@ public class FavoritePhraseProcessor extends
       pm(event, "You didn't give me anything.");
     } else {
       bot.getDispatcher().addPhrase(phrase);
-      pm(event, "Included phrase `" + phrase +
-         "` in list of possible game names!");
+      m(event, "Added phrase `" + phrase + "` to list of phrases!");
     }
   }
 
