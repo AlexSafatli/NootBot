@@ -28,7 +28,12 @@ public class Reusables {
   }
 
   public static void setRandomGame(SoundboardBot b) {
-    b.getAPI().getPresence().setGame(Game.of(StringUtils.randomWordPair()));
+    b.getAPI().getPresence().setGame(Game.of(getRandomGameName()));
+  }
+
+  private static String getRandomGameName() {
+    return chooseOne(StringUtils.randomWordPair(),
+                     StringUtils.randomFavoritePhrase());
   }
 
 }
