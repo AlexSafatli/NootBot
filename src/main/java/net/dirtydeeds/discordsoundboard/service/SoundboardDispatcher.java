@@ -12,6 +12,7 @@ import java.util.*;
 import java.text.DecimalFormat;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,7 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
+@Transactional
 @Service
 public class SoundboardDispatcher {
 
