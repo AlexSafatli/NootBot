@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.entities.Game;
 
 import net.dirtydeeds.discordsoundboard.Icons;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 
 public class Reusables {
 
@@ -28,12 +29,14 @@ public class Reusables {
   }
 
   public static void setRandomGame(SoundboardBot b) {
-    b.getAPI().getPresence().setGame(Game.of(getRandomGameName()));
+    b.getAPI().getPresence().setGame(
+      Game.of(getRandomGameName(b.getDispatcher())));
   }
 
-  private static String getRandomGameName() {
+  private static String getRandomGameName(SoundboardDispatcher dispatcher) {
     return (String) RandomUtils.chooseOne(StringUtils.randomWordPair(),
-                                          StringUtils.randomFavoritePhrase());
+                                          StringUtils.randomString(
+                                            dispatcher.getPhrases()));
   }
 
 }

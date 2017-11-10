@@ -18,7 +18,7 @@ public class UnfavoritePhraseProcessor extends
     if (phrase == null) {
       pm(event, "You didn't give me anything.");
     } else {
-      if (StringUtils.removeFavoritePhrase(phrase)) {
+      if (bot.getDispatcher().removePhrase(phrase)) {
         pm(event, "Excluded phrase `" + phrase +
            "` from list of possible game names!");
       } else {

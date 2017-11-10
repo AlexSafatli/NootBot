@@ -16,7 +16,6 @@ public class StringUtils {
 	private static final String STARTING_CACHE_WORD = "Noot";
 	private static final String STARTING_FAVORITE_PHRASE = "Grand Theft Noot";
 	public static List<String> wordCache = initializeCache();
-	public static List<String> favoritePhrases = initializeFavoritePhrases();
 
 	public static String truncate(String str) {
 		return truncate(str, 10);
@@ -62,10 +61,6 @@ public class StringUtils {
 		while (a.length() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) a = randomWord();
 		while (b.length() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) b = randomWord();
 		return capitalize(a) + " " + capitalize(b);
-	}
-
-	public static String randomFavoritePhrase() {
-		return randomString(favoritePhrases);
 	}
 
 	public static <T> String listToString(List<T> list) {
@@ -132,29 +127,11 @@ public class StringUtils {
 		}
 	}
 
-	public static void cacheFavoritePhrase(String phrase) {
-		if (!favoritePhrases.contains(phrase)) favoritePhrases.add(phrase);
-	}
-
-	public static boolean removeFavoritePhrase(String phrase) {
-		if (favoritePhrases.contains(phrase)) {
-			favoritePhrases.remove(phrase);
-			return true;
-		}
-		return false;
-	}
-
 	private static LimitedQueue<String> initializeCache() {
 		LimitedQueue<String> cache = new LimitedQueue<>(MAX_NUMBER_OF_CACHED_WORDS);
 		for (int i = 0; i < MAX_NUMBER_OF_CACHED_WORDS; ++i)
 			cache.add(STARTING_CACHE_WORD);
 		return cache;
-	}
-
-	private static LinkedList<String> initializeFavoritePhrases() {
-		LinkedList<String> phrases = new LinkedList<>();
-		phrases.add(STARTING_FAVORITE_PHRASE);
-		return phrases;
 	}
 
 }

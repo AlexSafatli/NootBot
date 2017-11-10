@@ -18,7 +18,7 @@ public class FavoritePhraseProcessor extends
     if (phrase == null) {
       pm(event, "You didn't give me anything.");
     } else {
-      StringUtils.cacheFavoritePhrase(phrase);
+      bot.getDispatcher().addPhrase(phrase);
       pm(event, "Included phrase `" + phrase +
          "` in list of possible game names!");
     }

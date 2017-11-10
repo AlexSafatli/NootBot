@@ -30,7 +30,9 @@ import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceMan
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 
 import net.dirtydeeds.discordsoundboard.async.*;
+import net.dirtydeeds.discordsoundboard.beans.Phrase;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
+import net.dirtydeeds.discordsoundboard.dao.PhraseRepository;
 import net.dirtydeeds.discordsoundboard.dao.SoundFileRepository;
 import net.dirtydeeds.discordsoundboard.dao.UserRepository;
 import net.dirtydeeds.discordsoundboard.org.Category;
@@ -46,6 +48,7 @@ public class SoundboardDispatcher {
 
 	private final UserRepository userDao;
 	private final SoundFileRepository soundDao;
+	private final PhraseRepository phraseDao;
 
 	private Properties appProperties;
 	private SoundboardBot[] bots;
@@ -69,12 +72,14 @@ public class SoundboardDispatcher {
 	@Inject
 	public SoundboardDispatcher(UserRepository userDao,
 	                            SoundFileRepository soundDao,
+	                            PhraseRepository phraseDao,
 	                            AsyncService asyncService,
 	                            StringService stringService) {
 		this.asyncService = asyncService;
 		this.stringService = stringService;
 		this.userDao = userDao;
 		this.soundDao = soundDao;
+		this.phraseDao = phraseDao;
 		audioManager = new DefaultAudioPlayerManager();
 		availableSounds = new TreeMap<>();
 		soundNameTrie = new LowercaseTrie();
@@ -265,6 +270,14 @@ public class SoundboardDispatcher {
 		return userDao.findAllByEntrancefilename(entrance);
 	}
 
+	public List<Phrase> getPhrase(String p) {
+		return phraseDao.findByValue(p);
+	}
+
+	public List<Phrase> getPhrases() {
+		return phraseDao.findAll();
+	}
+
 	public List<SoundFile> getSoundFilesOrderedByNumberOfPlays() {
 		return soundDao.findAllByOrderByNumberPlaysDesc();
 	}
@@ -351,6 +364,29 @@ public class SoundboardDispatcher {
 
 	public void saveSound(SoundFile soundFile) {
 		soundDao.saveAndFlush(soundFile);
+	}
+
+	public void savePhrase(Phrase phrase) {
+		phraseDao.saveAndFlush(phrase);
+	}
+
+	public Phrase registerPhrase(String phrase) {
+		Phrase p = new Phrase(phrase);
+		savePhrase(p);
+		return p;
+	}
+
+	public void addPhrase(String phrase) {
+		List<Phrase> phrases = getPhrase(phrase);
+		if (phrases != null && !phrases.isEmpty()) {
+		  return; // Already present.
+		}
+	  registerPhrase(phrase);
+	}
+
+	public boolean removePhrase(String phrase) {
+		List<Phrase> phrases = phraseDao.deleteByValue(phrase);
+		return (phrases != null && !phrases.isEmpty());
 	}
 
 	public void updateFileList() {
