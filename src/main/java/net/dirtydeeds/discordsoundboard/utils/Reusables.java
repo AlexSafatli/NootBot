@@ -29,8 +29,12 @@ public class Reusables {
   }
 
   public static void setRandomGame(SoundboardBot b) {
-    b.getAPI().getPresence().setGame(
-      Game.of(getRandomGameName(b.getDispatcher())));
+    Game currentGame = b.getAPI().getPresence().getGame();
+    String newName = getRandomGameName(b.getDispatcher());
+    while (newName.equals(currentGame.getName())) {
+      newName = getRandomGameName(b.getDispatcher());
+    }
+    b.getAPI().getPresence().setGame(Game.of(newName));
   }
 
   private static String getRandomGameName(SoundboardDispatcher dispatcher) {
