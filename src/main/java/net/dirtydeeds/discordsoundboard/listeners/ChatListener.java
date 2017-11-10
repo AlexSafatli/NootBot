@@ -65,6 +65,7 @@ public class ChatListener extends AbstractListener {
     processors.add(new RandomPhraseProcessor(".phrase",               bot));
     processors.add(new FavoritePhraseProcessor(".addphrase",          bot));
     processors.add(new UnfavoritePhraseProcessor(".rmphrase",         bot));
+    processors.add(new TriggerRandomGameNamePrcessor(".gamename",     bot));
     processors.add(new DisallowUserProcessor(".disallow",             bot));
     processors.add(new AllowUserProcessor(".allow",                   bot));
     processors.add(new LimitUserProcessor(".throttle",                bot));
