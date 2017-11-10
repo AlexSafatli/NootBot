@@ -274,8 +274,13 @@ public class SoundboardDispatcher {
 		return phraseDao.findByValue(p);
 	}
 
-	public List<Phrase> getPhrases() {
-		return phraseDao.findAll();
+	public List<String> getPhrases() {
+		List<String> out = new LinkedList<>();
+		List<Phrase> phrases = phraseDao.findAll();
+		for (Phrase phrase : phrases) {
+			out.add(phrase.getValue());
+		}
+		return out;
 	}
 
 	public List<SoundFile> getSoundFilesOrderedByNumberOfPlays() {
