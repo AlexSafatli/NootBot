@@ -6,7 +6,7 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class UnfavoritePhraseProcessor extends
-  SingleArgumentChatCommandProcessor {
+  AuthenticatedSingleArgumentChatCommandProcessor {
 
   public UnfavoritePhraseProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Remove Phrase", bot);
@@ -28,6 +28,7 @@ public class UnfavoritePhraseProcessor extends
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " <phrase> - let the bot know about a phrase you dislike";
+    return getPrefix() + " <phrase> (*) - let the bot know about a phrase " +
+           " you dislike";
   }
 }
