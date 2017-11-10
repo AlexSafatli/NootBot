@@ -61,6 +61,10 @@ public class ChatListener extends AbstractListener {
     processors.add(new SetNicknameProcessor(".nickname",              bot));
     processors.add(new AuthenticateUserProcessor(".privilege",        bot));
     processors.add(new DeleteBotMessagesProcessor(".clear",           bot));
+    processors.add(new ListPhrasesProcessor(".phrases",               bot));
+    processors.add(new RandomPhraseProcessor(".phrase",               bot));
+    processors.add(new FavoritePhraseProcessor(".addphrase",          bot));
+    processors.add(new UnfavoritePhraseProcessor(".rmphrase",         bot));
     processors.add(new DisallowUserProcessor(".disallow",             bot));
     processors.add(new AllowUserProcessor(".allow",                   bot));
     processors.add(new LimitUserProcessor(".throttle",                bot));
@@ -94,10 +98,6 @@ public class ChatListener extends AbstractListener {
     processors.add(new ReportBugProcessor(".bug",                     bot));
     processors.add(new InviteBotProcessor(".invite",                  bot));
     processors.add(new ServerDonationMessageProcessor(".donate",      bot));
-    processors.add(new ListPhrasesProcessor(".phrases",               bot));
-    processors.add(new RandomPhraseProcessor(".phrase",               bot));
-    processors.add(new FavoritePhraseProcessor(".addphrase",          bot));
-    processors.add(new UnfavoritePhraseProcessor(".rmphrase",         bot));
     processors.add(new TempVoiceChannelProcessor(".tmpvoice",         bot));
     processors.add(new SoundAttachmentProcessor(                      bot));
     processors.add(new FilterTwitchClipProcessor(                     bot));
