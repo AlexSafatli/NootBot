@@ -14,7 +14,6 @@ public class StringUtils {
 	private static final int MAX_NUMBER_OF_CACHED_WORDS = 25;
 	private static final int MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR = 3;
 	private static final String STARTING_CACHE_WORD = "Noot";
-	private static final String STARTING_FAVORITE_PHRASE = "Grand Theft Noot";
 	public static List<String> wordCache = initializeCache();
 
 	public static String truncate(String str) {
@@ -43,6 +42,7 @@ public class StringUtils {
 	}
 
 	public static String randomString(Collection<String> strings) {
+		if (strings.isEmpty()) return "";
 		Random rng = new Random();
 		int i = rng.nextInt(strings.size()), k = 0;
 		for (String string : strings) {

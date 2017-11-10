@@ -64,6 +64,14 @@ public class SoundboardDispatcher {
 	private final Path tmpFilePath =
 	  Paths.get(System.getProperty("user.dir") + "/tmp");
 
+	private static final List<String> STARTING_PHRASES = Arrays.asList(
+	      new String[] {
+	        "Forza Battlegrounds", "World of American Trucks",
+	        "Black Space Online", "Divinity Thunder Souls III",
+	        "Tyranny of Warcraft", "Divinity: Enemy Unknown",
+	        "Nioh: Injustice Offensive"
+	      }
+	    );
 	private static final String[] UNITS = new String[] {
 	  "B", "KB", "MB", "GB", "TB"
 	};
@@ -187,6 +195,8 @@ public class SoundboardDispatcher {
 		stringService.addFile(
 		  Paths.get(System.getProperty("user.dir") + "/strings.txt")
 		);
+		// Add some starting phrases to the phrase repository.
+		addStartingPhrases();
 	}
 
 	// This method loads the files. This checks if you are running from a .jar
@@ -384,14 +394,20 @@ public class SoundboardDispatcher {
 	public void addPhrase(String phrase) {
 		List<Phrase> phrases = getPhrase(phrase);
 		if (phrases != null && !phrases.isEmpty()) {
-		  return; // Already present.
+			return; // Already present.
 		}
-	  registerPhrase(phrase);
+		registerPhrase(phrase);
 	}
 
 	public boolean removePhrase(String phrase) {
 		List<Phrase> phrases = phraseDao.deleteByValue(phrase);
 		return (phrases != null && !phrases.isEmpty());
+	}
+
+	private void addStartingPhrases() {
+		for (String phrase : STARTING_PHRASES) {
+			addPhrase(phrase);
+		}
 	}
 
 	public void updateFileList() {
