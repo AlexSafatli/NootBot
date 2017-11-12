@@ -45,7 +45,7 @@ public class MoveListener extends AbstractListener {
       });
 
   private static final List<String> WHATS = Arrays.asList(new String[] {
-        "What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)"
+        "What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？" 
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
