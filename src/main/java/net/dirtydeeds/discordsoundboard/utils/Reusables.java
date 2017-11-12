@@ -31,7 +31,7 @@ public class Reusables {
   public static void setRandomGame(SoundboardBot b) {
     Game currentGame = b.getAPI().getPresence().getGame();
     String newName = getRandomGameName(b.getDispatcher());
-    while (newName.equals(currentGame.getName())) {
+    while (currentGame != null && newName.equals(currentGame.getName())) {
       newName = getRandomGameName(b.getDispatcher());
     }
     b.getAPI().getPresence().setGame(Game.of(newName));
