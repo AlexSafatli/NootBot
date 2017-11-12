@@ -31,7 +31,11 @@ public class MoveListener extends AbstractListener {
         "Oh hey! It's %s.",
         "We salute you, %s.",
         "ようこそ %s.",
-        "Turn it up to eleven. %s is here!"
+        "Turn it up to eleven. %s is here!",
+	"I like %s and I cannot lie. You other brothers can't deny.",
+	"Hit me %s one more time.",
+	"Oh no not %s, I will survive.",
+	"Take a sad %s and make it better..."
       });
 
   private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
