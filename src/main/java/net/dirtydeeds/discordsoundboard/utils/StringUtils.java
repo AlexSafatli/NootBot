@@ -5,6 +5,7 @@ import java.text.BreakIterator;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 import java.awt.Color;
@@ -68,8 +69,10 @@ public class StringUtils {
 	public static String randomPhrase(int numWords) {
 		String[] words = new String[numWords];
 		for (int i = 0; i < numWords; ++i) {
-			words[i] = (i > 0) ? RandomUtils.chooseOne(capitalize(randomWord()),
-			           randomPreposition()) : capitalize(randomWord());
+			words[i] = (i > 0) ?
+			           (String) RandomUtils.chooseOne(capitalize(randomWord()),
+			               randomPreposition()) :
+			           capitalize(randomWord());
 		}
 		return String.join(" ", words);
 	}

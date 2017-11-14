@@ -259,23 +259,25 @@ public class SoundboardDispatcher {
 	public List<SoundboardBot> getBots() {
 		List<SoundboardBot> bots = new LinkedList<>();
 		for (int i = 0; i < this.bots.length; ++i) {
-			if (this.bots[i] != null) {
-				try {
-					lambda.accept(this.bots[i]);
-					LOG.info("Ran lambda using bot " + this.bots[i].getBotName() +
-					         " for lambda " + lambda.toString());
-				} catch (Exception e) {
-					LOG.warn("When running lambda: " + e.getMessage());
-					e.printStackTrace();
-				}
-			}
+			if (this.bots[i] != null) bots.add(this.bots[i]);
 		}
 		return bots;
 	}
 
 	public void runLambda(Consumer<SoundboardBot> lambda) {
 		for (int i = 0; i < this.bots.length; ++i) {
-			if (this.bots[i] != null) lambda.accept(this.bots[i]);
+			if (this.bots[i] != null) {
+				if (this.bots[i] != null) {
+					try {
+						lambda.accept(this.bots[i]);
+						LOG.info("Ran lambda using bot " + this.bots[i].getBotName() +
+						         " for lambda " + lambda.toString());
+					} catch (Exception e) {
+						LOG.warn("When running lambda: " + e.getMessage());
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 
