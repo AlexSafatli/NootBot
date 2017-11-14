@@ -144,7 +144,7 @@ public class SoundboardDispatcher {
 	}
 
 	private void startBot(int i) {
-		SoundboardBot bot;
+		SoundboardBot bot = null;
 		int index = i - 1;
 		if (bots[index] != null) shutdownBot(i);
 		String token = getProperty("token_" + i),
