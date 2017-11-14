@@ -69,7 +69,7 @@ public class StringUtils {
 	public static String randomPhrase(int numWords) {
 		String[] words = new String[numWords];
 		for (int i = 0; i < numWords; ++i) {
-			words[i] = (i > 0) ?
+			words[i] = (i % 2 == 1) ?
 			           (String) RandomUtils.chooseOne(capitalize(randomWord()),
 			               randomPreposition()) :
 			           capitalize(randomWord());
