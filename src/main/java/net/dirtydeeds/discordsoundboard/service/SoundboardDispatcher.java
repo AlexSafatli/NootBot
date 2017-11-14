@@ -62,7 +62,7 @@ public class SoundboardDispatcher {
 	private static final List<String> STARTING_PHRASES = Arrays.asList(
 	      new String[] {
 	        "Forza Battlegrounds", "World of American Trucks",
-	        "Black Space Online", "Nioh: Injustice Offensive", 
+	        "Black Space Online", "Nioh: Injustice Offensive",
 	        "Tom Clancy's Farming Simulator"
 	      }
 	    );
@@ -132,15 +132,20 @@ public class SoundboardDispatcher {
 		}
 	}
 
+	private void shutdownBot(int i) {
+		int index = i - 1;
+		if (bots[index] == null) return;
+		LOG.info("Shutting down bot " + i + ": " + bot.getBotName());
+		for (Object listener : bots[index].getAPI().getRegisteredListeners()) {
+			bots[index].getAPI().removeEventListener(listener);
+		}
+		bots[index].getAPI().shutdown();
+		bots[index] = null;
+	}
+
 	private void startBot(int i) {
 		int index = i - 1;
-		if (bots[index] != null) {
-			for (Object listener : bots[index].getAPI().getRegisteredListeners()) {
-				bots[index].getAPI().removeEventListener(listener);
-			}
-			bots[index].getAPI().shutdown();
-			bots[index] = null;
-		}
+		if (bots[index] != null) shutdownBot(i);
 		String token = getProperty("token_" + i),
 		       owner = getProperty("owner_" + i);
 		if (token == null || owner == null) {
@@ -153,8 +158,8 @@ public class SoundboardDispatcher {
 		try {
 			bots[index] = new SoundboardBot(token, owner, this);
 		} catch (Exception e) {
-			e.printStackTrace();
-			bots[index] = null;
+			LOG.warn("When starting bot " + i + ", ran into exception: " +
+			         e.getMessage());
 		}
 	}
 
@@ -267,16 +272,16 @@ public class SoundboardDispatcher {
 	public void runLambda(Consumer<SoundboardBot> lambda) {
 		for (int i = 0; i < this.bots.length; ++i) {
 			if (this.bots[i] != null) {
-				if (this.bots[i] != null) {
-					try {
-						lambda.accept(this.bots[i]);
-						LOG.info("Ran lambda using bot " + this.bots[i].getBotName() +
-						         " for lambda " + lambda.toString());
-					} catch (Exception e) {
-						LOG.warn("When running lambda: " + e.getMessage());
-						e.printStackTrace();
-					}
+				try {
+					lambda.accept(this.bots[i]);
+					LOG.info("Ran lambda using bot " + i + ": " +
+					         this.bots[i].getBotName());
+				} catch (Exception e) {
+					LOG.warn("When running lambda: " + e.getMessage());
+					e.printStackTrace();
 				}
+			} else {
+				LOG.warn("Bot " + i + " was null when trying to run lambda.");
 			}
 		}
 	}
