@@ -25,8 +25,13 @@ public class ChatUtils {
         history.retrievePast(MAX_NUM_MESSAGES_TO_GO_BACK);
       a.queue(msgs -> {
         for (Message msg : msgs) {
-          if (msg.getAuthor().equals(bot.getAPI().getSelfUser()))
-            msg.delete().queue();
+          if (msg.getAuthor().equals(bot.getAPI().getSelfUser())) {
+            try {
+              msg.delete().queue();
+            } catch (Exception e) {
+              continue;
+            }
+          }
         }
       });
     }
