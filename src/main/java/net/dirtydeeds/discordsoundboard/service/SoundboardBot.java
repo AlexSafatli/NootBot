@@ -71,7 +71,6 @@ public class SoundboardBot {
     this.settings = new Hashtable<>();
     this.audioSchedulers = new Hashtable<>();
     initializeDiscordBot(token);
-    clearPreviousMessages();
   }
 
   private class SoundPlayedEvent {
