@@ -13,7 +13,7 @@ import java.awt.Color;
 public class StringUtils {
 
 	private static final int MAX_NUMBER_OF_CACHED_WORDS = 250;
-	private static final int MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR = 3;
+	private static final int MIN_WORD_SIZE = 2;
 	private static final String STARTING_CACHE_WORD = "Noot";
 	private static final List<String> PREPOSITIONS = Arrays.asList(
 	      new String[] {
@@ -69,7 +69,7 @@ public class StringUtils {
 	public static String randomPhrase(int numWords) {
 		String[] words = new String[numWords];
 		for (int i = 0; i < numWords; ++i) {
-			words[i] = (i % 2 == 1) ?
+			words[i] = (i % 2 == 1 && i != numWords - 1) ?
 			           (String) RandomUtils.chooseOne(capitalize(randomWord()),
 			               randomPreposition()) :
 			           capitalize(randomWord());
@@ -139,7 +139,7 @@ public class StringUtils {
 			last = iter.next();
 			if (last == BreakIterator.DONE) continue;
 			String word = message.substring(first, last);
-			if (!containsDigit(word)) {
+			if (!containsDigit(word) && word.length() >= MIN_WORD_SIZE) {
 				cacheString(word);
 			}
 		}
