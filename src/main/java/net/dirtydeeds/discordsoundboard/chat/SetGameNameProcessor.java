@@ -16,8 +16,10 @@ public class SetGameNameProcessor extends
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
+    int len = getPrefix().length() + 1;
     String m = event.getMessage().getContent(),
-           name = m.substring(getPrefix().length() + 1).trim();
+           name = (m.length() > len) ?
+                  m.substring(getPrefix().length() + 1).trim() : null;
     if (name == null || name.isEmpty()) {
       Reusables.setRandomGame(bot);
       m(event, "Set random game name!");

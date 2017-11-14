@@ -13,8 +13,10 @@ public class FavoritePhraseProcessor extends
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
+    int len = getPrefix().length() + 1;
     String m = event.getMessage().getContent(),
-           phrase = m.substring(getPrefix().length() + 1).trim();
+           phrase = (m.length() > len) ?
+                  m.substring(getPrefix().length() + 1).trim() : null;
     if (phrase == null) {
       pm(event, "You didn't give me anything.");
     } else {
