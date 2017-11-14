@@ -135,7 +135,7 @@ public class SoundboardDispatcher {
 	private void shutdownBot(int i) {
 		int index = i - 1;
 		if (bots[index] == null) return;
-		LOG.info("Shutting down bot " + i + ": " + bot.getBotName());
+		LOG.info("Shutting down bot " + i + ": " + bots[index].getBotName());
 		for (Object listener : bots[index].getAPI().getRegisteredListeners()) {
 			bots[index].getAPI().removeEventListener(listener);
 		}
