@@ -84,6 +84,9 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 			LOG.info("Download succeeded: " + attachment.getFileName());
 			dispatcher.updateFileList();
 			SoundFile soundFile = dispatcher.getSoundFileByName(file.shortName);
+			if (soundFile == null) {
+				e(event, "Something went wrong - could not find downloaded file.");
+			}
 			// Check duration.
 			net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(user);
 			if ((u != null && u.getPrivilegeLevel() < 2 || !bot.isOwner(user)) &&
