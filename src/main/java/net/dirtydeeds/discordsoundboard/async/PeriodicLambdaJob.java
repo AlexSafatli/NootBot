@@ -16,7 +16,8 @@ public class PeriodicLambdaJob implements SoundboardJob {
     this(lambda, 6000);
   }
 
-  public PeriodicLambdaJob(Consumer<SoundboardBot> lambda, int numSecondsBetween) {
+  public PeriodicLambdaJob(Consumer<SoundboardBot> lambda,
+                           int numSecondsBetween) {
     this.lambda = lambda;
     this.numSecondsBetween = numSecondsBetween;
     this.next = newTimestamp();
@@ -35,13 +36,7 @@ public class PeriodicLambdaJob implements SoundboardJob {
   }
 
   public void run(SoundboardDispatcher dispatcher) {
-    for (SoundboardBot bot : dispatcher.getBots()) {
-      try {
-        lambda.accept(bot);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+    dispatcher.runLambda(lambda);
     next = newTimestamp();
   }
 

@@ -14,6 +14,11 @@ public class StringUtils {
 	private static final int MAX_NUMBER_OF_CACHED_WORDS = 250;
 	private static final int MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR = 3;
 	private static final String STARTING_CACHE_WORD = "Noot";
+	private static final List<String> PREPOSITIONS = Arrays.asList(
+	      new String[] {
+	        "of", "by", "as", "at", "for", "in", "into", "on", "plus", "with"
+	      }
+	    );
 	public static List<String> wordCache = initializeCache();
 
 	public static String truncate(String str) {
@@ -56,11 +61,21 @@ public class StringUtils {
 		return randomString(wordCache);
 	}
 
-	public static String randomWordPair() {
-		String a = "", b = "";
-		while (a.length() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) a = randomWord();
-		while (b.length() <= MIN_NUMBER_OF_CHARS_FOR_WORD_PAIR) b = randomWord();
-		return capitalize(a) + " " + capitalize(b);
+	public static String randomPreposition() {
+		return randomString(PREPOSITIONS);
+	}
+
+	public static String randomPhrase(int numWords) {
+		String[] words = new String[numWords];
+		for (int i = 0; i < numWords; ++i) {
+			words[i] = (i > 0) ? RandomUtils.chooseOne(capitalize(randomWord()),
+			           randomPreposition()) : capitalize(randomWord());
+		}
+		return String.join(" ", words);
+	}
+
+	public static String randomPhrase() {
+		return randomPhrase(RandomUtils.smallNumber());
 	}
 
 	public static <T> String listToString(List<T> list) {

@@ -18,6 +18,6 @@ public class LambdaJob implements SoundboardJob {
 	}
 
 	public void run(SoundboardDispatcher dispatcher) {
-		for (SoundboardBot bot : dispatcher.getBots()) lambda.accept(bot);
+		dispatcher.runLambda(lambda);
 	}
 }

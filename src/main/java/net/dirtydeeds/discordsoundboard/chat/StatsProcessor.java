@@ -6,6 +6,7 @@ import net.dirtydeeds.discordsoundboard.Version;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class StatsProcessor extends AbstractChatCommandProcessor {
@@ -38,7 +39,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 
 	protected void handleEvent(MessageReceivedEvent event, String message) {
 		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
-		msg.addDescription("*Noot noot*.");
+		msg.addDescription("*" + StringUtils.randomPhrase() + "*");
 		int numberOfSounds = bot.getSoundMap().size(),
 		    numberOfServers = bot.getGuilds().size();
 		msg.addContent("Number of Sounds", "" + numberOfSounds, true);

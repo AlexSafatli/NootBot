@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.text.DecimalFormat;
-
+import java.util.function.Consumer;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
@@ -31,6 +31,7 @@ import net.dirtydeeds.discordsoundboard.dao.SoundFileRepository;
 import net.dirtydeeds.discordsoundboard.dao.UserRepository;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.trie.LowercaseTrie;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -61,8 +62,8 @@ public class SoundboardDispatcher {
 	private static final List<String> STARTING_PHRASES = Arrays.asList(
 	      new String[] {
 	        "Forza Battlegrounds", "World of American Trucks",
-	        "Black Space Online", "Tyranny of Warcraft",
-	        "Nioh: Injustice Offensive", "Tom Clancy's Farming Simulator"
+	        "Black Space Online", "Nioh: Injustice Offensive", 
+	        "Tom Clancy's Farming Simulator"
 	      }
 	    );
 	private static final String[] UNITS = new String[] {
@@ -174,10 +175,6 @@ public class SoundboardDispatcher {
 		LOG.info("Starting " + num + " bots.");
 		bots = new SoundboardBot[num];
 		for (int i = 1; i <= num; ++i) startBot(i);
-		// Async jobs
-		LOG.info("Starting async jobs.");
-		asyncService.addJob(PeriodicLambdas.cleanOldBotMessages());
-		asyncService.addJob(PeriodicLambdas.changeToRandomGame());
 		// Audio Playing
 		LOG.info("Adding sources to audio manager.");
 		audioManager.registerSourceManager(new YoutubeAudioSourceManager());
@@ -190,6 +187,10 @@ public class SoundboardDispatcher {
 		stringService.addFile(
 		  Paths.get(System.getProperty("user.dir") + "/strings.txt")
 		);
+		// Async jobs
+		LOG.info("Starting async jobs.");
+		asyncService.addJob(PeriodicLambdas.cleanOldBotMessages());
+		asyncService.addJob(PeriodicLambdas.changeToRandomGame());
 	}
 
 	// This method loads the files. This checks if you are running from a .jar
@@ -258,9 +259,24 @@ public class SoundboardDispatcher {
 	public List<SoundboardBot> getBots() {
 		List<SoundboardBot> bots = new LinkedList<>();
 		for (int i = 0; i < this.bots.length; ++i) {
-			if (this.bots[i] != null) bots.add(this.bots[i]);
+			if (this.bots[i] != null) {
+				try {
+					lambda.accept(this.bots[i]);
+					LOG.info("Ran lambda using bot " + this.bots[i].getBotName() +
+					         " for lambda " + lambda.toString());
+				} catch (Exception e) {
+					LOG.warn("When running lambda: " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
 		}
 		return bots;
+	}
+
+	public void runLambda(Consumer<SoundboardBot> lambda) {
+		for (int i = 0; i < this.bots.length; ++i) {
+			if (this.bots[i] != null) lambda.accept(this.bots[i]);
+		}
 	}
 
 	public List<net.dirtydeeds.discordsoundboard.beans.User> getUserById(
@@ -282,6 +298,7 @@ public class SoundboardDispatcher {
 		List<Phrase> phrases = phraseDao.findAll();
 		for (Phrase phrase : phrases) {
 			out.add(phrase.getValue());
+			StringUtils.cacheWords(phrase.getValue());
 		}
 		return out;
 	}

@@ -38,7 +38,7 @@ public class Reusables {
   }
 
   private static String getRandomGameName(SoundboardDispatcher dispatcher) {
-    return (String) RandomUtils.chooseOne(StringUtils.randomWordPair(),
+    return (String) RandomUtils.chooseOne(StringUtils.randomPhrase(),
                                           StringUtils.randomString(
                                             dispatcher.getPhrases()));
   }

@@ -14,7 +14,7 @@ public class RandomPhraseProcessor extends AbstractChatCommandProcessor {
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    m(event, (String) RandomUtils.chooseOne(StringUtils.randomWordPair(),
+    m(event, (String) RandomUtils.chooseOne(StringUtils.randomPhrase(),
                                             StringUtils.randomString(
                                                 bot.getDispatcher(
                                                 ).getPhrases())));
