@@ -144,6 +144,7 @@ public class SoundboardDispatcher {
 	}
 
 	private void startBot(int i) {
+		SoundboardBot bot;
 		int index = i - 1;
 		if (bots[index] != null) shutdownBot(i);
 		String token = getProperty("token_" + i),
@@ -156,11 +157,12 @@ public class SoundboardDispatcher {
 			         " (token: " + token + ", owner: " + owner + ")");
 		}
 		try {
-			bots[index] = new SoundboardBot(token, owner, this);
+			bot = new SoundboardBot(token, owner, this);
 		} catch (Exception e) {
 			LOG.warn("When starting bot " + i + ", ran into exception: " +
 			         e.getMessage());
 		}
+		bots[index] = bot;
 	}
 
 	public void restartBot(SoundboardBot bot) {
