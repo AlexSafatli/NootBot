@@ -17,7 +17,7 @@ public class StringUtils {
 	private static final String STARTING_CACHE_WORD = "Noot";
 	private static final List<String> PREPOSITIONS = Arrays.asList(
 	      new String[] {
-	        "of", "by", "as", "at", "for", "in", "into", "on", "plus", "with"
+	        "of", "by", "as", "at", "for", "in", "into", "on", "with"
 	      }
 	    );
 	public static List<String> wordCache = initializeCache();
@@ -52,8 +52,7 @@ public class StringUtils {
 		Random rng = new Random();
 		int i = rng.nextInt(strings.size()), k = 0;
 		for (String string : strings) {
-			if (k == i) return string;
-			++k;
+			if (k == i) return string; ++k;
 		}
 		return null;
 	}
@@ -70,9 +69,10 @@ public class StringUtils {
 		String[] words = new String[numWords];
 		for (int i = 0; i < numWords; ++i) {
 			words[i] = (i % 2 == 1 && i != numWords - 1) ?
-			           (String) RandomUtils.chooseOne(capitalize(randomWord()),
-			               randomPreposition()) :
-			           capitalize(randomWord());
+			           (String) RandomUtils.chooseOne(
+			             capitalizeIfNotPreposition(randomWord()),
+			             randomPreposition()) :
+			           capitalizeIfNotPreposition(randomWord());
 		}
 		return String.join(" ", words);
 	}
@@ -102,6 +102,11 @@ public class StringUtils {
 	public static String capitalize(String s) {
 		if (s.length() == 1) return s.toUpperCase();
 		return s.substring(0, 1).toUpperCase() + s.substring(1);
+	}
+
+	public static String capitalizeIfNotPreposition(String s) {
+		if (PREPOSITIONS.contains(s)) return s;
+		return capitalize(s);
 	}
 
 	public static String dayTimeStamp(Date date) {

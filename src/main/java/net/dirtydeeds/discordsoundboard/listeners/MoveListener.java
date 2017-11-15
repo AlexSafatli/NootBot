@@ -1,6 +1,7 @@
 package net.dirtydeeds.discordsoundboard.listeners;
 
 import java.util.*;
+import java.awt.Color;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
@@ -45,7 +46,7 @@ public class MoveListener extends AbstractListener {
       });
 
   private static final List<String> WHATS = Arrays.asList(new String[] {
-        "What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？" 
+        "What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？", "Que?"
       });
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
@@ -241,7 +242,10 @@ public class MoveListener extends AbstractListener {
     }
     m.addContent(StringUtils.randomString(WHATS),
                  "I play sounds. Type `.help` for commands.", false);
-    m.setColor(StringUtils.toColor(user.getName()));
+    Color color = StringUtils.toColor(user.getName());
+    m.setColor(color);
+    m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
+                                  color.getGreen(), color.getBlue()));
     return m;
   }
 
