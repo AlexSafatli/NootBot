@@ -13,11 +13,12 @@ import java.awt.Color;
 public class StringUtils {
 
 	private static final int MAX_NUMBER_OF_CACHED_WORDS = 250;
-	private static final int MIN_WORD_SIZE = 2;
+	private static final int MIN_WORD_SIZE = 3;
 	private static final String STARTING_CACHE_WORD = "Noot";
 	private static final List<String> PREPOSITIONS = Arrays.asList(
 	      new String[] {
-	        "of", "by", "as", "at", "for", "in", "into", "on", "with"
+	        "of", "by", "as", "at", "for", "in", "into", "on", "with", "in the",
+	        "of the", "for the", "at the", "with the", "on the", "the"
 	      }
 	    );
 	public static List<String> wordCache = initializeCache();
