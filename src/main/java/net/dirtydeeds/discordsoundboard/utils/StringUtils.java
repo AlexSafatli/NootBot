@@ -105,7 +105,7 @@ public class StringUtils {
 	}
 
 	public static String capitalizeIfNotPreposition(String s) {
-		if (PREPOSITIONS.contains(s)) return s;
+		if (PREPOSITIONS.contains(s.toLowerCase())) return s;
 		return capitalize(s);
 	}
 
