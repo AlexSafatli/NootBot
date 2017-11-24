@@ -7,7 +7,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class RandomPhraseProcessor extends SingleArgumentChatProcessor {
+public class RandomPhraseProcessor extends SingleArgumentChatCommandProcessor {
 
   public RandomPhraseProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Random Phrase(s)", bot);
@@ -20,8 +20,7 @@ public class RandomPhraseProcessor extends SingleArgumentChatProcessor {
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    int numTimesToPlay = (getArguments().length > 0) ?
-                         Integer.valueOf(getArguments()[0]) : 1;
+    int numTimesToPlay = Integer.valueOf(getArgument());
     MessageBuilder mb = new MessageBuilder();
     for (int i = 0; i < numTimesToPlay; ++i) {
       mb.append("`" + randomPhrase() + "`");
