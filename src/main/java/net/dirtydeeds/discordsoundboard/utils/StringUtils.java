@@ -79,7 +79,7 @@ public class StringUtils {
 	}
 
 	public static String randomPhrase() {
-		return randomPhrase(RandomUtils.smallNumber());
+		return randomPhrase(RandomUtils.smallNumber() + 1);
 	}
 
 	public static <T> String listToString(List<T> list) {

@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class RandomUtils {
 
-  private static final int BIGGEST_SMALL_NUMBER = 4;
+  private static final int BIGGEST_SMALL_NUMBER = 3;
 
   public static Object chooseOne(Object... args) {
     Random rng = new Random();
