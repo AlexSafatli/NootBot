@@ -23,7 +23,7 @@ public class RandomPhraseProcessor extends SingleArgumentChatCommandProcessor {
     int numTimesToPlay = Integer.valueOf(getArgument());
     MessageBuilder mb = new MessageBuilder();
     for (int i = 0; i < numTimesToPlay; ++i) {
-      mb.append("`" + randomPhrase() + "`");
+      mb.append("`" + randomPhrase() + "`\n");
     }
     for (String s : mb.getStrings()) m(event, s);
   }

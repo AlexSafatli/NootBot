@@ -22,9 +22,9 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 	private void sendBadSoundMessage(MessageReceivedEvent event, String name,
 	                                 String suggestion, User user) {
 		StyledEmbedMessage msg = buildStyledEmbedMessage(event);
-		msg.setTitle("Sound `" + name + "` Not Found!");
-		msg.addDescription(suggestion);
-		msg.addContent("Search For It", lookupString(Strings.USE_SEARCH), true);
+		msg.setTitle("Sound Not Found");
+		msg.addDescription("Sound `" + name + "` not found. " + suggestion + Strings.SEPARATOR + user.getAsMention());
+		msg.addContent("Search", lookupString(Strings.USE_SEARCH), true);
 		embed(event, msg.isWarning(true));
 	}
 
