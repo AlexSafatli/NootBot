@@ -11,6 +11,6 @@ public class FilterTwitchClipProcessor extends FilterChatProcessor {
 
   public FilterTwitchClipProcessor(SoundboardBot bot) {
     super(Pattern.compile(".*clips\\.twitch\\.tv/.*"), CHANNEL,
-          "a Twitch clip", bot);
+            "a Twitch clip", bot);
   }
 }

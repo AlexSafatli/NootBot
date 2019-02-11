@@ -7,30 +7,26 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class AlternateHandleProcessor extends
-	SingleArgumentChatCommandProcessor {
+        SingleArgumentChatCommandProcessor {
 
-	public AlternateHandleProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Alternate Handles", bot);
-	}
+  public AlternateHandleProcessor(String prefix, SoundboardBot bot) {
+    super(prefix, "Alternate Handles", bot);
+  }
 
-	protected void handleEvent(MessageReceivedEvent event, String message) {
-		String m = event.getMessage().getContent(),
-		       handle = m.substring(getPrefix().length() + 1).trim();
-		User u = bot.getUser(event.getAuthor());
-		if (handle == null) {
-			pm(event, lookupString(Strings.NO_NAME));
-		} else {
-			u.addAlternateHandle(handle);
-			bot.getDispatcher().saveUser(u);
-			pm(event, "Updated your handles to include `" + handle +
-			   "`!\nHandles registered for you now are: " +
-			   StringUtils.listToString(u.getAlternateHandles()));
-		}
-	}
+  protected void handleEvent(MessageReceivedEvent event, String message) {
+    String m = event.getMessage().getContent(),
+            handle = m.substring(getPrefix().length() + 1).trim();
+    User u = bot.getUser(event.getAuthor());
+    u.addAlternateHandle(handle);
+    bot.getDispatcher().saveUser(u);
+    pm(event, "Updated your handles to include `" + handle +
+            "`!\nHandles registered for you now are: " +
+            StringUtils.listToString(u.getAlternateHandles()));
+  }
 
-	@Override
-	public String getCommandHelpString() {
-		return getPrefix() + " <handle> - let the bot know about another handle " +
-		       "you go by on the internet; used for some *optional* functionality";
-	}
+  @Override
+  public String getCommandHelpString() {
+    return getPrefix() + " <handle> - let the bot know about another handle " +
+            "you go by on the internet; used for some *optional* functionality";
+  }
 }

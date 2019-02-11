@@ -6,32 +6,32 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class LimitUserProcessor extends
-	AuthenticatedSingleArgumentChatCommandProcessor {
+        AuthenticatedSingleArgumentChatCommandProcessor {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("LimitUser");
+  public static final SimpleLog LOG = SimpleLog.getLog("LimitUser");
 
-	public LimitUserProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Throttle User", bot);
-	}
+  public LimitUserProcessor(String prefix, SoundboardBot bot) {
+    super(prefix, "Throttle User", bot);
+  }
 
-	protected void handleEvent(MessageReceivedEvent event, String message) {
-		if (getArgument() != null) {
-			String username = getArgument();
-			if (username.equals(event.getAuthor().getName())) {
-				pm(event, lookupString(Strings.NOT_TO_SELF));
-			} else if (bot.throttleUser(username)) {
-				pm(event, formatString(Strings.USER_THROTTLE_UNTHROTTLED, username));
-				LOG.info("Throttled username " + username);
-			} else {
-				pm(event, formatString(Strings.USER_NOT_FOUND_UNTHROTTLED, username));
-				LOG.warn("Failed to throttle username " + username);
-			}
-		}
-	}
+  protected void handleEvent(MessageReceivedEvent event, String message) {
+    if (getArgument() != null) {
+      String username = getArgument();
+      if (username.equals(event.getAuthor().getName())) {
+        pm(event, lookupString(Strings.NOT_TO_SELF));
+      } else if (bot.throttleUser(username)) {
+        pm(event, formatString(Strings.USER_THROTTLE_UNTHROTTLED, username));
+        LOG.info("Throttled username " + username);
+      } else {
+        pm(event, formatString(Strings.USER_NOT_FOUND_UNTHROTTLED, username));
+        LOG.warn("Failed to throttle username " + username);
+      }
+    }
+  }
 
-	@Override
-	public String getCommandHelpString() {
-		return super.getCommandHelpString() +
-		       " - throttle a user from using bot too often";
-	}
+  @Override
+  public String getCommandHelpString() {
+    return super.getCommandHelpString() +
+            " - throttle a user from using bot too often";
+  }
 }

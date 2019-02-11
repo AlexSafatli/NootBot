@@ -75,7 +75,7 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
             voice = bot.getUsersVoiceChannel(user);
             if (voice == null) {
                 bot.sendMessageToUser(SoundboardBot.NOT_IN_VOICE_CHANNEL_MESSAGE, user);
-                return voice;
+                return null;
             }
             bot.moveToChannel(voice);
         } catch (Exception e) {

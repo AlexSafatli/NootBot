@@ -6,31 +6,32 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class LeaveServerProcessor extends OwnerSingleArgumentChatCommandProcessor {
 
-	public LeaveServerProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Leave Server", bot);
-	}
+  public LeaveServerProcessor(String prefix, SoundboardBot bot) {
+    super(prefix, "Leave Server", bot);
+  }
 
-	protected void handleEvent(MessageReceivedEvent event, String message) {
-		if (getArgument() == null) {
-			pm(event, "You need to provide a **server name**.");
-		} else {
-			String serverName = getArgument();
-			Guild toLeave = null;
-			for (Guild guild : bot.getGuilds()) {
-				if (guild.getName().equalsIgnoreCase(serverName)) {
-					toLeave = guild; break;
-				}
-			}
-			if (toLeave != null) {
-				bot.leaveServer(toLeave);
-				pm(event, "Left server **" + toLeave.getName() + "** successfully.");
-			} else pm(event, "No server found with name `" + serverName + "`.");
-		}
-	}
+  protected void handleEvent(MessageReceivedEvent event, String message) {
+    if (getArgument() == null) {
+      pm(event, "You need to provide a **server name**.");
+    } else {
+      String serverName = getArgument();
+      Guild toLeave = null;
+      for (Guild guild : bot.getGuilds()) {
+        if (guild.getName().equalsIgnoreCase(serverName)) {
+          toLeave = guild;
+          break;
+        }
+      }
+      if (toLeave != null) {
+        bot.leaveServer(toLeave);
+        pm(event, "Left server **" + toLeave.getName() + "** successfully.");
+      } else pm(event, "No server found with name `" + serverName + "`.");
+    }
+  }
 
-	@Override
-	public String getCommandHelpString() {
-		return super.getCommandHelpString() + " - leave a joined server by name";
-	}
+  @Override
+  public String getCommandHelpString() {
+    return super.getCommandHelpString() + " - leave a joined server by name";
+  }
 
 }
