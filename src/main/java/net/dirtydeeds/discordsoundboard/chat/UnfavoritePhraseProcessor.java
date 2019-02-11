@@ -15,14 +15,10 @@ public class UnfavoritePhraseProcessor extends
   protected void handleEvent(MessageReceivedEvent event, String message) {
     String m = event.getMessage().getContent(),
            phrase = m.substring(getPrefix().length() + 1).trim();
-    if (phrase == null) {
-      pm(event, "You didn't give me anything.");
+    if (bot.getDispatcher().removePhrase(phrase)) {
+      m(event, "Removed phrase `" + phrase + "` from list of phrases!");
     } else {
-      if (bot.getDispatcher().removePhrase(phrase)) {
-        m(event, "Removed phrase `" + phrase + "` from list of phrases!");
-      } else {
-        pm(event, "Didn't have phrase `" + phrase + "` in list of phrases!");
-      }
+      pm(event, "Didn't have phrase `" + phrase + "` in list of phrases!");
     }
   }
 

@@ -35,7 +35,7 @@ public class SetEntranceForUserProcessor extends
 		} else if (filename == null) {
 			bot.setEntranceForUser(user, null, null);
 			pm(event, "User **" + user.getName() + "** had their entrance cleared.");
-		} else if (user == null) {
+		} else {
 			pm(event, "Asked to change entrance for `" + username + "` but could not "
 			   + "find user with that name.");
 		}
