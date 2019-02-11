@@ -61,17 +61,14 @@ public class PlaySoundsJob implements SoundboardJob {
   public void run(SoundboardDispatcher dispatcher) {
     if (bot == null || sounds == null || sounds.length == 0) return;
     boolean same = true, randomed = false, allRandomed = true;
-    Guild guild = null;
-    VoiceChannel voice = null;
+    Guild guild;
+    VoiceChannel voice;
     String firstSound = null, end = "";
     long timePlaying = 0;
     MessageBuilder mb = new MessageBuilder(1024);
     try {
       voice = bot.getUsersVoiceChannel(user);
-      if (voice == null) {
-        bot.sendMessageToUser(SoundboardBot.NOT_IN_VOICE_CHANNEL_MESSAGE, user);
-        return;
-      }
+      if (voice == null) return;
       guild = voice.getGuild();
       bot.moveToChannel(voice);
     } catch (Exception e) {
@@ -100,8 +97,7 @@ public class PlaySoundsJob implements SoundboardJob {
       } else {
         if (allRandomed) allRandomed = false;
         try {
-          if (sound != null)
-            timePlaying += schedule(dispatcher, scheduler, sound);
+          timePlaying += schedule(dispatcher, scheduler, sound);
         } catch (Exception e) {
           continue;
         }

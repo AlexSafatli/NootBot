@@ -50,6 +50,13 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
     return true;
   }
 
+  private void handleException(Exception e) {
+    bot.sendMessageToUser("Something went wrong when I tried " +
+            "to play a sound for you" + ((sounds[0] != null) ? " `" +
+            sounds[0] + "`." : ".") + " Encountered exception => " +
+            e.getMessage(), user);
+  }
+
   private void tryAgain(SoundboardDispatcher dispatcher) {
     dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(sounds, bot, user));
   }
@@ -74,18 +81,20 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
       voice = bot.getUsersVoiceChannel(user);
       if (voice != null) bot.moveToChannel(voice);
     } catch (Exception e) {
-      bot.sendMessageToUser("Something went wrong when I tried to play a sound for you" +
-              ((sounds[0] != null) ? " `" + sounds[0] + "`." : "."), user);
+      handleException(e);
     }
     return voice;
   }
 
   public void run(SoundboardDispatcher dispatcher) {
-    if (bot == null || sounds == null || sounds.length == 0)
+    if (bot == null || sounds == null || sounds.length == 0 || !dispatcher.getBots().contains(bot))
       return;
 
     VoiceChannel voice = getVoiceChannel();
-    if (voice == null) tryAgain(dispatcher);
+    if (voice == null) {
+      tryAgain(dispatcher);
+      return;
+    }
     Guild guild = voice.getGuild();
 
     AudioTrackScheduler scheduler = bot.getSchedulerForGuild(guild);
@@ -93,24 +102,22 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
     if (sound == null || sound.equals("*")) {
       if (category == null) try {
         schedule(scheduler, bot.getRandomSoundName());
-        next(dispatcher);
       } catch (Exception e) {
-        next(dispatcher);
+        handleException(e);
       }
       else try {
         schedule(scheduler, bot.getRandomSoundNameForCategory(category));
-        next(dispatcher);
       } catch (Exception e) {
-        next(dispatcher);
+        handleException(e);
       }
     } else {
       try {
         schedule(scheduler, sound);
-        next(dispatcher);
       } catch (Exception e) {
-        next(dispatcher);
+        handleException(e);
       }
     }
+    next(dispatcher);
   }
 
 }

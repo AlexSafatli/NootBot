@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
-  private static final int BIG_NUMBER_OF_SOUNDS = 1024;
+  private static final int BIG_NUMBER_OF_SOUNDS = 2019;
   public static final SimpleLog LOG = SimpleLog.getLog("ListSounds");
 
   public ListSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
@@ -25,8 +25,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
   }
 
   private Map<String, List<SoundFile>> getCategoryMappings() {
-    Map<String, List<SoundFile>> categoryFiles =
-      new TreeMap<String, List<SoundFile>>();
+    Map<String, List<SoundFile>> categoryFiles = new TreeMap<>();
     for (SoundFile file : bot.getSoundMap().values()) {
       String category = (file.getCategory().equalsIgnoreCase("sounds")) ?
                         "Uncategorized" : file.getCategory();
@@ -62,7 +61,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
             !event.isFromType(ChannelType.PRIVATE)) {
           w(event, "**" + soundFiles.size() + " files are stored** (" +
             bot.getDispatcher().sizeOfLibrary() + ") " +
-            "\u2014 that's a lot of files! Listing them will *flood this" +
+            "\u2014 that's so much! Listing them will *flood this" +
             " channel*. List sounds by category using `" + getPrefix() +
             " <category>` instead. To list categories, use `.categories`.");
           return;
@@ -101,7 +100,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
                    cat + " but it wasn't found.");
         }
       }
-    } else e(event, "There are **no sounds**! Add some.");
+    } else e(event, "There are **no sounds**! Add some :rage:.");
   }
 
   private void listByCategory(Category category, Category parent,
@@ -115,8 +114,8 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
     int i = 0;
     for (String s : strings) {
       int k = i + 1;
-      StyledEmbedMessage em = new StyledEmbedMessage((i == 0) ? title : title +
-          " [" + k + "]", bot);
+      StyledEmbedMessage em = new StyledEmbedMessage(
+              (i == 0) ? title : title + " [" + k + "]", bot);
       em.addDescription(s);
       embed(event, em);
       ++i;
