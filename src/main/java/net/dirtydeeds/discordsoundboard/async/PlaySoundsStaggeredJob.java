@@ -40,7 +40,7 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
   }
 
   private Date someTimeFromNow() {
-    return new Date(System.currentTimeMillis() + Math.max(rand.nextInt(60000), 60000));
+    return new Date(System.currentTimeMillis() + 1000 + rand.nextInt(600000));
   }
 
   public boolean isApplicable(SoundboardDispatcher dispatcher) {
