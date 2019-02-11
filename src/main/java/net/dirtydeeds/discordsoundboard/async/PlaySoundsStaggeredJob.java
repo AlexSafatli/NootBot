@@ -51,6 +51,10 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
         return true;
     }
 
+    private void tryAgain(SoundboardDispatcher dispatcher) {
+        dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(sounds, bot, user));
+    }
+
     private void next(SoundboardDispatcher dispatcher) {
         dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(Arrays.copyOfRange(sounds, 1, sounds.length), bot, user));
     }
@@ -83,7 +87,7 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
     public void run(SoundboardDispatcher dispatcher) {
         if (bot == null || sounds == null || sounds.length == 0) return;
         VoiceChannel voice = getVoiceChannel();
-        if (voice == null) return;
+        if (voice == null) tryAgain(dispatcher);
         Guild guild = voice.getGuild();
 
         AudioTrackScheduler scheduler = bot.getSchedulerForGuild(guild);
