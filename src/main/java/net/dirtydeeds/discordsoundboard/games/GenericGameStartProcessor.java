@@ -23,12 +23,11 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
   public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 
-  private static final String MESSAGE_TITLE = "Whoa! You're all playing %s.";
+  private static final String MESSAGE_TITLE = "Yo! You're all playing %s.";
   private static final String MESSAGE_REPORT_SUBTITLE = "Annoying?";
-  private static final Color MESSAGE_COLOR = new Color(0, 0, 0);
 
   private static final int MIN_NUM_PLAYERS = 3;
-  private static final int NUMBER_SEC_BETWEEN = 8;
+  private static final int NUMBER_SEC_BETWEEN = 6;
   private static final int MAX_DURATION = 4;
 
   private GameStartEvent pastEvent;
@@ -78,8 +77,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     } catch (Exception e) {
       return false;
     }
-    if (guild == null || userChannel == null || botChannel == null
-            || !userChannel.equals(botChannel)) return false;
+    if (guild == null || userChannel == null || !userChannel.equals(botChannel)) return false;
     Game game = guild.getMemberById(user.getId()).getGame();
     return (game != null && !game.getType().equals(GameType.STREAMING) &&
             userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
@@ -97,7 +95,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
       return;
     }
 
-    // See if there are multiple people that are playing the game in channel.
+    // See if multiple people are playing the game in channel.
     // If so: play a sound randomly.
     User[] users = new User[channel.getMembers().size()];
     for (Member m : channel.getMembers()) {
@@ -134,9 +132,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
           LOG.info("Played random sound: \"" + filePlayed + "\".");
           embed(publicChannel,
                   announcement(filePlayed, game, users, numPlayers, numPlays),
-                  (Message m) -> {
-                    pastEvent.message = m;
-                  });
+                  (Message m) -> pastEvent.message = m);
         } catch (Exception e) {
           error(event, e);
         }
@@ -159,7 +155,10 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
             numPlays, game, mentions));
     m.addContent(MESSAGE_REPORT_SUBTITLE,
             lookupString(Strings.SOUND_REPORT_INFO), false);
-    m.setColor(MESSAGE_COLOR);
+    Color color = StringUtils.toColor(game);
+    m.setColor(color);
+    m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
+                                  color.getGreen(), color.getBlue()));
     if (thumbnail != null) m.setThumbnail(thumbnail);
     return m;
   }

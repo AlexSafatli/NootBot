@@ -58,11 +58,11 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
   }
 
   private void tryAgain(SoundboardDispatcher dispatcher) {
-    dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(sounds, bot, user));
+    dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(sounds, bot, user, category));
   }
 
   private void next(SoundboardDispatcher dispatcher) {
-    dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(Arrays.copyOfRange(sounds, 1, sounds.length), bot, user));
+    dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(Arrays.copyOfRange(sounds, 1, sounds.length), bot, user, category));
   }
 
   private void schedule(AudioTrackScheduler scheduler, String name) throws
