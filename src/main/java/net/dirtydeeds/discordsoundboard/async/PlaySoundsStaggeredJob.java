@@ -59,9 +59,9 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
         dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(Arrays.copyOfRange(sounds, 1, sounds.length), bot, user));
     }
 
-    private void schedule(SoundboardDispatcher dispatcher,
-                          AudioTrackScheduler scheduler, String name) throws
+    private void schedule(AudioTrackScheduler scheduler, String name) throws
             InterruptedException, ExecutionException, TimeoutException {
+        if (name == null) return;
         SoundFile f = bot.getSoundMap().get(name);
         f.addOneToNumberOfPlays();
         bot.getDispatcher().saveSound(f);
@@ -94,22 +94,20 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
         String sound = sounds[0];
         if (sound == null || sound.equals("*")) {
             if (category == null) try {
-                sound = bot.getRandomSoundName();
-                if (sound != null) schedule(dispatcher, scheduler, sound);
+                schedule(scheduler, bot.getRandomSoundName());
                 next(dispatcher);
             } catch (Exception e) {
                 next(dispatcher);
             }
             else try {
-                sound = bot.getRandomSoundNameForCategory(category);
-                if (sound != null) schedule(dispatcher, scheduler, sound);
+                schedule(scheduler, bot.getRandomSoundNameForCategory(category));
                 next(dispatcher);
             } catch (Exception e) {
                 next(dispatcher);
             }
         } else {
             try {
-                schedule(dispatcher, scheduler, sound);
+                schedule(scheduler, sound);
                 next(dispatcher);
             } catch (Exception e) {
                 next(dispatcher);
