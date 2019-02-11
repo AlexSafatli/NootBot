@@ -16,59 +16,60 @@ import net.dv8tion.jda.core.requests.RestAction;
 
 public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor {
 
-	private static final String ERROR_TITLE = "Derp!";
+  private static final String ERROR_TITLE = "Derp!";
 
-	protected SoundboardBot bot;
+  protected SoundboardBot bot;
 
-	public AbstractGameUpdateProcessor(SoundboardBot bot) {
-		this.bot = bot;
-	}
+  public AbstractGameUpdateProcessor(SoundboardBot bot) {
+    this.bot = bot;
+  }
 
-	protected abstract void handleEvent(UserGameUpdateEvent event, User user);
-	public abstract boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user);
+  protected abstract void handleEvent(UserGameUpdateEvent event, User user);
 
-	public void process(UserGameUpdateEvent event) {
-		handleEvent(event, event.getUser());
-	}
+  public abstract boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user);
 
-	protected String lookupString(String key) {
-		String value = bot.getDispatcher().getStringService().lookup(key);
-		return (value != null) ? value : "<String Not Found: " + key + ">";
-	}
+  public void process(UserGameUpdateEvent event) {
+    handleEvent(event, event.getUser());
+  }
 
-	protected String formatString(String key, Object... args) {
-		return String.format(lookupString(key), args);
-	}
+  protected String lookupString(String key) {
+    String value = bot.getDispatcher().getStringService().lookup(key);
+    return (value != null) ? value : "<String Not Found: " + key + ">";
+  }
 
-	protected void embed(TextChannel channel, StyledEmbedMessage embed) {
-		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
-			channel.sendMessage(embed.getMessage()).queue();
-		}
-	}
+  protected String formatString(String key, Object... args) {
+    return String.format(lookupString(key), args);
+  }
 
-	protected void embed(TextChannel channel, StyledEmbedMessage embed, Consumer<Message> m) {
-		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
-			RestAction<Message> ra = channel.sendMessage(embed.getMessage());
-			ra.queue(m);
-		}
-	}
+  protected void embed(TextChannel channel, StyledEmbedMessage embed) {
+    if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
+      channel.sendMessage(embed.getMessage()).queue();
+    }
+  }
 
-	protected void error(UserGameUpdateEvent event, Exception e) {
-		Guild guild = event.getGuild();
-		VoiceChannel botChannel = bot.getConnectedChannel(guild);
-		Game game = guild.getMemberById(event.getUser().getId()).getGame();
-		StyledEmbedMessage msg = new StyledEmbedMessage(ERROR_TITLE, bot).isError(true);
-		msg.addDescription(e.toString());
-		msg.addContent("Connected Channel", botChannel.getName(), true);
-		msg.addContent("Triggering User", event.getUser().getName(), true);
-		msg.addContent("Game", game.getName(), true);
-		msg.addContent("Processor", this.toString(), true);
-		embed(bot.getBotChannel(guild), msg);
-		e.printStackTrace();
-	}
+  protected void embed(TextChannel channel, StyledEmbedMessage embed, Consumer<Message> m) {
+    if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
+      RestAction<Message> ra = channel.sendMessage(embed.getMessage());
+      ra.queue(m);
+    }
+  }
 
-	public String toString() {
-		return this.getClass().getSimpleName();
-	}
+  protected void error(UserGameUpdateEvent event, Exception e) {
+    Guild guild = event.getGuild();
+    VoiceChannel botChannel = bot.getConnectedChannel(guild);
+    Game game = guild.getMemberById(event.getUser().getId()).getGame();
+    StyledEmbedMessage msg = new StyledEmbedMessage(ERROR_TITLE, bot).isError(true);
+    msg.addDescription(e.toString());
+    msg.addContent("Connected Channel", botChannel.getName(), true);
+    msg.addContent("Triggering User", event.getUser().getName(), true);
+    msg.addContent("Game", game.getName(), true);
+    msg.addContent("Processor", this.toString(), true);
+    embed(bot.getBotChannel(guild), msg);
+    e.printStackTrace();
+  }
+
+  public String toString() {
+    return this.getClass().getSimpleName();
+  }
 
 }

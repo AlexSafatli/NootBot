@@ -10,32 +10,32 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class AudioHandler implements AudioLoadResultHandler {
 
-	public static final SimpleLog LOG = SimpleLog.getLog("AudioHandler");
+  public static final SimpleLog LOG = SimpleLog.getLog("AudioHandler");
 
-	private final AudioPlayer player;
+  private final AudioPlayer player;
 
-	public AudioHandler(AudioPlayer player) {
-		this.player = player;
-	}
+  public AudioHandler(AudioPlayer player) {
+    this.player = player;
+  }
 
-	@Override
-	public void trackLoaded(AudioTrack track) {
-		player.startTrack(track, false);
-	}
+  @Override
+  public void trackLoaded(AudioTrack track) {
+    player.startTrack(track, false);
+  }
 
-	@Override
-	public void playlistLoaded(AudioPlaylist playlist) {
-		LOG.info("Loaded playlist " + playlist.getName());
-		player.startTrack(playlist.getTracks().get(0), false);
-	}
+  @Override
+  public void playlistLoaded(AudioPlaylist playlist) {
+    LOG.info("Loaded playlist " + playlist.getName());
+    player.startTrack(playlist.getTracks().get(0), false);
+  }
 
-	@Override
-	public void noMatches() {
-		LOG.warn("No match for audio identifier.");
-	}
+  @Override
+  public void noMatches() {
+    LOG.warn("No match for audio identifier.");
+  }
 
-	@Override
-	public void loadFailed(FriendlyException exception) {
-		exception.printStackTrace();
-	}
+  @Override
+  public void loadFailed(FriendlyException exception) {
+    exception.printStackTrace();
+  }
 }

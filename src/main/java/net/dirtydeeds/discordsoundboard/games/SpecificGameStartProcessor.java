@@ -7,28 +7,28 @@ import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 
 public class SpecificGameStartProcessor extends GenericGameStartProcessor {
 
-	private final String gameName;
+  private final String gameName;
 
-	public SpecificGameStartProcessor(SoundboardBot bot, String game) {
-		super(bot);
-		gameName = game;
-	}
+  public SpecificGameStartProcessor(SoundboardBot bot, String game) {
+    super(bot);
+    gameName = game;
+  }
 
-	public SpecificGameStartProcessor(SoundboardBot bot, String game, String thumb) {
-		super(bot, thumb);
-		gameName = game;
-	}
+  public SpecificGameStartProcessor(SoundboardBot bot, String game, String thumb) {
+    super(bot, thumb);
+    gameName = game;
+  }
 
-	public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
-		Game currentGame = event.getGuild().getMemberById(user.getId()).getGame();
-		if (currentGame == null) return false;
-		String game = currentGame.getName();
-		return super.isApplicableUpdateEvent(event, user) && game.equals(gameName);
-	}
+  public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
+    Game currentGame = event.getGuild().getMemberById(user.getId()).getGame();
+    if (currentGame == null) return false;
+    String game = currentGame.getName();
+    return super.isApplicableUpdateEvent(event, user) && game.equals(gameName);
+  }
 
-	@Override
-	public String toString() {
-		return super.toString() + "[" + gameName + "]";
-	}
+  @Override
+  public String toString() {
+    return super.toString() + "[" + gameName + "]";
+  }
 
 }

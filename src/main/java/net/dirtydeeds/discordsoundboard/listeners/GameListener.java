@@ -23,14 +23,15 @@ public class GameListener extends AbstractListener {
 
   private List<GameUpdateProcessor> processors;
   private static final List<String> MONITORED_GAMES = Arrays.asList(
-        new String[] {
-          "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
-          "Divinity Original Sin 2", "Destiny 2", "Dead by Daylight"
-        }
-      );
-  private static final String[] THUMBNAIL_URLS = new String[] {
-    Thumbnails.LEAGUE, Thumbnails.PUBG, Thumbnails.DOS2,
-    Thumbnails.DESTINY2, Thumbnails.DBD
+          new String[]{
+                  "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
+                  "Divinity Original Sin 2", "Destiny 2", "Dead by Daylight", "ASTRONEER", "Anthem"
+          }
+  );
+  private static final String[] THUMBNAIL_URLS = new String[]{
+          Thumbnails.LEAGUE, Thumbnails.PUBG, Thumbnails.DOS2,
+          Thumbnails.DESTINY2, Thumbnails.DBD, Thumbnails.ASTRONEER,
+          Thumbnails.ANTHEM
   };
 
   public GameListener(SoundboardBot bot) {
@@ -57,16 +58,16 @@ public class GameListener extends AbstractListener {
     if (currentGame == null && previousGame != null) {
       if (previousGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " stopped playing " + previousGame.getName() +
-               " in server " + guildName + ".");
+              " in server " + guildName + ".");
     } else if (previousGame == null) {
       if (currentGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " started playing " + currentGame.getName() +
-               " in server " + guildName + ".");
+              " in server " + guildName + ".");
     } else {
       if (currentGame.getType().equals(GameType.STREAMING) ||
-          previousGame.getType().equals(GameType.STREAMING)) return;
+              previousGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " changed to " + currentGame.getName() + " from " +
-               previousGame.getName() + " in server " + guildName + ".");
+              previousGame.getName() + " in server " + guildName + ".");
     }
   }
 
@@ -83,7 +84,7 @@ public class GameListener extends AbstractListener {
 
     String name = user.getName();
     Game previousGame = event.getPreviousGame(),
-         currentGame = member.getGame();
+            currentGame = member.getGame();
     logGameChange(name, guild, previousGame, currentGame);
     cacheGameName(previousGame);
     cacheGameName(currentGame);

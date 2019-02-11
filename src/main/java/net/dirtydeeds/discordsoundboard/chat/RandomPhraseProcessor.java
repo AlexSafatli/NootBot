@@ -15,8 +15,8 @@ public class RandomPhraseProcessor extends SingleArgumentChatCommandProcessor {
 
   private String randomPhrase() {
     return (String) RandomUtils.chooseOne(StringUtils.randomPhrase(),
-                                          StringUtils.randomString(
-                                            bot.getDispatcher().getPhrases()));
+            StringUtils.randomString(
+                    bot.getDispatcher().getPhrases()));
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -31,7 +31,7 @@ public class RandomPhraseProcessor extends SingleArgumentChatCommandProcessor {
   @Override
   public String getCommandHelpString() {
     return getPrefix() + " [numPhrases] - randomize from user-submitted" +
-           " phrases and the cache of game name words";
+            " phrases and the cache of game name words";
   }
 
 }

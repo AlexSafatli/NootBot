@@ -62,7 +62,7 @@ public class PlaySoundStaggerLoopedProcessor extends
   @Override
   public String getCommandHelpString() {
     return getPrefix() + " <soundfile>, X - play a sound by name in a " +
-            "*staggered* fashion (at completely random times in the future " +
+            "*staggered* fashion (at random times in the future " +
             "with at most 10 minutes in between plays) X number of " +
             "times where X less than or equal to " + MAX_NUMBER_OF_LOOPED_PLAYS;
   }

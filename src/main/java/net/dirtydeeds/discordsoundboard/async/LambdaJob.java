@@ -7,17 +7,17 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 
 public class LambdaJob implements SoundboardJob {
 
-	private Consumer<SoundboardBot> lambda;
+  private Consumer<SoundboardBot> lambda;
 
-	public LambdaJob(Consumer<SoundboardBot> lambda) {
-		this.lambda = lambda;
-	}
+  public LambdaJob(Consumer<SoundboardBot> lambda) {
+    this.lambda = lambda;
+  }
 
-	public boolean isApplicable(SoundboardDispatcher dispatcher) {
-		return true;
-	}
+  public boolean isApplicable(SoundboardDispatcher dispatcher) {
+    return true;
+  }
 
-	public void run(SoundboardDispatcher dispatcher) {
-		dispatcher.runLambda(lambda);
-	}
+  public void run(SoundboardDispatcher dispatcher) {
+    dispatcher.runLambda(lambda);
+  }
 }

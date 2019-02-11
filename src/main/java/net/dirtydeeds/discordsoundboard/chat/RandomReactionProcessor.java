@@ -17,7 +17,7 @@ public class RandomReactionProcessor implements ChatCommandProcessor {
   public static final SimpleLog LOG = SimpleLog.getLog("RandomReaction");
   private static final int N = 100;
   private static final List<String> REACTIONS = Arrays.asList(new
-      String[] {"👏", "✌", "🤔", "😑", "😓", "😒"});
+          String[]{"👏", "✌", "🤔", "😑", "😓", "😒"});
   private Random rng;
 
   public RandomReactionProcessor(SoundboardBot bot) {
@@ -33,7 +33,7 @@ public class RandomReactionProcessor implements ChatCommandProcessor {
     if (isApplicableCommand(event)) {
       String reaction = StringUtils.randomString(REACTIONS);
       LOG.info("Random reaction " + reaction + " applied to message " +
-               event.getMessage());
+              event.getMessage());
       event.getMessage().addReaction(reaction).queue();
     }
   }

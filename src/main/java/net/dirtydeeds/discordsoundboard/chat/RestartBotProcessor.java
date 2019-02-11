@@ -8,20 +8,20 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public class RestartBotProcessor extends AuthenticatedSingleArgumentChatCommandProcessor {
 
-	public RestartBotProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Restart Bot", bot);
-	}
+  public RestartBotProcessor(String prefix, SoundboardBot bot) {
+    super(prefix, "Restart Bot", bot);
+  }
 
-	protected void handleEvent(MessageReceivedEvent event, String message) {
-		deleteOriginalMessage(event);
-		pm(event, "Restarting. *This is a soft restart. Hard restart if this " +
-		   "breaks things!*");
-		bot.getDispatcher().restartBot(bot);
-		bot.getDispatcher().updateFileList();
-	}
+  protected void handleEvent(MessageReceivedEvent event, String message) {
+    deleteOriginalMessage(event);
+    pm(event, "Restarting. *This is a soft restart. Hard restart if this " +
+            "breaks things!*");
+    bot.getDispatcher().restartBot(bot);
+    bot.getDispatcher().updateFileList();
+  }
 
-	@Override
-	public String getCommandHelpString() {
-		return getPrefix() + " (*) - restart this bot";
-	}
+  @Override
+  public String getCommandHelpString() {
+    return getPrefix() + " (*) - restart this bot";
+  }
 }

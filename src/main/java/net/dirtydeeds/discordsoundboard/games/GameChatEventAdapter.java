@@ -8,18 +8,18 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 
 public class GameChatEventAdapter {
 
-	//private SoundboardBot bot;
-	//private JDA api;
-	
-	public GameChatEventAdapter(SoundboardBot bot) {
-		//this.bot = bot;
-		//this.api = bot.getAPI();
-	}
-	
-	public void process(MessageChannel channel, String message, GameContext context) {
-		//Message msg = new GameChatMessage(channel, message, context);
-		//MessageReceivedEvent event = new GameChatMessageReceivedEvent(api, 0, msg);
-		//bot.getChatListener().onMessageReceived(event);
-	}
+  //private SoundboardBot bot;
+  //private JDA api;
+
+  public GameChatEventAdapter(SoundboardBot bot) {
+    //this.bot = bot;
+    //this.api = bot.getAPI();
+  }
+
+  public void process(MessageChannel channel, String message, GameContext context) {
+    //Message msg = new GameChatMessage(channel, message, context);
+    //MessageReceivedEvent event = new GameChatMessageReceivedEvent(api, 0, msg);
+    //bot.getChatListener().onMessageReceived(event);
+  }
 
 }

@@ -11,27 +11,27 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public abstract class AbstractListener extends ListenerAdapter {
 
-	protected SoundboardBot bot;
+  protected SoundboardBot bot;
 
-	protected String lookupString(String key) {
-		String value = bot.getDispatcher().getStringService().lookup(key);
-		return (value != null) ? value : "<String Not Found: " + key + ">";
-	}
+  protected String lookupString(String key) {
+    String value = bot.getDispatcher().getStringService().lookup(key);
+    return (value != null) ? value : "<String Not Found: " + key + ">";
+  }
 
-	protected String formatString(String key, Object... args) {
-		return String.format(lookupString(key), args);
-	}
+  protected String formatString(String key, Object... args) {
+    return String.format(lookupString(key), args);
+  }
 
-	protected void embed(TextChannel channel, StyledEmbedMessage embed) {
-		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
-			channel.sendMessage(embed.getMessage()).queue();
-		}
-	}
+  protected void embed(TextChannel channel, StyledEmbedMessage embed) {
+    if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
+      channel.sendMessage(embed.getMessage()).queue();
+    }
+  }
 
-	protected void embed(TextChannel channel, StyledEmbedMessage embed, Consumer<Message> m) {
-		if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
-			channel.sendMessage(embed.getMessage()).queue(m);
-		}
-	}
+  protected void embed(TextChannel channel, StyledEmbedMessage embed, Consumer<Message> m) {
+    if (bot.hasPermissionInChannel(channel, Permission.MESSAGE_WRITE)) {
+      channel.sendMessage(embed.getMessage()).queue(m);
+    }
+  }
 
 }

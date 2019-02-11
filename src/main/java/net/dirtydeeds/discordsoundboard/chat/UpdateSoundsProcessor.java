@@ -4,19 +4,19 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class UpdateSoundsProcessor extends
-	AuthenticatedSingleArgumentChatCommandProcessor {
+        AuthenticatedSingleArgumentChatCommandProcessor {
 
-	public UpdateSoundsProcessor(String prefix, SoundboardBot bot) {
-		super(prefix, "Update Sounds", bot);
-	}
+  public UpdateSoundsProcessor(String prefix, SoundboardBot bot) {
+    super(prefix, "Update Sounds", bot);
+  }
 
-	protected void handleEvent(MessageReceivedEvent event, String message) {
-		pm(event, "Updating file list.");
-		bot.getDispatcher().updateFileList();
-	}
+  protected void handleEvent(MessageReceivedEvent event, String message) {
+    pm(event, "Updating file list.");
+    bot.getDispatcher().updateFileList();
+  }
 
-	@Override
-	public String getCommandHelpString() {
-		return getPrefix() + " (*) - refresh the sound/file list";
-	}
+  @Override
+  public String getCommandHelpString() {
+    return getPrefix() + " (*) - refresh the sound/file list";
+  }
 }
