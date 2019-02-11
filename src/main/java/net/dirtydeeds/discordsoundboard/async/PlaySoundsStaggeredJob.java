@@ -32,8 +32,7 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
     this.timestamp = someTimeFromNow();
   }
 
-  public PlaySoundsStaggeredJob(String[] sounds, SoundboardBot bot, User user,
-                                String category) {
+  public PlaySoundsStaggeredJob(String[] sounds, SoundboardBot bot, User user, String category) {
     this(sounds, bot, user);
     this.category = category;
     this.timestamp = someTimeFromNow();
@@ -73,19 +72,18 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
     VoiceChannel voice = null;
     try {
       voice = bot.getUsersVoiceChannel(user);
-      if (voice == null) {
-        bot.sendMessageToUser(SoundboardBot.NOT_IN_VOICE_CHANNEL_MESSAGE, user);
-        return null;
-      }
-      bot.moveToChannel(voice);
+      if (voice != null) bot.moveToChannel(voice);
     } catch (Exception e) {
-      return voice;
+      bot.sendMessageToUser("Something went wrong when I tried to play a sound for you" +
+              ((sounds[0] != null) ? " `" + sounds[0] + "`." : "."), user);
     }
     return voice;
   }
 
   public void run(SoundboardDispatcher dispatcher) {
-    if (bot == null || sounds == null || sounds.length == 0) return;
+    if (bot == null || sounds == null || sounds.length == 0)
+      return;
+
     VoiceChannel voice = getVoiceChannel();
     if (voice == null) tryAgain(dispatcher);
     Guild guild = voice.getGuild();
