@@ -23,7 +23,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
   public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 
-  private static final String MESSAGE_TITLE = "Yo! You're all playing %s.";
+  private static final String MESSAGE_TITLE = "Whoa! You're all playing %s.";
   private static final String MESSAGE_REPORT_SUBTITLE = "Annoying?";
 
   private static final int MIN_NUM_PLAYERS = 3;

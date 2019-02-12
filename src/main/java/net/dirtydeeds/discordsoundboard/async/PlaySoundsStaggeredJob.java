@@ -18,7 +18,7 @@ import java.util.concurrent.TimeoutException;
 
 public class PlaySoundsStaggeredJob implements SoundboardJob {
 
-  private static final int MAX_DURATION = 4;
+  private static final int MAX_DURATION = 3;
 
   private Random rand = new Random();
   private String[] sounds;
@@ -31,16 +31,16 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
     this.sounds = sounds;
     this.bot = bot;
     this.user = user;
-    this.timestamp = someTimeFromNow();
+    this.timestamp = later();
   }
 
   public PlaySoundsStaggeredJob(String[] sounds, SoundboardBot bot, User user, String category) {
     this(sounds, bot, user);
     this.category = category;
-    this.timestamp = someTimeFromNow();
+    this.timestamp = later();
   }
 
-  private Date someTimeFromNow() {
+  private Date later() {
     return new Date(System.currentTimeMillis() + 1000 + rand.nextInt(600000));
   }
 
@@ -59,7 +59,7 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
             e.getMessage(), user);
   }
 
-  private void tryAgain(SoundboardDispatcher dispatcher) {
+  private void retry(SoundboardDispatcher dispatcher) {
     dispatcher.getAsyncService().runJob(new PlaySoundsStaggeredJob(sounds, bot, user, category));
   }
 
@@ -94,7 +94,7 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
 
     VoiceChannel voice = getVoiceChannel();
     if (voice == null) {
-      tryAgain(dispatcher);
+      retry(dispatcher);
       return;
     }
     Guild guild = voice.getGuild();

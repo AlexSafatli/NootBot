@@ -60,7 +60,7 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
       for (String m : mb)
         m(event, m);
     } else {
-      w(event, "No results found for query `" + query + "` \u2014 " +
+      w(event, "Could not find any sounds matching `" + query + "` \u2014 " +
               user.getAsMention() + ".");
     }
   }

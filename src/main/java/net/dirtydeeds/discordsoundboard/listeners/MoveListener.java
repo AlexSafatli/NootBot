@@ -24,25 +24,31 @@ public class MoveListener extends AbstractListener {
   public static final SimpleLog LOG = SimpleLog.getLog("Move");
 
   private static final List<String> WELCOMES = Arrays.asList(new String[] {
-        "Welcome, %s!",
-        "%s has joined. Brace yourselves.",
-        "Leave your weapons by the door, %s.",
-        "%s just appeared. Seems OP - nerf.",
-        "You're killing it, %s.",
-        "Oh hey! It's %s.",
-        "We salute you, %s.",
-        "ようこそ %s.",
-        "Turn it up to eleven. %s is here!",
-        "I like %s and I cannot lie. You other brothers can't deny.",
-        "Hit me %s one more time.",
-        "Oh no not %s, I will survive.",
-        "Take a sad %s and make it better...",
-        "Love you like a love song %s.",
-        "Knees weak, arms are heavy. There's %s on his sweater already."
+          "Welcome, %s!",
+          "%s has joined. Brace yourselves.",
+          "Leave your weapons by the door, %s.",
+          "%s just appeared. Seems OP - nerf.",
+          "You're killing it, %s.",
+          "Oh hey! It's %s.",
+          "We salute you, %s.",
+          "ようこそ %s.",
+          "Turn it up to eleven. %s is here!",
+          "I like %s and I cannot lie. You other brothers can't deny.",
+          "Hit me %s one more time.",
+          "Oh no not %s, I will survive.",
+          "Take a sad %s and make it better...",
+          "Love you like a love song %s.",
+          "Knees weak, arms are heavy. There's %s on his sweater already.",
+          "That's %s in the corner.",
+          "%s wants off this planet.",
+          "A little bit of %s on the side.",
+          "Real G's move in silence like %s.",
+          "Climb the ladder to success, %s style.",
+          "The best part about being %s is there's so many them.",
       });
 
   private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
-        "😪", "😴", "😡", "🖕", "Uh, hi.", "Welcome... back?", "gg"
+        "😪", "😴", "😡", "🖕", "???", "Welcome... back?", "gg", "lmao", "Baka."
       });
 
   private static final List<String> WHATS = Arrays.asList(new String[] {
@@ -69,12 +75,12 @@ public class MoveListener extends AbstractListener {
     onJoin(event.getChannelJoined(), event.getMember().getUser());
   }
 
-  private void onJoin(VoiceChannel voiceChannel, User user) {
-    Guild guild = voiceChannel.getGuild();
+  private void onJoin(VoiceChannel vc, User user) {
+    Guild guild = vc.getGuild();
     VoiceChannel afk = guild.getAfkChannel();
 
     if (bot.isUser(user)) {
-      if (voiceChannel.getMembers().size() == 1) {
+      if (vc.getMembers().size() == 1) {
         LOG.info("Moved to an empty channel.");
         leaveVoiceInGuild(guild);
       }
@@ -83,29 +89,31 @@ public class MoveListener extends AbstractListener {
       return;
     }
 
-    LOG.info(user.getName() + " joined " + voiceChannel.getName() +
-             " in " + guild.getName() + ".");
+    LOG.info(user.getName() + " joined " + vc.getName() +
+            " in " + guild.getName() + ".");
 
     if (!bot.isAllowedToPlaySound(user) ||
-        (afk != null && afk.getId().equals(voiceChannel.getId()))) {
+            (afk != null &&
+                    afk.getId().equals(vc.getId()))) {
       return;
     } else if (bot.isMuted(guild)) {
       LOG.info("Bot is currently muted. Doing nothing.");
       return;
-    } else if (voiceChannel.getUserLimit() ==
-               voiceChannel.getMembers().size()) {
+    } else if (vc.getUserLimit() ==
+            vc.getMembers().size()) {
       LOG.info("Channel is full.");
       return;
     }
 
     String fileToPlay = bot.getEntranceForUser(user),
-           soundInfo = "";
+            soundInfo = "";
 
     if (fileToPlay == null || fileToPlay.isEmpty()) return;
 
     if (bot.getSoundMap().get(fileToPlay) == null) {
-      bot.sendMessageToUser("**Uh oh!** Your entrance `" + fileToPlay +
-                            "` doesn't exist anymore. *Update it!*", user);
+      bot.sendMessageToUser("**Uh oh!** `" + fileToPlay +
+              "` used to be your entrance but I can't find that" +
+              " sound anymore. *Update your entrance!*", user);
       LOG.info(user.getName() + " has stale entrance. Alerted and clearing.");
       bot.setEntranceForUser(user, null, null);
       return;
@@ -114,14 +122,13 @@ public class MoveListener extends AbstractListener {
     // Clear previous message(s).
     boolean recentEntrance = false;
     if (pastEntrances.get(guild) == null) {
-      pastEntrances.put(guild, new LinkedList<EntranceEvent>());
+      pastEntrances.put(guild, new LinkedList<>());
     } else {
       Queue<EntranceEvent> entrances = pastEntrances.get(guild);
       while (!entrances.isEmpty()) {
         EntranceEvent entrance = entrances.poll();
         entrance.message.delete().queue();
         if (entrance.user.equals(user) && !recentEntrance) {
-          LOG.info("User has heard entrance recently.");
           recentEntrance = true;
         }
       }
@@ -130,26 +137,29 @@ public class MoveListener extends AbstractListener {
     // Play a sound.
     if (!recentEntrance) {
       try {
-        if (bot.playFileForEntrance(fileToPlay, user, voiceChannel)) {
+        if (bot.playFileForEntrance(fileToPlay, user, vc)) {
           SoundFile s = bot.getDispatcher().getSoundFileByName(fileToPlay);
           soundInfo = "Played " +
-                      formatString(Strings.SOUND_DESC, fileToPlay,
-                                   s.getCategory(),
-                                   s.getNumberOfPlays());
+                  formatString(Strings.SOUND_DESC, fileToPlay,
+                          s.getCategory(),
+                          s.getNumberOfPlays());
         }
-      } catch (Exception e) { e.printStackTrace(); }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     } else if (bot.getConnectedChannel(guild) == null) {
-      bot.moveToChannel(voiceChannel); // Move to channel otherwise.
+      bot.moveToChannel(vc); // Move to channel otherwise.
     }
 
     // Send a message greeting them into the server.
     VoiceChannel joined = bot.getConnectedChannel(guild);
-    if (joined != null && joined.equals(voiceChannel)) {
+    if (joined != null && joined.equals(vc)) {
       if (bot.getBotChannel(guild) != null) {
         embed(bot.getBotChannel(guild),
-              welcomeMessage(user, voiceChannel, soundInfo, !recentEntrance),
-              (Message m)-> pastEntrances.get(guild).add(
-                new EntranceEvent(m, user)));
+                welcomeMessage(user, vc, soundInfo, !recentEntrance),
+                (Message m) ->
+                        pastEntrances.get(guild).add(
+                                new EntranceEvent(m, user)));
       }
     }
   }
@@ -158,34 +168,34 @@ public class MoveListener extends AbstractListener {
     onLeave(event.getChannelLeft(), event.getMember().getUser());
   }
 
-  private void onLeave(VoiceChannel channel, User  user) {
-    Guild guild = channel.getGuild();
+  private void onLeave(VoiceChannel vc, User user) {
+    Guild guild = vc.getGuild();
     VoiceChannel botsChannel = bot.getConnectedChannel(guild);
 
     // Ignore if it is just the bot or not even connected.
     if (botsChannel == null || bot.isUser(user)) return;
 
-    LOG.info(user.getName() + " left " + channel.getName() + " in " +
-             guild.getName() + ".");
+    LOG.info(user.getName() + " left " + vc.getName() + " in " +
+            guild.getName() + ".");
 
     if (VoiceUtils.numUsersInVoiceChannels(guild) == 0) {
       LOG.info("No more users in " + guild.getName());
       leaveVoiceInGuild(guild);
     } else if (botsChannel.getMembers().size() == 1) {
-      for (VoiceChannel voiceChannel : guild.getVoiceChannels()) {
-        int numMembers = voiceChannel.getMembers().size();
-        if (botsChannel.equals(voiceChannel)) continue;
+      for (VoiceChannel vc_ : guild.getVoiceChannels()) {
+        int numMembers = vc_.getMembers().size();
+        if (botsChannel.equals(vc_)) ;
         else if (numMembers > 0
-                 && (guild.getAfkChannel() == null
-                     || !voiceChannel.getId().equals(
-                       guild.getAfkChannel().getId()))) {
-          if (numMembers == 1
-              && voiceChannel.getMembers().get(0).getUser().isBot()) {
+                && (guild.getAfkChannel() == null
+                || !vc_.getId().equals(
+                guild.getAfkChannel().getId()))) {
+          if (numMembers == 1 &&
+                  vc_.getMembers().get(0).getUser().isBot()) {
             continue;
           }
-          if (bot.moveToChannel(voiceChannel)) {
-            LOG.info("Moving to voice channel " + voiceChannel.getName() +
-                     " in server " + guild.getName());
+          if (bot.moveToChannel(vc_)) {
+            LOG.info("Moving to voice channel " + vc_.getName() +
+                    " in server " + guild.getName());
             return;
           }
         }
@@ -202,18 +212,10 @@ public class MoveListener extends AbstractListener {
     onJoin(event.getChannelJoined(), event.getMember().getUser());
   }
 
-  public void onGuildVoiceGuildMute(GuildVoiceGuildMuteEvent event) {
-    if (bot.isUser(event.getMember().getUser()) &&
-        bot.isMuted(event.getGuild())) {
-      LOG.info("Was server muted.");
-      leaveVoiceInGuild(event.getGuild());
-    }
-  }
-
   private void leaveVoiceInGuild(Guild guild) {
     if (guild == null) return;
     if (pastEntrances.get(guild) == null) {
-      pastEntrances.put(guild, new LinkedList<EntranceEvent>());
+      pastEntrances.put(guild, new LinkedList<>());
     }
     if (guild.getAudioManager() != null) {
       LOG.info("Leaving voice in " + guild.getName());
@@ -227,25 +229,25 @@ public class MoveListener extends AbstractListener {
   }
 
   public StyledEmbedMessage welcomeMessage(User user, Channel channel,
-      String soundInfo, boolean welcomeInTitle) {
+                                           String soundInfo, boolean welcomeInTitle) {
     String title = (welcomeInTitle) ?
-                   String.format(StringUtils.randomString(WELCOMES),
-                                 user.getName()) :
-                   user.getName() + " has entered the channel.";
+            String.format(StringUtils.randomString(WELCOMES),
+                    user.getName()) :
+            user.getName() + " is here, *again*.";
     StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     if (!soundInfo.isEmpty()) {
       m.addDescription(soundInfo + Strings.SEPARATOR + user.getAsMention());
     } else {
       m.addDescription(StringUtils.randomString(WELCOME_BACKS) +
-                       Strings.SEPARATOR + user.getAsMention());
+              Strings.SEPARATOR + user.getAsMention());
     }
     m.addContent(StringUtils.randomString(WHATS),
-                 "I play sounds. Type `.help` for commands.", false);
+            "I play sounds. Type `.help` for commands.", false);
     Color color = StringUtils.toColor(user.getName());
     m.setColor(color);
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
-                                  color.getGreen(), color.getBlue()));
+            color.getGreen(), color.getBlue()));
     return m;
   }
 
