@@ -18,6 +18,8 @@ import java.util.concurrent.TimeoutException;
 
 public class PlaySoundsStaggeredJob implements SoundboardJob {
 
+  private static final int MAX_DURATION = 4;
+
   private Random rand = new Random();
   private String[] sounds;
   private SoundboardBot bot;
@@ -101,12 +103,12 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
     String sound = sounds[0];
     if (sound == null || sound.equals("*")) {
       if (category == null) try {
-        schedule(scheduler, bot.getRandomSoundName());
+        schedule(scheduler, bot.getRandomSoundName(MAX_DURATION));
       } catch (Exception e) {
         handleException(e);
       }
       else try {
-        schedule(scheduler, bot.getRandomSoundNameForCategory(category));
+        schedule(scheduler, bot.getRandomSoundNameForCategory(category, MAX_DURATION));
       } catch (Exception e) {
         handleException(e);
       }

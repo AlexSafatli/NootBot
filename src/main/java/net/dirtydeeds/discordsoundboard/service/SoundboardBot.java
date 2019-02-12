@@ -175,7 +175,7 @@ public class SoundboardBot {
     return getRandomSoundName(MAX_DURATION_FOR_RANDOM);
   }
 
-  public String getRandomSoundNameForCategory(String category) {
+  public String getRandomSoundNameForCategory(String category, int maxDuration) {
     Random rng = new Random();
     Map<String, Boolean> seen = new HashMap<>();
     SoundFile file = null;
@@ -183,7 +183,7 @@ public class SoundboardBot {
     while (file == null
            || !dispatcher.isASubCategory(file.getCategory(), category)
            || file.isExcludedFromRandom()
-           || file.getDuration() > MAX_DURATION_FOR_RANDOM) {
+           || file.getDuration() > maxDuration) {
       // No sounds that can actually be played.
       if (seen.size() == files.length) return null;
       file = (SoundFile)files[rng.nextInt(files.length)];
@@ -191,6 +191,10 @@ public class SoundboardBot {
         seen.put(file.getSoundFileId(), true);
     }
     return file.getSoundFileId();
+  }
+
+  public String getRandomSoundNameForCategory(String category) {
+    return getRandomSoundNameForCategory(category, MAX_DURATION_FOR_RANDOM);
   }
 
   public String getRandomTopPlayedSoundName(int maxDuration) {

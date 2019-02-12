@@ -36,6 +36,13 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
     }
   }
 
+  @Override
+  public void process(MessageReceivedEvent event) {
+    String message = event.getMessage().getContent().toLowerCase();
+    if (StringUtils.containsOnly(message, '?')) return;
+    super.process(event);
+  }
+
   protected void handleEvent(MessageReceivedEvent event, String message) {
     User user = event.getAuthor();
     String name = message.substring(1);

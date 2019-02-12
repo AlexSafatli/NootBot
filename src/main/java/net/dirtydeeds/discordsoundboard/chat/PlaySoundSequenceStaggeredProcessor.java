@@ -1,19 +1,19 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.async.PlaySoundsJob;
+import net.dirtydeeds.discordsoundboard.async.PlaySoundsStaggeredJob;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.utils.SimpleLog;
 
-public class PlaySoundSequenceProcessor extends
+public class PlaySoundSequenceStaggeredProcessor extends
   MultiArgumentChatCommandProcessor {
 
   public static final int MAX_NUMBER_OF_PLAYS = 24;
 
-  public PlaySoundSequenceProcessor(String prefix, SoundboardBot bot) {
-    super(prefix, "Sound Sequencer", bot);
+  public PlaySoundSequenceStaggeredProcessor(String prefix, SoundboardBot bot) {
+    super(prefix, "Staggered Sound Sequencer", bot);
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -25,7 +25,7 @@ public class PlaySoundSequenceProcessor extends
       pm(event, "Need to be less than or equal to **" + MAX_NUMBER_OF_PLAYS +
          "** for number of sounds to play.");
     } else {
-      bot.getDispatcher().getAsyncService().runJob(new PlaySoundsJob(sounds,
+      bot.getDispatcher().getAsyncService().runJob(new PlaySoundsStaggeredJob(sounds,
           bot, user));
     }
   }
@@ -33,6 +33,6 @@ public class PlaySoundSequenceProcessor extends
   @Override
   public String getCommandHelpString() {
     return getPrefix() + " soundfile, [soundfile2], ..., [soundfileX] - play " +
-           "a sequence of sound files where X <= " + MAX_NUMBER_OF_PLAYS;
+           "a sequence of sound files staggered where X <= " + MAX_NUMBER_OF_PLAYS;
   }
 }
