@@ -22,7 +22,8 @@ public class SetGameNameProcessor extends
                   m.substring(getPrefix().length() + 1).trim() : null;
     if (name == null || name.isEmpty()) {
       Reusables.setRandomGame(bot);
-      m(event, "Set random game name!");
+      Game g = bot.getAPI().getPresence().getGame();
+      m(event, "Set random game name" + ((g != null) ?  " **" + g.getName() + "**": "") + "!");
     } else {
       bot.getAPI().getPresence().setGame(Game.of(name));
       m(event, "Set game name to `" + name + "`!");

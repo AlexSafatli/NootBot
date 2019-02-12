@@ -49,7 +49,7 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
       Date now = new Date(System.currentTimeMillis());
       return now.after(timestamp);
     }
-    return true;
+    return false;
   }
 
   private void handleException(Exception e) {
@@ -89,7 +89,8 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
   }
 
   public void run(SoundboardDispatcher dispatcher) {
-    if (bot == null || sounds == null || sounds.length == 0 || !dispatcher.getBots().contains(bot))
+    if (bot == null || sounds == null ||
+            sounds.length == 0 || !dispatcher.getBots().contains(bot))
       return;
 
     VoiceChannel voice = getVoiceChannel();

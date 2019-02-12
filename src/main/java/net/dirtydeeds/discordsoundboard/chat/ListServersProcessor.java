@@ -25,7 +25,7 @@ public class ListServersProcessor extends
       m(event, "I am connected to **" + guilds.size() + " servers**:\n\n" +
         StringUtils.listToString(names));
     } else {
-      w(event, "I am not connected to any servers.");
+      e(event, "I am not connected to any servers.");
     }
   }
 

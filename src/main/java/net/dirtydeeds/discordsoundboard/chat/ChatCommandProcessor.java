@@ -6,11 +6,11 @@ import net.dv8tion.jda.core.entities.User;
 
 public interface ChatCommandProcessor {
 
-  public abstract void process(MessageReceivedEvent event);
-  public abstract boolean isApplicableCommand(MessageReceivedEvent event);
-  public abstract boolean canBeRunByAnyone();
-  public abstract boolean canBeRunBy(User user, Guild guild);
-  public abstract String getTitle();
-  public abstract String getCommandHelpString();
+  void process(MessageReceivedEvent event);
+  boolean isApplicableCommand(MessageReceivedEvent event);
+  boolean canBeRunByAnyone();
+  boolean canBeRunBy(User user, Guild guild);
+  String getTitle();
+  String getCommandHelpString();
 
 }

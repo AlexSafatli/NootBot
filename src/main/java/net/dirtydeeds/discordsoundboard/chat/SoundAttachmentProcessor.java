@@ -93,7 +93,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
               soundFile.getDuration() > MAX_DURATION_IN_SECONDS) {
         // Delete the file.
         LOG.info("File was too long! Deleting the file.");
-        target.delete();
+        if (!target.delete()) LOG.warn("Could not delete file.");
         dispatcher.updateFileList();
         pm(event,
                 "File `" + file.name + "` is *too long* (**" +

@@ -18,12 +18,11 @@ public class PlaySoundForUserProcessor extends
   protected void handleEvent(MessageReceivedEvent event, String message) {
     User user = event.getAuthor(), recipient = null;
     if (getArguments().length != 2) {
-      pm(event, "This command requires two arguments " +
-         " \u2014 a **user** and a **sound** to play.");
+      pm(event, "This command requires \u2014 a **user** " +
+              "and a **sound** to play.");
       return;
     }
-    String username = getArguments()[0],
-           filename = getArguments()[1];
+    String username = getArguments()[0], filename = getArguments()[1];
     if (username != null) {
       recipient = bot.getUserByName(username);
     }
@@ -61,7 +60,7 @@ public class PlaySoundForUserProcessor extends
         } else pm(event, formatString(Strings.USER_PLAY_SOUND_FAILURE,
                                         filename));
       } catch (Exception e) {
-        return;
+        e(event, "Exception encountered => " + e.getMessage());
       }
     }
   }

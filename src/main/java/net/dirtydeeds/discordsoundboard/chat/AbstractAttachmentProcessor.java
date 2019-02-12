@@ -31,13 +31,12 @@ public abstract class AbstractAttachmentProcessor implements
     public String name;
     public String shortName;
     public String extension;
-
     public AttachmentFile(Attachment attachment) {
-      name = attachment.getFileName().toLowerCase(); // Ensure is lowercase.
+      // Ensure is lowercase.
+      name = attachment.getFileName().toLowerCase();
       shortName = name.substring(0, name.indexOf("."));
       extension = name.substring(name.indexOf(".") + 1);
     }
-
     public String toString() {
       return "Attachment [" + name + "]";
     }
@@ -56,12 +55,12 @@ public abstract class AbstractAttachmentProcessor implements
         if (handleAttachment(event, attachment))
           succeeded = true;
       } catch (Exception ex) {
-        e(event, getAttachmentDetails(attachment) + "\n" + ex.getMessage());
+        e(event, getAttachmentDetails(attachment) + "\n\u2014\n" + ex.getMessage());
         ex.printStackTrace();
       }
     }
 
-    // Delete original message if needed.
+    // Delete original message if needed (and can).
     if (succeeded &&
         !event.isFromType(ChannelType.PRIVATE) &&
         bot.hasPermissionInChannel(event.getTextChannel(),
@@ -103,9 +102,7 @@ public abstract class AbstractAttachmentProcessor implements
   }
 
   protected void pm(MessageReceivedEvent event, StyledEmbedMessage message) {
-    event.getAuthor().openPrivateChannel().queue((PrivateChannel c)-> {
-      c.sendMessage(message.getMessage()).queue();
-    });
+    event.getAuthor().openPrivateChannel().queue((PrivateChannel c)-> c.sendMessage(message.getMessage()).queue());
   }
 
   private StyledEmbedMessage makeEmbed(String message) {

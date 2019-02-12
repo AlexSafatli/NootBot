@@ -73,7 +73,8 @@ public class RenameSoundProcessor extends
               e.getMessage());
       e.printStackTrace();
       bot.getDispatcher().updateFileList();
-      pm(event, formatString(Strings.SOUND_RENAME_FAILURE, oldName, newName));
+      pm(event, formatString(Strings.SOUND_RENAME_FAILURE,
+              oldName, newName) + "\n\u2014\n => " + e.getMessage());
     }
   }
 

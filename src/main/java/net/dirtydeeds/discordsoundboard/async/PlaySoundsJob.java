@@ -59,7 +59,7 @@ public class PlaySoundsJob implements SoundboardJob {
   }
 
   public void run(SoundboardDispatcher dispatcher) {
-    if (bot == null || sounds == null || sounds.length == 0) return;
+    if (bot == null || sounds == null || sounds.length == 0 || !dispatcher.getBots().contains(bot)) return;
     boolean same = true, randomed = false, allRandomed = true;
     Guild guild;
     VoiceChannel voice;

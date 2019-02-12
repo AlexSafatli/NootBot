@@ -24,7 +24,7 @@ public class ListPhrasesProcessor extends AbstractChatCommandProcessor {
     MessageBuilder mb = new MessageBuilder();
     mb.append("Here is a list of phrases:\n\n");
     for (String phrase : phrases) {
-      mb.append("`" + phrase + "`\n");
+      mb.append("`" + phrase + "` ");
     }
     return mb.getStrings();
   }

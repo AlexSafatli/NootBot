@@ -26,7 +26,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
   private Map<String, SoundFile> soundFiles;
 
   public ListSoundsProcessor(String prefix, SoundboardBot soundPlayer) {
-    super(prefix, "List Sounds", soundPlayer);
+    super(prefix, "Sounds", soundPlayer);
   }
 
   private Map<String, List<SoundFile>> getCategoryMappings() {

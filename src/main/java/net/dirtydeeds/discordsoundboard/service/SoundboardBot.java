@@ -53,9 +53,11 @@ public class SoundboardBot {
   private static final long MIN_MINUTES_TO_SHOW_AS_HOURS = 120;  // 2 hours
   private static final long MIN_MINUTES_TO_SHOW_AS_DAYS  = 2880; // 2 days
   public static String NOT_IN_VOICE_CHANNEL_MESSAGE =
-    "Are you in a voice channel? Could not find you!";
+    "Are you in a voice channel? I can't see you.";
 
   private long startTime;
+  private Random rng = new Random();
+
   private JDA bot;
   private ChatListener chatListener;
   private String owner;
@@ -101,12 +103,11 @@ public class SoundboardBot {
 
   public long getUptimeInMinutes() {
     Date now = new Date(System.currentTimeMillis()), then = new Date(startTime);
-    long minutesSince = (now.getTime() - then.getTime()) / (1000 * 60);
-    return minutesSince;
+    return (now.getTime() - then.getTime()) / (1000 * 60);
   }
 
   public String getUptimeAsString() {
-    String uptime = "";
+    String uptime;
     long minutes = getUptimeInMinutes();
     if (minutes == 0) return "less than a minute";
     else if (minutes >= MIN_MINUTES_TO_SHOW_AS_DAYS) {
@@ -137,7 +138,7 @@ public class SoundboardBot {
   }
 
   public AudioTrackScheduler getSchedulerForGuild(Guild guild) {
-    if (this.audioSchedulers.get(guild) == null) {
+    if (audioSchedulers.get(guild) == null) {
       AudioManager audio = guild.getAudioManager();
       AudioPlayer player = dispatcher.getAudioManager().createPlayer();
       audio.setSendingHandler(new AudioPlayerSendHandler(audio, player));
@@ -146,7 +147,7 @@ public class SoundboardBot {
       player.addListener(scheduler);
       audioSchedulers.put(guild, scheduler);
     }
-    return this.audioSchedulers.get(guild);
+    return audioSchedulers.get(guild);
   }
 
   public String getClosestMatchingSoundName(String str) {
@@ -154,7 +155,6 @@ public class SoundboardBot {
   }
 
   public String getRandomSoundName(int maxDuration) {
-    Random rng = new Random();
     SoundFile file = null;
     Map<String, Boolean> seen = new HashMap<>();
     maxDuration = Math.min(MAX_DURATION_FOR_RANDOM, maxDuration);
@@ -176,7 +176,6 @@ public class SoundboardBot {
   }
 
   public String getRandomSoundNameForCategory(String category, int maxDuration) {
-    Random rng = new Random();
     Map<String, Boolean> seen = new HashMap<>();
     SoundFile file = null;
     Object[] files = dispatcher.getAvailableSoundFiles().values().toArray();
@@ -202,7 +201,6 @@ public class SoundboardBot {
     Map<String, Boolean> seen = new HashMap<>();
     Map<String, SoundFile> map = getSoundMap();
     if (sounds == null || sounds.isEmpty()) return null;
-    Random rng = new Random();
     SoundFile file = null;
     maxDuration = Math.min(MAX_DURATION_FOR_RANDOM, maxDuration);
     int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size() / 20),
@@ -596,7 +594,7 @@ public class SoundboardBot {
 
   public boolean playFileForEntrance(String fileName,
                                      net.dv8tion.jda.core.entities.User user,
-                                     VoiceChannel joined) throws Exception {
+                                     VoiceChannel joined) {
     if (fileName == null) return false;
     AudioManager voice = joined.getGuild().getAudioManager();
     VoiceChannel connected = voice.getConnectedChannel();
@@ -681,8 +679,7 @@ public class SoundboardBot {
   }
 
   public boolean isUser(net.dv8tion.jda.core.entities.User user) {
-    net.dv8tion.jda.core.entities.User self = (
-          net.dv8tion.jda.core.entities.User)bot.getSelfUser();
+    net.dv8tion.jda.core.entities.User self = bot.getSelfUser();
     return (self.equals(user) || self.getName().equals(user.getName()));
   }
 
