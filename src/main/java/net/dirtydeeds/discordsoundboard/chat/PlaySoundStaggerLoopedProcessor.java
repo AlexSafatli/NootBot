@@ -54,8 +54,11 @@ public class PlaySoundStaggerLoopedProcessor extends
     } else {
       String[] sounds = new String[numTimesToPlay];
       for (int i = 0; i < numTimesToPlay; ++i) sounds[i] = name;
-      bot.getDispatcher().getAsyncService().runJob(
-        new PlaySoundsStaggeredJob(sounds, bot, user));
+      PlaySoundsStaggeredJob later =
+        new PlaySoundsStaggeredJob(sounds, bot, user);
+      bot.getDispatcher().getAsyncService().runJob(later);
+      pm(event, "You'll hear a sound played next at " + later.runsAt());
+
     }
   }
 

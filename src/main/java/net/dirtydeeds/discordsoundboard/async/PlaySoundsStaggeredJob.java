@@ -40,6 +40,10 @@ public class PlaySoundsStaggeredJob implements SoundboardJob {
     this.timestamp = later();
   }
 
+  public Date runsAt() {
+    return this.timestamp;
+  }
+
   private Date later() {
     return new Date(System.currentTimeMillis() + 1000 + rand.nextInt(600000));
   }

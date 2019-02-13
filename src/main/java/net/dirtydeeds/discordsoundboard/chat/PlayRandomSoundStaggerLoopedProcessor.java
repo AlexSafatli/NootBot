@@ -35,7 +35,9 @@ public class PlayRandomSoundStaggerLoopedProcessor extends
         MAX_NUMBER_OF_LOOPED_PLAYS + "** for number of plays.");
     } else {
       String[] sounds = new String[numTimesToPlay];
-      bot.getDispatcher().getAsyncService().runJob(new PlaySoundsStaggeredJob(sounds, bot, user, cat));
+      PlaySoundsStaggeredJob later = new PlaySoundsStaggeredJob(sounds, bot, user, cat);
+      bot.getDispatcher().getAsyncService().runJob(later);
+      pm(event, "You'll hear a sound played next at " + later.runsAt());
     }
   }
 

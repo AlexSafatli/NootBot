@@ -25,8 +25,10 @@ public class PlaySoundSequenceStaggeredProcessor extends
       pm(event, "Need to be less than or equal to **" + MAX_NUMBER_OF_PLAYS +
          "** for number of sounds to play.");
     } else {
-      bot.getDispatcher().getAsyncService().runJob(new PlaySoundsStaggeredJob(sounds,
-          bot, user));
+      PlaySoundsStaggeredJob later = new PlaySoundsStaggeredJob(sounds,
+          bot, user);
+      bot.getDispatcher().getAsyncService().runJob(later);
+      pm(event, "You'll hear a sound played next at " + later.runsAt());
     }
   }
 
