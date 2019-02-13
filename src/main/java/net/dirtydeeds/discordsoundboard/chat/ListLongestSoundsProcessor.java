@@ -30,7 +30,7 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
       if (numberOfSoundFiles >= NUMBER_TO_SHOW) break;
       String name = file.getSoundFileId();
       if (activeFileNames.contains(name)) {
-        sb.append("`?" + name + "` (" + file.getDuration() + "s) ");
+        sb.append("`?" + name + "` (**" + file.getDuration() + "**s) ");
         ++numberOfSoundFiles;
       }
     }

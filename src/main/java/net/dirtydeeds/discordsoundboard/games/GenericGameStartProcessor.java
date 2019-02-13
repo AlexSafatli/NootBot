@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.games;
 import java.util.Date;
 
 import java.awt.Color;
+import java.util.List;
 
 import net.dirtydeeds.discordsoundboard.games.AbstractGameUpdateProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
@@ -38,13 +39,13 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     public Date time;
     public Message message;
 
-    public GameStartEvent(VoiceChannel channel, Date time, Message msg) {
+    GameStartEvent(VoiceChannel channel, Date time, Message msg) {
       this.channel = channel;
       this.time = time;
       this.message = msg;
     }
 
-    public boolean isTooSoon(VoiceChannel in) {
+    boolean isTooSoon(VoiceChannel in) {
       if (channel != null && channel.equals(in)) {
         Date now = new Date(System.currentTimeMillis());
         long secSince = (now.getTime() - time.getTime()) / 1000;
@@ -77,7 +78,8 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     } catch (Exception e) {
       return false;
     }
-    if (guild == null || userChannel == null || !userChannel.equals(botChannel)) return false;
+    if (guild == null || userChannel == null || !userChannel.equals(botChannel))
+      return false;
     Game game = guild.getMemberById(user.getId()).getGame();
     return (game != null && !game.getType().equals(GameType.STREAMING) &&
             userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
@@ -85,8 +87,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
   protected void handleEvent(UserGameUpdateEvent event, User user) {
     int numPlayers = 0;
-    Game currentGame = event.getGuild().getMemberById(user.getId()).getGame();
-    String game = currentGame.getName();
+    String game = event.getGuild().getMemberById(user.getId()).getGame().getName();
     VoiceChannel channel;
     try {
       channel = bot.getUsersVoiceChannel(user);
@@ -97,16 +98,18 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
     // See if multiple people are playing the game in channel.
     // If so: play a sound randomly.
-    User[] users = new User[channel.getMembers().size()];
-    for (Member m : channel.getMembers()) {
-      if (m.getGame() != null && m.getGame().getName().equals(game) &&
-              m.getUser() != null) {
+    List<Member> members = channel.getMembers();
+    User[] users = new User[members.size()];
+    for (Member m : members) {
+      Game g = m.getGame();
+      if (g != null && g.getName().equals(game) && m.getUser() != null) {
         LOG.info(m.getUser().getName() + " in this channel is playing " + game);
         users[numPlayers++] = m.getUser();
       }
     }
 
     if (numPlayers >= MIN_NUM_PLAYERS) {
+
       LOG.info("Found " + user.getName() + " + " +
               (numPlayers - 1) + " others playing " + game + " in " +
               channel.getName() + " of guild " + event.getGuild().getName() +
@@ -119,24 +122,30 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
         pastEvent.clear();
       }
 
-      String filePlayed = bot.getRandomSoundName(MAX_DURATION);
-      if (filePlayed != null) {
-        TextChannel publicChannel = bot.getBotChannel(channel.getGuild());
-        SoundFile f = bot.getSoundMap().get(filePlayed);
-        long numPlays = (f != null) ? f.getNumberOfPlays() : 0;
+      String sound;
+      if (bot.isASoundCategory(game)) {
+        sound = bot.getRandomSoundNameForCategory(game, MAX_DURATION);
+      } else {
+        sound = bot.getRandomSoundName(MAX_DURATION);
+      }
+
+      if (sound != null && !sound.isEmpty()) {
+        TextChannel lobby = bot.getBotChannel(channel.getGuild());
+        SoundFile f = bot.getSoundMap().get(sound);
         try {
-          bot.playFileForUser(filePlayed, user);
+          bot.playFileForUser(sound, user);
           pastEvent = new GameStartEvent(channel,
                   new Date(System.currentTimeMillis()),
                   null);
-          LOG.info("Played random sound: \"" + filePlayed + "\".");
-          embed(publicChannel,
-                  announcement(filePlayed, game, users, numPlayers, numPlays),
+          LOG.info("Played random sound: \"" + sound + "\".");
+          embed(lobby, announcement(sound, game, users, numPlayers,
+                  (f != null) ? f.getNumberOfPlays() : 0),
                   (Message m) -> pastEvent.message = m);
         } catch (Exception e) {
           error(event, e);
         }
       }
+
     }
   }
 

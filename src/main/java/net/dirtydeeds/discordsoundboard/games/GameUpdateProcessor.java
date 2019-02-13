@@ -5,10 +5,10 @@ import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 
 public interface GameUpdateProcessor {
 
-  public abstract boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user);
+  boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user);
 
-  public abstract void process(UserGameUpdateEvent event);
+  void process(UserGameUpdateEvent event);
 
-  public abstract boolean isMutuallyExclusive();
+  boolean isMutuallyExclusive();
 
 }

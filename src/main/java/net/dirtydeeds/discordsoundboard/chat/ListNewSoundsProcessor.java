@@ -34,7 +34,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
       String category = (file.getCategory().equalsIgnoreCase("sounds")) ?
               "Uncategorized" : file.getCategory();
       if (categoryFiles.get(category) == null) {
-        categoryFiles.put(category, new LinkedList<SoundFile>());
+        categoryFiles.put(category, new LinkedList<>());
       }
       categoryFiles.get(category).add(file);
     }

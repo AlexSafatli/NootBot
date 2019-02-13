@@ -30,8 +30,8 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
       if (numberOfSoundFiles >= NUMBER_TO_SHOW)
         break;
       String name = file.getSoundFileId();
-      if (activeFileNames.contains(name)) {
-        sb.append("`?" + name + "` (" + file.getNumberOfPlays() + ") ");
+      if (activeFileNames.contains(name) && file.getNumberOfPlays() > 0) {
+        sb.append("`?" + name + "` (**" + file.getNumberOfPlays() + "**) ");
         ++numberOfSoundFiles;
       }
     }

@@ -31,7 +31,7 @@ public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
       SoundFile file = soundFiles.get(i);
       String name = file.getSoundFileId();
       if (activeFileNames.contains(name)) {
-        sb.append("`?" + name + "` (" + file.getDuration() + "s) ");
+        sb.append("`?" + name + "` (**" + file.getDuration() + "**s) ");
         ++numberOfSoundFiles;
       }
     }

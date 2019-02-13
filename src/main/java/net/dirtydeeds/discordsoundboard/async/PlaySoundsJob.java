@@ -127,7 +127,8 @@ public class PlaySoundsJob implements SoundboardJob {
     if (guild != null) {
       List<Message> msgs;
       if (!same || sounds.length == 1) {
-        msgs = makeMessages("Queued sound(s) " + end + " \u2014 " +
+        msgs = makeMessages("Queued **" + sounds.length +
+                "** sound" + (sounds.length > 1 ? "s " : " ") + end + " \u2014 " +
                 user.getAsMention(), user, mb, timePlaying);
       } else {
         msgs = makeMessages("Looping sound `" + firstSound + "` **" +

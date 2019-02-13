@@ -30,8 +30,8 @@ public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
       if (numberOfSoundFiles >= NUMBER_TO_SHOW) break;
       SoundFile file = soundFiles.get(i);
       String name = file.getSoundFileId();
-      if (activeFileNames.contains(name)) {
-        mb.append("`?" + name + "` (" + file.getNumberOfPlays() + ") ");
+      if (activeFileNames.contains(name) && file.getNumberOfPlays() > 0) {
+        mb.append("`?" + name + "` (**" + file.getNumberOfPlays() + "**) ");
         ++numberOfSoundFiles;
       }
     }

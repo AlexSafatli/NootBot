@@ -23,9 +23,7 @@ public class PlaySoundForUserProcessor extends
       return;
     }
     String username = getArguments()[0], filename = getArguments()[1];
-    if (username != null) {
-      recipient = bot.getUserByName(username);
-    }
+    if (username != null) recipient = bot.getUserByName(username);
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
       LOG.info(String.format("%s tried to play sound file but is not allowed.",
