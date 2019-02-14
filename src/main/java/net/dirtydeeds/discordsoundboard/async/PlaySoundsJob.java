@@ -136,13 +136,14 @@ public class PlaySoundsJob implements SoundboardJob {
                 user.getAsMention(), user, null, timePlaying);
       }
 
+      final int timeUntilDelete = (int)timePlaying + 20;
       TextChannel c = bot.getBotChannel(guild);
       for (Message msg : msgs) {
         if (c != null) {
           RestAction<Message> m = c.sendMessage(msg);
           if (m != null) {
             m.queue((Message s) -> {
-              dispatcher.getAsyncService().runJob(new DeleteMessageJob(s, 1024));
+              dispatcher.getAsyncService().runJob(new DeleteMessageJob(s, timeUntilDelete));
             });
           }
         }

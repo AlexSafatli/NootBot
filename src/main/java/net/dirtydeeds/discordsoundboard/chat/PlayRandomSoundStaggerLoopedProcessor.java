@@ -31,8 +31,8 @@ public class PlayRandomSoundStaggerLoopedProcessor extends
     } else if (numTimesToPlay <= 0 || (numTimesToPlay >
                                        MAX_NUMBER_OF_LOOPED_PLAYS &&
                                        !privileged)) {
-      e(event, "Need to be positive and less than or equal to **" +
-        MAX_NUMBER_OF_LOOPED_PLAYS + "** for number of plays.");
+      e(event, "Number of plays needs to be positive and less than " +
+              "or equal to **" + MAX_NUMBER_OF_LOOPED_PLAYS + "**.");
     } else {
       String[] sounds = new String[numTimesToPlay];
       PlaySoundsStaggeredJob later = new PlaySoundsStaggeredJob(sounds, bot, user, cat);

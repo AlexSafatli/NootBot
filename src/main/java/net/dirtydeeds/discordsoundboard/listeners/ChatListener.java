@@ -16,7 +16,7 @@ import java.util.Map;
 public class ChatListener extends AbstractListener {
 
   public static final SimpleLog LOG = SimpleLog.getLog("Chat");
-  public static final char CommonPrefix = '.';
+  private static final char CommonPrefix = '.';
 
   private static final int THROTTLE_TIME_IN_MINUTES = 1;
   private static final int MAX_NUMBER_OF_REQUESTS_PER_TIME = 3;
@@ -197,7 +197,8 @@ public class ChatListener extends AbstractListener {
             prefix = CommonPrefix + "";
     return (content.length() > 1
             && content.startsWith(prefix)
-            && !content.substring(1).contains(prefix));
+            && !content.substring(1).contains(prefix)
+            && !StringUtils.containsOnly(content, CommonPrefix));
   }
 
 }

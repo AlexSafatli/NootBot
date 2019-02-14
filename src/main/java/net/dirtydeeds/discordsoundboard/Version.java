@@ -5,15 +5,15 @@ import net.dv8tion.jda.core.entities.User;
 
 public class Version {
 
-	public static final String NAME    = "NootBot";
-	public static final String VERSION = "2.6.3";
-	public static final String AUTHOR  = "Asaph";
-	
-	public static String getAuthor(SoundboardBot bot) {
-		String author = AUTHOR;
-		User user = bot.getUserByName(author);
-		if (user != null) author = user.getAsMention();
-		return author;
-	}
-	
+  public static final String NAME = "NootBot";
+  public static final String VERSION = "2.6.4";
+  public static final String AUTHOR = "Asaph";
+
+  public static String getAuthor(SoundboardBot bot) {
+    String author = AUTHOR;
+    User user = bot.getUserByName(author);
+    if (user != null) author = user.getAsMention();
+    return author;
+  }
+
 }

@@ -28,7 +28,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
   private static final String MESSAGE_REPORT_SUBTITLE = "Annoying?";
 
   private static final int MIN_NUM_PLAYERS = 3;
-  private static final int NUMBER_SEC_BETWEEN = 6;
+  private static final int NUMBER_SEC_BETWEEN = 10;
   private static final int MAX_DURATION = 4;
 
   private GameStartEvent pastEvent;
@@ -55,9 +55,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
 
     public void clear() {
-      if (message != null) {
-        message.delete().queue();
-      }
+      if (message != null) message.delete().queue();
     }
   }
 
@@ -103,7 +101,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     for (Member m : members) {
       Game g = m.getGame();
       if (g != null && g.getName().equals(game) && m.getUser() != null) {
-        LOG.info(m.getUser().getName() + " in this channel is playing " + game);
+        LOG.info(m.getUser().getName() + " in channel is playing " + game);
         users[numPlayers++] = m.getUser();
       }
     }
@@ -116,7 +114,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
               ".");
       if (pastEvent != null) {
         if (pastEvent.isTooSoon(channel)) {
-          LOG.info("Not enough time since last event in this channel!");
+          LOG.info("Not enough time since last event in channel!");
           return;
         }
         pastEvent.clear();
@@ -124,6 +122,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
       String sound;
       if (bot.isASoundCategory(game)) {
+        LOG.info(game + " is as a sound category. Playing from it.");
         sound = bot.getRandomSoundNameForCategory(game, MAX_DURATION);
       } else {
         sound = bot.getRandomSoundName(MAX_DURATION);

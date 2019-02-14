@@ -52,8 +52,10 @@ public class SoundboardDispatcher {
   private LowercaseTrie soundNameTrie;
   private Category categoryTree;
   private int numCategories;
+
   private final AsyncService asyncService;
   private final StringService stringService;
+
   private final Path soundFilePath =
           Paths.get(System.getProperty("user.dir") + "/sounds");
   private final Path tmpFilePath =
@@ -159,7 +161,7 @@ public class SoundboardDispatcher {
     try {
       bot = new SoundboardBot(token, owner, this);
     } catch (Exception e) {
-      LOG.warn("When starting bot " + i + ", ran into exception: " +
+      LOG.warn("When starting bot " + i + ", ran into exception => " +
               e.getMessage());
     }
     bots[index] = bot;
@@ -215,7 +217,7 @@ public class SoundboardDispatcher {
       Files.walk(soundFilePath).forEach(filePath -> {
         if (Files.isRegularFile(filePath)) {
           String name = filePath.getFileName().toString();
-          name = name.substring(name.indexOf("/") + 1, name.length());
+          name = name.substring(name.indexOf("/") + 1);
           name = name.substring(0, name.indexOf("."));
 
           File file = filePath.toFile();
