@@ -36,7 +36,7 @@ public class RollDiceProcessor extends SingleArgumentChatCommandProcessor {
       out += " and adding `" + add + "`";
       total += add;
     }
-    return out + "\nResult: **" + total + "**";
+    return out + "\nResult: ||" + total + "||";
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {

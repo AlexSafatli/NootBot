@@ -19,7 +19,7 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
     if (bot.isAllowedToPlaySound(event.getAuthor())) {
       if (fileName == null) {
         bot.setEntranceForUser(event.getAuthor(), null, null);
-        pm(event, "Cleared your entrance.");
+        pm(event, "Your entrance has been cleared.");
         return;
       }
       SoundFile file = bot.getSoundMap().get(fileName);
@@ -38,8 +38,9 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
       bot.setEntranceForUser(event.getAuthor(), fileName, null);
       pm(event, "Updated your entrance to sound file `" + fileName + "`!");
       if (file.getDuration() > WARNING_DURATION_IN_SECONDS) {
-        pm(event, "The file `" + fileName + "` may be a bit **long**. "
-                + "*Be careful of setting very long entrances!*");
+        String mightBeLong = String.format("The file `%s` (%ds) may be a bit **long**.", fileName, file.getDuration());
+        pm(event, mightBeLong +
+                " *Be careful of setting very long entrances!*");
       }
     }
   }

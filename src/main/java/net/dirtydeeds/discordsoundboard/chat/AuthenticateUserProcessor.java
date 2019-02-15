@@ -21,7 +21,7 @@ public class AuthenticateUserProcessor extends
         User u = bot.getUser(bot.getUserByName(username));
         u.setPrivilegeLevel(level);
         bot.getDispatcher().saveUser(u);
-        pm(event, "Access level changed to **" + level + "** for that user.");
+        pm(event, "Access level changed to ||" + level + "|| for that user.");
       } else
         pm(event, formatString(Strings.USER_NOT_FOUND_DISALLOWED, username));
     }

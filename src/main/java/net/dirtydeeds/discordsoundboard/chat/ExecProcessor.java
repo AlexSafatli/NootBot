@@ -35,7 +35,7 @@ public class ExecProcessor extends OwnerSingleArgumentChatCommandProcessor {
     if (cmd != null) {
       String out = run(cmd);
       if (!out.isEmpty()) m(event, "```" + run(cmd) + "```");
-      else pm(event, "Ran command and received no output.");
+      else m(event, "Ran command and received no output.");
     }
   }
 

@@ -49,6 +49,7 @@ public class ListMostReportsProcessor extends AbstractChatCommandProcessor {
     if (topSounds == null) {
       w(event,
         "There are **no controversial sound files** (no sounds reported)!");
+      return;
     }
     for (String msg : topSounds) m(event, msg);
   }

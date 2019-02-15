@@ -35,7 +35,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
       String category = (file.getCategory().equalsIgnoreCase("sounds")) ?
                         UNCATEGORIZED : file.getCategory();
       if (categoryFiles.get(category) == null) {
-        categoryFiles.put(category, new LinkedList<SoundFile>());
+        categoryFiles.put(category, new LinkedList<>());
       }
       categoryFiles.get(category).add(file);
     }
