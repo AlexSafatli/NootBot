@@ -21,7 +21,7 @@ public abstract class AbstractChatCommandProcessor implements
 
   private final String prefix;
   private final String title;
-  protected List<Message> buffer;
+  private List<Message> buffer;
   protected SoundboardBot bot;
 
   public AbstractChatCommandProcessor(String prefix, String title,

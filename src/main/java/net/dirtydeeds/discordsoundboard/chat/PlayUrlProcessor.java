@@ -14,15 +14,13 @@ public class PlayUrlProcessor extends SingleArgumentChatCommandProcessor {
     super(prefix, "Play URL", bot);
   }
 
-  private boolean play(MessageReceivedEvent event, String url) {
-    boolean played = true;
+  private void play(MessageReceivedEvent event, String url) {
     try {
       bot.playURLForChatCommand(url, event);
       m(event, "Playing `" + url + "`.");
     } catch (Exception e) {
-      played = false;
+      e(event, "Could not play => " + e.getMessage());
     }
-    return played;
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -31,7 +29,7 @@ public class PlayUrlProcessor extends SingleArgumentChatCommandProcessor {
       pm(event, lookupString(Strings.NOT_ALLOWED));
       LOG.info(String.format("%s not allowed to play sounds.", user.getName()));
     } else {
-      play(event, message.substring(getPrefix().length(), message.length()));
+      play(event, message.substring(getPrefix().length()));
     }
   }
 

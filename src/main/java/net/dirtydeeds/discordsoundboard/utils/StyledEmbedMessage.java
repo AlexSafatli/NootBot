@@ -26,7 +26,7 @@ public class StyledEmbedMessage {
   private String errorTitle;
 
   private static final List<String> ERROR_STRINGS = Arrays.asList(new String[]{
-          "Fwubbed it.", "Excuse me, I stuttered.", "Nani?", "Derp"
+          "Fwubbed it.", "Excuse me, I stuttered.", "Nani?", "Derp", "Bwah!"
   });
 
   private static final String FOOTER_TEXT = Version.NAME + " " +
@@ -37,15 +37,15 @@ public class StyledEmbedMessage {
   private static final Color WARN_COLOR = new Color(255, 217, 0);
 
   public StyledEmbedMessage() {
-    this.footerIconUrl = Icons.ELLIPSIS;
-    this.errorTitle = StringUtils.randomString(ERROR_STRINGS);
+    footerIconUrl = Icons.ELLIPSIS;
+    errorTitle = StringUtils.randomString(ERROR_STRINGS);
     builder = new EmbedBuilder();
     builder.setColor(EMBED_COLOR);
   }
 
   public StyledEmbedMessage(String title) {
     this();
-    this.footer = FOOTER_TEXT;
+    footer = FOOTER_TEXT;
     builder.setTitle(title);
     builder.setAuthor(DEFAULT_TOP, null, null);
     updateFooter();
@@ -54,7 +54,7 @@ public class StyledEmbedMessage {
   public StyledEmbedMessage(String title, SoundboardBot bot) {
     this(title);
     String numSounds = bot.getSoundMap().size() + " sounds";
-    this.footer = FOOTER_TEXT + Strings.SEPARATOR + numSounds;
+    footer = FOOTER_TEXT + Strings.SEPARATOR + numSounds;
     updateFooter();
   }
 
@@ -120,11 +120,12 @@ public class StyledEmbedMessage {
   public Message getMessage() {
     MessageBuilder mb = new MessageBuilder();
     mb.setEmbed(builder.build());
-    return (Message) mb.build();
+    return mb.build();
   }
 
   public static StyledEmbedMessage forSoundFile(SoundboardBot bot,
-                                                SoundFile file, String title, String description) {
+                                                SoundFile file, String title,
+                                                String description) {
     StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
     msg.addDescription(description);
     msg.addContent("Category", (!file.getCategory().equals("sounds")) ?

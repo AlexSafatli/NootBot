@@ -433,9 +433,7 @@ public class SoundboardBot {
 
   public void sendMessageToUser(String msg,
                                 net.dv8tion.jda.core.entities.User user) {
-    user.openPrivateChannel().queue((PrivateChannel c)-> {
-      c.sendMessage(msg).queue();
-    });
+    user.openPrivateChannel().queue((PrivateChannel c)-> c.sendMessage(msg).queue());
   }
 
 
@@ -798,7 +796,7 @@ public class SoundboardBot {
       this.chatListener = chatListener;
     } catch (LoginException | IllegalArgumentException |
                InterruptedException | RateLimitedException e) {
-      LOG.fatal("Could not initialize bot " + getBotName());
+      LOG.fatal("Could not completely initialize bot " + getBotName());
       e.printStackTrace();
     }
   }

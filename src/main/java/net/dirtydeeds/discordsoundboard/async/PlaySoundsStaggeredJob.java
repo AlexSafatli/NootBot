@@ -6,10 +6,7 @@ import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
-import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
-import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.requests.RestAction;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;

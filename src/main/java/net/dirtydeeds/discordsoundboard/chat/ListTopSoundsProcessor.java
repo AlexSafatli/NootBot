@@ -39,13 +39,11 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    Map<String, SoundFile> soundFiles = bot.getSoundMap();
-    if (soundFiles.isEmpty()) {
-      e(event, "There are **no sound files** at all!");
+    if (bot.getSoundMap().isEmpty()) {
+      e(event, "There are **no sound files**.");
       return;
     }
-    List<String> topSounds = getTopSounds();
-    for (String s : topSounds) m(event, s);
+    for (String s : getTopSounds()) m(event, s);
   }
 
   @Override

@@ -17,26 +17,34 @@ public class FilterChatProcessor implements ChatCommandProcessor {
   private final Pattern regexp;
   private final String channelname;
   private final String patternname;
+  private boolean deleteOriginal;
   protected SoundboardBot bot;
 
   public FilterChatProcessor(Pattern regexp, String channelname,
                              SoundboardBot bot) {
-    this(regexp, channelname, "a certain pattern", bot);
+    this(regexp, channelname, "a certain pattern", true, bot);
   }
 
   public FilterChatProcessor(Pattern regexp, String channelname,
                              String patternname, SoundboardBot bot) {
+    this(regexp, channelname, patternname, true, bot);
+  }
+
+  public FilterChatProcessor(Pattern regexp, String channelname,
+                             String patternname,
+                             boolean delete, SoundboardBot bot) {
     this.regexp = regexp;
     this.channelname = channelname;
     this.patternname = patternname;
     this.bot = bot;
+    this.deleteOriginal = delete;
   }
 
   public void process(MessageReceivedEvent event) {
     if (!isApplicableCommand(event)) return;
     try {
       copyMessage(event, event.getMessage().getContent());
-      deleteOriginalMessage(event);
+      if (deleteOriginal) deleteOriginalMessage(event);
     } catch (Exception ex) {
       ex.printStackTrace();
     }

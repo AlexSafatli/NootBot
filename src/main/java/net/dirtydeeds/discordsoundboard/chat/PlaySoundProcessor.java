@@ -32,6 +32,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
     try {
       bot.playFileForChatCommand(name, event);
     } catch (Exception e) {
+      e(event, "Could not play sound => " + e.getMessage());
       LOG.warn("Did not play sound.");
     }
   }

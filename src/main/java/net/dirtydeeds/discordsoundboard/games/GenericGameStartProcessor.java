@@ -25,7 +25,6 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
   public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 
   private static final String MESSAGE_TITLE = "Whoa! You're all playing %s.";
-  private static final String MESSAGE_REPORT_SUBTITLE = "Annoying?";
 
   private static final int MIN_NUM_PLAYERS = 3;
   private static final int NUMBER_SEC_BETWEEN = 10;
@@ -161,8 +160,6 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
     m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed,
             numPlays, game, mentions));
-    m.addContent(MESSAGE_REPORT_SUBTITLE,
-            lookupString(Strings.SOUND_REPORT_INFO), false);
     Color color = StringUtils.toColor(game);
     m.setColor(color);
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
