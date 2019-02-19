@@ -1,5 +1,6 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
@@ -8,6 +9,7 @@ import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -29,7 +31,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
           " *Was this for me?* I watch for `.mp3`, `.wav`, `.flac`, `.m4a` files.";
 
   public SoundAttachmentProcessor(SoundboardBot bot) {
-    super("Sound Uploader", bot);
+    super("Sound Upload", bot);
   }
 
   protected boolean handleAttachment(MessageReceivedEvent event,
@@ -83,6 +85,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
       SoundFile soundFile = dispatcher.getSoundFileByName(file.shortName);
       if (soundFile == null) {
         e(event, "Something went wrong - could not find downloaded file.");
+        return false;
       }
       // Check duration.
       net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(user);
@@ -136,25 +139,30 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
   private StyledEmbedMessage getPublishMessage(String category, String name,
                                                User author, SoundFile file,
                                                Guild guild) {
+    category = ((category != null) &&
+            !category.isEmpty() &&
+            !category.equals("Uncategorized")) ? category : "\u2014";
+
     StyledEmbedMessage msg =
             new StyledEmbedMessage("A New Sound Was Added!", bot);
-    msg.addDescription(
-            "A new sound was added by " + author.getAsMention() + ".");
+    msg.addDescription(author.getAsMention() + " added a new sound. " +
+                    "Play it with `?" + file.getSoundFileId() + "`.");
     msg.addContent("Name", "`" + name + "`", true);
-    msg.addContent("Category",
-            (category != null && !category.isEmpty() &&
-                    !category.equals("Uncategorized")) ? category : "\u2014",
-            true);
-    msg.addContent("Duration", file.getDuration() + " seconds", true);
+    msg.addContent("Category", category, true);
+    if (file.getDuration() != null) {
+      msg.addContent("Duration", file.getDuration() + " seconds", true);
+    }
     if (guild != null) {
       msg.addContent("Server", guild.getName(), false);
     }
+    Color color = StringUtils.toColor(name);
+    msg.setColor(color);
     return msg;
   }
 
   private String getDownloadedMessage(String name, String category,
                                       SoundFile file, long size) {
-    String msg = "`" + name + "` downloaded (**nom nom**) and added!" +
+    String msg = "`" + name + "` downloaded (**om nom nom**) and added!" +
             " Play with `?" + file.getSoundFileId() + "`.\n\u2014\n";
     if (category != null && !category.isEmpty() &&
             !category.equals("Uncategorized"))

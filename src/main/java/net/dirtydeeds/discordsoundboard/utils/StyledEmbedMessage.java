@@ -25,9 +25,7 @@ public class StyledEmbedMessage {
   private String footerIconUrl;
   private String errorTitle;
 
-  private static final List<String> ERROR_STRINGS = Arrays.asList(new String[]{
-          "Fwubbed it.", "Excuse me, I stuttered.", "Nani?", "Derp", "Bwah!"
-  });
+  private static final List<String> ERROR_STRINGS = Arrays.asList("Fwubbed it.", "Excuse me, I stuttered.", "Nani?", "Derp", "Bwah!");
 
   private static final String FOOTER_TEXT = Version.NAME + " " +
           Version.VERSION + " by " + Version.AUTHOR;
@@ -146,6 +144,8 @@ public class StyledEmbedMessage {
       msg.addContent("Entrance For",
               StringUtils.listToString(usersWithEntrance), true);
     }
+    Color color = StringUtils.toColor(file.getSoundFileId());
+    msg.setColor(color);
     return msg;
   }
 
