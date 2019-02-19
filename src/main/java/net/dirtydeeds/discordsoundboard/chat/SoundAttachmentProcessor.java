@@ -43,10 +43,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
       LOG.info("File " + file.name + " is too large.");
       String end = (event.isFromType(ChannelType.PRIVATE)) ?
               "" : WAS_THIS_FOR_ME;
-      pm(event,
-              "File `" + file.name +
-                      "` is too large to add to sound list (*my capacity is finite*)." +
-                      end);
+      pm(event, "File `" + file.name + "` is too large." + end);
       event.getMessage().addReaction("😶").queue();
       return false;
     }
@@ -106,7 +103,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
       pm(event, getDownloadedMessage(
               file.name, category, soundFile, attachment.getSize()));
       StyledEmbedMessage publishMessage = getPublishMessage(category,
-              file.shortName, user, soundFile);
+              file.shortName, user, soundFile, event.getGuild());
       if (!event.isFromType(ChannelType.PRIVATE)) embed(event, publishMessage);
       if (!user.getName().equals(bot.getOwner())) { // Alert bot owner too.
         sendPublishMessageToOwner(publishMessage);
@@ -137,7 +134,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
   }
 
   private StyledEmbedMessage getPublishMessage(String category, String name,
-                                               User author, SoundFile file) {
+                                               User author, SoundFile file,
+                                               Guild guild) {
     StyledEmbedMessage msg =
             new StyledEmbedMessage("A New Sound Was Added!", bot);
     msg.addDescription(
@@ -148,6 +146,9 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
                     !category.equals("Uncategorized")) ? category : "\u2014",
             true);
     msg.addContent("Duration", file.getDuration() + " seconds", true);
+    if (guild != null) {
+      msg.addContent("Server", guild.getName(), false);
+    }
     return msg;
   }
 
@@ -164,11 +165,21 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
   }
 
   private void sendPublishMessageToOwner(StyledEmbedMessage msg) {
+    SoundboardBot sender = bot;
     User owner = bot.getUserByName(bot.getOwner());
+    for (SoundboardBot b : bot.getDispatcher().getBots()) {
+      if (owner != null) break;
+      else if (b.equals(bot)) continue;
+      owner = b.getUserByName(bot.getOwner());
+      sender = b;
+    }
     if (owner != null) {
-      owner.openPrivateChannel().queue((PrivateChannel c) -> {
-        c.sendMessage(msg.getMessage()).queue();
-      });
+      if (!sender.equals(bot)) {
+        LOG.info("Sending message to owner via different bot " + sender.getBotName());
+        msg.addContent("Bot", bot.getBotName(), false);
+      }
+      owner.openPrivateChannel().queue((PrivateChannel c) ->
+        c.sendMessage(msg.getMessage()).queue());
     }
   }
 

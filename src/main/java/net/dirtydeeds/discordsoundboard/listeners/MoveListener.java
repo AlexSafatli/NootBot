@@ -6,7 +6,6 @@ import java.awt.Color;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.*;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -15,24 +14,17 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceGuildMuteEvent;
-import net.dv8tion.jda.core.managers.AudioManager;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class MoveListener extends AbstractListener {
 
   public static final SimpleLog LOG = SimpleLog.getLog("Move");
 
-  private static final List<String> WELCOMES = Arrays.asList(new String[] {
-          "Welcome, %s!",
-          "%s has joined. Brace yourselves.",
+  private static final List<String> WELCOMES = Arrays.asList("Welcome, %s!",
           "Leave your weapons by the door, %s.",
-          "%s just appeared. Seems OP - nerf.",
+          "%s used Enter Channel. It's super effective!",
           "You're killing it, %s.",
-          "Oh hey! It's %s.",
-          "We salute you, %s.",
           "ようこそ %s.",
-          "Turn it up to eleven. %s is here!",
           "I like %s and I cannot lie. You other brothers can't deny.",
           "Hit me %s one more time.",
           "Oh no not %s, I will survive.",
@@ -45,15 +37,13 @@ public class MoveListener extends AbstractListener {
           "Real G's move in silence like %s.",
           "Climb the ladder to success, %s style.",
           "The best part about being %s is there's so many them.",
-      });
+          "Your booty don't need no explaining, %s.",
+          "To the left, to the left %s.",
+          "Do you ever feel like a plastic bag %s?");
 
-  private static final List<String> WELCOME_BACKS = Arrays.asList(new String[] {
-        "😪", "😴", "😡", "🖕", "???", "Welcome... back?", "gg", "lmao", "Baka."
-      });
+  private static final List<String> WELCOME_BACKS = Arrays.asList("😪", "😴", "😡", "🖕", "???", "gg", "Baka!");
 
-  private static final List<String> WHATS = Arrays.asList(new String[] {
-        "What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？", "Que?"
-      });
+  private static final List<String> WHATS = Arrays.asList("What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？", "Que?");
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 
@@ -160,6 +150,7 @@ public class MoveListener extends AbstractListener {
                 (Message m) ->
                         pastEntrances.get(guild).add(
                                 new EntranceEvent(m, user)));
+        StringUtils.cacheWords(user.getName());
       }
     }
   }

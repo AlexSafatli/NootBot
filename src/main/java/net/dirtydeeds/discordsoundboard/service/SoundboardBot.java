@@ -437,15 +437,26 @@ public class SoundboardBot {
   }
 
 
-  public void sendMessageToUser(String msg, String username) {
+  public boolean sendMessageToUser(String msg, String username) {
     net.dv8tion.jda.core.entities.User user = getUserByName(username);
     if (isUser(user)) {
       LOG.fatal("Tried to send message to self with content \"" + msg + "\".");
-      return;
+      return false;
     }
-    if (user != null) sendMessageToUser(msg, user);
-    else LOG.warn("Tried to send message \"" + msg + "\" to username " +
-                    username + " but could not find user.");
+    if (user != null) {
+      sendMessageToUser(msg, user);
+      return true;
+    }
+    else {
+      LOG.warn("Tried to send message \"" + msg + "\" to username " +
+              username + " but could not find user.");
+      for (SoundboardBot b : dispatcher.getBots()) {
+        if (b.equals(this)) continue;
+        boolean success = b.sendMessageToUser(msg, username);
+        if (success) return true;
+      }
+    }
+    return false;
   }
 
   public void sendMessageToAllGuilds(Message message) {
