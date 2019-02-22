@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 public class StatsProcessor extends AbstractChatCommandProcessor {
 
   public StatsProcessor(String prefix, SoundboardBot bot) {
-    super(prefix, "About Me", bot);
+    super(prefix, String.format("Hello, My Name is %s", bot.getBotName()), bot);
   }
 
   private SoundFile mostPlayedSound() {
@@ -37,21 +37,26 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
     return null;
   }
 
-  protected void handleEvent(MessageReceivedEvent event, String message) {
+  private StyledEmbedMessage statsMessage(MessageReceivedEvent event) {
     StyledEmbedMessage msg = buildStyledEmbedMessage(event);
-    msg.addDescription("*" + StringUtils.randomPhrase() + "*");
-    int numberOfSounds = bot.getSoundMap().size(),
-            numberOfServers = bot.getGuilds().size();
+    String desc = String.format("I'm a bot that makes sounds and " +
+            "occasionally does something that looks intelligent. " +
+            "Or stupid. Here's some gibberish: ||%s||.", StringUtils.randomPhrase());
+    msg.addDescription(desc);
+    int numberOfSounds = bot.getSoundMap().size();
+    int numberOfServers = bot.getGuilds().size();
     msg.addContent("Number of Sounds", "" + numberOfSounds, true);
     msg.addContent("Number of Categories", "" +
             bot.getDispatcher().getNumberOfCategories(), true);
     if (numberOfSounds > 0) {
       SoundFile mostPlayed = mostPlayedSound(), longest = longestSound();
-      msg.addContent("Most Played", "`" + mostPlayed.getSoundFileId() +
-                      "` with **" + mostPlayed.getNumberOfPlays() + "** plays",
-              true);
-      msg.addContent("Longest Sound", "`" + longest.getSoundFileId() +
-              "` at **" + longest.getDuration() + "s**", true);
+      if (mostPlayed != null)
+        msg.addContent("Most Played", "`" + mostPlayed.getSoundFileId() +
+                        "` with **" + mostPlayed.getNumberOfPlays() + "** plays",
+                true);
+      if (longest != null)
+        msg.addContent("Longest Sound", "`" + longest.getSoundFileId() +
+                "` at **" + longest.getDuration() + "s**", true);
       msg.addContent("Size of Sound Library",
               bot.getDispatcher().sizeOfLibrary(), true);
     }
@@ -60,11 +65,15 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
       msg.addContent("Number of Servers", "" + numberOfServers, true);
     }
     msg.addContent("Developer", Version.getAuthor(bot), false);
-    embed(event, msg);
+    return msg;
+  }
+
+  protected void handleEvent(MessageReceivedEvent event, String message) {
+    embed(event, statsMessage(event));
   }
 
   @Override
   public String getCommandHelpString() {
-    return getPrefix() + " - print some stats related to the bot";
+    return getPrefix() + " - print stats related to the bot";
   }
 }

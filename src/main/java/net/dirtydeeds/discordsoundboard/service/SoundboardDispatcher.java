@@ -62,12 +62,9 @@ public class SoundboardDispatcher {
           Paths.get(System.getProperty("user.dir") + "/tmp");
 
   private static final List<String> STARTING_PHRASES = Arrays.asList(
-          new String[]{
-                  "Forza Battlegrounds", "World of American Trucks",
-                  "Black Space Online", "Nioh: Injustice Offensive",
-                  "Tom Clancy's Farming Simulator"
-          }
-  );
+          "Forza Battlegrounds", "World of American Trucks",
+          "Black Space Online", "Nioh: Injustice Offensive",
+          "Tom Clancy's Farming Simulator");
   private static final String[] UNITS = new String[]{
           "B", "KB", "MB", "GB", "TB"
   };

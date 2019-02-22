@@ -150,7 +150,6 @@ public class MoveListener extends AbstractListener {
                 (Message m) ->
                         pastEntrances.get(guild).add(
                                 new EntranceEvent(m, user)));
-        StringUtils.cacheWords(user.getName());
       }
     }
   }

@@ -14,7 +14,7 @@ public class PeriodicLambdas {
   }
 
   public static PeriodicLambdaJob changeToRandomGame() {
-    return new PeriodicLambdaJob(Reusables::setRandomGame, Periodic.EVERY_TEN_MINUTES);
+    return new PeriodicLambdaJob(Reusables::setRandomGame, Periodic.EVERY_FIVE_MINUTES);
   }
 
 }

@@ -23,15 +23,12 @@ public class GameListener extends AbstractListener {
 
   private List<GameUpdateProcessor> processors;
   private static final List<String> MONITORED_GAMES = Arrays.asList(
-          new String[]{
-                  "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
-                  "Divinity Original Sin 2", "Destiny 2", "Dead by Daylight", "ASTRONEER", "Anthem"
-          }
-  );
-  private static final String[] THUMBNAIL_URLS = new String[]{
+          "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
+          "Divinity Original Sin 2", "Destiny 2", "ASTRONEER", "Anthem", "DARK SOULS II: Scholar of the First Sin", "Battlefleet Gothic: Armada II", "BATTLETECH");
+  private static final String[] THUMBNAIL_URLS = new String[] {
           Thumbnails.LEAGUE, Thumbnails.PUBG, Thumbnails.DOS2,
-          Thumbnails.DESTINY2, Thumbnails.DBD, Thumbnails.ASTRONEER,
-          Thumbnails.ANTHEM
+          Thumbnails.DESTINY2, Thumbnails.ASTRONEER,
+          Thumbnails.ANTHEM, Thumbnails.DS2, null, null
   };
 
   public GameListener(SoundboardBot bot) {
@@ -59,11 +56,11 @@ public class GameListener extends AbstractListener {
       if (previousGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " stopped playing " + previousGame.getName() +
               " in server " + guildName + ".");
-    } else if (previousGame == null) {
+    } else if (currentGame != null && previousGame == null) {
       if (currentGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " started playing " + currentGame.getName() +
               " in server " + guildName + ".");
-    } else {
+    } else if (currentGame != null) {
       if (currentGame.getType().equals(GameType.STREAMING) ||
               previousGame.getType().equals(GameType.STREAMING)) return;
       LOG.info(name + " changed to " + currentGame.getName() + " from " +
