@@ -24,11 +24,12 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
   public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 
-  private static final String MESSAGE_TITLE = "Whoa! You're all playing %s.";
+  private static final String MESSAGE_TITLE = "You're all playing **%s**!";
 
   private static final int MIN_NUM_PLAYERS = 3;
   private static final int NUMBER_SEC_BETWEEN = 10;
   private static final int MAX_DURATION = 4;
+  private static final int MAX_NUM_MENTIONS = 6;
 
   private GameStartEvent pastEvent;
   private String thumbnail;
@@ -136,7 +137,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
                   new Date(System.currentTimeMillis()),
                   null);
           LOG.info("Played random sound: \"" + sound + "\".");
-          embed(lobby, announcement(sound, game, users, numPlayers,
+          embed(lobby, announcement(event, sound, game, users, numPlayers,
                   (f != null) ? f.getNumberOfPlays() : 0),
                   (Message m) -> pastEvent.message = m);
         } catch (Exception e) {
@@ -147,19 +148,28 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
   }
 
-  public StyledEmbedMessage announcement(String soundPlayed, String game,
+  public StyledEmbedMessage announcement(UserGameUpdateEvent event,
+                                         String soundPlayed, String game,
                                          User[] users, int numPlaying,
                                          long numPlays) {
     StyledEmbedMessage m = new StyledEmbedMessage(
             String.format(MESSAGE_TITLE, game), bot);
     String mentions = "";
-    for (int i = 0; i < numPlaying; ++i) {
+    for (int i = 0; i < numPlaying || i > MAX_NUM_MENTIONS; ++i) {
       if (users[i] != null) {
-        mentions += users[i].getAsMention() + " ";
+        mentions += users[i].getAsMention();
+      }
+      if (i == MAX_NUM_MENTIONS) {
+        mentions += " and more";
+      } else if (i < numPlaying - 1) {
+        mentions += " ";
       }
     }
     m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed,
             numPlays, game, mentions));
+    m.addContent("Server", event.getGuild().getName(), true);
+    m.addContent("Category",
+            (bot.isASoundCategory(game)) ? game : "\u2014", true);
     Color color = StringUtils.toColor(game);
     m.setColor(color);
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),

@@ -24,20 +24,20 @@ public class GameListener extends AbstractListener {
   private List<GameUpdateProcessor> processors;
   private static final List<String> MONITORED_GAMES = Arrays.asList(
           "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
-          "Divinity Original Sin 2", "Destiny 2", "ASTRONEER", "Anthem", "DARK SOULS II: Scholar of the First Sin", "Battlefleet Gothic: Armada II", "BATTLETECH");
+          "Divinity Original Sin 2", "Destiny 2", "ASTRONEER", "Anthem", "DARK SOULS II: Scholar of the First Sin", "Battlefleet Gothic: Armada II", "BATTLETECH", "Endless Space 2");
   private static final String[] THUMBNAIL_URLS = new String[] {
           Thumbnails.LEAGUE, Thumbnails.PUBG, Thumbnails.DOS2,
           Thumbnails.DESTINY2, Thumbnails.ASTRONEER,
-          Thumbnails.ANTHEM, Thumbnails.DS2, null, null
+          Thumbnails.ANTHEM, Thumbnails.DS2, null, null, null
   };
 
   public GameListener(SoundboardBot bot) {
     this.bot = bot;
-    this.processors = new LinkedList<>();
     initializeProcessors();
   }
 
   private void initializeProcessors() {
+    processors = new LinkedList<>();
     for (int i = 0; i < MONITORED_GAMES.size(); ++i) {
       String game = MONITORED_GAMES.get(i), url = THUMBNAIL_URLS[i];
       LOG.info("Initializing game launch processor for " + game);
@@ -74,8 +74,9 @@ public class GameListener extends AbstractListener {
   }
 
   public void onUserGameUpdate(UserGameUpdateEvent event) {
+    if (event.getUser().isBot()) return; // Ignore bots.
+
     User user = event.getUser();
-    if (user.isBot()) return; // Ignore bots.
     Guild guild = event.getGuild();
     Member member = guild.getMemberById(user.getId());
 
