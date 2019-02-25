@@ -17,7 +17,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
     String category = getArgument(), filePlayed = null,
-           desc = "Played a random sound ";
+           desc = "Played random sound ";
     if (!bot.isAllowedToPlaySound(event.getAuthor())) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
       LOG.info(event.getAuthor() + " is not allowed to play sounds.");
@@ -42,7 +42,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
         LOG.info("Played \"" + filePlayed + "\" in server " +
                  event.getGuild().getName());
         StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file,
-                                "You've Played a Random Sound",
+                                "Played Random Sound `" + filePlayed + "`",
                                 desc + " \u2014 " +
                                 event.getAuthor().getAsMention());
         embedForUser(event, em);

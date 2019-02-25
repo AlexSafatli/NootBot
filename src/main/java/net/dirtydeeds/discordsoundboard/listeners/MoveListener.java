@@ -1,8 +1,11 @@
 package net.dirtydeeds.discordsoundboard.listeners;
 
 import java.util.*;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.awt.Color;
 
+import net.dirtydeeds.discordsoundboard.async.DeleteMessageJob;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.*;
@@ -23,7 +26,6 @@ public class MoveListener extends AbstractListener {
   private static final List<String> WELCOMES = Arrays.asList("Welcome, %s!",
           "Leave your weapons by the door, %s.",
           "%s used Enter Channel. It's super effective!",
-          "You're killing it, %s.",
           "ようこそ %s.",
           "I like %s and I cannot lie. You other brothers can't deny.",
           "Hit me %s one more time.",
@@ -39,11 +41,12 @@ public class MoveListener extends AbstractListener {
           "The best part about being %s is there's so many them.",
           "Your booty don't need no explaining, %s.",
           "To the left, to the left %s.",
-          "Do you ever feel like a plastic bag %s?");
+          "Do you ever feel like a plastic bag %s?",
+          "%s came when he was six years old.");
 
-  private static final List<String> WELCOME_BACKS = Arrays.asList("😪", "😴", "😡", "🖕", "???", "gg", "Baka!");
+  private static final List<String> WELCOME_BACKS = Arrays.asList("😪", "😴", "😡", "🖕", "???", "gg", "Baka!", "groan.");
 
-  private static final List<String> WHATS = Arrays.asList("What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？", "Que?");
+  private static final List<String> WHATS = Arrays.asList("What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？", "Que?", "(｡◕‿‿◕｡)", "pls explain");
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 
@@ -95,9 +98,7 @@ public class MoveListener extends AbstractListener {
       return;
     }
 
-    String fileToPlay = bot.getEntranceForUser(user),
-            soundInfo = "";
-
+    String fileToPlay = bot.getEntranceForUser(user), soundInfo = "";
     if (fileToPlay == null || fileToPlay.isEmpty()) return;
 
     if (bot.getSoundMap().get(fileToPlay) == null) {
@@ -135,6 +136,7 @@ public class MoveListener extends AbstractListener {
                           s.getNumberOfPlays());
         }
       } catch (Exception e) {
+        embed(bot.getBotChannel(guild), errorMessage(e, user), (Message m) -> bot.getDispatcher().getAsyncService().runJob(new DeleteMessageJob(m, 240)));
         e.printStackTrace();
       }
     } else if (bot.getConnectedChannel(guild) == null) {
@@ -218,11 +220,29 @@ public class MoveListener extends AbstractListener {
     }
   }
 
-  public StyledEmbedMessage welcomeMessage(User user, Channel channel,
+    private StyledEmbedMessage errorMessage(Exception e, User user) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    e.printStackTrace(pw);
+    String title = String.format(StringUtils.randomString(WELCOMES),
+                    "**" + user.getName() + "**");
+    StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
+    m.setThumbnail(user.getEffectiveAvatarUrl());
+    m.addDescription("Bwah" + Strings.SEPARATOR + user.getAsMention());
+    m.addContent(StringUtils.randomString(WELCOME_BACKS),
+            StringUtils.truncate(sw.toString(), 512), false);
+    Color color = StringUtils.toColor(user.getName());
+    m.setColor(color);
+    m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
+            color.getGreen(), color.getBlue()));
+    return m;
+  }
+
+  private StyledEmbedMessage welcomeMessage(User user, Channel channel,
                                            String soundInfo, boolean welcomeInTitle) {
     String title = (welcomeInTitle) ?
             String.format(StringUtils.randomString(WELCOMES),
-                    user.getName()) :
+                    "**" + user.getName() + "**") :
             user.getName() + " is here, *again*.";
     StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());
@@ -236,6 +256,7 @@ public class MoveListener extends AbstractListener {
             "I play sounds. Type `.help` for commands.", false);
     Color color = StringUtils.toColor(user.getName());
     m.setColor(color);
+    m.addFooterText(StringUtils.truncate(channel.getName()));
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
             color.getGreen(), color.getBlue()));
     return m;
