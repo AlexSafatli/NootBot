@@ -168,7 +168,7 @@ public class PlaySoundsJob implements SoundboardJob {
     if (mb != null) {
       for (String str : mb) {
         String titleSuffix =
-                (messages.size() >= 1) ? " (*" + (messages.size() + 1) + "*)" : "";
+                (messages.size() >= 1) ? " (" + (messages.size() + 1) + ")" : "";
         StyledEmbedMessage msg =
                 StyledEmbedMessage.forUser(
                         bot, user, "Playing **" + sounds.length + "** Sounds" +

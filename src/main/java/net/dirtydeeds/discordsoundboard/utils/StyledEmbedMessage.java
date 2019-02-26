@@ -153,8 +153,10 @@ public class StyledEmbedMessage {
                                            String title, String description) {
     StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
     msg.addDescription(description);
-    //msg.addFooterText(FOR_USER_FOOTER_PREFIX + user.getName());
+    // msg.addFooterText(FOR_USER_FOOTER_PREFIX + user.getName());
     msg.setFooterIcon(user.getEffectiveAvatarUrl());
+    Color color = StringUtils.toColor(user.getName());
+    msg.setColor(color);
     return msg;
   }
 
