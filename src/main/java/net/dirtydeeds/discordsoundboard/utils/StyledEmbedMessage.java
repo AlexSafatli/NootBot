@@ -25,7 +25,8 @@ public class StyledEmbedMessage {
   private String footerIconUrl;
   private String errorTitle;
 
-  private static final List<String> ERROR_STRINGS = Arrays.asList("Fwubbed it.", "Excuse me, I stuttered.", "Nani?", "Derp", "Bwah!");
+  private static final List<String> ERROR_STRINGS = Arrays.asList("Fwubbed it.", "Excuse me, I stuttered.", "Nani?",
+          "Derp", "Bwah!");
 
   private static final String FOOTER_TEXT = Version.NAME + " " +
           Version.VERSION + " by " + Version.AUTHOR;
@@ -52,7 +53,7 @@ public class StyledEmbedMessage {
   public StyledEmbedMessage(String title, SoundboardBot bot) {
     this(title);
     String numSounds = bot.getSoundMap().size() + " sounds";
-    footer = FOOTER_TEXT + Strings.SEPARATOR + numSounds;
+    footer = bot.getBotName() + Strings.SEPARATOR + numSounds;
     updateFooter();
   }
 

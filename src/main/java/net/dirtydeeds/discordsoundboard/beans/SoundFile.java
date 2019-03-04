@@ -68,14 +68,14 @@ public class SoundFile {
         AudioFormat format = audio.getFormat();
         return (long) ((audio.getFrameLength()) / format.getFrameRate());
       } else if (extension.equals("mp3")) {
-        Map<?, ?> props = ((TAudioFileFormat)AudioSystem.getAudioFileFormat(soundFile)).properties();
+        Map<?, ?> props = (AudioSystem.getAudioFileFormat(soundFile)).properties();
         Long micros = (Long)props.get("duration");
         return (micros) / 1000000;
       } else return 0L;
     } catch (Exception e) {
       e.printStackTrace();
-      return 0L;
     }
+    return 0L;
   }
 
   public String getSoundFileId() {

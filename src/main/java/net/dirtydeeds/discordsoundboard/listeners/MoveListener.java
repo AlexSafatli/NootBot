@@ -42,11 +42,22 @@ public class MoveListener extends AbstractListener {
           "Your booty don't need no explaining, %s.",
           "To the left, to the left %s.",
           "Do you ever feel like a plastic bag %s?",
-          "%s came when he was six years old.");
+          "%s came when he was six years old.",
+          "The man who passes the sentence should kick %s.",
+          "I have a tender spot in my heart for cripples, %s and broken things.",
+          "%s is mine to torment.",
+          "You know nothing, %s.",
+          "Night gathers, and now %s begins.",
+          "%s always pays his debts. Or not.",
+          "There's no cure for being a %s.",
+          "That's what %s does: he drinks and knows things.",
+          "Chaos isn't a pit. %s is a ladder.",
+          "*Uh oh*! %s is here.");
 
   private static final List<String> WELCOME_BACKS = Arrays.asList("😪", "😴", "😡", "🖕", "???", "gg", "Baka!", "groan.");
 
-  private static final List<String> WHATS = Arrays.asList("What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？", "Que?", "(｡◕‿‿◕｡)", "pls explain");
+  private static final List<String> WHATS = Arrays.asList("What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？",
+          "Que?", "(｡◕‿‿◕｡)", "pls explain");
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 
@@ -58,7 +69,7 @@ public class MoveListener extends AbstractListener {
   private class EntranceEvent {
     public Message message;
     public User user;
-    public EntranceEvent(Message m, User u) {
+    EntranceEvent(Message m, User u) {
       message = m;
       user = u;
     }
@@ -136,7 +147,8 @@ public class MoveListener extends AbstractListener {
                           s.getNumberOfPlays());
         }
       } catch (Exception e) {
-        embed(bot.getBotChannel(guild), errorMessage(e, user), (Message m) -> bot.getDispatcher().getAsyncService().runJob(new DeleteMessageJob(m, 240)));
+        embed(bot.getBotChannel(guild), errorMessage(e, user), (
+                Message m) -> bot.getDispatcher().getAsyncService().runJob(new DeleteMessageJob(m, 240)));
         e.printStackTrace();
       }
     } else if (bot.getConnectedChannel(guild) == null) {
@@ -244,19 +256,19 @@ public class MoveListener extends AbstractListener {
             String.format(StringUtils.randomString(WELCOMES),
                     "**" + user.getName() + "**") :
             user.getName() + " is here, *again*.";
-    StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
-    m.setThumbnail(user.getEffectiveAvatarUrl());
+    String description;
     if (!soundInfo.isEmpty()) {
-      m.addDescription(soundInfo + Strings.SEPARATOR + user.getAsMention());
+      description = soundInfo + Strings.SEPARATOR + user.getAsMention();
     } else {
-      m.addDescription(StringUtils.randomString(WELCOME_BACKS) +
-              Strings.SEPARATOR + user.getAsMention());
+      description = StringUtils.randomString(WELCOME_BACKS) +
+              Strings.SEPARATOR + user.getAsMention();
     }
+    StyledEmbedMessage m = StyledEmbedMessage.forUser(bot, user, title, description);
+    m.setThumbnail(user.getEffectiveAvatarUrl());
     m.addContent(StringUtils.randomString(WHATS),
             "I play sounds. Type `.help` for commands.", false);
     Color color = StringUtils.toColor(user.getName());
-    m.setColor(color);
-    m.addFooterText(StringUtils.truncate(channel.getName()));
+    m.addFooterText(StringUtils.truncate(channel.getName(), 20));
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
             color.getGreen(), color.getBlue()));
     return m;
