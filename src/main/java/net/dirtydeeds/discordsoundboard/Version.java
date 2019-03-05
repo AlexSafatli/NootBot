@@ -9,6 +9,10 @@ public class Version {
   public static final String VERSION = "2.7.0";
   public static final String AUTHOR = "Asaph";
 
+  public static String getVersionCode() {
+    return NAME + " " + VERSION;
+  }
+
   public static String getAuthor(SoundboardBot bot) {
     String author = AUTHOR;
     User user = bot.getUserByName(author);

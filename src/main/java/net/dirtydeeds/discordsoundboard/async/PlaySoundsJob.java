@@ -139,13 +139,12 @@ public class PlaySoundsJob implements SoundboardJob {
     if (guild != null) {
       List<Message> messages;
       if (!same || sounds.length == 1) {
-        messages = makeMessages("Queued **" + sounds.length +
-                "** sound" + (sounds.length > 1 ? "s " : " ") + end + " \u2014 " +
-                user.getAsMention(), user, mb, sounds, timePlaying);
+        messages = makeMessages(
+                "Queued sound" + (sounds.length > 1 ? "s " : " ") +
+                        end + " \u2014 " + user.getAsMention(), user, mb, sounds,
+                timePlaying);
       } else {
-        messages = makeMessages("Looping sound `" + firstSound + "` **" +
-                sounds.length + "** times \u2014 " +
-                user.getAsMention(), user, null, sounds, timePlaying);
+        messages = makeMessages(user.getAsMention(), user, null, sounds, timePlaying);
       }
 
       final int timeUntilDelete = (int)timePlaying + 120;
@@ -167,12 +166,13 @@ public class PlaySoundsJob implements SoundboardJob {
     List<Message> messages = new LinkedList<>();
     if (mb != null) {
       for (String str : mb) {
+        boolean paginatedMessage = messages.size() >= 1;
         String titleSuffix =
-                (messages.size() >= 1) ? " (" + (messages.size() + 1) + ")" : "";
+                paginatedMessage ? " (" + (messages.size() + 1) + ")" : "";
         StyledEmbedMessage msg =
                 StyledEmbedMessage.forUser(
                         bot, user, "Playing **" + sounds.length + "** Sounds" +
-                                titleSuffix, description);
+                                titleSuffix, paginatedMessage ? "" : description);
         msg.addContent("Sounds Queued", str, false);
         if (duration > 0)
           msg.addContent("Total Duration",duration + " seconds", false);

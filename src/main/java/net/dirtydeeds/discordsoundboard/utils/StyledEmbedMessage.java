@@ -54,6 +54,7 @@ public class StyledEmbedMessage {
     this(title);
     String numSounds = bot.getSoundMap().size() + " sounds";
     footer = bot.getBotName() + Strings.SEPARATOR + numSounds;
+    footerIconUrl = bot.getAPI().getSelfUser().getEffectiveAvatarUrl();
     updateFooter();
   }
 
@@ -153,7 +154,7 @@ public class StyledEmbedMessage {
   public static StyledEmbedMessage forUser(SoundboardBot bot, User user,
                                            String title, String description) {
     StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
-    msg.addDescription(description);
+    if (!description.isEmpty()) msg.addDescription(description);
     // msg.addFooterText(FOR_USER_FOOTER_PREFIX + user.getName());
     msg.setFooterIcon(user.getEffectiveAvatarUrl());
     Color color = StringUtils.toColor(user.getName());

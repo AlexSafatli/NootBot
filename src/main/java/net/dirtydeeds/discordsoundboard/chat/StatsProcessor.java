@@ -64,7 +64,8 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
     if (numberOfServers > 1) {
       msg.addContent("Number of Servers", "" + numberOfServers, true);
     }
-    msg.addContent("Developer", Version.getAuthor(bot), false);
+    msg.addContent("Version Code", Version.getVersionCode(), true);
+    msg.addContent("Developer", Version.getAuthor(bot), true);
     return msg;
   }
 
