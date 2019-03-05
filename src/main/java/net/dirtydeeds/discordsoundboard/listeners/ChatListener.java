@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.listeners;
 import net.dirtydeeds.discordsoundboard.chat.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.*;
+import net.dv8tion.jda.client.events.relationship.FriendRequestReceivedEvent;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -190,6 +191,18 @@ public class ChatListener extends AbstractListener {
       return;
     }
 
+  }
+
+  public void onFriendRequestReceived(FriendRequestReceivedEvent event) {
+    // If the friending user is the owner, add him or her.
+    LOG.info("Received friend request from " + event.getUser().getName());
+    if (event.getUser().equals(bot.getUserByName(bot.getOwner()))) {
+      LOG.info("Accepting friend request.");
+      event.getFriendRequest().accept().queue();
+    } else {
+      LOG.info("Ignoring friend request.");
+      event.getFriendRequest().ignore().queue();
+    }
   }
 
   private boolean isTypoCommand(MessageReceivedEvent event) {
