@@ -43,8 +43,7 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
       e(event, "There are **no sound files** at all!");
       return;
     }
-    List<String> topSounds = getTopSounds();
-    for (String msg : topSounds) m(event, msg);
+    for (String msg : getTopSounds()) m(event, msg);
   }
 
   @Override

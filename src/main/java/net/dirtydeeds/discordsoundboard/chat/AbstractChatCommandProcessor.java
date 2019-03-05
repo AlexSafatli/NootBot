@@ -100,9 +100,8 @@ public abstract class AbstractChatCommandProcessor implements
   }
 
   protected void pm(MessageReceivedEvent event, StyledEmbedMessage message) {
-    event.getAuthor().openPrivateChannel().queue((PrivateChannel c) -> {
-      c.sendMessage(message.getMessage()).queue();
-    });
+    event.getAuthor().openPrivateChannel().queue((PrivateChannel c) ->
+      c.sendMessage(message.getMessage()).queue());
   }
 
   private StyledEmbedMessage makeEmbed(String message, User user) {
@@ -111,27 +110,24 @@ public abstract class AbstractChatCommandProcessor implements
 
   private void sendEmbed(MessageReceivedEvent event, String message,
                          boolean error, boolean warning) {
+    StyledEmbedMessage em = makeEmbed(
+            message, event.getAuthor()).isWarning(warning).isError(error);
     TextChannel channel;
     if (event.isFromType(ChannelType.PRIVATE)) {
-      pm(event, message);
+      pm(event, em);
       return;
     } else if (!bot.hasPermissionInChannel(
             event.getTextChannel(), Permission.MESSAGE_WRITE)) {
       if (bot.getBotChannel(event.getGuild()) != null) {
         channel = bot.getBotChannel(event.getGuild());
       } else {
-        pm(event, message);
+        pm(event, em);
         return;
       }
     } else {
       channel = event.getTextChannel();
     }
-    channel.sendMessage(
-            makeEmbed(message, event.getAuthor()).isWarning(warning).isError(
-                    error).getMessage()
-    ).queue((Message msg) -> {
-      buffer.add(msg);
-    });
+    channel.sendMessage(em.getMessage()).queue((Message msg) -> buffer.add(msg));
   }
 
   protected void m(MessageReceivedEvent event, String message) {

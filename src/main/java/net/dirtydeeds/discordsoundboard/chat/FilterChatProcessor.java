@@ -20,22 +20,21 @@ public class FilterChatProcessor implements ChatCommandProcessor {
   private boolean deleteOriginal;
   protected SoundboardBot bot;
 
-  public FilterChatProcessor(Pattern regexp, String channelname,
+  public FilterChatProcessor(Pattern regexp, String cname,
                              SoundboardBot bot) {
-    this(regexp, channelname, "a certain pattern", true, bot);
+    this(regexp, cname, "a certain pattern", true, bot);
   }
 
-  public FilterChatProcessor(Pattern regexp, String channelname,
-                             String patternname, SoundboardBot bot) {
-    this(regexp, channelname, patternname, true, bot);
+  public FilterChatProcessor(Pattern regexp, String cname,
+                             String pname, SoundboardBot bot) {
+    this(regexp, cname, pname, true, bot);
   }
 
-  public FilterChatProcessor(Pattern regexp, String channelname,
-                             String patternname,
-                             boolean delete, SoundboardBot bot) {
+  public FilterChatProcessor(Pattern regexp, String cname,
+                             String pname, boolean delete, SoundboardBot bot) {
     this.regexp = regexp;
-    this.channelname = channelname;
-    this.patternname = patternname;
+    this.channelname = cname;
+    this.patternname = pname;
     this.bot = bot;
     this.deleteOriginal = delete;
   }

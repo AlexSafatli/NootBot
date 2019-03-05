@@ -11,7 +11,7 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 
   public static final SimpleLog LOG = SimpleLog.getLog("Help");
 
-  List<ChatCommandProcessor> processors;
+  private List<ChatCommandProcessor> processors;
 
   public HelpProcessor(String prefix, SoundboardBot bot,
                        List<ChatCommandProcessor> processors) {
