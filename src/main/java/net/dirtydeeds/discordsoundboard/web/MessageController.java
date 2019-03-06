@@ -29,15 +29,23 @@ public class MessageController {
 
   @RequestMapping(value = "/bots/{id}/servers")
   public ResponseEntity<Object> getServers(@PathVariable("id") String id) {
+    List<String> names = new LinkedList<>();
     SoundboardBot bot = dispatcher.getBots().get(Integer.parseInt(id));
-    return new ResponseEntity<>(bot.getGuilds(), HttpStatus.OK);
+    for (Guild guild : bot.getGuilds()) {
+      names.add(guild.getName());
+    }
+    return new ResponseEntity<>(names, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/bots/{id}/servers/{sid}/channels")
   public ResponseEntity<Object> getTextChannels(@PathVariable("id") String id, @PathVariable("sid") String sid) {
+    List<String> names = new LinkedList<>();
     SoundboardBot bot = dispatcher.getBots().get(Integer.parseInt(id));
     Guild guild = bot.getGuilds().get(Integer.parseInt(sid));
-    return new ResponseEntity<>(guild.getTextChannels(), HttpStatus.OK);
+    for (TextChannel c : guild.getTextChannels()) {
+      names.add(c.getName());
+    }
+    return new ResponseEntity<>(names, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/bots/{id}/servers/{sid}/channels/{cid}/messages", method = RequestMethod.POST)
