@@ -78,8 +78,11 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
     if (guild == null || userChannel == null || !userChannel.equals(botChannel))
       return false;
+    Game previous = event.getPreviousGame();
     Game game = guild.getMemberById(user.getId()).getGame();
-    return (game != null && !game.getType().equals(GameType.STREAMING) &&
+    return (game != null &&
+            !(previous.getName().equals(SPOTIFY) && pastEvent.isTooSoon(userChannel)) &&
+            !game.getType().equals(GameType.STREAMING) &&
             userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
   }
 
@@ -122,8 +125,10 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
       String sound;
       if (bot.isASoundCategory(game)) {
-        LOG.info(game + " is as a sound category. Playing from it.");
-        sound = bot.getRandomSoundNameForCategory(game, MAX_DURATION);
+        LOG.info(game + " is as a category. Can play from that category.");
+        sound = (String)RandomUtils.chooseOne(
+                bot.getRandomSoundNameForCategory(game, MAX_DURATION),
+                bot.getRandomSoundName(MAX_DURATION));
       } else {
         sound = bot.getRandomSoundName(MAX_DURATION);
       }
@@ -148,28 +153,31 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
   }
 
-  public StyledEmbedMessage announcement(UserGameUpdateEvent event,
+  private StyledEmbedMessage announcement(UserGameUpdateEvent event,
                                          String soundPlayed, String game,
                                          User[] users, int numPlaying,
                                          long numPlays) {
-    StyledEmbedMessage m = new StyledEmbedMessage(
-            String.format(MESSAGE_TITLE, game), bot);
+    SoundFile played = bot.getSoundMap().get(soundPlayed);
     String mentions = "";
     for (int i = 0; i < numPlaying || i > MAX_NUM_MENTIONS; ++i) {
       if (users[i] != null) {
         mentions += users[i].getAsMention();
       }
       if (i == MAX_NUM_MENTIONS) {
-        mentions += " and more";
+        mentions += " et al.";
       } else if (i < numPlaying - 1) {
         mentions += " ";
       }
     }
-    m.addDescription(formatString(Strings.GAME_START_MESSAGE, soundPlayed,
+    StyledEmbedMessage m = StyledEmbedMessage.forUser(bot,
+            users[0], String.format(MESSAGE_TITLE, game),
+            formatString(Strings.GAME_START_MESSAGE, soundPlayed,
             numPlays, game, mentions));
     m.addContent("Server", event.getGuild().getName(), true);
     m.addContent("Category",
-            (bot.isASoundCategory(game)) ? game : "\u2014", true);
+            (bot.isASoundCategory(game) &&
+                    played.getCategory().equals(game)) ?
+                    game : "\u2014", true);
     Color color = StringUtils.toColor(game);
     m.setColor(color);
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),

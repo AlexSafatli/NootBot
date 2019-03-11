@@ -17,6 +17,7 @@ import net.dv8tion.jda.core.requests.RestAction;
 public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor {
 
   private static final String ERROR_TITLE = "Derp!";
+  protected static final String SPOTIFY = "Spotify";
 
   protected SoundboardBot bot;
 

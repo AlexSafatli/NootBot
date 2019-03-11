@@ -1,8 +1,6 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
 import java.awt.Color;
-import java.util.Date;
-import java.util.Random;
 import java.util.List;
 import java.util.Arrays;
 
@@ -14,18 +12,16 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.Icon;
 
 public class StyledEmbedMessage {
-
-  public static final String FOR_USER_FOOTER_PREFIX = " ";
 
   private EmbedBuilder builder;
   private String footer;
   private String footerIconUrl;
   private String errorTitle;
 
-  private static final List<String> ERROR_STRINGS = Arrays.asList("Fwubbed it.", "Excuse me, I stuttered.", "Nani?",
+  private static final List<String> ERROR_STRINGS = Arrays.asList(
+          "Fwubbed it.", "Excuse me, I stuttered.", "Nani?",
           "Derp", "Bwah!");
 
   private static final String FOOTER_TEXT = Version.NAME + " " +
