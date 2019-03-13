@@ -13,6 +13,8 @@ import java.text.DecimalFormat;
 import java.util.function.Consumer;
 import javax.inject.Inject;
 
+import net.dirtydeeds.discordsoundboard.beans.Setting;
+import net.dirtydeeds.discordsoundboard.dao.SettingRepository;
 import org.springframework.stereotype.Service;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -44,6 +46,7 @@ public class SoundboardDispatcher {
   private final UserRepository userDao;
   private final SoundFileRepository soundDao;
   private final PhraseRepository phraseDao;
+  private final SettingRepository settingsDao;
 
   private Properties appProperties;
   private SoundboardBot[] bots;
@@ -62,8 +65,7 @@ public class SoundboardDispatcher {
           Paths.get(System.getProperty("user.dir") + "/tmp");
 
   private static final List<String> STARTING_PHRASES = Arrays.asList(
-          "Forza Battlegrounds", "World of American Trucks",
-          "Black Space Online", "Nioh: Injustice Offensive",
+          "Forza Battlegrounds", "Nioh: Injustice Offensive",
           "Tom Clancy's Farming Simulator");
   private static final String[] UNITS = new String[]{
           "B", "KB", "MB", "GB", "TB"
@@ -74,6 +76,7 @@ public class SoundboardDispatcher {
   public SoundboardDispatcher(UserRepository userDao,
                               SoundFileRepository soundDao,
                               PhraseRepository phraseDao,
+                              SettingRepository settingsDao,
                               AsyncService asyncService,
                               StringService stringService) {
     this.asyncService = asyncService;
@@ -81,6 +84,7 @@ public class SoundboardDispatcher {
     this.userDao = userDao;
     this.soundDao = soundDao;
     this.phraseDao = phraseDao;
+    this.settingsDao = settingsDao;
     audioManager = new DefaultAudioPlayerManager();
     availableSounds = new TreeMap<>();
     soundNameTrie = new LowercaseTrie();
@@ -311,6 +315,32 @@ public class SoundboardDispatcher {
     return out;
   }
 
+  public Setting getSetting(String key, Guild guild) {
+    List<Setting> settings = settingsDao.findAllByKey(key);
+    for (Setting setting : settings) {
+      if (setting.getGuildId().equals(guild.getIdLong())) {
+        return setting;
+      }
+    }
+    return null;
+  }
+
+  public List<Setting> getGuildSettingsForKey(String key) {
+    return settingsDao.findAllByKey(key);
+  }
+
+  public List<Setting> getSettings() {
+    return settingsDao.findAll();
+  }
+
+  public List<Setting> getSettingsForGuild(Guild guild) {
+    List<Setting> settings = getSettings(), out = new LinkedList<>();
+    for (Setting setting : settings) {
+      if (setting.getGuildId().equals(guild.getIdLong())) out.add(setting);
+    }
+    return out;
+  }
+
   public List<SoundFile> getSoundFilesOrderedByNumberOfPlays() {
     return soundDao.findAllByOrderByNumberPlaysDesc();
   }
@@ -426,6 +456,16 @@ public class SoundboardDispatcher {
     for (String phrase : STARTING_PHRASES) {
       addPhrase(phrase);
     }
+  }
+
+  public Setting registerSetting(String key, String val, Guild guild) {
+    Setting s = new Setting(key, val, guild);
+    saveSetting(s);
+    return s;
+  }
+
+  public void saveSetting(Setting setting) {
+    settingsDao.saveAndFlush(setting);
   }
 
   public void updateFileList() {

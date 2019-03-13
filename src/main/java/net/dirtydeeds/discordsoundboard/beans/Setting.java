@@ -1,5 +1,7 @@
 package net.dirtydeeds.discordsoundboard.beans;
 
+import net.dv8tion.jda.core.entities.Guild;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -8,16 +10,22 @@ public class Setting {
 
   @Id
   private final String id;
+  private final String key;
   private String value;
+  private Long guildId;
 
   protected Setting() {
     this.id = null;
+    this.key = "";
     this.value = "";
+    this.guildId = 0L;
   }
 
-  public Setting(String id, String value) {
-    this.id = id;
+  public Setting(String key, String value, Guild guild) {
+    this.key = key;
     this.value = value;
+    this.guildId = guild.getIdLong();
+    this.id = key + "_" + guildId;
   }
 
   public String getValue() {
@@ -30,6 +38,14 @@ public class Setting {
 
   public String getId() {
     return id;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public Long getGuildId() {
+    return guildId;
   }
 
   @Override

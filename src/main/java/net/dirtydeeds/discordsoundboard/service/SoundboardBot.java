@@ -1,5 +1,6 @@
 package net.dirtydeeds.discordsoundboard.service;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import net.dirtydeeds.discordsoundboard.audio.AudioHandler;
 import net.dirtydeeds.discordsoundboard.audio.AudioPlayerSendHandler;
 import net.dirtydeeds.discordsoundboard.audio.AudioTrackScheduler;
@@ -7,8 +8,10 @@ import net.dirtydeeds.discordsoundboard.beans.Setting;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.listeners.ChatListener;
+import net.dirtydeeds.discordsoundboard.listeners.GuildUserListener;
 import net.dirtydeeds.discordsoundboard.listeners.MoveListener;
 import net.dirtydeeds.discordsoundboard.listeners.GameListener;
+import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.AccountType;
@@ -64,6 +67,7 @@ public class SoundboardBot {
   private SoundboardDispatcher dispatcher;
   private Map<String, Setting> settings;
   private Map<Guild, AudioTrackScheduler> audioSchedulers;
+  private Map<Guild, ModerationRules> rules;
 
   public SoundboardBot(String token, String owner,
                        SoundboardDispatcher dispatcher) {
@@ -304,6 +308,10 @@ public class SoundboardBot {
         return user;
     }
     return null;
+  }
+
+  public ModerationRules getRulesForGuild(Guild guild) {
+    return rules.get(guild);
   }
 
   public String getEntranceForUser(net.dv8tion.jda.core.entities.User user) {
@@ -737,10 +745,6 @@ public class SoundboardBot {
     return guilds;
   }
 
-  public Properties getAppProperties() {
-    return dispatcher.getAppProperties();
-  }
-
   public JDA getAPI() {
     return this.bot;
   }
@@ -791,19 +795,45 @@ public class SoundboardBot {
     scheduler.load(url, new AudioHandler(player));
   }
 
+  private void initSettings(Guild guild) {
+    Setting mod = dispatcher.getSetting("permit_moderation", guild);
+    Setting defaultRole = dispatcher.getSetting("default_role", guild);
+    if (mod == null) {
+      mod = dispatcher.registerSetting("permit_moderation", "false", guild);
+    }
+    if (defaultRole == null) {
+      defaultRole = dispatcher.registerSetting("default_role", "", guild);
+    }
+    ModerationRules r = new ModerationRules(guild, mod.getValue().equalsIgnoreCase("true"));
+    if (defaultRole.getValue() != null && !defaultRole.getValue().isEmpty()) {
+      for (Role role : guild.getRoles()) {
+        if (role.getName().equals(defaultRole.getValue())) {
+          r.setDefaultRole(role);
+          break;
+        }
+      }
+    }
+    rules.put(guild, r);
+  }
+
   private void initializeDiscordBot(String token) {
     try {
       bot = new JDABuilder(AccountType.BOT).setToken(token).buildBlocking();
+      for (Guild guild : getGuilds()) {
+        LOG.info("Connecting: " + guild.getName());
+        initSettings(guild);
+      }
       ChatListener chatListener = new ChatListener(this);
       MoveListener moveListener = new MoveListener(this);
       GameListener gameListener = new GameListener(this);
+      GuildUserListener guildListener = new GuildUserListener(this, rules);
       addListener(chatListener);
       addListener(moveListener);
       addListener(gameListener);
+      addListener(guildListener);
       bot.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
       Reusables.setRandomGame(this);
       LOG.info("Finished initializing bot with name " + getBotName());
-      for (Guild guild : getGuilds()) LOG.info("Connected: " + guild.getName());
       this.chatListener = chatListener;
     } catch (LoginException | IllegalArgumentException |
                InterruptedException | RateLimitedException e) {

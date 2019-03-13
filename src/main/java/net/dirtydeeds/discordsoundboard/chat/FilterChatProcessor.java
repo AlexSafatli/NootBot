@@ -1,5 +1,7 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.*;
 
@@ -15,25 +17,25 @@ public class FilterChatProcessor implements ChatCommandProcessor {
           "contained %s.*";
 
   private final Pattern regexp;
-  private final String channelname;
+  private final List<String> channelnames;
   private final String patternname;
   private boolean deleteOriginal;
   protected SoundboardBot bot;
 
   public FilterChatProcessor(Pattern regexp, String cname,
                              SoundboardBot bot) {
-    this(regexp, cname, "a certain pattern", true, bot);
+    this(regexp, new String[] { cname }, "a certain pattern", true, bot);
   }
 
   public FilterChatProcessor(Pattern regexp, String cname,
                              String pname, SoundboardBot bot) {
-    this(regexp, cname, pname, true, bot);
+    this(regexp, new String[] { cname }, pname, true, bot);
   }
 
-  public FilterChatProcessor(Pattern regexp, String cname,
+  public FilterChatProcessor(Pattern regexp, String[] cnames,
                              String pname, boolean delete, SoundboardBot bot) {
     this.regexp = regexp;
-    this.channelname = cname;
+    this.channelnames = Arrays.asList(cnames);
     this.patternname = pname;
     this.bot = bot;
     this.deleteOriginal = delete;
@@ -50,8 +52,10 @@ public class FilterChatProcessor implements ChatCommandProcessor {
   }
 
   protected void copyMessage(MessageReceivedEvent event, String message) {
-    List<TextChannel> textChannels =
-            event.getGuild().getTextChannelsByName(channelname, true);
+    List<TextChannel> textChannels = new LinkedList<>();
+    for (String cname : channelnames) {
+      textChannels.addAll(event.getGuild().getTextChannelsByName(cname, true));
+    }
     String modified = String.format(FILTER_FORMAT_STRING, message,
             event.getAuthor().getAsMention(),
             patternname);
@@ -66,8 +70,10 @@ public class FilterChatProcessor implements ChatCommandProcessor {
 
   public boolean isApplicableCommand(MessageReceivedEvent event) {
     if (event.getGuild() == null) return false;
-    List<TextChannel> textChannels = event.getGuild().getTextChannelsByName(
-            channelname, true);
+    List<TextChannel> textChannels = new LinkedList<>();
+    for (String cname : channelnames) {
+      textChannels.addAll(event.getGuild().getTextChannelsByName(cname, true));
+    }
     Matcher m = regexp.matcher(event.getMessage().getContent());
     return !textChannels.isEmpty()
             && !event.isFromType(ChannelType.PRIVATE)
