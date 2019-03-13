@@ -1,6 +1,5 @@
 package net.dirtydeeds.discordsoundboard.service;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import net.dirtydeeds.discordsoundboard.audio.AudioHandler;
 import net.dirtydeeds.discordsoundboard.audio.AudioPlayerSendHandler;
 import net.dirtydeeds.discordsoundboard.audio.AudioTrackScheduler;
@@ -23,7 +22,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.entities.PrivateChannel;
@@ -76,6 +74,7 @@ public class SoundboardBot {
     this.dispatcher = dispatcher;
     this.settings = new Hashtable<>();
     this.audioSchedulers = new Hashtable<>();
+    this.rules = new HashMap<>();
     initializeDiscordBot(token);
   }
 
@@ -804,7 +803,7 @@ public class SoundboardBot {
     if (defaultRole == null) {
       defaultRole = dispatcher.registerSetting("default_role", "", guild);
     }
-    ModerationRules r = new ModerationRules(guild, mod.getValue().equalsIgnoreCase("true"));
+    ModerationRules r = new ModerationRules(guild, (mod.getValue() != null) && mod.getValue().equalsIgnoreCase("true"));
     if (defaultRole.getValue() != null && !defaultRole.getValue().isEmpty()) {
       for (Role role : guild.getRoles()) {
         if (role.getName().equals(defaultRole.getValue())) {
