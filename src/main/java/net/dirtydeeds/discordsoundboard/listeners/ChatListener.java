@@ -105,7 +105,7 @@ public class ChatListener extends AbstractListener {
     processors.add(new ServerDonationMessageProcessor(".donate", bot));
     processors.add(new TempVoiceChannelProcessor(".tmpvoice", bot));
     processors.add(new SettingProcessor(".setting", bot));
-    processors.add(new NewTopicRoleProcessor(".topic", bot));
+    processors.add(new NewTopicRoleProcessor(".modtopic", bot));
     processors.add(new SoundAttachmentProcessor(bot));
     processors.add(new FilterTwitchClipProcessor(bot));
     processors.add(new FilterYoutubeClipProcessor(bot));

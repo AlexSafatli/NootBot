@@ -25,13 +25,13 @@ public class NewTopicRoleProcessor extends
     }
     String name = getArguments()[0], cName = getArguments()[1];
     if (!bot.getRulesForGuild(event.getGuild()).isPermitted()) {
-      w(event, "You haven't given me permission to moderate roles yet.");
+      pm(event, "You haven't given me permission to moderate roles yet.");
       return;
     }
     ModerationRules rules = bot.getRulesForGuild(event.getGuild());
     Role newRole = rules.newTopicRole(name, cName);
     if (newRole != null) {
-      w(event, "Created a new topic role.");
+      pm(event, "Created a new topic role.");
       if (getArguments().length > 2) {
         for (int i = 2; i < getArguments().length; ++i) {
           User user = bot.getUserByName(getArguments()[i]);
@@ -39,14 +39,14 @@ public class NewTopicRoleProcessor extends
             Member m = event.getGuild().getMember(user);
             if (m != null) {
               rules.giveTopicRole(m, newRole);
-              w(event, "Gave role `" + newRole.getName() +
+              pm(event, "Gave role `" + newRole.getName() +
                       "` to user " + m.getEffectiveName());
             }
           }
         }
       }
     } else {
-      w(event, "Failed to create a new topic role.");
+      e(event, "Failed to create a new topic role.");
     }
   }
 

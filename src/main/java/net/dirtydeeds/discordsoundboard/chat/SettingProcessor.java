@@ -32,7 +32,7 @@ public class SettingProcessor extends
       s.setValue(value);
       bot.getDispatcher().saveSetting(s);
     }
-    w(event, String.format("**%d** \u2014 `%s` : `%s`",
+    pm(event, String.format("**%d** \u2014 `%s` : `%s`",
             s.getGuildId(), s.getKey(), s.getValue()));
   }
 
