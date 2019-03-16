@@ -24,11 +24,12 @@ public class GameListener extends AbstractListener {
   private List<GameUpdateProcessor> processors;
   private static final List<String> MONITORED_GAMES = Arrays.asList(
           "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
-          "Divinity Original Sin 2", "Destiny 2", "ASTRONEER", "Anthem", "DARK SOULS II: Scholar of the First Sin", "Factorio", "Battlefleet Gothic: Armada II", "BATTLETECH", "Endless Space 2");
+          "Divinity Original Sin 2", "Destiny 2", "ASTRONEER", "Anthem", "DARK SOULS™ II: Scholar of the First Sin",
+          "Factorio", "Battlefleet Gothic: Armada II", "BATTLETECH", "Endless Space 2", "DEAD OR ALIVE 6");
   private static final String[] THUMBNAIL_URLS = new String[] {
           Thumbnails.LEAGUE, Thumbnails.PUBG, Thumbnails.DOS2,
           Thumbnails.DESTINY2, Thumbnails.ASTRONEER,
-          Thumbnails.ANTHEM, Thumbnails.DS2, Thumbnails.FACTORIO, null, null, null
+          Thumbnails.ANTHEM, Thumbnails.DS2, Thumbnails.FACTORIO, null, null, null, null
   };
 
   public GameListener(SoundboardBot bot) {

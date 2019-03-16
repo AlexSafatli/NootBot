@@ -628,7 +628,7 @@ public class SoundboardBot {
       LOG.info("Playing entrance \"" + fileName + "\" for user " +
                user.getName() + " in " + joined.getName());
       SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
-      playFile(fileToPlay, joined.getGuild(), false); // Entrances don't count.
+      playFile(fileToPlay, joined.getGuild(), true);
       return true;
     }
     return false;

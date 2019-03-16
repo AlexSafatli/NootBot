@@ -24,7 +24,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
   public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 
-  private static final String MESSAGE_TITLE = "You're all playing **%s**!";
+  private static final String MESSAGE_TITLE = "*No way*. You're all playing **%s**!";
 
   private static final int MIN_NUM_PLAYERS = 3;
   private static final int NUMBER_SEC_BETWEEN = 10;
@@ -78,10 +78,8 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
     if (guild == null || userChannel == null || !userChannel.equals(botChannel))
       return false;
-    Game previous = event.getPreviousGame();
     Game game = guild.getMemberById(user.getId()).getGame();
     return (game != null &&
-            !(previous.getName().equals(SPOTIFY) && pastEvent.isTooSoon(userChannel)) &&
             !game.getType().equals(GameType.STREAMING) &&
             userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
   }

@@ -101,14 +101,13 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
     String timeType = "hours";
     int numHours = MIN_NUMBER_OF_HOURS;
     Collection<SoundFile> newSounds = null;
-    while (numHours <= MAX_NUMBER_OF_HOURS && newSounds == null) {
+    while (numHours <= MAX_NUMBER_OF_HOURS) {
       newSounds = getNewSounds(soundFiles.values(), numHours);
       if (newSounds != null && !newSounds.isEmpty()) {
         listNewSounds(newSounds, event, numHours);
         return;
-      } else {
-        numHours += 48; // Add 2 days.
       }
+      numHours += 48; // Add 2 days.
     }
     if (newSounds == null || newSounds.isEmpty()) {
       int numTime = numHours;

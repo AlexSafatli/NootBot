@@ -23,7 +23,7 @@ public class NewTopicRoleProcessor extends
       pm(event, "You did not send this command in a server.");
       return;
     }
-    String name = getArguments()[0], cName = getArguments()[1];
+    String name = getArgumentsCased(event)[0], cName = getArguments()[1];
     if (!bot.getRulesForGuild(event.getGuild()).isPermitted()) {
       pm(event, "You haven't given me permission to moderate roles yet.");
       return;

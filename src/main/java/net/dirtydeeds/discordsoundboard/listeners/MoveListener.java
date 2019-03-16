@@ -57,7 +57,7 @@ public class MoveListener extends AbstractListener {
   private static final List<String> WELCOME_BACKS = Arrays.asList("😪", "😴", "😡", "🖕", "???", "gg", "Baka!", "groan.");
 
   private static final List<String> WHATS = Arrays.asList("What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？",
-          "Que?", "(｡◕‿‿◕｡)", "pls explain");
+          "Que?", "(｡◕‿‿◕｡)", "pls explain", "I don't get it.");
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 
