@@ -797,11 +797,15 @@ public class SoundboardBot {
   private void initSettings(Guild guild) {
     Setting mod = dispatcher.getSetting("permit_moderation", guild);
     Setting defaultRole = dispatcher.getSetting("default_role", guild);
+    Setting sayings = dispatcher.getSetting("sayings_channel", guild);
     if (mod == null) {
       mod = dispatcher.registerSetting("permit_moderation", "false", guild);
     }
     if (defaultRole == null) {
       defaultRole = dispatcher.registerSetting("default_role", "", guild);
+    }
+    if (sayings == null) {
+      sayings = dispatcher.registerSetting("sayings_channel", "sayings", guild);
     }
     ModerationRules r = new ModerationRules(guild, (mod.getValue() != null) && mod.getValue().equalsIgnoreCase("true"));
     if (defaultRole.getValue() != null && !defaultRole.getValue().isEmpty()) {
@@ -811,6 +815,10 @@ public class SoundboardBot {
           break;
         }
       }
+    }
+    if (sayings.getValue() != null && !sayings.getValue().isEmpty()) {
+      List<TextChannel> channels = guild.getTextChannelsByName(sayings.getValue(), true);
+      if (!channels.isEmpty()) r.setSayingsChannel(channels.get(0));
     }
     rules.put(guild, r);
   }

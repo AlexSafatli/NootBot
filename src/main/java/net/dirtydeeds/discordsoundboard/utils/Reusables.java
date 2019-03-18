@@ -2,11 +2,18 @@ package net.dirtydeeds.discordsoundboard.utils;
 
 import java.awt.Color;
 
+import net.dirtydeeds.discordsoundboard.beans.Setting;
+import net.dirtydeeds.discordsoundboard.moderation.ChannelMessageCrawler;
+import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dv8tion.jda.core.entities.Game;
 
 import net.dirtydeeds.discordsoundboard.Icons;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.managers.ChannelManagerUpdatable;
 
 public class Reusables {
 
@@ -41,6 +48,19 @@ public class Reusables {
     return (String) RandomUtils.chooseOne(StringUtils.randomPhrase(),
                                           StringUtils.randomString(
                                             dispatcher.getPhrases()));
+  }
+
+  public static void setRandomTopicForPublicChannels(SoundboardBot b) {
+    for (Guild guild : b.getGuilds()) {
+      TextChannel publicChannel = b.getBotChannel(guild);
+      ModerationRules rules = b.getRulesForGuild(guild);
+      if (publicChannel != null && rules.isPermitted()) {
+        ChannelManagerUpdatable mngr = publicChannel.getManagerUpdatable();
+        Message msg = (Message)RandomUtils.chooseOne(rules.getSayings().toArray());
+        mngr.getTopicField().setValue(msg.getStrippedContent());
+        mngr.update().queue();
+      }
+    }
   }
 
 }

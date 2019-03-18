@@ -2,6 +2,8 @@ package net.dirtydeeds.discordsoundboard.listeners;
 
 import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -28,17 +30,17 @@ public class GuildUserListener extends AbstractListener {
     Guild guild = event.getGuild();
     Member member = event.getMember();
     verifyRole(member);
+    mentionMember(bot.getBotChannel(guild), event.getMember(),
+            event.getMember().getEffectiveName() + " just joined the server.",
+            StringUtils.randomString(Strings.WHATS));
   }
 
   public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
-      Guild guild = event.getGuild();
-      TextChannel channel = bot.getBotChannel(guild);
-      if (channel != null) {
-        StyledEmbedMessage em = new StyledEmbedMessage(
-                event.getMember().getEffectiveName() + " just left the server.", bot);
-        em.addDescription("Say farewell!");
-        embed(channel, em);
-      }
+    Guild guild = event.getGuild();
+    TextChannel channel = bot.getBotChannel(guild);
+    mentionMember(channel, event.getMember(),
+            event.getMember().getEffectiveName() + " just left the server.",
+            "Good riddance.");
   }
 
   private void verifyRole(Member member) {
@@ -51,6 +53,13 @@ public class GuildUserListener extends AbstractListener {
                         "Added " + member.getEffectiveName() + " to role " +
                                 rules.getDefaultRole().getName(), bot.getOwner()));
       }
+    }
+  }
+
+  private void mentionMember(TextChannel channel, Member member, String title, String desc) {
+    if (channel != null) {
+      StyledEmbedMessage em = StyledEmbedMessage.forMember(bot, member, title, desc);
+      embed(channel, em);
     }
   }
 

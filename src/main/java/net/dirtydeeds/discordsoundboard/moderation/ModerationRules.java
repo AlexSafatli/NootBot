@@ -1,9 +1,6 @@
 package net.dirtydeeds.discordsoundboard.moderation;
 
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.requests.RestAction;
 
 import java.util.LinkedList;
@@ -14,6 +11,7 @@ public class ModerationRules {
   private Guild guild;
   private final boolean permitted;
   private Role defaultRole;
+  private ChannelMessageCrawler sayingsCrawler;
 
   public ModerationRules(Guild guild, boolean permitted) {
     this.guild = guild;
@@ -30,6 +28,16 @@ public class ModerationRules {
 
   public void setDefaultRole(Role defaultRole) {
     this.defaultRole = defaultRole;
+  }
+
+  public void setSayingsChannel(TextChannel sayingsChannel) {
+    if (sayingsChannel == null) return;
+    sayingsCrawler = new ChannelMessageCrawler(sayingsChannel);
+    sayingsCrawler.crawl();
+  }
+
+  public List<Message> getSayings() {
+    return sayingsCrawler.getMessages();
   }
 
   public RestAction<Void> giveDefaultRole(Member member) {

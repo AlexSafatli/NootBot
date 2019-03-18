@@ -54,11 +54,6 @@ public class MoveListener extends AbstractListener {
           "Chaos isn't a pit. %s is a ladder.",
           "*Uh oh*! %s is here.");
 
-  private static final List<String> WELCOME_BACKS = Arrays.asList("😪", "😴", "😡", "🖕", "???", "gg", "Baka!", "groan.");
-
-  private static final List<String> WHATS = Arrays.asList("What?", "Nani?", "Huh?", "( ͡° ͜ʖ ͡°)", "なんてこったい？",
-          "Que?", "(｡◕‿‿◕｡)", "pls explain", "I don't get it.");
-
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 
   public MoveListener(SoundboardBot bot) {
@@ -241,7 +236,7 @@ public class MoveListener extends AbstractListener {
     StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     m.addDescription("Bwah" + Strings.SEPARATOR + user.getAsMention());
-    m.addContent(StringUtils.randomString(WELCOME_BACKS),
+    m.addContent(StringUtils.randomString(Strings.WELCOME_BACKS),
             StringUtils.truncate(sw.toString(), 512), false);
     Color color = StringUtils.toColor(user.getName());
     m.setColor(color);
@@ -260,15 +255,14 @@ public class MoveListener extends AbstractListener {
     if (!soundInfo.isEmpty()) {
       description = soundInfo + Strings.SEPARATOR + user.getAsMention();
     } else {
-      description = StringUtils.randomString(WELCOME_BACKS) +
+      description = StringUtils.randomString(Strings.WELCOME_BACKS) +
               Strings.SEPARATOR + user.getAsMention();
     }
     StyledEmbedMessage m = StyledEmbedMessage.forUser(bot, user, title, description);
     m.setThumbnail(user.getEffectiveAvatarUrl());
-    m.addContent(StringUtils.randomString(WHATS),
+    m.addContent(StringUtils.randomString(Strings.WHATS),
             "I play sounds. Type `.help` for commands.", false);
     Color color = StringUtils.toColor(user.getName());
-    m.addFooterText(StringUtils.truncate(channel.getName(), 20));
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
             color.getGreen(), color.getBlue()));
     return m;

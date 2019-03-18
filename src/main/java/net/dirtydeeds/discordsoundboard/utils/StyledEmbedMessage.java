@@ -10,8 +10,10 @@ import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class StyledEmbedMessage {
 
@@ -150,13 +152,30 @@ public class StyledEmbedMessage {
   public static StyledEmbedMessage forUser(SoundboardBot bot, User user,
                                            String title, String description) {
     StyledEmbedMessage msg = new StyledEmbedMessage(title, bot);
+    VoiceChannel usersChannel, botsChannel = null;
     if (!description.isEmpty()) msg.addDescription(description);
-    // msg.addFooterText(FOR_USER_FOOTER_PREFIX + user.getName());
+    try {
+      usersChannel = bot.getUsersVoiceChannel(user);
+      if (usersChannel != null)
+        botsChannel = bot.getConnectedChannel(usersChannel.getGuild());
+    } catch (Exception e) {
+      usersChannel = null;
+      botsChannel = null;
+    }
+    if (usersChannel != null && usersChannel.equals(botsChannel)) {
+      msg.addFooterText(StringUtils.truncate(usersChannel.getName(), 20));
+    }
     msg.setFooterIcon(user.getEffectiveAvatarUrl());
     Color color = StringUtils.toColor(user.getName());
     msg.setColor(color);
     return msg;
   }
+
+  public static StyledEmbedMessage forMember(SoundboardBot bot, Member member,
+                                           String title, String description) {
+    return forUser(bot, member.getUser(), title, description);
+  }
+
 
 }
 
