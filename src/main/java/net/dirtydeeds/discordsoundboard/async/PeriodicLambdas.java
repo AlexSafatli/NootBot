@@ -18,7 +18,7 @@ public class PeriodicLambdas {
   }
 
   public static PeriodicLambdaJob changeBotChannelTopic() {
-    return new PeriodicLambdaJob(Reusables::setRandomTopicForPublicChannels, Periodic.EVERY_HOUR);
+    return new PeriodicLambdaJob(Reusables::setRandomTopicForPublicChannels, Periodic.EVERY_SIX_HOURS);
   }
 
 }
