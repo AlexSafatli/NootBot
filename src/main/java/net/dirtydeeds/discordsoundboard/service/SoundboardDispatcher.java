@@ -211,10 +211,10 @@ public class SoundboardDispatcher {
   private void getFileList() {
     Map<String, SoundFile> sounds = new TreeMap<>();
     try {
-      if (!soundFilePath.toFile().exists())
-        soundFilePath.toFile().mkdir();
-      if (!tmpFilePath.toFile().exists())
-        tmpFilePath.toFile().mkdir();
+      if (!soundFilePath.toFile().exists() && soundFilePath.toFile().mkdir())
+        LOG.info("Created new sound directory.");
+      if (!tmpFilePath.toFile().exists() && tmpFilePath.toFile().mkdir())
+        LOG.info("Created new temporary directory.");
 
       Files.walk(soundFilePath).forEach(filePath -> {
         if (Files.isRegularFile(filePath)) {
@@ -227,6 +227,12 @@ public class SoundboardDispatcher {
           SoundFile soundFile = new SoundFile(name, filePath.toFile(), parent);
           SoundFile db = soundDao.findOne(name);
           if (db != null) {
+            // Fix inconsistent (negative) values.
+            if (db.getNumberOfPlays() != null && db.getNumberOfPlays() < 0)
+              db.setNumberOfPlays(-db.getNumberOfPlays());
+            if (db.getNumberOfReports() != null && db.getNumberOfReports() < 0)
+              db.setNumberOfReports(0);
+
             // Resolve conflicts between persistence object and new object.
             soundFile.setNumberOfPlays(db.getNumberOfPlays());
             soundFile.setNumberOfReports(db.getNumberOfReports());

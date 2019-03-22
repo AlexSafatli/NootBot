@@ -238,10 +238,7 @@ public class MoveListener extends AbstractListener {
     m.addDescription("Bwah" + Strings.SEPARATOR + user.getAsMention());
     m.addContent(StringUtils.randomString(Strings.WELCOME_BACKS),
             StringUtils.truncate(sw.toString(), 512), false);
-    Color color = StringUtils.toColor(user.getName());
-    m.setColor(color);
-    m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
-            color.getGreen(), color.getBlue()));
+    m.isError(true);
     return m;
   }
 
@@ -250,7 +247,7 @@ public class MoveListener extends AbstractListener {
     String title = (welcomeInTitle) ?
             String.format(StringUtils.randomString(WELCOMES),
                     "**" + user.getName() + "**") :
-            user.getName() + " is here, *again*.";
+            user.getName() + " just won't go away.";
     String description;
     if (!soundInfo.isEmpty()) {
       description = soundInfo + Strings.SEPARATOR + user.getAsMention();

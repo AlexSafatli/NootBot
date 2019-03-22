@@ -163,7 +163,7 @@ public class ChatListener extends AbstractListener {
     LOG.info("Processed message using " + processor.getClass().getSimpleName() +
             " for user " + user.getName() + " with content \"" +
             event.getMessage().getContent() + "\" (request: " + totalRequests +
-            ").");
+            ", bot: " + bot.getBotName() + ").");
   }
 
   public void onMessageReceived(MessageReceivedEvent event) {

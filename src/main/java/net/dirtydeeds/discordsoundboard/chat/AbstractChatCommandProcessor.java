@@ -24,8 +24,7 @@ public abstract class AbstractChatCommandProcessor implements
   private List<Message> buffer;
   protected SoundboardBot bot;
 
-  public AbstractChatCommandProcessor(String prefix, String title,
-                                      SoundboardBot bot) {
+  public AbstractChatCommandProcessor(String prefix, String title, SoundboardBot bot) {
     this.prefix = prefix;
     this.title = title;
     this.bot = bot;
@@ -80,8 +79,7 @@ public abstract class AbstractChatCommandProcessor implements
   }
 
   private void delete(Message m) {
-    if (bot.hasPermissionInChannel(
-            m.getTextChannel(), Permission.MESSAGE_MANAGE))
+    if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
       m.delete().queue();
   }
 
@@ -108,26 +106,18 @@ public abstract class AbstractChatCommandProcessor implements
     return StyledEmbedMessage.forUser(bot, user, getTitle(), message);
   }
 
+  private void sendTyping(MessageReceivedEvent event) {
+    if (!event.isFromType(ChannelType.PRIVATE) && event.getGuild() != null) {
+      TextChannel c = bot.getBotChannel(event.getGuild());
+      c.sendTyping().queue();
+    }
+  }
+
   private void sendEmbed(MessageReceivedEvent event, String message,
                          boolean error, boolean warning) {
     StyledEmbedMessage em = makeEmbed(
             message, event.getAuthor()).isWarning(warning).isError(error);
-    TextChannel channel;
-    if (event.isFromType(ChannelType.PRIVATE)) {
-      pm(event, em);
-      return;
-    } else if (!bot.hasPermissionInChannel(
-            event.getTextChannel(), Permission.MESSAGE_WRITE)) {
-      if (bot.getBotChannel(event.getGuild()) != null) {
-        channel = bot.getBotChannel(event.getGuild());
-      } else {
-        pm(event, em);
-        return;
-      }
-    } else {
-      channel = event.getTextChannel();
-    }
-    channel.sendMessage(em.getMessage()).queue((Message msg) -> buffer.add(msg));
+    embed(event, em);
   }
 
   protected void m(MessageReceivedEvent event, String message) {
@@ -152,12 +142,12 @@ public abstract class AbstractChatCommandProcessor implements
       pm(event, em);
       return;
     }
+    sendTyping(event);
     TextChannel channel = (bot.hasPermissionInChannel(
             event.getTextChannel(), Permission.MESSAGE_WRITE)) ?
             event.getTextChannel() : bot.getBotChannel(event.getGuild());
     if (channel != null && em != null) {
-      channel.sendMessage(em.getMessage()).queue(
-              (Message msg) -> buffer.add(msg));
+      channel.sendMessage(em.getMessage()).queue((Message msg) -> buffer.add(msg));
     }
   }
 

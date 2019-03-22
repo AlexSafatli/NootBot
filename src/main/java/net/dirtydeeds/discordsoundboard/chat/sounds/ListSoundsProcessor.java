@@ -20,7 +20,7 @@ import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
-  private static final int BIG_NUMBER_OF_SOUNDS = 2019;
+  private static final int BIG_NUMBER_OF_SOUNDS = 1750;
   private static final String UNCATEGORIZED = "Uncategorized";
   public static final SimpleLog LOG = SimpleLog.getLog("ListSounds");
 
