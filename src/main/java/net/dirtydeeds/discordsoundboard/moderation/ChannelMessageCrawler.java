@@ -17,6 +17,7 @@ public class ChannelMessageCrawler {
   }
 
   public void crawl() {
+    messages.clear();
     for (Message m : channel.getIterableHistory().cache(false)) {
       messages.add(m);
     }
