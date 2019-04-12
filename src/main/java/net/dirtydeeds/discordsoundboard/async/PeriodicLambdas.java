@@ -21,4 +21,8 @@ public class PeriodicLambdas {
     return new PeriodicLambdaJob(Reusables::setRandomTopicForPublicChannels, Periodic.EVERY_SIX_HOURS);
   }
 
+  public static PeriodicLambdaJob updateSayingsCaches() {
+    return new PeriodicLambdaJob(Reusables::updateSayingsCache, Periodic.EVERY_SIX_HOURS);
+  }
+
 }

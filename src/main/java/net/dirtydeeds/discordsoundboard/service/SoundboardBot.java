@@ -332,7 +332,7 @@ public class SoundboardBot {
       dispatcher.saveUser(u);
     }
     if (filename != null && !filename.isEmpty()) {
-      if (by != null) {
+      if (by != null && !isOwner(by)) {
         sendMessageToUser("Your entrance has been changed to `" + filename +
                           "` by **" + by.getName() +
                           "**. *Contact the bot owner to dispute this action" +
@@ -797,12 +797,16 @@ public class SoundboardBot {
   private void initSettings(Guild guild) {
     Setting mod = dispatcher.getSetting("permit_moderation", guild);
     Setting defaultRole = dispatcher.getSetting("default_role", guild);
+    Setting suspendedRole = dispatcher.getSetting("suspended_role", guild);
     Setting sayings = dispatcher.getSetting("sayings_channel", guild);
     if (mod == null) {
       mod = dispatcher.registerSetting("permit_moderation", "false", guild);
     }
     if (defaultRole == null) {
       defaultRole = dispatcher.registerSetting("default_role", "", guild);
+    }
+    if (suspendedRole == null) {
+      suspendedRole = dispatcher.registerSetting("suspended_role", "", guild);
     }
     if (sayings == null) {
       sayings = dispatcher.registerSetting("sayings_channel", "sayings", guild);
@@ -812,6 +816,14 @@ public class SoundboardBot {
       for (Role role : guild.getRoles()) {
         if (role.getName().equals(defaultRole.getValue())) {
           r.setDefaultRole(role);
+          break;
+        }
+      }
+    }
+    if (suspendedRole.getValue() != null && !suspendedRole.getValue().isEmpty()) {
+      for (Role role : guild.getRoles()) {
+        if (role.getName().equals(suspendedRole.getValue())) {
+          r.setSuspendedRole(role);
           break;
         }
       }

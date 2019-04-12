@@ -17,7 +17,8 @@ public class StringUtils {
   private static final String STARTING_CACHE_WORD = "Noot";
   private static final List<String> PREPOSITIONS = Arrays.asList(
           "of", "by", "as", "at", "for", "in", "into", "on", "with", "in the",
-          "of the", "for the", "at the", "with the", "on the", "the");
+          "of the", "for the", "at the", "with the", "on the", "the", "under",
+          "between", "after", "before", "without");
   public static List<String> wordCache = initializeCache();
 
   public static String truncate(String str) {

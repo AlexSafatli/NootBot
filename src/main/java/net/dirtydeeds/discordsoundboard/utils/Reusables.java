@@ -63,4 +63,13 @@ public class Reusables {
     }
   }
 
+  public static void updateSayingsCache(SoundboardBot b) {
+    for (Guild guild : b.getGuilds()) {
+      ModerationRules rules = b.getRulesForGuild(guild);
+      if (rules.isPermitted()) {
+        rules.updateSayings();
+      }
+    }
+  }
+
 }

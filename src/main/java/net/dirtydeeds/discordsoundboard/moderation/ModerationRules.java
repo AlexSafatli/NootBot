@@ -11,6 +11,7 @@ public class ModerationRules {
   private Guild guild;
   private final boolean permitted;
   private Role defaultRole;
+  private Role suspendedRole;
   private ChannelMessageCrawler sayingsCrawler;
 
   public ModerationRules(Guild guild, boolean permitted) {
@@ -30,6 +31,14 @@ public class ModerationRules {
     this.defaultRole = defaultRole;
   }
 
+  public Role getSuspendedRole() {
+    return suspendedRole;
+  }
+
+  public void setSuspendedRole(Role suspendedRole) {
+    this.suspendedRole = suspendedRole;
+  }
+
   public void setSayingsChannel(TextChannel sayingsChannel) {
     if (sayingsChannel == null) return;
     sayingsCrawler = new ChannelMessageCrawler(sayingsChannel);
@@ -40,9 +49,21 @@ public class ModerationRules {
     return sayingsCrawler.getMessages();
   }
 
+  public List<Message> updateSayings() {
+    sayingsCrawler.crawl();
+    return getSayings();
+  }
+
   public RestAction<Void> giveDefaultRole(Member member) {
     if (permitted && getDefaultRole() != null && member.getGuild().equals(guild)) {
       return RolesModerator.assertMemberHasRole(member, defaultRole);
+    }
+    return null;
+  }
+
+  public RestAction<Void> giveSuspendedRole(Member member) {
+    if (permitted && getSuspendedRole() != null && member.getGuild().equals(guild)) {
+      return RolesModerator.assertMemberOnlyHasRole(member, suspendedRole);
     }
     return null;
   }

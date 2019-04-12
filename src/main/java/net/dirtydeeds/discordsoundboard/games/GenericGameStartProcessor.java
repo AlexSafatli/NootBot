@@ -3,7 +3,9 @@ package net.dirtydeeds.discordsoundboard.games;
 import java.util.Date;
 
 import java.awt.Color;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.dirtydeeds.discordsoundboard.games.AbstractGameUpdateProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
@@ -24,34 +26,29 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
   public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
 
-  private static final String MESSAGE_TITLE = "*No way*. You're all playing **%s**!";
+  private static final String MESSAGE_TITLE = "Here's a sound since you're playing **%s**!";
 
   private static final int MIN_NUM_PLAYERS = 3;
-  private static final int NUMBER_SEC_BETWEEN = 10;
+  private static final int NUMBER_SEC_BETWEEN = 30;
   private static final int MAX_DURATION = 4;
   private static final int MAX_NUM_MENTIONS = 6;
 
-  private GameStartEvent pastEvent;
+  private Map<String, GameStartEvent> pastEvents;
   private String thumbnail;
 
   private class GameStartEvent {
-    public VoiceChannel channel;
     public Date time;
     public Message message;
 
-    GameStartEvent(VoiceChannel channel, Date time, Message msg) {
-      this.channel = channel;
+    GameStartEvent(Date time, Message msg) {
       this.time = time;
       this.message = msg;
     }
 
-    boolean isTooSoon(VoiceChannel in) {
-      if (channel != null && channel.equals(in)) {
-        Date now = new Date(System.currentTimeMillis());
-        long secSince = (now.getTime() - time.getTime()) / 1000;
-        return (secSince < NUMBER_SEC_BETWEEN);
-      }
-      return false;
+    boolean isTooSoon() {
+      Date now = new Date(System.currentTimeMillis());
+      long secSince = (now.getTime() - time.getTime()) / 1000;
+      return (secSince < NUMBER_SEC_BETWEEN);
     }
 
     public void clear() {
@@ -61,11 +58,13 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
   public GenericGameStartProcessor(SoundboardBot bot) {
     super(bot);
+    pastEvents = new HashMap<>();
   }
 
   public GenericGameStartProcessor(SoundboardBot bot, String url) {
     this(bot);
     thumbnail = url;
+    pastEvents = new HashMap<>();
   }
 
   public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
@@ -76,7 +75,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     } catch (Exception e) {
       return false;
     }
-    if (guild == null || userChannel == null || !userChannel.equals(botChannel))
+    if (userChannel == null || !userChannel.equals(botChannel))
       return false;
     Game game = guild.getMemberById(user.getId()).getGame();
     return (game != null &&
@@ -113,8 +112,9 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
               (numPlayers - 1) + " others playing " + game + " in " +
               channel.getName() + " of guild " + event.getGuild().getName() +
               ".");
-      if (pastEvent != null) {
-        if (pastEvent.isTooSoon(channel)) {
+      if (pastEvents.get(channel.getId()) != null) {
+        GameStartEvent pastEvent = pastEvents.get(channel.getId());
+        if (pastEvent.isTooSoon()) {
           LOG.info("Not enough time since last event in channel!");
           return;
         }
@@ -136,13 +136,12 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
         SoundFile f = bot.getSoundMap().get(sound);
         try {
           bot.playFileForUser(sound, user);
-          pastEvent = new GameStartEvent(channel,
-                  new Date(System.currentTimeMillis()),
-                  null);
+          GameStartEvent e = new GameStartEvent(new Date(System.currentTimeMillis()), null);
+          pastEvents.put(channel.getId(), e);
           LOG.info("Played random sound: \"" + sound + "\".");
           embed(lobby, announcement(event, sound, game, users, numPlayers,
                   (f != null) ? f.getNumberOfPlays() : 0),
-                  (Message m) -> pastEvent.message = m);
+                  (Message m) -> e.message = m);
         } catch (Exception e) {
           error(event, e);
         }

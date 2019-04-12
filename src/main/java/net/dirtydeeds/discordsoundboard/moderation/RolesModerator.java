@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.managers.GuildController;
 import net.dv8tion.jda.core.requests.RestAction;
 import net.dv8tion.jda.core.requests.restaction.RoleAction;
 
+import java.util.LinkedList;
 import java.util.List;
 
 class RolesModerator {
@@ -20,6 +21,12 @@ class RolesModerator {
       return ctrl.addSingleRoleToMember(member, role);
     }
     return null;
+  }
+
+  static RestAction<Void> assertMemberOnlyHasRole(Member member, Role role) {
+    GuildController ctrl = member.getGuild().getController();
+    ctrl.modifyMemberRoles(member, new LinkedList<>(), member.getRoles()).complete();
+    return ctrl.addSingleRoleToMember(member, role);
   }
 
   static Role newTopicRole(Guild guild, String name, String channelName) {

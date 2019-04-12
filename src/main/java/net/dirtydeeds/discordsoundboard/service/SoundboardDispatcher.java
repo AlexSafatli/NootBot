@@ -66,11 +66,11 @@ public class SoundboardDispatcher {
 
   private static final List<String> STARTING_PHRASES = Arrays.asList(
           "Forza Battlegrounds", "Nioh: Injustice Offensive",
-          "Tom Clancy's Farming Simulator");
+          "Tom Clancy's Farming Simulator", "Factorytown Skylines");
   private static final String[] UNITS = new String[]{
           "B", "KB", "MB", "GB", "TB"
   };
-  private static final String LIBRARY_TOO_BIG = "**CANNOT COMPUTE**";
+  private static final String LIBRARY_TOO_BIG = "**TOO FUCKING BIG**";
 
   @Inject
   public SoundboardDispatcher(UserRepository userDao,
@@ -202,6 +202,7 @@ public class SoundboardDispatcher {
     asyncService.addJob(PeriodicLambdas.cleanOldBotMessages());
     asyncService.addJob(PeriodicLambdas.changeToRandomGame());
     asyncService.addJob(PeriodicLambdas.changeBotChannelTopic());
+    asyncService.addJob(PeriodicLambdas.updateSayingsCaches());
   }
 
   // This method loads the files. This checks if you are running from a .jar

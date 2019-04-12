@@ -36,23 +36,21 @@ public class MoveListener extends AbstractListener {
           "That's %s in the corner.",
           "%s wants off this planet.",
           "A little bit of %s on the side.",
-          "Real G's move in silence like %s.",
           "Climb the ladder to success, %s style.",
           "The best part about being %s is there's so many them.",
           "Your booty don't need no explaining, %s.",
           "To the left, to the left %s.",
           "Do you ever feel like a plastic bag %s?",
-          "%s came when he was six years old.",
-          "The man who passes the sentence should kick %s.",
+          "%s came when he was six years old. *Nice*.",
           "I have a tender spot in my heart for cripples, %s and broken things.",
           "%s is mine to torment.",
           "You know nothing, %s.",
           "Night gathers, and now %s begins.",
-          "%s always pays his debts. Or not.",
+          "%s always pays his debts. Or not?",
           "There's no cure for being a %s.",
           "That's what %s does: he drinks and knows things.",
           "Chaos isn't a pit. %s is a ladder.",
-          "*Uh oh*! %s is here.");
+          "Can %s bring some women?");
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 
@@ -258,7 +256,8 @@ public class MoveListener extends AbstractListener {
     StyledEmbedMessage m = StyledEmbedMessage.forUser(bot, user, title, description);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     m.addContent(StringUtils.randomString(Strings.WHATS),
-            "I play sounds. Type `.help` for commands.", false);
+            "I play sounds and automate some things. Type `.help` for commands.",
+            false);
     Color color = StringUtils.toColor(user.getName());
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),
             color.getGreen(), color.getBlue()));
