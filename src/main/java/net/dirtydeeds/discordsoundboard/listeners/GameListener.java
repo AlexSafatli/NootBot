@@ -26,9 +26,9 @@ public class GameListener extends AbstractListener {
           "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
           "Divinity Original Sin 2", "Destiny 2", "ASTRONEER", "Anthem",
           "DARK SOULS™ II: Scholar of the First Sin",
-          "Factorio", "Battlefleet Gothic: Armada II", "BATTLETECH",
+          "Factorio", "Battlefleet Gothic: Armada II", "Imperator: Rome",
           "Endless Space 2", "DEAD OR ALIVE 6", "Apex Legends",
-          "Europa Universalis 4");
+          "Europa Universalis IV");
   private static final String[] THUMBNAIL_URLS = new String[] {
           Thumbnails.LEAGUE, Thumbnails.PUBG, Thumbnails.DOS2,
           Thumbnails.DESTINY2, Thumbnails.ASTRONEER,
