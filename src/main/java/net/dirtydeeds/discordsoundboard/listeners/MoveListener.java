@@ -23,34 +23,12 @@ public class MoveListener extends AbstractListener {
 
   public static final SimpleLog LOG = SimpleLog.getLog("Move");
 
-  private static final List<String> WELCOMES = Arrays.asList("Welcome, %s!",
-          "Leave your weapons by the door, %s.",
-          "%s used Enter Channel. It's super effective!",
-          "ようこそ %s.",
-          "I like %s and I cannot lie. You other brothers can't deny.",
-          "Hit me %s one more time.",
-          "Oh no not %s, I will survive.",
-          "Take a sad %s and make it better...",
-          "Love you like a love song %s.",
-          "Knees weak, arms are heavy. There's %s on his sweater already.",
-          "That's %s in the corner.",
+  private static final List<String> WELCOMES = Arrays.asList(
           "%s wants off this planet.",
-          "A little bit of %s on the side.",
-          "Climb the ladder to success, %s style.",
-          "The best part about being %s is there's so many them.",
-          "Your booty don't need no explaining, %s.",
-          "To the left, to the left %s.",
-          "Do you ever feel like a plastic bag %s?",
           "%s came when he was six years old. *Nice*.",
-          "I have a tender spot in my heart for cripples, %s and broken things.",
-          "%s is mine to torment.",
-          "You know nothing, %s.",
-          "Night gathers, and now %s begins.",
-          "%s always pays his debts. Or not?",
-          "There's no cure for being a %s.",
-          "That's what %s does: he drinks and knows things.",
-          "Chaos isn't a pit. %s is a ladder.",
-          "Can %s bring some women?");
+          "You subverted my expectations, %s.",
+          "Why do you think I came all this way %s?",
+          "All hail %s, King of the Andals and the First Men, Lord of the Six Kingdoms and Protector of the Realm");
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 

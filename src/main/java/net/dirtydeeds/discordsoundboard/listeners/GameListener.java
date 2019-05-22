@@ -27,13 +27,14 @@ public class GameListener extends AbstractListener {
           "Divinity Original Sin 2", "Destiny 2", "ASTRONEER", "Anthem",
           "DARK SOULS™ II: Scholar of the First Sin",
           "Factorio", "Battlefleet Gothic: Armada II", "Imperator: Rome",
-          "Endless Space 2", "DEAD OR ALIVE 6", "Apex Legends",
-          "Europa Universalis IV");
+          "Endless Space 2", "Apex Legends",
+          "Europa Universalis IV", "Warhammer: Vermintide 2");
   private static final String[] THUMBNAIL_URLS = new String[] {
           Thumbnails.LEAGUE, Thumbnails.PUBG, Thumbnails.DOS2,
           Thumbnails.DESTINY2, Thumbnails.ASTRONEER,
           Thumbnails.ANTHEM, Thumbnails.DS2, Thumbnails.FACTORIO,
-          null, null, null, null, null, Thumbnails.EU4
+          null, null, null, null, Thumbnails.EU4, null
+
   };
 
   public GameListener(SoundboardBot bot) {
