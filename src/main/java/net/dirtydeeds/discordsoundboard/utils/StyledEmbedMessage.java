@@ -24,7 +24,7 @@ public class StyledEmbedMessage {
 
   private static final List<String> ERROR_STRINGS = Arrays.asList(
           "Fwubbed it.", "Excuse me, I stuttered.", "Nani?",
-          "Derp", "Bwah!");
+          "Derp", "Bwah!", "Those calibrations didn't work.");
 
   private static final String FOOTER_TEXT = Version.NAME + " " +
           Version.VERSION + " by " + Version.AUTHOR;

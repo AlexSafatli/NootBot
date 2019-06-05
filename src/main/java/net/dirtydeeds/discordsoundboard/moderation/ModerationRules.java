@@ -55,14 +55,14 @@ public class ModerationRules {
   }
 
   public RestAction<Void> giveDefaultRole(Member member) {
-    if (permitted && getDefaultRole() != null && member.getGuild().equals(guild)) {
-      return RolesModerator.assertMemberHasRole(member, defaultRole);
+    if (permitted && getDefaultRole() != null) {
+      return RolesModerator.assertMemberOnlyHasRole(member, defaultRole);
     }
     return null;
   }
 
   public RestAction<Void> giveSuspendedRole(Member member) {
-    if (permitted && getSuspendedRole() != null && member.getGuild().equals(guild)) {
+    if (permitted && getSuspendedRole() != null) {
       return RolesModerator.assertMemberOnlyHasRole(member, suspendedRole);
     }
     return null;

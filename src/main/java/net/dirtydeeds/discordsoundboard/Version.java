@@ -6,7 +6,7 @@ import net.dv8tion.jda.core.entities.User;
 public class Version {
 
   public static final String NAME = "NootBot";
-  public static final String VERSION = "2.7.12";
+  public static final String VERSION = "2.7.15";
   public static final String AUTHOR = "Asaph";
 
   public static String getVersionCode() {

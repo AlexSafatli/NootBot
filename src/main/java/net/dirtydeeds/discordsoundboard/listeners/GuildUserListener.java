@@ -2,8 +2,6 @@ package net.dirtydeeds.discordsoundboard.listeners;
 
 import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -27,12 +25,8 @@ public class GuildUserListener extends AbstractListener {
   }
 
   public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-    Guild guild = event.getGuild();
     Member member = event.getMember();
     verifyRole(member);
-    mentionMember(bot.getBotChannel(guild), event.getMember(),
-            event.getMember().getEffectiveName() + " just joined the server.",
-            StringUtils.randomString(Strings.WHATS));
   }
 
   public void onGuildMemberLeave(GuildMemberLeaveEvent event) {

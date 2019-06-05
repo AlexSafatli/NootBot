@@ -25,6 +25,9 @@ public class MoveListener extends AbstractListener {
 
   private static final List<String> WELCOMES = Arrays.asList(
           "%s wants off this planet.",
+          "Just like old times, %s.",
+          "Can it wait for a bit, %s? I'm in the middle of some calibrations.",
+          "%s? I don't know what to do with them...",
           "%s came when he was six years old. *Nice*.",
           "You subverted my expectations, %s.",
           "Why do you think I came all this way %s?",
@@ -74,8 +77,7 @@ public class MoveListener extends AbstractListener {
     } else if (bot.isMuted(guild)) {
       LOG.info("Bot is currently muted. Doing nothing.");
       return;
-    } else if (vc.getUserLimit() ==
-            vc.getMembers().size()) {
+    } else if (vc.getUserLimit() == vc.getMembers().size()) {
       LOG.info("Channel is full.");
       return;
     }
@@ -212,8 +214,7 @@ public class MoveListener extends AbstractListener {
     StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     m.addDescription("Bwah" + Strings.SEPARATOR + user.getAsMention());
-    m.addContent(StringUtils.randomString(Strings.WELCOME_BACKS),
-            StringUtils.truncate(sw.toString(), 512), false);
+    m.addContent("Error", StringUtils.truncate(sw.toString(), 512), false);
     m.isError(true);
     return m;
   }
@@ -223,18 +224,15 @@ public class MoveListener extends AbstractListener {
     String title = (welcomeInTitle) ?
             String.format(StringUtils.randomString(WELCOMES),
                     "**" + user.getName() + "**") :
-            user.getName() + " just won't go away.";
-    String description;
+            user.getName() + " came, again.";
+    String description = "";
     if (!soundInfo.isEmpty()) {
       description = soundInfo + Strings.SEPARATOR + user.getAsMention();
-    } else {
-      description = StringUtils.randomString(Strings.WELCOME_BACKS) +
-              Strings.SEPARATOR + user.getAsMention();
     }
     StyledEmbedMessage m = StyledEmbedMessage.forUser(bot, user, title, description);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     m.addContent(StringUtils.randomString(Strings.WHATS),
-            "I play sounds and automate some things. Type `.help` for commands.",
+            "I play sounds and automate things. Type `.help` for commands.",
             false);
     Color color = StringUtils.toColor(user.getName());
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),

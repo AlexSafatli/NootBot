@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class AsyncService {
 
   public static final SimpleLog LOG = SimpleLog.getLog("Jobs");
-  private static final float TICK_RATE_PER_MINUTE = 12;
+  private static final float TICK_RATE_PER_MINUTE = 10;
   private List<SoundboardJob> jobs;
   private Stack<SoundboardJob> tasks;
 
@@ -47,7 +47,7 @@ public class AsyncService {
     List<SoundboardBot> bots = dispatcher.getBots();
     while (!bots.isEmpty()) {
       // Only fire a certain amount of times a minute.
-      long millisecondsToWait = (long)(1.0 / TICK_RATE_PER_MINUTE) * 60000;
+      long millisecondsToWait = (long)((1.0 / TICK_RATE_PER_MINUTE) * 60000);
       try {
         Thread.sleep(millisecondsToWait);
       } catch (InterruptedException e) {

@@ -7,12 +7,10 @@ public class Strings {
 
   public static final String SEPARATOR = " \u2014 ";
 
-  public static final List<String> WELCOME_BACKS = Arrays.asList("😪", "😴",
-          "😡", "🖕", "???", "gg", "Baka!", "groan.");
-
   public static final List<String> WHATS = Arrays.asList("What?", "Nani?", "Huh?",
           "( ͡° ͜ʖ ͡°)", "なんてこったい？",
-          "Que?", "(｡◕‿‿◕｡)", "pls explain", "I don't get it.");
+          "Que?", "(｡◕‿‿◕｡)", "pls explain", "I don't get it.",
+          "We can disobey suicidal orders? Why wasn't I told?");
 
   public static final String USER_NOT_FOUND = "USER_NOT_FOUND";
   public static final String USER_NOT_FOUND_DISALLOWED = "USER_NOT_FOUND_DISALLOWED";

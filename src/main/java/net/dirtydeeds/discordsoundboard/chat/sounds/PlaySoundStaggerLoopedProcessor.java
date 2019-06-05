@@ -1,6 +1,5 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
-import net.dirtydeeds.discordsoundboard.async.PlaySoundsJob;
 import net.dirtydeeds.discordsoundboard.async.PlaySoundsStaggeredJob;
 import net.dirtydeeds.discordsoundboard.chat.MultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
@@ -59,7 +58,6 @@ public class PlaySoundStaggerLoopedProcessor extends
         new PlaySoundsStaggeredJob(sounds, bot, user);
       bot.getDispatcher().getAsyncService().runJob(later);
       pm(event, "You'll hear a sound played next at " + later.runsAt());
-
     }
   }
 
