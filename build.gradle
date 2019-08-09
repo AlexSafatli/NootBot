@@ -30,11 +30,12 @@ repositories {
 }
 
 dependencies {
+    compile('javax.xml.bind:jaxb-api:2.3.0')
     compile('net.dv8tion:JDA:3.3.1_303')
     compile('com.sedmelluq:lavaplayer:1.2.43')
     compile("commons-io:commons-io:2.5")
     compile("com.h2database:h2")
- 	compile("com.googlecode.soundlibs:mp3spi:1.9.5-1")
+    compile("com.googlecode.soundlibs:mp3spi:1.9.5-1")
     compile group: "com.google.guava", name: "guava", version: "r05"
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'org.json:json:20160810'
@@ -87,6 +88,6 @@ task tar(type: Tar, dependsOn: 'bootRepackage') {
 build.dependsOn(zip,tar)
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
+    gradleVersion = '4.4'
 }
 
