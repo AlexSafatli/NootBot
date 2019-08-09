@@ -1,10 +1,14 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
+import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.RandomUtils;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
@@ -29,6 +33,34 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
     embed(event, msg.isWarning(true));
   }
 
+  private List<String> getNumberedSet(String name) {
+    List<String> numberedSet = new LinkedList<>();
+    String query = name;
+    while (query.length() > 0) {
+      char c = query.charAt(query.length()-1);
+      if (Character.isDigit(c)) {
+        query = query.substring(0, query.length()-2);
+      } else {
+        break;
+      }
+    }
+    if (query.length() == 0 || bot.getSoundMap().get(query) == null) {
+      return numberedSet;
+    }
+    numberedSet.add(query);
+
+    int i = 2;
+    boolean found = true;
+    while (found) {
+      if (bot.getSoundMap().get(query + i) != null) {
+        numberedSet.add(query + i);
+      } else {
+        found = false;
+      }
+    }
+    return numberedSet;
+  }
+
   private void play(MessageReceivedEvent event, String name) {
     try {
       bot.playFileForChatCommand(name, event);
@@ -48,6 +80,8 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
   protected void handleEvent(MessageReceivedEvent event, String message) {
     User user = event.getAuthor();
     String name = message.substring(1);
+    ModerationRules r = bot.getRulesForGuild(event.getGuild());
+    boolean playNumberedSets = r != null && r.canPlayNumberedSets();
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, lookupString(Strings.NOT_ALLOWED));
       LOG.info(
@@ -73,6 +107,8 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
       }
       LOG.info("Suggestion: " + suggestion);
       sendBadSoundMessage(event, name, suggestion, user);
+    } else if (playNumberedSets && getNumberedSet(name).size() > 0) {
+      play(event, StringUtils.randomString(getNumberedSet(name)));
     } else play(event, name);
   }
 

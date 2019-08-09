@@ -799,6 +799,7 @@ public class SoundboardBot {
     Setting defaultRole = dispatcher.getSetting("default_role", guild);
     Setting suspendedRole = dispatcher.getSetting("suspended_role", guild);
     Setting sayings = dispatcher.getSetting("sayings_channel", guild);
+    Setting numberedSets = dispatcher.getSetting("numbered_sets", guild);
     if (mod == null) {
       mod = dispatcher.registerSetting("permit_moderation", "false", guild);
     }
@@ -810,6 +811,9 @@ public class SoundboardBot {
     }
     if (sayings == null) {
       sayings = dispatcher.registerSetting("sayings_channel", "sayings", guild);
+    }
+    if (numberedSets == null) {
+      numberedSets = dispatcher.registerSetting("numbered_sets", "true", guild);
     }
     ModerationRules r = new ModerationRules(guild, (mod.getValue() != null) && mod.getValue().equalsIgnoreCase("true"));
     if (defaultRole.getValue() != null && !defaultRole.getValue().isEmpty()) {
@@ -831,6 +835,9 @@ public class SoundboardBot {
     if (sayings.getValue() != null && !sayings.getValue().isEmpty()) {
       List<TextChannel> channels = guild.getTextChannelsByName(sayings.getValue(), true);
       if (!channels.isEmpty()) r.setSayingsChannel(channels.get(0));
+    }
+    if ((numberedSets.getValue() != null)) {
+      r.setPlayNumberedSets(numberedSets.getValue().equalsIgnoreCase("true"));
     }
     rules.put(guild, r);
   }
