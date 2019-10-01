@@ -1,15 +1,14 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
-import java.util.Set;
-
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import java.util.Set;
 
 public class DescribeSoundProcessor extends
         SingleArgumentChatCommandProcessor {
@@ -25,15 +24,14 @@ public class DescribeSoundProcessor extends
     String name = getArgument();
     Set<String> soundNames = bot.getSoundMap().keySet();
     if (name == null) {
-      e(event, formatString(Strings.NEED_NAME, getPrefix() +
+      e(event, String.format("You need to provide a name. For example: `%s`.", getPrefix() +
               " " + StringUtils.randomString(soundNames)));
     } else if (!soundNames.contains(name)) {
       String possibleName = bot.getClosestMatchingSoundName(name),
               suggestion = (possibleName != null) ?
                       "Did you mean `" + possibleName + "`?" :
                       DEFAULT_SUGGESTION;
-      w(event, formatString(Strings.NOT_FOUND, name) +
-              " *" + suggestion + "* " + user.getAsMention());
+      w(event, "Not found. *" + suggestion + "* " + user.getAsMention());
     } else {
       SoundFile file = bot.getDispatcher().getSoundFileByName(name);
       StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(

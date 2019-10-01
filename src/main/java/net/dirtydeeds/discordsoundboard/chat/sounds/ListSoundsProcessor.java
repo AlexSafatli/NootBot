@@ -1,22 +1,21 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
-import java.awt.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
+
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
@@ -142,7 +141,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
             }
           }
         } else {
-          e(event, formatString(Strings.NOT_FOUND, cat));
+          e(event, "Not found.");
           LOG.info(event.getAuthor() + " requested a list for category " +
                    cat + " but it wasn't found.");
         }

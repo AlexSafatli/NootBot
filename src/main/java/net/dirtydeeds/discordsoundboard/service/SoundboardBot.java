@@ -1,5 +1,6 @@
 package net.dirtydeeds.discordsoundboard.service;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dirtydeeds.discordsoundboard.audio.AudioHandler;
 import net.dirtydeeds.discordsoundboard.audio.AudioPlayerSendHandler;
 import net.dirtydeeds.discordsoundboard.audio.AudioTrackScheduler;
@@ -7,34 +8,22 @@ import net.dirtydeeds.discordsoundboard.beans.Setting;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.listeners.ChatListener;
+import net.dirtydeeds.discordsoundboard.listeners.GameListener;
 import net.dirtydeeds.discordsoundboard.listeners.GuildUserListener;
 import net.dirtydeeds.discordsoundboard.listeners.MoveListener;
-import net.dirtydeeds.discordsoundboard.listeners.GameListener;
 import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dirtydeeds.discordsoundboard.org.Category;
-import net.dirtydeeds.discordsoundboard.utils.*;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dirtydeeds.discordsoundboard.utils.ChatUtils;
+import net.dirtydeeds.discordsoundboard.utils.Reusables;
+import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.managers.AudioManager;
-import net.dv8tion.jda.core.utils.SimpleLog;
 import net.dv8tion.jda.core.utils.PermissionUtil;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 import javax.security.auth.login.LoginException;
-
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,8 +42,7 @@ public class SoundboardBot {
   private static final int MAX_DURATION_FOR_RANDOM = 10;
   private static final long MIN_MINUTES_TO_SHOW_AS_HOURS = 120;  // 2 hours
   private static final long MIN_MINUTES_TO_SHOW_AS_DAYS  = 2880; // 2 days
-  public static String NOT_IN_VOICE_CHANNEL_MESSAGE =
-    "Are you in a voice channel? I can't see you.";
+  private static String NOT_IN_VOICE_CHANNEL_MESSAGE = "Are you in a voice channel? I can't see you.";
 
   private long startTime;
   private Random rng = new Random();
@@ -168,8 +156,7 @@ public class SoundboardBot {
       // No sounds that can actually be played.
       if (seen.size() == files.length) return null;
       file = (SoundFile)files[rng.nextInt(files.length)];
-      if (seen.get(file.getSoundFileId()) == null)
-        seen.put(file.getSoundFileId(), true);
+      seen.putIfAbsent(file.getSoundFileId(), true);
     }
     return file.getSoundFileId();
   }
@@ -189,8 +176,7 @@ public class SoundboardBot {
       // No sounds that can actually be played.
       if (seen.size() == files.length) return null;
       file = (SoundFile)files[rng.nextInt(files.length)];
-      if (seen.get(file.getSoundFileId()) == null)
-        seen.put(file.getSoundFileId(), true);
+      seen.putIfAbsent(file.getSoundFileId(), true);
     }
     return file.getSoundFileId();
   }
@@ -207,7 +193,7 @@ public class SoundboardBot {
     SoundFile file = null;
     maxDuration = Math.min(MAX_DURATION_FOR_RANDOM, maxDuration);
     int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size() / 20),
-        index = rng.nextInt(Math.min(top, sounds.size())),
+        index,
         ceiling = top;
     while (file == null
            || file.isExcludedFromRandom()
@@ -365,7 +351,7 @@ public class SoundboardBot {
 
   public boolean disallowUser(String username) {
     net.dv8tion.jda.core.entities.User user = getUserByName(username);
-    return (user != null) ? disallowUser(user) : false;
+    return (user != null) && disallowUser(user);
   }
 
   public boolean allowUser(net.dv8tion.jda.core.entities.User user) {
@@ -383,7 +369,7 @@ public class SoundboardBot {
 
   public boolean allowUser(String username) {
     net.dv8tion.jda.core.entities.User user = getUserByName(username);
-    return (user != null) ? allowUser(user) : false;
+    return (user != null) && allowUser(user);
   }
 
   public boolean throttleUser(net.dv8tion.jda.core.entities.User user) {
@@ -409,7 +395,7 @@ public class SoundboardBot {
 
   public boolean throttleUser(String username) {
     net.dv8tion.jda.core.entities.User user = getUserByName(username);
-    return (user != null) ? throttleUser(user) : false;
+    return (user != null) && throttleUser(user);
   }
 
   public boolean unthrottleUser(net.dv8tion.jda.core.entities.User user) {
@@ -428,7 +414,7 @@ public class SoundboardBot {
 
   public boolean unthrottleUser(String username) {
     net.dv8tion.jda.core.entities.User user = getUserByName(username);
-    return (user != null) ? unthrottleUser(user) : false;
+    return (user != null) && unthrottleUser(user);
   }
 
   public void leaveServer(Guild guild) {
@@ -636,7 +622,7 @@ public class SoundboardBot {
 
   public boolean isAllowedToPlaySound(String username) {
     net.dv8tion.jda.core.entities.User user = getUserByName(username);
-    return (user != null) ? isAllowedToPlaySound(user) : true;
+    return (user == null) || isAllowedToPlaySound(user);
   }
 
   public boolean isAllowedToPlaySound(net.dv8tion.jda.core.entities.User user) {
@@ -646,7 +632,7 @@ public class SoundboardBot {
 
   public boolean isThrottled(String username) {
     net.dv8tion.jda.core.entities.User user = getUserByName(username);
-    return (user != null) ? isThrottled(user) : false;
+    return (user != null) && isThrottled(user);
   }
 
   public boolean isThrottled(net.dv8tion.jda.core.entities.User user) {

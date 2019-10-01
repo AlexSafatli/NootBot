@@ -1,18 +1,14 @@
 package net.dirtydeeds.discordsoundboard.utils;
 
-import java.text.SimpleDateFormat;
+import java.awt.*;
 import java.text.BreakIterator;
-import java.util.Collection;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Random;
-import java.awt.Color;
+import java.util.*;
 
 public class StringUtils {
 
-  private static final int MAX_NUMBER_OF_CACHED_WORDS = 250;
+  private static final int MAX_NUMBER_OF_CACHED_WORDS = 32;
   private static final int MIN_WORD_SIZE = 3;
   private static final String STARTING_CACHE_WORD = "Noot";
   private static final List<String> PREPOSITIONS = Arrays.asList(
@@ -112,8 +108,7 @@ public class StringUtils {
   public static String dayTimeStamp(Date date) {
     if (date == null) return "";
     SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-    String f = formatter.format(date);
-    return (f != null) ? f : "";
+    return formatter.format(date);
   }
 
   public static Color toColor(String s) {
@@ -152,8 +147,7 @@ public class StringUtils {
 
   private static LimitedQueue<String> initializeCache() {
     LimitedQueue<String> cache = new LimitedQueue<>(MAX_NUMBER_OF_CACHED_WORDS);
-    for (int i = 0; i < MAX_NUMBER_OF_CACHED_WORDS; ++i)
-      cache.add(STARTING_CACHE_WORD);
+    cache.add(STARTING_CACHE_WORD);
     return cache;
   }
 

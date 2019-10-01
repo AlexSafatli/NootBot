@@ -1,10 +1,10 @@
 package net.dirtydeeds.discordsoundboard.async;
 
-import java.util.Date;
-import java.util.function.Consumer;
-
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
+
+import java.util.Date;
+import java.util.function.Consumer;
 
 public class PeriodicLambdaJob implements SoundboardJob {
 
@@ -12,12 +12,7 @@ public class PeriodicLambdaJob implements SoundboardJob {
   private int numSecondsBetween;
   private Date next; // only run this after a certain time
 
-  public PeriodicLambdaJob(Consumer<SoundboardBot> lambda) {
-    this(lambda, 6000);
-  }
-
-  public PeriodicLambdaJob(Consumer<SoundboardBot> lambda,
-                           int numSecondsBetween) {
+  PeriodicLambdaJob(Consumer<SoundboardBot> lambda, int numSecondsBetween) {
     this.lambda = lambda;
     this.numSecondsBetween = numSecondsBetween;
     this.next = newTimestamp();
@@ -29,8 +24,7 @@ public class PeriodicLambdaJob implements SoundboardJob {
 
   public boolean isApplicable(SoundboardDispatcher dispatcher) {
     if (next != null) {
-      Date now = new Date(System.currentTimeMillis());
-      return now.after(next);
+      return (new Date(System.currentTimeMillis())).after(next);
     }
     return true;
   }

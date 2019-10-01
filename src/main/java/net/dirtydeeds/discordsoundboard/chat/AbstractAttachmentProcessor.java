@@ -1,20 +1,13 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.*;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.PrivateChannel;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.entities.Message.Attachment;
-import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
+
+import java.util.List;
 
 public abstract class AbstractAttachmentProcessor implements
   ChatCommandProcessor {
@@ -27,11 +20,11 @@ public abstract class AbstractAttachmentProcessor implements
     this.bot = bot;
   }
 
-  protected class AttachmentFile {
+  protected static class AttachmentFile {
     public String name;
     public String shortName;
     public String extension;
-    public AttachmentFile(Attachment attachment) {
+    AttachmentFile(Attachment attachment) {
       // Ensure is lowercase.
       name = attachment.getFileName().toLowerCase();
       shortName = name.substring(0, name.indexOf("."));
@@ -144,15 +137,6 @@ public abstract class AbstractAttachmentProcessor implements
     } else {
       event.getChannel().sendMessage(embed.getMessage()).queue();
     }
-  }
-
-  protected String lookupString(String key) {
-    String value = bot.getDispatcher().getStringService().lookup(key);
-    return (value != null) ? value : "<String Not Found: " + key + ">";
-  }
-
-  protected String formatString(String key, Object... args) {
-    return String.format(lookupString(key), args);
   }
 
   public String getCommandHelpString() {

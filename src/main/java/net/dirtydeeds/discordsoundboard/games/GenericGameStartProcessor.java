@@ -1,26 +1,20 @@
 package net.dirtydeeds.discordsoundboard.games;
 
-import java.util.Date;
+import net.dirtydeeds.discordsoundboard.beans.SoundFile;
+import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.RandomUtils;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Game.GameType;
+import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
-import java.awt.Color;
+import java.awt.*;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.dirtydeeds.discordsoundboard.games.AbstractGameUpdateProcessor;
-import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.*;
-import net.dirtydeeds.discordsoundboard.beans.SoundFile;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Game.GameType;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
@@ -168,7 +162,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
     StyledEmbedMessage m = StyledEmbedMessage.forUser(bot,
             users[0], String.format(MESSAGE_TITLE, game),
-            formatString(Strings.GAME_START_MESSAGE, soundPlayed,
+            String.format("Played random sound `%s` (**%d** plays) since you're all playing **%s** %s! *Use `.list` to see other sounds.*", soundPlayed,
             numPlays, game, mentions));
     m.addContent("Server", event.getGuild().getName(), true);
     m.addContent("Category",

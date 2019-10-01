@@ -2,7 +2,6 @@ package net.dirtydeeds.discordsoundboard.chat.sounds;
 
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -27,7 +26,7 @@ public class PlayUrlProcessor extends SingleArgumentChatCommandProcessor {
   protected void handleEvent(MessageReceivedEvent event, String message) {
     User user = event.getAuthor();
     if (!bot.isAllowedToPlaySound(user)) {
-      pm(event, lookupString(Strings.NOT_ALLOWED));
+      pm(event, "You're not allowed to do that.");
       LOG.info(String.format("%s not allowed to play sounds.", user.getName()));
     } else {
       play(event, message.substring(getPrefix().length()));

@@ -1,9 +1,9 @@
 package net.dirtydeeds.discordsoundboard.async;
 
-import java.util.Date;
-
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
 import net.dv8tion.jda.core.entities.Message;
+
+import java.util.Date;
 
 public class DeleteMessageJob implements SoundboardJob {
 
@@ -23,8 +23,7 @@ public class DeleteMessageJob implements SoundboardJob {
 
   public boolean isApplicable(SoundboardDispatcher dispatcher) {
     if (timestamp != null) {
-      Date now = new Date(System.currentTimeMillis());
-      return now.after(timestamp);
+      return (new Date(System.currentTimeMillis())).after(timestamp);
     }
     return true;
   }

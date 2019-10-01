@@ -1,17 +1,15 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.google.common.io.Files;
-
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedMultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class RecategorizeSoundProcessor extends
         AuthenticatedMultiArgumentChatCommandProcessor {
@@ -31,7 +29,7 @@ public class RecategorizeSoundProcessor extends
     }
     String name = getArguments()[0], cat = getArgumentsCased(event)[1];
     if (bot.getSoundMap().get(name) == null) {
-      pm(event, lookupString(Strings.SOUND_NOT_FOUND));
+      pm(event, "That sound was not found.");
       return;
     } else if (!bot.isASoundCategory(cat)) {
       pm(event, "The category `" + cat + "` does not exist. *Will make it as " +
@@ -56,18 +54,18 @@ public class RecategorizeSoundProcessor extends
           LOG.info("Moving file to: " + destination.getPath());
           Files.move(file, destination);
           success = true;
-          pm(event, formatString(Strings.SOUND_MOVE_SUCCESS, file.getName(),
+          pm(event, String.format("Moved '%s' from '%s' -> '%s'", file.getName(),
                   bot.getSoundMap().get(name).getCategory(),
                   cat));
         }
       }
       if (!success)
-        pm(event, formatString(Strings.SOUND_MOVE_FAILURE, name));
+        pm(event, String.format("Could not move '%s'", name));
     } catch (Exception e) {
       e.printStackTrace();
       LOG.fatal("While renaming a file: " + e.toString() + " => " +
               e.getMessage());
-      pm(event, formatString(Strings.SOUND_MOVE_FAILURE, name));
+      pm(event, String.format("Could not move '%s'", name));
     }
     bot.getDispatcher().updateFileList();
   }

@@ -3,7 +3,6 @@ package net.dirtydeeds.discordsoundboard.chat.users;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.chat.OwnerMultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class AuthenticateUserProcessor extends
@@ -24,7 +23,7 @@ public class AuthenticateUserProcessor extends
         bot.getDispatcher().saveUser(u);
         pm(event, "Access level changed to ||" + level + "|| for that user.");
       } else
-        pm(event, formatString(Strings.USER_NOT_FOUND_DISALLOWED, username));
+        pm(event, "User not found.");
     }
   }
 

@@ -1,10 +1,9 @@
 package net.dirtydeeds.discordsoundboard.listeners;
 
-import net.dirtydeeds.discordsoundboard.Thumbnails;
-
-import net.dirtydeeds.discordsoundboard.games.*;
-import net.dirtydeeds.discordsoundboard.utils.StringUtils;
+import net.dirtydeeds.discordsoundboard.games.GameUpdateProcessor;
+import net.dirtydeeds.discordsoundboard.games.GenericGameStartProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.entities.Guild;
@@ -13,7 +12,6 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,20 +20,6 @@ public class GameListener extends AbstractListener {
   public static final SimpleLog LOG = SimpleLog.getLog("Game");
 
   private List<GameUpdateProcessor> processors;
-  private static final List<String> MONITORED_GAMES = Arrays.asList(
-          "League of Legends", "PLAYERUNKNOWN'S BATTLEGROUNDS",
-          "Divinity Original Sin 2", "Destiny 2", "ASTRONEER", "Anthem",
-          "DARK SOULS™ II: Scholar of the First Sin",
-          "Factorio", "Battlefleet Gothic: Armada II", "Imperator: Rome",
-          "Endless Space 2", "Apex Legends",
-          "Europa Universalis IV", "Warhammer: Vermintide 2");
-  private static final String[] THUMBNAIL_URLS = new String[] {
-          Thumbnails.LEAGUE, Thumbnails.PUBG, Thumbnails.DOS2,
-          Thumbnails.DESTINY2, Thumbnails.ASTRONEER,
-          Thumbnails.ANTHEM, Thumbnails.DS2, Thumbnails.FACTORIO,
-          null, null, null, null, Thumbnails.EU4, null
-
-  };
 
   public GameListener(SoundboardBot bot) {
     this.bot = bot;
@@ -44,15 +28,7 @@ public class GameListener extends AbstractListener {
 
   private void initializeProcessors() {
     processors = new LinkedList<>();
-    for (int i = 0; i < MONITORED_GAMES.size(); ++i) {
-      String game = MONITORED_GAMES.get(i), url = THUMBNAIL_URLS[i];
-      LOG.info("Initializing game launch processor for " + game);
-      if (url != null && url.length() > 0) {
-        processors.add(new SpecificGameStartProcessor(bot, game, url));
-      } else {
-        processors.add(new SpecificGameStartProcessor(bot, game));
-      }
-    }
+    processors.add(new GenericGameStartProcessor(bot));
   }
 
   private void logGameChange(String name, Guild guild, Game previousGame,

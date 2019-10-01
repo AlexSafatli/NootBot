@@ -1,22 +1,5 @@
 package net.dirtydeeds.discordsoundboard.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.text.DecimalFormat;
-import java.util.function.Consumer;
-import javax.inject.Inject;
-
-import net.dirtydeeds.discordsoundboard.beans.Setting;
-import net.dirtydeeds.discordsoundboard.dao.SettingRepository;
-import org.springframework.stereotype.Service;
-
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -24,11 +7,12 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
-
-import net.dirtydeeds.discordsoundboard.async.*;
+import net.dirtydeeds.discordsoundboard.async.PeriodicLambdas;
 import net.dirtydeeds.discordsoundboard.beans.Phrase;
+import net.dirtydeeds.discordsoundboard.beans.Setting;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.dao.PhraseRepository;
+import net.dirtydeeds.discordsoundboard.dao.SettingRepository;
 import net.dirtydeeds.discordsoundboard.dao.SoundFileRepository;
 import net.dirtydeeds.discordsoundboard.dao.UserRepository;
 import net.dirtydeeds.discordsoundboard.org.Category;
@@ -37,6 +21,16 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.utils.SimpleLog;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.function.Consumer;
 
 @Service
 public class SoundboardDispatcher {
@@ -57,7 +51,6 @@ public class SoundboardDispatcher {
   private int numCategories;
 
   private final AsyncService asyncService;
-  private final StringService stringService;
 
   private final Path soundFilePath =
           Paths.get(System.getProperty("user.dir") + "/sounds");
@@ -77,10 +70,8 @@ public class SoundboardDispatcher {
                               SoundFileRepository soundDao,
                               PhraseRepository phraseDao,
                               SettingRepository settingsDao,
-                              AsyncService asyncService,
-                              StringService stringService) {
+                              AsyncService asyncService) {
     this.asyncService = asyncService;
-    this.stringService = stringService;
     this.userDao = userDao;
     this.soundDao = soundDao;
     this.phraseDao = phraseDao;
@@ -92,7 +83,6 @@ public class SoundboardDispatcher {
     loadProperties();
     startServices();
     this.asyncService.maintain(this);
-    this.stringService.maintain();
   }
 
   public AudioPlayerManager getAudioManager() {
@@ -181,7 +171,7 @@ public class SoundboardDispatcher {
     // Add some starting phrases to the phrase repository.
     addStartingPhrases();
     // Bots
-    int num = Integer.valueOf(getProperty("number_of_users"));
+    int num = Integer.parseInt(getProperty("number_of_users"));
     LOG.info("Starting " + num + " bots.");
     bots = new SoundboardBot[num];
     for (int i = 1; i <= num; ++i) startBot(i);
@@ -192,11 +182,6 @@ public class SoundboardDispatcher {
     audioManager.registerSourceManager(new HttpAudioSourceManager());
     audioManager.registerSourceManager(new LocalAudioSourceManager());
     AudioSourceManagers.registerRemoteSources(audioManager);
-    // String files.
-    LOG.info("Reading string files.");
-    stringService.addFile(
-            Paths.get(System.getProperty("user.dir") + "/strings.txt")
-    );
     // Async jobs
     LOG.info("Starting async jobs.");
     asyncService.addJob(PeriodicLambdas.cleanOldBotMessages());
@@ -373,10 +358,6 @@ public class SoundboardDispatcher {
     return (appProperties != null) ? appProperties.getProperty(key) : null;
   }
 
-  public StringService getStringService() {
-    return this.stringService;
-  }
-
   public Category getCategoryTree() {
     return this.categoryTree;
   }
@@ -488,9 +469,10 @@ public class SoundboardDispatcher {
   private long getFolderSize(File target) {
     long len = 0;
     File[] files = target.listFiles();
-    for (int i = 0; i < files.length; ++i) {
-      if (files[i].isFile()) len += files[i].length();
-      else len += getFolderSize(files[i]);
+    assert files != null;
+    for (File file : files) {
+      if (file.isFile()) len += file.length();
+      else len += getFolderSize(file);
     }
     return len;
   }

@@ -1,7 +1,6 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -20,8 +19,8 @@ public abstract class AuthenticatedMultiArgumentChatCommandProcessor extends
       if (canBeRunBy(event.getAuthor(), event.getGuild()))
         return true;
       else {
-        pm(event, lookupString(Strings.NOT_FOR_YOU));
-        bot.sendMessageToUser(formatString(Strings.USER_WITHOUT_PERMISSION,
+        pm(event, "This command is not for you.");
+        bot.sendMessageToUser(String.format("User **%s** just tried to run `%s`.",
                 event.getAuthor().getName(),
                 event.getMessage().getContent()),
                 bot.getOwner());

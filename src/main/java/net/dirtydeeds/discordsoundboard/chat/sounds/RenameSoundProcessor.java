@@ -1,19 +1,17 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
+import com.google.common.io.Files;
+import net.dirtydeeds.discordsoundboard.beans.SoundFile;
+import net.dirtydeeds.discordsoundboard.beans.User;
+import net.dirtydeeds.discordsoundboard.chat.AuthenticatedMultiArgumentChatCommandProcessor;
+import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.utils.SimpleLog;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-
-import com.google.common.io.Files;
-
-import net.dirtydeeds.discordsoundboard.beans.User;
-import net.dirtydeeds.discordsoundboard.beans.SoundFile;
-import net.dirtydeeds.discordsoundboard.chat.AuthenticatedMultiArgumentChatCommandProcessor;
-import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.utils.SimpleLog;
+import java.util.List;
 
 public class RenameSoundProcessor extends
         AuthenticatedMultiArgumentChatCommandProcessor {
@@ -33,7 +31,7 @@ public class RenameSoundProcessor extends
     }
     String oldName = getArguments()[0], newName = getArguments()[1];
     if (bot.getSoundMap().get(oldName) == null) {
-      pm(event, lookupString(Strings.SOUND_NOT_FOUND));
+      pm(event, "That sound was not found.");
       return;
     }
     deleteOriginalMessage(event);
@@ -67,14 +65,14 @@ public class RenameSoundProcessor extends
         m(event, "Sound `" + oldName + "` has been renamed to `" + newName +
                 "`.");
       } else {
-        pm(event, formatString(Strings.SOUND_RENAME_SUCCESS, oldName, newName));
+        pm(event, String.format("Renamed `%s` -> `%s`", oldName, newName));
       }
     } catch (Exception e) {
       LOG.fatal("While renaming a file: " + e.toString() + " => " +
               e.getMessage());
       e.printStackTrace();
       bot.getDispatcher().updateFileList();
-      pm(event, formatString(Strings.SOUND_RENAME_FAILURE,
+      pm(event, String.format("Sound '%s' could not be renamed to '%s'",
               oldName, newName) + "\n\u2014\n => " + e.getMessage());
     }
   }

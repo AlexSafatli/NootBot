@@ -1,14 +1,15 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.*;
+import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 
@@ -29,7 +30,7 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
     List<String> possibilities = new LinkedList<>();
 
     if (StringUtils.containsAny(query, '?')) {
-      w(event, lookupString(Strings.SOUND_NO_QUESTION_MARKS));
+      w(event, "Sounds cannot contain `?` characters.");
       return;
     } else if (query.length() <= 1) {
       w(event, "`" + query + "` is too short. *Baka*.");

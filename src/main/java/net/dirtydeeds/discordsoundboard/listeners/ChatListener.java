@@ -1,22 +1,21 @@
 package net.dirtydeeds.discordsoundboard.listeners;
 
-import net.dirtydeeds.discordsoundboard.chat.*;
+import net.dirtydeeds.discordsoundboard.chat.ChatCommandProcessor;
+import net.dirtydeeds.discordsoundboard.chat.HelpProcessor;
+import net.dirtydeeds.discordsoundboard.chat.NoOpProcessor;
+import net.dirtydeeds.discordsoundboard.chat.StatsProcessor;
 import net.dirtydeeds.discordsoundboard.chat.admin.*;
 import net.dirtydeeds.discordsoundboard.chat.games.RollDiceProcessor;
 import net.dirtydeeds.discordsoundboard.chat.sounds.*;
 import net.dirtydeeds.discordsoundboard.chat.users.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.*;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.client.events.relationship.FriendRequestReceivedEvent;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ChatListener extends AbstractListener {
 
@@ -60,8 +59,6 @@ public class ChatListener extends AbstractListener {
     processors.add(new ListMostReportsProcessor(".controversial", bot));
     processors.add(new ListLongestSoundsProcessor(".longest", bot));
     processors.add(new ListShortestSoundsProcessor(".shortest", bot));
-    processors.add(new PlayRandomSoundStaggerLoopedProcessor(".shufflelater", bot));
-    processors.add(new PlayRandomSoundLoopedProcessor(".shuffle", bot));
     processors.add(new PlayRandomTopSoundProcessor(".randomtop", bot));
     processors.add(new PlayRandomProcessor(".random", bot));
     processors.add(new SetNicknameProcessor(".nickname", bot));
@@ -90,11 +87,7 @@ public class ChatListener extends AbstractListener {
     processors.add(new SetEntranceForUserProcessor(".entrancefor", bot));
     processors.add(new SetEntranceProcessor(".entrance", bot));
     processors.add(new PlaySoundForUserProcessor(".playfor", bot));
-    processors.add(new PlaySoundSequenceStaggeredProcessor(".later", bot));
-    processors.add(new PlaySoundSequenceProcessor(".play", bot));
     processors.add(new StopSoundProcessor(".stop", bot));
-    processors.add(new PlaySoundStaggerLoopedProcessor(".looplater", bot));
-    processors.add(new PlaySoundLoopedProcessor(".loop", bot));
     processors.add(new ExecProcessor(".run", bot));
     processors.add(new RestartBotProcessor(".restart", bot));
     processors.add(new UpdateSoundsProcessor(".refresh", bot));
@@ -103,10 +96,6 @@ public class ChatListener extends AbstractListener {
     processors.add(new AlternateHandleProcessor(".alt", bot));
     processors.add(new RollDiceProcessor(".roll", bot));
     processors.add(new StatsProcessor(".about", bot));
-    processors.add(new ReportBugProcessor(".bug", bot));
-    processors.add(new InviteBotProcessor(".invite", bot));
-    processors.add(new ServerDonationMessageProcessor(".donate", bot));
-    processors.add(new TempVoiceChannelProcessor(".tmpvoice", bot));
     processors.add(new SettingProcessor(".setting", bot));
     processors.add(new NewTopicRoleProcessor(".modtopic", bot));
     processors.add(new SuspendUserProcessor(".modsuspend", bot));
@@ -188,8 +177,7 @@ public class ChatListener extends AbstractListener {
 
     // Handle typo commands with common prefix.
     if (isTypoCommand(event)) {
-      bot.sendMessageToUser(lookupString(Strings.NOT_A_COMMAND),
-              event.getAuthor());
+      bot.sendMessageToUser("That is not a command.", event.getAuthor());
       noOpProcessor.process(event); // Do nothing - deletes the message.
       LOG.info("User " + event.getAuthor().getName() +
               " tried to run \"" + event.getMessage().getContent() +

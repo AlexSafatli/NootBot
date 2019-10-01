@@ -2,7 +2,6 @@ package net.dirtydeeds.discordsoundboard.chat.sounds;
 
 import net.dirtydeeds.discordsoundboard.chat.MultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -26,7 +25,7 @@ public class PlaySoundForUserProcessor extends
     String username = getArguments()[0], filename = getArguments()[1];
     if (username != null) recipient = bot.getUserByName(username);
     if (!bot.isAllowedToPlaySound(user)) {
-      pm(event, lookupString(Strings.NOT_ALLOWED));
+      pm(event, "You're not allowed to do that.");
       LOG.info(String.format("%s tried to play sound file but is not allowed.",
                              user));
     } else if (bot.getSoundMap().get(filename) == null) {
@@ -39,7 +38,7 @@ public class PlaySoundForUserProcessor extends
          filename + "` was not found. *" + suggestion + "*.");
       LOG.info("Sound was not found.");
     } else if (recipient == null) {
-      pm(event, lookupString(Strings.USER_NOT_FOUND));
+      pm(event, "That user was not found.");
       LOG.info(
         String.format("%s wants to play \"%s\" for %s but user not found.",
                       user.getName(), filename, username));
@@ -49,14 +48,11 @@ public class PlaySoundForUserProcessor extends
       try {
         String played = bot.playFileForUser(filename, recipient);
         if (played != null) {
-          pm(event, formatString(
-               Strings.USER_PLAY_SOUND_SUCCESS, played,
+          pm(event, String.format(
+               "Played sound `%s` for user **%s** in **%s**.", played,
                recipient.getName(),
                bot.getUsersVoiceChannel(recipient).getGuild().getName()));
-          bot.sendMessageToUser(formatString(Strings.USER_PLAY_SOUND_RECIPIENT,
-                                             played, user.getName()
-                                            ), recipient);
-        } else pm(event, formatString(Strings.USER_PLAY_SOUND_FAILURE,
+        } else pm(event, String.format("Could not play sound `%s` for that user. *Is he/she in a channel?*",
                                         filename));
       } catch (Exception e) {
         e(event, "Exception encountered => " + e.getMessage());

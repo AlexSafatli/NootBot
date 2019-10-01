@@ -3,7 +3,6 @@ package net.dirtydeeds.discordsoundboard.chat.sounds;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -20,7 +19,7 @@ public class PlayRandomTopSoundProcessor extends
   protected void handleEvent(MessageReceivedEvent event, String message) {
     String desc = "Played a random **top played** sound (see `.top`) ";
     if (!bot.isAllowedToPlaySound(event.getAuthor())) {
-      pm(event, lookupString(Strings.NOT_ALLOWED));
+      pm(event, "You're not allowed to do that.");
       LOG.info(event.getAuthor() +
                " tried to play a sound file but is not allowed.");
       return;

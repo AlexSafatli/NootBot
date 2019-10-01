@@ -1,23 +1,17 @@
 package net.dirtydeeds.discordsoundboard.games;
 
-import java.util.function.Consumer;
-
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.*;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
 import net.dv8tion.jda.core.requests.RestAction;
+
+import java.util.function.Consumer;
 
 public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor {
 
   private static final String ERROR_TITLE = "Derp!";
-  protected static final String SPOTIFY = "Spotify";
 
   protected SoundboardBot bot;
 
@@ -31,15 +25,6 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
 
   public void process(UserGameUpdateEvent event) {
     handleEvent(event, event.getUser());
-  }
-
-  protected String lookupString(String key) {
-    String value = bot.getDispatcher().getStringService().lookup(key);
-    return (value != null) ? value : "<String Not Found: " + key + ">";
-  }
-
-  protected String formatString(String key, Object... args) {
-    return String.format(lookupString(key), args);
   }
 
   protected void embed(TextChannel channel, StyledEmbedMessage embed) {

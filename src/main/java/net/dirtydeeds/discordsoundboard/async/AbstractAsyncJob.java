@@ -1,18 +1,18 @@
 package net.dirtydeeds.discordsoundboard.async;
 
-import java.util.Date;
-
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
+
+import java.util.Date;
 
 public abstract class AbstractAsyncJob implements SoundboardJob {
 
-  protected AbstractAsyncEvent pastEvent;
-  protected long NUMBER_HOURS_BETWEEN = 12;
+  private AbstractAsyncEvent pastEvent;
+  private long NUMBER_HOURS_BETWEEN = 12;
 
-  protected class AbstractAsyncEvent {
+  protected static class AbstractAsyncEvent {
     public Date time;
 
-    public AbstractAsyncEvent(Date time) {
+    AbstractAsyncEvent(Date time) {
       this.time = time;
     }
   }
@@ -30,5 +30,5 @@ public abstract class AbstractAsyncJob implements SoundboardJob {
     pastEvent = new AbstractAsyncEvent(new Date(System.currentTimeMillis()));
   }
 
-  public abstract void handle(SoundboardDispatcher dispatcher);
+  abstract void handle(SoundboardDispatcher dispatcher);
 }

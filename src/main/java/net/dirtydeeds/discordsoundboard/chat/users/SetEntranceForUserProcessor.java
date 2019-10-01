@@ -2,10 +2,8 @@ package net.dirtydeeds.discordsoundboard.chat.users;
 
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedMultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class SetEntranceForUserProcessor extends
         AuthenticatedMultiArgumentChatCommandProcessor {
@@ -31,9 +29,10 @@ public class SetEntranceForUserProcessor extends
         pm(event, "User **" + user.getName() + "** had entrance updated" +
                 " to sound `" + filename + "`.");
       } else {
-        pm(event, lookupString(Strings.SOUND_NOT_FOUND));
+        pm(event, "That sound was not found.");
       }
     } else if (filename == null) {
+      assert user != null;
       bot.setEntranceForUser(user, null, null);
       pm(event, "User **" + user.getName() + "** had their entrance cleared.");
     } else {

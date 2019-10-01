@@ -3,7 +3,6 @@ package net.dirtydeeds.discordsoundboard.chat.sounds;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -19,7 +18,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
   protected void handleEvent(MessageReceivedEvent event, String message) {
     String category = getArgument(), filePlayed = null, desc = "Did you like it?";
     if (!bot.isAllowedToPlaySound(event.getAuthor())) {
-      pm(event, lookupString(Strings.NOT_ALLOWED));
+      pm(event, "You're not allowed to do that.");
       LOG.info(event.getAuthor() + " is not allowed to play sounds.");
       return;
     }
@@ -31,7 +30,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
           filePlayed = bot.playRandomFileForCategory(event.getAuthor(),
                        category);
         } else {
-          w(event, formatString(Strings.NOT_FOUND, category));
+          w(event, String.format("Category '%s' not found", category));
         }
       } else {
         filePlayed = bot.playRandomFile(event.getAuthor());

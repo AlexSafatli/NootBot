@@ -1,20 +1,17 @@
 package net.dirtydeeds.discordsoundboard.async;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.*;
+import net.dirtydeeds.discordsoundboard.utils.Periodic;
+import net.dirtydeeds.discordsoundboard.utils.Reusables;
 
 public class PeriodicLambdas {
-
-  public static PeriodicLambdaJob askForDonation() {
-    return new PeriodicLambdaJob(Reusables::sendDonationMessage, Periodic.EVERY_TWO_DAYS);
-  }
 
   public static PeriodicLambdaJob cleanOldBotMessages() {
     return new PeriodicLambdaJob(SoundboardBot::clearPreviousMessages, Periodic.EVERY_DAY);
   }
 
   public static PeriodicLambdaJob changeToRandomGame() {
-    return new PeriodicLambdaJob(Reusables::setRandomGame, Periodic.EVERY_TEN_MINUTES);
+    return new PeriodicLambdaJob(Reusables::setRandomGame, Periodic.EVERY_QUARTER_HOUR);
   }
 
   public static PeriodicLambdaJob changeBotChannelTopic() {

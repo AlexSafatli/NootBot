@@ -1,9 +1,8 @@
 package net.dirtydeeds.discordsoundboard.chat.users;
 
+import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.beans.SoundFile;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
@@ -25,7 +24,7 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
       }
       SoundFile file = bot.getSoundMap().get(fileName);
       if (file == null) {
-        pm(event, lookupString(Strings.SOUND_NOT_FOUND));
+        pm(event, "That sound was not found.");
         return;
       }
       boolean authenticated = bot.isAuthenticated(event.getAuthor(),

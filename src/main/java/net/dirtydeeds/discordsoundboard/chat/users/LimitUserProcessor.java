@@ -2,7 +2,6 @@ package net.dirtydeeds.discordsoundboard.chat.users;
 
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedSingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
@@ -19,12 +18,12 @@ public class LimitUserProcessor extends
     if (getArgument() != null) {
       String username = getArgument();
       if (username.equals(event.getAuthor().getName())) {
-        pm(event, lookupString(Strings.NOT_TO_SELF));
+        pm(event, "You cannot do this to yourself.");
       } else if (bot.throttleUser(username)) {
-        pm(event, formatString(Strings.USER_THROTTLE_UNTHROTTLED, username));
+        pm(event, String.format("Throttled %s.", username));
         LOG.info("Throttled username " + username);
       } else {
-        pm(event, formatString(Strings.USER_NOT_FOUND_UNTHROTTLED, username));
+        pm(event, String.format("User %s was not found.", username));
         LOG.warn("Failed to throttle username " + username);
       }
     }

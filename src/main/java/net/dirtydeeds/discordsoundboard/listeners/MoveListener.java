@@ -1,23 +1,24 @@
 package net.dirtydeeds.discordsoundboard.listeners;
 
-import java.util.*;
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.awt.Color;
-
 import net.dirtydeeds.discordsoundboard.async.DeleteMessageJob;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.*;
-import net.dv8tion.jda.core.entities.Channel;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dirtydeeds.discordsoundboard.utils.StringUtils;
+import net.dirtydeeds.discordsoundboard.utils.Strings;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
+import net.dirtydeeds.discordsoundboard.utils.VoiceUtils;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
+
+import java.awt.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.Queue;
+import java.util.*;
 
 public class MoveListener extends AbstractListener {
 
@@ -115,13 +116,12 @@ public class MoveListener extends AbstractListener {
         if (bot.playFileForEntrance(fileToPlay, user, vc)) {
           SoundFile s = bot.getDispatcher().getSoundFileByName(fileToPlay);
           soundInfo = "Played " +
-                  formatString(Strings.SOUND_DESC, fileToPlay,
+                  String.format("`%s` from **%s** (**%d** plays)", fileToPlay,
                           s.getCategory(),
                           s.getNumberOfPlays());
         }
       } catch (Exception e) {
-        embed(bot.getBotChannel(guild), errorMessage(e, user), (
-                Message m) -> bot.getDispatcher().getAsyncService().runJob(new DeleteMessageJob(m, 240)));
+        embed(bot.getBotChannel(guild), errorMessage(e, user), (Message m) -> bot.getDispatcher().getAsyncService().runJob(new DeleteMessageJob(m, 240)));
         e.printStackTrace();
       }
     } else if (bot.getConnectedChannel(guild) == null) {
@@ -191,9 +191,7 @@ public class MoveListener extends AbstractListener {
 
   private void leaveVoiceInGuild(Guild guild) {
     if (guild == null) return;
-    if (pastEntrances.get(guild) == null) {
-      pastEntrances.put(guild, new LinkedList<>());
-    }
+    pastEntrances.computeIfAbsent(guild, k -> new LinkedList<>());
     if (guild.getAudioManager() != null) {
       LOG.info("Leaving voice in " + guild.getName());
       Queue<EntranceEvent> entrances = pastEntrances.get(guild);
@@ -209,7 +207,7 @@ public class MoveListener extends AbstractListener {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     e.printStackTrace(pw);
-    String title = String.format(StringUtils.randomString(WELCOMES),
+    String title = String.format(Objects.requireNonNull(StringUtils.randomString(WELCOMES)),
                     "**" + user.getName() + "**");
     StyledEmbedMessage m = new StyledEmbedMessage(title, bot);
     m.setThumbnail(user.getEffectiveAvatarUrl());
@@ -222,7 +220,7 @@ public class MoveListener extends AbstractListener {
   private StyledEmbedMessage welcomeMessage(User user, Channel channel,
                                            String soundInfo, boolean welcomeInTitle) {
     String title = (welcomeInTitle) ?
-            String.format(StringUtils.randomString(WELCOMES),
+            String.format(Objects.requireNonNull(StringUtils.randomString(WELCOMES)),
                     "**" + user.getName() + "**") :
             user.getName() + " came, again.";
     String description = "";

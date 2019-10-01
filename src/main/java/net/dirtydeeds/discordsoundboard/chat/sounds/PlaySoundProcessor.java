@@ -1,20 +1,18 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.RandomUtils;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
@@ -29,7 +27,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
     StyledEmbedMessage msg = buildStyledEmbedMessage(event);
     msg.setTitle("Sound Not Found");
     msg.addDescription("Sound `" + name + "` not found. " + suggestion + Strings.SEPARATOR + user.getAsMention());
-    msg.addContent("Search", lookupString(Strings.USE_SEARCH), true);
+    msg.addContent("Search", "You can use `.search` with a keyword.", true);
     embed(event, msg.isWarning(true));
   }
 
@@ -83,24 +81,24 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
     ModerationRules r = bot.getRulesForGuild(event.getGuild());
     boolean playNumberedSets = r != null && r.canPlayNumberedSets();
     if (!bot.isAllowedToPlaySound(user)) {
-      pm(event, lookupString(Strings.NOT_ALLOWED));
+      pm(event, "You're not allowed to do that.");
       LOG.info(
               String.format("%s isn't allowed to play sounds.", user.getName()));
     } else if (StringUtils.containsAny(name, '?')) {
       return;
     } else if (bot.getSoundMap().get(name) == null) {
       LOG.info("Sound was not found.");
-      String suggestion = lookupString(Strings.CHECK_SPELLING),
+      String suggestion = "Check your spelling.",
               possibleName = bot.getClosestMatchingSoundName(name);
       if (name.equals("help")) {
-        suggestion = lookupString(Strings.SOUND_NOT_FOUND_HELP);
+        suggestion = "Were you trying to access the `.help` command?";
       } else if (possibleName != null) {
-        suggestion = formatString(Strings.DID_YOU_MEAN, possibleName);
+        suggestion = String.format("Did you mean `%s`?", possibleName);
       } else {
         // Do a naive search to see if something contains this name. Stop early.
         for (String s : bot.getSoundMap().keySet()) {
           if (s.contains(name)) {
-            suggestion = formatString(Strings.DID_YOU_MEAN, s);
+            suggestion = String.format("Did you mean `%s`?", s);
             break;
           }
         }

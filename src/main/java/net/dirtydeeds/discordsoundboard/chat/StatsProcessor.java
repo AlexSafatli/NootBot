@@ -1,13 +1,13 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
-import java.util.List;
-
 import net.dirtydeeds.discordsoundboard.Version;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
+import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import java.util.List;
 
 public class StatsProcessor extends AbstractChatCommandProcessor {
 
@@ -17,6 +17,10 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 
   private SoundFile mostPlayedSound() {
     List<SoundFile> files = bot.getDispatcher().getSoundFilesOrderedByNumberOfPlays();
+    return getSoundFile(files);
+  }
+
+  private SoundFile getSoundFile(List<SoundFile> files) {
     int i = 0;
     while (files != null && !files.isEmpty() && i < files.size()) {
       SoundFile f = files.get(i++);
@@ -27,14 +31,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
 
   private SoundFile longestSound() {
     List<SoundFile> files = bot.getDispatcher().getSoundFilesOrderedByDuration();
-    int i = 0;
-    while (files != null && !files.isEmpty() && i < files.size()) {
-      SoundFile f = files.get(i++);
-      if (bot.getSoundMap().get(f.getSoundFileId()) != null) {
-        return f;
-      }
-    }
-    return null;
+    return getSoundFile(files);
   }
 
   private StyledEmbedMessage statsMessage(MessageReceivedEvent event) {

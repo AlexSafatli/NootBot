@@ -2,7 +2,6 @@ package net.dirtydeeds.discordsoundboard.chat.users;
 
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedSingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class DisallowUserProcessor extends
@@ -16,13 +15,13 @@ public class DisallowUserProcessor extends
     if (getArgument() != null) {
       String username = getArgument();
       if (username.equals(event.getAuthor().getName())) {
-        pm(event, lookupString(Strings.NOT_TO_SELF));
+        pm(event, "You cannot do this to yourself.");
       } else if (bot.disallowUser(username)) {
-        pm(event, formatString(Strings.USER_DISALLOW_ALLOWED, username));
+        pm(event, String.format("Disallowing user **%s** from playing sounds.", username));
         m(event, "**" + bot.getUserByName(username).getName() +
                 "** has had his sound playing privileges removed. **Rekt**.");
       } else {
-        pm(event, formatString(Strings.USER_NOT_FOUND_ALLOWED, username));
+        pm(event, String.format("User %s was not found.", username));
       }
     }
   }

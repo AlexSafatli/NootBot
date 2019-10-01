@@ -1,19 +1,17 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
-import java.io.IOException;
-import java.util.Set;
-
 import com.google.common.io.Files;
-
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.utils.SimpleLog;
+
+import java.io.IOException;
+import java.util.Set;
 
 public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
 
@@ -31,7 +29,7 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
     LOG.info("Received report request for " + name + " from " + user.getName());
     Set<String> soundNames = bot.getSoundMap().keySet();
     if (name == null) {
-      pm(event, formatString(Strings.NEED_NAME, getPrefix() + " " +
+      pm(event, String.format("You need to provide a name. For example: `%s`.", getPrefix() + " " +
               StringUtils.randomString(soundNames)));
     } else if (!soundNames.contains(name)) {
       String suggestion = "Check your spelling.", possibleName =
@@ -39,8 +37,7 @@ public class ReportSoundProcessor extends SingleArgumentChatCommandProcessor {
       if (possibleName != null) {
         suggestion = "Did you mean `" + possibleName + "`?";
       }
-      m(event, formatString(Strings.NOT_FOUND, name) + " *" +
-              suggestion + "* " + user.getAsMention());
+      m(event, "Not found. *" + suggestion + "* " + user.getAsMention());
     } else {
       // See if already reported it.
       if (bot.getUser(user).getSoundsReported().contains(name)) {
