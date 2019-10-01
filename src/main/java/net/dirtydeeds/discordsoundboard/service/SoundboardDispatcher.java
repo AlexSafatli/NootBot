@@ -118,7 +118,7 @@ public class SoundboardDispatcher {
         stream = this.getClass().getResourceAsStream("/app.properties");
         appProperties.load(stream);
         stream.close();
-      } catch (IOException e) {
+      } catch (IOException | NullPointerException e) {
         LOG.fatal("Could not load properties.");
         e.printStackTrace();
       }

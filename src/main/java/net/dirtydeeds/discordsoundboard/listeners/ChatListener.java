@@ -76,7 +76,6 @@ public class ChatListener extends AbstractListener {
     processors.add(new MuteSoundProcessor(".mute", bot));
     processors.add(new UnmuteSoundProcessor(".unmute", bot));
     processors.add(new DeleteSoundProcessor(".rm", bot));
-    processors.add(new ReportSoundProcessor(".report", bot));
     processors.add(new RenameSoundProcessor(".rename", bot));
     processors.add(new RecategorizeSoundProcessor(".mv", bot));
     processors.add(new DownloadSoundProcessor(".dl", bot));
@@ -93,7 +92,6 @@ public class ChatListener extends AbstractListener {
     processors.add(new UpdateSoundsProcessor(".refresh", bot));
     processors.add(new ListServersProcessor(".servers", bot));
     processors.add(new UserInfoProcessor(".user", bot));
-    processors.add(new AlternateHandleProcessor(".alt", bot));
     processors.add(new RollDiceProcessor(".roll", bot));
     processors.add(new StatsProcessor(".about", bot));
     processors.add(new SettingProcessor(".setting", bot));
