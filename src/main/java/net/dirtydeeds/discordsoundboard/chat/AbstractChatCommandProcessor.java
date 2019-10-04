@@ -79,7 +79,7 @@ public abstract class AbstractChatCommandProcessor implements
       m.delete().queue();
   }
 
-  protected void clearBuffer() {
+  private void clearBuffer() {
     for (Message m : buffer) delete(m);
     buffer.clear();
   }

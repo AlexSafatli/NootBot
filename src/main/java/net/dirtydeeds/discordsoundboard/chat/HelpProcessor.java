@@ -13,9 +13,8 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
 
   private List<ChatCommandProcessor> processors;
 
-  public HelpProcessor(String prefix, SoundboardBot bot,
-                       List<ChatCommandProcessor> processors) {
-    super(prefix, "Commands", bot);
+  public HelpProcessor(SoundboardBot bot, List<ChatCommandProcessor> processors) {
+    super("", "Commands", bot);
     this.processors = processors;
   }
 

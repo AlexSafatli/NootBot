@@ -38,7 +38,7 @@ public class StatsProcessor extends AbstractChatCommandProcessor {
     StyledEmbedMessage msg = buildStyledEmbedMessage(event);
     String desc = String.format("I'm a bot that makes sounds and " +
             "occasionally does something that looks intelligent. " +
-            "Or stupid. Here's some gibberish: ||%s||.", StringUtils.randomPhrase());
+            "Or stupid. %s.", StringUtils.randomPhrase());
     msg.addDescription(desc);
     int numberOfSounds = bot.getSoundMap().size();
     int numberOfServers = bot.getGuilds().size();

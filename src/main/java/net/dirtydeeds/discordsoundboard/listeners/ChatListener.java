@@ -5,7 +5,6 @@ import net.dirtydeeds.discordsoundboard.chat.HelpProcessor;
 import net.dirtydeeds.discordsoundboard.chat.NoOpProcessor;
 import net.dirtydeeds.discordsoundboard.chat.StatsProcessor;
 import net.dirtydeeds.discordsoundboard.chat.admin.*;
-import net.dirtydeeds.discordsoundboard.chat.games.RollDiceProcessor;
 import net.dirtydeeds.discordsoundboard.chat.sounds.*;
 import net.dirtydeeds.discordsoundboard.chat.users.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
@@ -30,79 +29,65 @@ public class ChatListener extends AbstractListener {
   private int totalRequests;
   private Map<User, Integer> requests;
   private List<ChatCommandProcessor> processors;
-  private HelpProcessor helpProcessor;
-  private NoOpProcessor noOpProcessor;
 
-  public ChatListener(SoundboardBot soundPlayer) {
-    this.bot = soundPlayer;
+  public ChatListener(SoundboardBot bot) {
+    this.bot = bot;
     this.tick = new Date(System.currentTimeMillis());
     this.requests = new HashMap<>();
     this.processors = new LinkedList<>();
     setupChatProcessors();
   }
 
-//    private ChatCommandProcessor WithCommonPrefix(Class<ChatCommandProcessor> c, String prefix) {
-//      return c.newInstance(CommonPrefix + prefix, bot);
-//    }
+  private String withPrefix(String command) {
+    return CommonPrefix + command;
+  }
 
   private void setupChatProcessors() {
     processors.add(new PlaySoundProcessor("?", bot));
     processors.add(new PlayUrlProcessor("~~", bot));
-    processors.add(new ListSoundsProcessor(".list", bot));
-    processors.add(new SearchProcessor(".search", bot));
-    processors.add(new DescribeSoundProcessor(".whatis", bot));
-    processors.add(new LastPlayedSoundProcessor(".lastplayed", bot));
-    processors.add(new ListCategoriesProcessor(".categories", bot));
-    processors.add(new ListNewSoundsProcessor(".new", bot));
-    processors.add(new ListTopSoundsProcessor(".top", bot));
-    processors.add(new ListLowSoundsProcessor(".least", bot));
-    processors.add(new ListMostReportsProcessor(".controversial", bot));
-    processors.add(new ListLongestSoundsProcessor(".longest", bot));
-    processors.add(new ListShortestSoundsProcessor(".shortest", bot));
-    processors.add(new PlayRandomTopSoundProcessor(".randomtop", bot));
-    processors.add(new PlayRandomProcessor(".random", bot));
-    processors.add(new SetNicknameProcessor(".nickname", bot));
-    processors.add(new AuthenticateUserProcessor(".privilege", bot));
-    processors.add(new DeleteBotMessagesProcessor(".clear", bot));
-    processors.add(new ListPhrasesProcessor(".phrases", bot));
-    processors.add(new RandomPhraseProcessor(".phrase", bot));
-    processors.add(new FavoritePhraseProcessor(".addphrase", bot));
-    processors.add(new UnfavoritePhraseProcessor(".rmphrase", bot));
-    processors.add(new SetGameNameProcessor(".gamename", bot));
-    processors.add(new DisallowUserProcessor(".disallow", bot));
-    processors.add(new AllowUserProcessor(".allow", bot));
-    processors.add(new LimitUserProcessor(".throttle", bot));
-    processors.add(new RemoveLimitUserProcessor(".unthrottle", bot));
-    processors.add(new MuteSoundProcessor(".mute", bot));
-    processors.add(new UnmuteSoundProcessor(".unmute", bot));
-    processors.add(new DeleteSoundProcessor(".rm", bot));
-    processors.add(new RenameSoundProcessor(".rename", bot));
-    processors.add(new RecategorizeSoundProcessor(".mv", bot));
-    processors.add(new DownloadSoundProcessor(".dl", bot));
-    processors.add(new ExcludeSoundFromRandomProcessor(".exclude", bot));
-    processors.add(new IncludeSoundFromRandomProcessor(".include", bot));
-    processors.add(new ModifyAllSoundPlayCountProcessor(".countall", bot));
-    processors.add(new ModifySoundPlayCountProcessor(".count", bot));
-    processors.add(new SetEntranceForUserProcessor(".entrancefor", bot));
-    processors.add(new SetEntranceProcessor(".entrance", bot));
-    processors.add(new PlaySoundForUserProcessor(".playfor", bot));
-    processors.add(new StopSoundProcessor(".stop", bot));
-    processors.add(new ExecProcessor(".run", bot));
-    processors.add(new RestartBotProcessor(".restart", bot));
-    processors.add(new UpdateSoundsProcessor(".refresh", bot));
-    processors.add(new ListServersProcessor(".servers", bot));
-    processors.add(new UserInfoProcessor(".user", bot));
-    processors.add(new RollDiceProcessor(".roll", bot));
-    processors.add(new StatsProcessor(".about", bot));
-    processors.add(new SettingProcessor(".setting", bot));
-    processors.add(new NewTopicRoleProcessor(".modtopic", bot));
-    processors.add(new SuspendUserProcessor(".modsuspend", bot));
+    processors.add(new ListSoundsProcessor(withPrefix("list"), bot));
+    processors.add(new SearchProcessor(withPrefix("search"), bot));
+    processors.add(new ListCategoriesProcessor(withPrefix("categories"), bot));
+    processors.add(new ListNewSoundsProcessor(withPrefix("new"), bot));
+    processors.add(new ListTopSoundsProcessor(withPrefix("top"), bot));
+    processors.add(new ListLowSoundsProcessor(withPrefix("least"), bot));
+    processors.add(new ListMostReportsProcessor(withPrefix("controversial"), bot));
+    processors.add(new ListLongestSoundsProcessor(withPrefix("longest"), bot));
+    processors.add(new ListShortestSoundsProcessor(withPrefix("shortest"), bot));
+    processors.add(new PlayRandomTopSoundProcessor(withPrefix("randomtop"), bot));
+    processors.add(new PlayRandomProcessor(withPrefix("random"), bot));
+    processors.add(new AuthenticateUserProcessor(withPrefix("privilege"), bot));
+    processors.add(new DeleteBotMessagesProcessor(withPrefix("clear"), bot));
+    processors.add(new FavoritePhraseProcessor(withPrefix("addphrase"), bot));
+    processors.add(new UnfavoritePhraseProcessor(withPrefix("rmphrase"), bot));
+    processors.add(new SetGameNameProcessor(withPrefix("gamename"), bot));
+    processors.add(new DisallowUserProcessor(withPrefix("disallow"), bot));
+    processors.add(new AllowUserProcessor(withPrefix("allow"), bot));
+    processors.add(new LimitUserProcessor(withPrefix("throttle"), bot));
+    processors.add(new RemoveLimitUserProcessor(withPrefix("unthrottle"), bot));
+    processors.add(new MuteSoundProcessor(withPrefix("mute"), bot));
+    processors.add(new UnmuteSoundProcessor(withPrefix("unmute"), bot));
+    processors.add(new DeleteSoundProcessor(withPrefix("rm"), bot));
+    processors.add(new RenameSoundProcessor(withPrefix("rename"), bot));
+    processors.add(new RecategorizeSoundProcessor(withPrefix("mv"), bot));
+    processors.add(new DownloadSoundProcessor(withPrefix("dl"), bot));
+    processors.add(new ExcludeSoundFromRandomProcessor(withPrefix("exclude"), bot));
+    processors.add(new IncludeSoundFromRandomProcessor(withPrefix("include"), bot));
+    processors.add(new SetEntranceForUserProcessor(withPrefix("entrancefor"), bot));
+    processors.add(new SetEntranceProcessor(withPrefix("entrance"), bot));
+    processors.add(new PlaySoundForUserProcessor(withPrefix("playfor"), bot));
+    processors.add(new StopSoundProcessor(withPrefix("stop"), bot));
+    processors.add(new RestartBotProcessor(withPrefix("restart"), bot));
+    processors.add(new UpdateSoundsProcessor(withPrefix("refresh"), bot));
+    processors.add(new ListServersProcessor(withPrefix("servers"), bot));
+    processors.add(new UserInfoProcessor(withPrefix("user"), bot));
+    processors.add(new StatsProcessor(withPrefix("about"), bot));
+    processors.add(new SettingProcessor(withPrefix("setting"), bot));
+    processors.add(new NewTopicRoleProcessor(withPrefix("modtopic"), bot));
+    processors.add(new SuspendUserProcessor(withPrefix("modsuspend"), bot));
     processors.add(new SoundAttachmentProcessor(bot));
     processors.add(new FilterTwitchClipProcessor(bot));
     processors.add(new FilterYoutubeClipProcessor(bot));
-
-    this.helpProcessor = new HelpProcessor(".help", bot, processors);
-    this.noOpProcessor = new NoOpProcessor(bot);
 
     LOG.info("Registered " + processors.size() + " processors.");
   }
@@ -132,7 +117,7 @@ public class ChatListener extends AbstractListener {
     if (numRequests >= MAX_NUMBER_OF_REQUESTS_PER_TIME
             && bot.isThrottled(user)) {
       bot.sendMessageToUser(
-              "Please wait a little before sending another command.", user);
+              "Please wait before sending another command.", user);
       return;
     } else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME
             && !bot.isOwner(user)) {
@@ -160,8 +145,9 @@ public class ChatListener extends AbstractListener {
 
     // See if a help command first. Process it here if that is the case.
     // This does not count against requests.
-    if (helpProcessor.isApplicableCommand(event)) {
-      helpProcessor.process(event);
+    if (event.getMessage().getContent().toLowerCase().equals(withPrefix("help"))) {
+      HelpProcessor help = new HelpProcessor(bot, processors);
+      help.process(event);
       return;
     }
 
@@ -176,11 +162,10 @@ public class ChatListener extends AbstractListener {
     // Handle typo commands with common prefix.
     if (isTypoCommand(event)) {
       bot.sendMessageToUser("That is not a command.", event.getAuthor());
-      noOpProcessor.process(event); // Do nothing - deletes the message.
+      (new NoOpProcessor(bot)).process(event); // Do nothing - deletes the message.
       LOG.info("User " + event.getAuthor().getName() +
               " tried to run \"" + event.getMessage().getContent() +
               "\" which is not a command.");
-      return;
     }
 
   }

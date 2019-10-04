@@ -41,7 +41,7 @@ public class MoveListener extends AbstractListener {
     this.pastEntrances = new HashMap<>();
   }
 
-  private class EntranceEvent {
+  private static class EntranceEvent {
     public Message message;
     public User user;
     EntranceEvent(Message m, User u) {
