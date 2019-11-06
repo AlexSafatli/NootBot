@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Channel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
-import net.dv8tion.jda.core.managers.GuildController;
+import net.dv8tion.jda.api.managers.GuildController;
 
 public class ServerUtils {
 

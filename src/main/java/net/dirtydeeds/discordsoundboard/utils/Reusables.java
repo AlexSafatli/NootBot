@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.Game;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.core.managers.ChannelManagerUpdatable;
+import net.dv8tion.jda.api.managers.ChannelManagerUpdatable;
 
 public class Reusables {
 

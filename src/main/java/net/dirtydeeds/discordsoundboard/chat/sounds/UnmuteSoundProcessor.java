@@ -2,7 +2,7 @@ package net.dirtydeeds.discordsoundboard.chat.sounds;
 
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedSingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class UnmuteSoundProcessor extends
         AuthenticatedSingleArgumentChatCommandProcessor {

@@ -10,14 +10,14 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.api.utils.SimpleLog;
+import net.dv8tion.jda.api.utils.JDALogger;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class GameListener extends AbstractListener {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("Game");
+  public static final JDALogger LOG = JDALogger.getLog("Game");
 
   private List<GameUpdateProcessor> processors;
 

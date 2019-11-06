@@ -4,11 +4,11 @@ import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.SimpleLog;
+import net.dv8tion.jda.api.utils.JDALogger;
 
 public class PlayUrlProcessor extends SingleArgumentChatCommandProcessor {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("URL");
+  public static final JDALogger LOG = JDALogger.getLog("URL");
 
   public PlayUrlProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Play URL", bot);

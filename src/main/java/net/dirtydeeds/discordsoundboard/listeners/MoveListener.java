@@ -7,11 +7,11 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dirtydeeds.discordsoundboard.utils.VoiceUtils;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.awt.*;
 import java.io.PrintWriter;
@@ -22,7 +22,7 @@ import java.util.*;
 
 public class MoveListener extends AbstractListener {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("Move");
+  public static final JDALogger LOG = JDALogger.getLog("Move");
 
   private static final List<String> WELCOMES = Arrays.asList(
           "%s wants off this planet.",

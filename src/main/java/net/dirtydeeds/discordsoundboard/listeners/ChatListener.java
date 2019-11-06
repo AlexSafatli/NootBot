@@ -12,13 +12,13 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.client.events.relationship.FriendRequestReceivedEvent;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.SimpleLog;
+import net.dv8tion.jda.api.utils.JDALogger;
 
 import java.util.*;
 
 public class ChatListener extends AbstractListener {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("Chat");
+  public static final JDALogger LOG = JDALogger.getLog("Chat");
   private static final char CommonPrefix = '.';
 
   private static final int THROTTLE_TIME_IN_MINUTES = 1;

@@ -1,7 +1,7 @@
 package net.dirtydeeds.discordsoundboard.chat;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class NoOpProcessor extends SingleArgumentChatCommandProcessor {
 

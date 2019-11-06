@@ -3,7 +3,7 @@ package net.dirtydeeds.discordsoundboard.chat.admin;
 import net.dirtydeeds.discordsoundboard.beans.Setting;
 import net.dirtydeeds.discordsoundboard.chat.OwnerMultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class SettingProcessor extends
         OwnerMultiArgumentChatCommandProcessor {

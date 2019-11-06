@@ -9,7 +9,7 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.SimpleLog;
+import net.dv8tion.jda.api.utils.JDALogger;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -21,7 +21,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
   private static final int BIG_NUMBER_OF_SOUNDS = 1750;
   private static final String UNCATEGORIZED = "Uncategorized";
-  public static final SimpleLog LOG = SimpleLog.getLog("ListSounds");
+  public static final JDALogger LOG = JDALogger.getLog("ListSounds");
 
   private Map<String, SoundFile> soundFiles;
 

@@ -4,7 +4,7 @@ import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.Strings;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class FavoritePhraseProcessor extends
         SingleArgumentChatCommandProcessor {

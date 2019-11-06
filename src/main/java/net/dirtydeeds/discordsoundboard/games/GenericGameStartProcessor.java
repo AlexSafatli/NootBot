@@ -8,7 +8,7 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Game.GameType;
 import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.api.utils.SimpleLog;
+import net.dv8tion.jda.api.utils.JDALogger;
 
 import java.awt.*;
 import java.util.Date;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("GameStartProcessor");
+  public static final JDALogger LOG = JDALogger.getLog("GameStartProcessor");
 
   private static final String MESSAGE_TITLE = "Here's a sound since you're playing **%s**!";
 

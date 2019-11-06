@@ -4,7 +4,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 //import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.api.entities.MessageChannel;
 //import net.dv8tion.jda.api.entities.Message;
-//import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+//import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class GameChatEventAdapter {
 

@@ -15,13 +15,13 @@ import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.utils.ChatUtils;
 import net.dirtydeeds.discordsoundboard.utils.Reusables;
-import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import net.dv8tion.jda.core.managers.AudioManager;
-import net.dv8tion.jda.core.utils.PermissionUtil;
-import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.managers.AudioManager;
+import net.dv8tion.jda.api.utils.PermissionUtil;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -36,7 +36,7 @@ import java.util.*;
  */
 public class SoundboardBot {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("Bot");
+  public static final JDALogger LOG = JDALogger.getLog("Bot");
   private static final int CHANNEL_CONNECTION_TIMEOUT = 5000;
   private static final int TOP_PLAYED_SOUND_THRESHOLD = 50;
   private static final int MAX_DURATION_FOR_RANDOM = 10;

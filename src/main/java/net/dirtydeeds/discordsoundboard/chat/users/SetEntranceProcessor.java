@@ -3,7 +3,7 @@ package net.dirtydeeds.discordsoundboard.chat.users;
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
 

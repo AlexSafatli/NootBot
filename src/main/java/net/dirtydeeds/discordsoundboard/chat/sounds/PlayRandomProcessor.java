@@ -4,12 +4,12 @@ import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 
-  public static final SimpleLog LOG = SimpleLog.getLog("RandomSound");
+  public static final JDALogger LOG = JDALogger.getLog("RandomSound");
 
   public PlayRandomProcessor(String prefix, SoundboardBot soundPlayer) {
     super(prefix, "Random Sound", soundPlayer);
