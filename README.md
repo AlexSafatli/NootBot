@@ -1,8 +1,8 @@
 # NootBot
 
-A soundboard Discord bot written in Java able to be deployed to multiple servers and over multiple Bot users.
+A Discord automation/soundboard bot written in Java using Spring Boot.
 
-Much of the foundation code was taken from an early commit of [Darkside138/DiscordSoundboard](https://github.com/Darkside138/DiscordSoundboard) but has since wildly diverged.
+Much of the foundation code was taken from an early commit of [Darkside138/DiscordSoundboard](https://github.com/Darkside138/DiscordSoundboard) but has since wildly diverged. In the process of a rewrite (albeit, slowly) [in Golang](https://github.com/AlexSafatli/Garrus).
 
 ## Changelog
 
