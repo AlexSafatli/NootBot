@@ -2,9 +2,9 @@ package net.dirtydeeds.discordsoundboard.chat.sounds;
 
 import net.dirtydeeds.discordsoundboard.chat.MultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.SimpleLog;
 
 public class PlaySoundForUserProcessor extends
         MultiArgumentChatCommandProcessor {

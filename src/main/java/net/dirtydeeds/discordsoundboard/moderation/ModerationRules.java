@@ -1,7 +1,7 @@
 package net.dirtydeeds.discordsoundboard.moderation;
 
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.requests.RestAction;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import java.util.LinkedList;
 import java.util.List;

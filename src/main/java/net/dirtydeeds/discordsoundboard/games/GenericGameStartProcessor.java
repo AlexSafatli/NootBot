@@ -5,10 +5,10 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.RandomUtils;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.entities.Game.GameType;
-import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.core.utils.SimpleLog;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Game.GameType;
+import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.api.utils.SimpleLog;
 
 import java.awt.*;
 import java.util.Date;

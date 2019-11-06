@@ -1,6 +1,6 @@
 package net.dirtydeeds.discordsoundboard.beans;
 
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

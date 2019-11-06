@@ -1,6 +1,6 @@
 package net.dirtydeeds.discordsoundboard.games;
 
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.User;
 
 public class GameContext {
 

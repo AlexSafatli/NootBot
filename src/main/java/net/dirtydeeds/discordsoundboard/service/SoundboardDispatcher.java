@@ -18,8 +18,8 @@ import net.dirtydeeds.discordsoundboard.dao.UserRepository;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.trie.LowercaseTrie;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.core.utils.SimpleLog;
 import org.springframework.stereotype.Service;
 

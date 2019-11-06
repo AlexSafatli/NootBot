@@ -1,7 +1,7 @@
 package net.dirtydeeds.discordsoundboard.moderation;
 
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -2,10 +2,10 @@ package net.dirtydeeds.discordsoundboard.games;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.core.requests.RestAction;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.api.requests.RestAction;
 
 import java.util.function.Consumer;
 

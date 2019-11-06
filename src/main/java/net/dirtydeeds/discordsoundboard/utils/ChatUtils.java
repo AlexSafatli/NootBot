@@ -5,11 +5,11 @@ import java.util.List;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.core.requests.RestAction;
-import net.dv8tion.jda.core.entities.MessageHistory;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.MessageHistory;
+import net.dv8tion.jda.api.entities.Message;
 
 public class ChatUtils {
 

@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedSingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class ListServersProcessor extends
         AuthenticatedSingleArgumentChatCommandProcessor {

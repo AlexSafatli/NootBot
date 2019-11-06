@@ -16,7 +16,7 @@ import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.utils.ChatUtils;
 import net.dirtydeeds.discordsoundboard.utils.Reusables;
 import net.dv8tion.jda.core.*;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.managers.AudioManager;
@@ -215,7 +215,7 @@ public class SoundboardBot {
     return getRandomTopPlayedSoundName(MAX_DURATION_FOR_RANDOM);
   }
 
-  public User getUser(net.dv8tion.jda.core.entities.User user) {
+  public User getUser(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty()) {
       return users.get(0);
@@ -231,7 +231,7 @@ public class SoundboardBot {
   }
 
   public boolean isAuthenticated(
-    net.dv8tion.jda.core.entities.User user, Guild guild) {
+    net.dv8tion.jda.api.entities.User user, Guild guild) {
     if (user.getName().equals(owner) || getUser(user).isPrivileged())
       return true;
     if (guild != null) {
@@ -268,7 +268,7 @@ public class SoundboardBot {
     return this.bot.getSelfUser().getName();
   }
 
-  public boolean isOwner(net.dv8tion.jda.core.entities.User user) {
+  public boolean isOwner(net.dv8tion.jda.api.entities.User user) {
     return (user.getName().equals(owner));
   }
 
@@ -287,8 +287,8 @@ public class SoundboardBot {
     return ChatUtils.getDiscussionChannel(this, guild);
   }
 
-  public net.dv8tion.jda.core.entities.User getUserByName(String username) {
-    for (net.dv8tion.jda.core.entities.User user : bot.getUsers()) {
+  public net.dv8tion.jda.api.entities.User getUserByName(String username) {
+    for (net.dv8tion.jda.api.entities.User user : bot.getUsers()) {
       if (user.getName().equalsIgnoreCase(username))
         return user;
     }
@@ -299,15 +299,15 @@ public class SoundboardBot {
     return rules.get(guild);
   }
 
-  public String getEntranceForUser(net.dv8tion.jda.core.entities.User user) {
+  public String getEntranceForUser(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     return (users != null && !users.isEmpty()) ?
            users.get(0).getEntrance() : null;
   }
 
   public void setEntranceForUser(
-    net.dv8tion.jda.core.entities.User user, String filename,
-    net.dv8tion.jda.core.entities.User by) {
+    net.dv8tion.jda.api.entities.User user, String filename,
+    net.dv8tion.jda.api.entities.User by) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty()) {
       users.get(0).setEntrance(filename);
@@ -330,7 +330,7 @@ public class SoundboardBot {
     }
   }
 
-  public boolean disallowUser(net.dv8tion.jda.core.entities.User user) {
+  public boolean disallowUser(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty() && users.get(0).isDisallowed()) {
       return true; // Already disallowed.
@@ -350,11 +350,11 @@ public class SoundboardBot {
   }
 
   public boolean disallowUser(String username) {
-    net.dv8tion.jda.core.entities.User user = getUserByName(username);
+    net.dv8tion.jda.api.entities.User user = getUserByName(username);
     return (user != null) && disallowUser(user);
   }
 
-  public boolean allowUser(net.dv8tion.jda.core.entities.User user) {
+  public boolean allowUser(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty()) {
       if (users.get(0).isDisallowed()) {
@@ -368,11 +368,11 @@ public class SoundboardBot {
   }
 
   public boolean allowUser(String username) {
-    net.dv8tion.jda.core.entities.User user = getUserByName(username);
+    net.dv8tion.jda.api.entities.User user = getUserByName(username);
     return (user != null) && allowUser(user);
   }
 
-  public boolean throttleUser(net.dv8tion.jda.core.entities.User user) {
+  public boolean throttleUser(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty() && users.get(0).isThrottled()) {
       return true; // Already throttled.
@@ -394,11 +394,11 @@ public class SoundboardBot {
   }
 
   public boolean throttleUser(String username) {
-    net.dv8tion.jda.core.entities.User user = getUserByName(username);
+    net.dv8tion.jda.api.entities.User user = getUserByName(username);
     return (user != null) && throttleUser(user);
   }
 
-  public boolean unthrottleUser(net.dv8tion.jda.core.entities.User user) {
+  public boolean unthrottleUser(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty()) {
       if (users.get(0).isThrottled()) {
@@ -413,7 +413,7 @@ public class SoundboardBot {
   }
 
   public boolean unthrottleUser(String username) {
-    net.dv8tion.jda.core.entities.User user = getUserByName(username);
+    net.dv8tion.jda.api.entities.User user = getUserByName(username);
     return (user != null) && unthrottleUser(user);
   }
 
@@ -425,13 +425,13 @@ public class SoundboardBot {
   }
 
   public void sendMessageToUser(String msg,
-                                net.dv8tion.jda.core.entities.User user) {
+                                net.dv8tion.jda.api.entities.User user) {
     user.openPrivateChannel().queue((PrivateChannel c)-> c.sendMessage(msg).queue());
   }
 
 
   public boolean sendMessageToUser(String msg, String username) {
-    net.dv8tion.jda.core.entities.User user = getUserByName(username);
+    net.dv8tion.jda.api.entities.User user = getUserByName(username);
     if (isUser(user)) {
       LOG.fatal("Tried to send message to self with content \"" + msg + "\".");
       return false;
@@ -496,7 +496,7 @@ public class SoundboardBot {
     audio.setSelfMuted(false);
   }
 
-  public String playRandomFile(net.dv8tion.jda.core.entities.User user) throws
+  public String playRandomFile(net.dv8tion.jda.api.entities.User user) throws
     Exception {
     if (user != null && isAllowedToPlaySound(user)) {
       String toPlay = getRandomSoundName();
@@ -514,7 +514,7 @@ public class SoundboardBot {
   }
 
   public String playRandomFileForCategory(
-    net.dv8tion.jda.core.entities.User user, String category) throws Exception {
+    net.dv8tion.jda.api.entities.User user, String category) throws Exception {
     if (user != null && isAllowedToPlaySound(user)) {
       if (!isASoundCategory(category)) return null;
       VoiceChannel toJoin = getUsersVoiceChannel(user);
@@ -569,7 +569,7 @@ public class SoundboardBot {
   }
 
   public String playFileForUser(String fileName,
-                                net.dv8tion.jda.core.entities.User user) {
+                                net.dv8tion.jda.api.entities.User user) {
     if (user != null && !fileName.isEmpty()) {
       if (dispatcher.getAvailableSoundFiles().get(fileName) != null) {
         VoiceChannel channel = null;
@@ -595,7 +595,7 @@ public class SoundboardBot {
   }
 
   public boolean playFileForEntrance(String fileName,
-                                     net.dv8tion.jda.core.entities.User user,
+                                     net.dv8tion.jda.api.entities.User user,
                                      VoiceChannel joined) {
     if (fileName == null) return false;
     AudioManager voice = joined.getGuild().getAudioManager();
@@ -621,21 +621,21 @@ public class SoundboardBot {
   }
 
   public boolean isAllowedToPlaySound(String username) {
-    net.dv8tion.jda.core.entities.User user = getUserByName(username);
+    net.dv8tion.jda.api.entities.User user = getUserByName(username);
     return (user == null) || isAllowedToPlaySound(user);
   }
 
-  public boolean isAllowedToPlaySound(net.dv8tion.jda.core.entities.User user) {
+  public boolean isAllowedToPlaySound(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     return !(users != null && !users.isEmpty() && users.get(0).isDisallowed());
   }
 
   public boolean isThrottled(String username) {
-    net.dv8tion.jda.core.entities.User user = getUserByName(username);
+    net.dv8tion.jda.api.entities.User user = getUserByName(username);
     return (user != null) && isThrottled(user);
   }
 
-  public boolean isThrottled(net.dv8tion.jda.core.entities.User user) {
+  public boolean isThrottled(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     return (users != null && !users.isEmpty() && users.get(0).isThrottled());
   }
@@ -671,7 +671,7 @@ public class SoundboardBot {
   }
 
   public VoiceChannel getUsersVoiceChannel(
-    net.dv8tion.jda.core.entities.User user) throws Exception {
+    net.dv8tion.jda.api.entities.User user) throws Exception {
     for (Guild guild : getGuildsWithUser(user)) {
       Member member = guild.getMemberById(user.getId());
       if (member != null && member.getVoiceState().getChannel() != null)
@@ -680,8 +680,8 @@ public class SoundboardBot {
     return null; // Could not find this user in a voice channel.
   }
 
-  public boolean isUser(net.dv8tion.jda.core.entities.User user) {
-    net.dv8tion.jda.core.entities.User self = bot.getSelfUser();
+  public boolean isUser(net.dv8tion.jda.api.entities.User user) {
+    net.dv8tion.jda.api.entities.User self = bot.getSelfUser();
     return (self.equals(user) || self.getName().equals(user.getName()));
   }
 
@@ -721,7 +721,7 @@ public class SoundboardBot {
   }
 
   public List<Guild> getGuildsWithUser(
-    net.dv8tion.jda.core.entities.User user) {
+    net.dv8tion.jda.api.entities.User user) {
     List<Guild> guilds = new LinkedList<>();
     for (Guild guild : getGuilds()) {
       List<Member> members = guild.getMembersByName(user.getName(), false);

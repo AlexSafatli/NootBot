@@ -1,7 +1,7 @@
 package net.dirtydeeds.discordsoundboard.async;
 
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.util.Date;
 
