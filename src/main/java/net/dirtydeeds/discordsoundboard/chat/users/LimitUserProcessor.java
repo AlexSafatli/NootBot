@@ -3,12 +3,10 @@ package net.dirtydeeds.discordsoundboard.chat.users;
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedSingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class LimitUserProcessor extends
         AuthenticatedSingleArgumentChatCommandProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("LimitUser");
 
   public LimitUserProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Throttle User", bot);
@@ -21,10 +19,8 @@ public class LimitUserProcessor extends
         pm(event, "You cannot do this to yourself.");
       } else if (bot.throttleUser(username)) {
         pm(event, String.format("Throttled %s.", username));
-        LOG.info("Throttled username " + username);
       } else {
         pm(event, String.format("User %s was not found.", username));
-        LOG.warn("Failed to throttle username " + username);
       }
     }
   }

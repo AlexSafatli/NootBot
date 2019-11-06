@@ -4,7 +4,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.user.UserActivityUpdateEvent;
+import net.dv8tion.jda.api.events.user.UserActivityStartEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.util.function.Consumer;
@@ -19,11 +19,11 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
     this.bot = bot;
   }
 
-  protected abstract void handleEvent(UserActivityUpdateEvent event, User user);
+  protected abstract void handleEvent(UserActivityStartEvent event, User user);
 
-  public abstract boolean isApplicableUpdateEvent(UserActivityUpdateEvent event, User user);
+  public abstract boolean isApplicableUpdateEvent(UserActivityStartEvent event, User user);
 
-  public void process(UserActivityUpdateEvent event) {
+  public void process(UserActivityStartEvent event) {
     handleEvent(event, event.getUser());
   }
 
@@ -40,10 +40,10 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
     }
   }
 
-  protected void error(UserActivityUpdateEvent event, Exception e) {
+  protected void error(UserActivityStartEvent event, Exception e) {
     Guild guild = event.getGuild();
     VoiceChannel botChannel = bot.getConnectedChannel(guild);
-    Game game = guild.getMemberById(event.getUser().getId()).getGame();
+    Activity game = event.getNewActivity();
     StyledEmbedMessage msg = new StyledEmbedMessage(ERROR_TITLE, bot).isError(true);
     msg.addDescription(e.toString());
     msg.addContent("Connected Channel", botChannel.getName(), true);

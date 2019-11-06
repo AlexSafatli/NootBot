@@ -9,7 +9,7 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -21,7 +21,6 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
   private static final int BIG_NUMBER_OF_SOUNDS = 1750;
   private static final String UNCATEGORIZED = "Uncategorized";
-  public static final SimpleLogger LOG = SimpleLogger.getLog("ListSounds");
 
   private Map<String, SoundFile> soundFiles;
 
@@ -134,7 +133,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
         if (bot.isASoundCategory(cat)) {
           for (Category category : bot.getDispatcher().getCategories()) {
             if (category.getName().equalsIgnoreCase(cat)) {
-              LOG.info("Listing sounds for category " + category.getName() +
+              JDALogger.getLog("List").info("Listing sounds for category " + category.getName() +
                        " in " + event.getGuild());
               listByCategory(category, null, categoryFiles, event);
               return;
@@ -142,8 +141,8 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
           }
         } else {
           e(event, "Not found.");
-          LOG.info(event.getAuthor() + " requested a list for category " +
-                   cat + " but it wasn't found.");
+          JDALogger.getLog("List").info(event.getAuthor() + 
+            " requested a list for category " + cat + " but it wasn't found.");
         }
       }
 

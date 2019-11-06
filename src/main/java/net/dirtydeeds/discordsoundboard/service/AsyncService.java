@@ -2,7 +2,7 @@ package net.dirtydeeds.discordsoundboard.service;
 
 import net.dirtydeeds.discordsoundboard.async.SoundboardJob;
 import net.dirtydeeds.discordsoundboard.utils.Periodic;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,6 @@ import java.util.Stack;
 @Service
 public class AsyncService {
 
-  public static final SimpleLogger LOG = SimpleLogger.getLog("Jobs");
   private List<SoundboardJob> jobs;
   private Stack<SoundboardJob> tasks;
 
@@ -29,13 +28,13 @@ public class AsyncService {
 
   // Adds to a job to be run periodically.
   synchronized void addJob(SoundboardJob job) {
-    LOG.info("Adding job " + job.getClass().getSimpleName());
+    JDALogger.getLog("Jobs").info("Adding job " + job.getClass().getSimpleName());
     jobs.add(job);
   }
 
   // Runs a job only once as a "task".
   public synchronized void runJob(SoundboardJob job) {
-    LOG.info("Adding task " + job.getClass().getSimpleName());
+    JDALogger.getLog("Jobs").info("Adding task " + job.getClass().getSimpleName());
     tasks.push(job);
   }
 
@@ -48,7 +47,7 @@ public class AsyncService {
       try {
         Thread.sleep(millisecondsToWait);
       } catch (InterruptedException e) {
-        LOG.fatal("Thread sleep failed for time: " + millisecondsToWait);
+        JDALogger.getLog("Jobs").error("Thread sleep failed for time: " + millisecondsToWait);
       }
       // See if there are any tasks.
       Collection<SoundboardJob> unrunTasks = new LinkedList<>();
@@ -58,11 +57,11 @@ public class AsyncService {
           try {
             task.run(dispatcher);
           } catch (Exception e) {
-            LOG.fatal("Exception when running task " + task.getClass().getSimpleName() +
+            JDALogger.getLog("Jobs").error("Exception when running task " + task.getClass().getSimpleName() +
                       ": " + e.toString() + " => " + e.getMessage());
             continue;
           }
-          LOG.info("Finished running task " + task.getClass().getSimpleName());
+          JDALogger.getLog("Jobs").info("Finished running task " + task.getClass().getSimpleName());
         } else {
           unrunTasks.add(task);
         }
@@ -74,11 +73,11 @@ public class AsyncService {
           try {
             job.run(dispatcher);
           } catch (Exception e) {
-            LOG.fatal("Exception when running " + job.getClass().getSimpleName() +
+            JDALogger.getLog("Jobs").error("Exception when running " + job.getClass().getSimpleName() +
                     ": " + e.toString() + " => " + e.getMessage());
             continue;
           }
-          LOG.info("Finished running job " + job.getClass().getSimpleName());
+          JDALogger.getLog("Jobs").info("Finished running job " + job.getClass().getSimpleName());
         }
       }
     }

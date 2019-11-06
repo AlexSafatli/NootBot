@@ -14,9 +14,9 @@ public class PeriodicLambdas {
     return new PeriodicLambdaJob(Reusables::setRandomGame, Periodic.EVERY_QUARTER_HOUR);
   }
 
-  public static PeriodicLambdaJob changeBotChannelTopic() {
-    return new PeriodicLambdaJob(Reusables::setRandomTopicForPublicChannels, Periodic.EVERY_DAY);
-  }
+  // public static PeriodicLambdaJob changeBotChannelTopic() {
+  //   return new PeriodicLambdaJob(Reusables::setRandomTopicForPublicChannels, Periodic.EVERY_DAY);
+  // }
 
   public static PeriodicLambdaJob updateSayingsCaches() {
     return new PeriodicLambdaJob(Reusables::updateSayingsCache, Periodic.EVERY_WEEK);

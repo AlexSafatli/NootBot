@@ -5,11 +5,9 @@ import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("RandomSound");
 
   public PlayRandomProcessor(String prefix, SoundboardBot soundPlayer) {
     super(prefix, "Random Sound", soundPlayer);
@@ -19,7 +17,6 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
     String category = getArgument(), filePlayed = null, desc = "Did you like it?";
     if (!bot.isAllowedToPlaySound(event.getAuthor())) {
       pm(event, "You're not allowed to do that.");
-      LOG.info(event.getAuthor() + " is not allowed to play sounds.");
       return;
     }
     try {
@@ -38,7 +35,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
       if (filePlayed != null &&
           bot.getUsersVoiceChannel(event.getAuthor()) != null) {
         SoundFile file = bot.getDispatcher().getSoundFileByName(filePlayed);
-        LOG.info("Played \"" + filePlayed + "\" in server " +
+        JDALogger.getLog("Sound").info("Played \"" + filePlayed + "\" in server " +
                  event.getGuild().getName());
         StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file,
                                 "Played Random Sound `" + filePlayed + "`",

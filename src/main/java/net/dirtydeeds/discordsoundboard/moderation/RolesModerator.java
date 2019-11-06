@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.managers.GuildController;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.RoleAction;
 
@@ -17,28 +16,27 @@ class RolesModerator {
 
   static RestAction<Void> assertMemberHasRole(Member member, Role role) {
     if (!member.getRoles().contains(role)) {
-      GuildController ctrl = member.getGuild().getController();
-      return ctrl.addSingleRoleToMember(member, role);
+      Guild g = member.getGuild();
+      return g.addRoleToMember(member, role);
     }
     return null;
   }
 
   static RestAction<Void> assertMemberOnlyHasRole(Member member, Role role) {
-    GuildController ctrl = member.getGuild().getController();
-    ctrl.modifyMemberRoles(member, new LinkedList<>(), member.getRoles()).complete();
-    return ctrl.addSingleRoleToMember(member, role);
+    Guild g = member.getGuild();
+    g.modifyMemberRoles(member, new LinkedList<>(), member.getRoles()).complete();
+    return g.addRoleToMember(member, role);
   }
 
   static Role newTopicRole(Guild guild, String name, String channelName) {
     for (Role role : guild.getRoles()) {
       if (role.getName().equals(name)) return null;
     }
-    GuildController ctrl = guild.getController();
-    RoleAction action = ctrl.createRole();
+    RoleAction action = guild.createRole();
     Role r = action.setColor(StringUtils.toColor(
             name)).setHoisted(false).setMentionable(false).setName(name
     ).complete();
-    ctrl.createTextChannel(channelName).addPermissionOverride(
+    guild.createTextChannel(channelName).addPermissionOverride(
             guild.getPublicRole(), 0,
             Permission.ALL_TEXT_PERMISSIONS).addPermissionOverride(
                     r, Permission.ALL_TEXT_PERMISSIONS, 0).queue();

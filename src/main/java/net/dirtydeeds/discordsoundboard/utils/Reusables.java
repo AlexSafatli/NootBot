@@ -7,17 +7,17 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.managers.ChannelManagerUpdatable;
+// import net.dv8tion.jda.api.managers.ChannelManagerUpdatable;
 
 public class Reusables {
 
   public static void setRandomGame(SoundboardBot b) {
-    Game currentGame = b.getAPI().getPresence().getGame();
+    Activity currentGame = b.getAPI().getPresence().getActivity();
     String newName = getRandomGameName(b.getDispatcher());
     while (currentGame != null && newName.equals(currentGame.getName())) {
       newName = getRandomGameName(b.getDispatcher());
     }
-    b.getAPI().getPresence().setGame(Game.of(newName));
+    b.getAPI().getPresence().setActivity(Activity.playing(newName));
   }
 
   private static String getRandomGameName(SoundboardDispatcher dispatcher) {
@@ -26,18 +26,18 @@ public class Reusables {
                                             dispatcher.getPhrases()));
   }
 
-  public static void setRandomTopicForPublicChannels(SoundboardBot b) {
-    for (Guild guild : b.getGuilds()) {
-      TextChannel publicChannel = b.getBotChannel(guild);
-      ModerationRules rules = b.getRulesForGuild(guild);
-      if (publicChannel != null && rules.isPermitted()) {
-        ChannelManagerUpdatable mngr = publicChannel.getManagerUpdatable();
-        Message msg = (Message)RandomUtils.chooseOne(rules.getSayings().toArray());
-        mngr.getTopicField().setValue(msg.getStrippedContent());
-        mngr.update().queue();
-      }
-    }
-  }
+  // public static void setRandomTopicForPublicChannels(SoundboardBot b) {
+  //   for (Guild guild : b.getGuilds()) {
+  //     TextChannel publicChannel = b.getBotChannel(guild);
+  //     ModerationRules rules = b.getRulesForGuild(guild);
+  //     if (publicChannel != null && rules.isPermitted()) {
+  //       ChannelManagerUpdatable mngr = publicChannel.getManagerUpdatable();
+  //       Message msg = (Message)RandomUtils.chooseOne(rules.getSayings().toArray());
+  //       mngr.getTopicField().setValue(msg.getStrippedContent());
+  //       mngr.update().queue();
+  //     }
+  //   }
+  // }
 
   public static void updateSayingsCache(SoundboardBot b) {
     for (Guild guild : b.getGuilds()) {

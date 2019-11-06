@@ -8,15 +8,13 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("Sound");
 
   public PlaySoundProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Play Sound", bot);
@@ -64,13 +62,12 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
       bot.playFileForChatCommand(name, event);
     } catch (Exception e) {
       e(event, "Could not play sound => " + e.getMessage());
-      LOG.warn("Did not play sound.");
     }
   }
 
   @Override
   public void process(MessageReceivedEvent event) {
-    String message = event.getMessage().getContent().toLowerCase();
+    String message = event.getMessage().getContentRaw().toLowerCase();
     if (StringUtils.containsOnly(message, '?')) return;
     super.process(event);
   }
@@ -82,12 +79,12 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
     boolean playNumberedSets = r != null && r.canPlayNumberedSets();
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, "You're not allowed to do that.");
-      LOG.info(
+      JDALogger.getLog("Sound").info(
               String.format("%s isn't allowed to play sounds.", user.getName()));
     } else if (StringUtils.containsAny(name, '?')) {
       return;
     } else if (bot.getSoundMap().get(name) == null) {
-      LOG.info("Sound was not found.");
+      JDALogger.getLog("Sound").info("Sound was not found.");
       String suggestion = "Check your spelling.",
               possibleName = bot.getClosestMatchingSoundName(name);
       if (name.equals("help")) {
@@ -103,7 +100,7 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
           }
         }
       }
-      LOG.info("Suggestion: " + suggestion);
+      JDALogger.getLog("Sound").info("Suggestion: " + suggestion);
       sendBadSoundMessage(event, name, suggestion, user);
     } else if (playNumberedSets && getNumberedSet(name).size() > 0) {
       play(event, StringUtils.randomString(getNumberedSet(name)));

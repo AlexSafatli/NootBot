@@ -15,7 +15,7 @@ public class FavoritePhraseProcessor extends
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
     int len = getPrefix().length() + 1;
-    String m = event.getMessage().getContent(),
+    String m = event.getMessage().getContentRaw(),
            phrase = (m.length() > len) ?
                   m.substring(getPrefix().length() + 1).trim() : null;
     if (phrase == null) {

@@ -14,7 +14,7 @@ public class UnfavoritePhraseProcessor extends
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    String m = event.getMessage().getContent(),
+    String m = event.getMessage().getContentRaw(),
            phrase = m.substring(getPrefix().length() + 1).trim();
     if (bot.getDispatcher().removePhrase(phrase)) {
       m(event, "Removed phrase `" + phrase + "` from list of phrases!");

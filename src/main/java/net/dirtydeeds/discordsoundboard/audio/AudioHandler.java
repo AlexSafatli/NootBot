@@ -6,11 +6,9 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class AudioHandler implements AudioLoadResultHandler {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("AudioHandler");
 
   private final AudioPlayer player;
 
@@ -25,13 +23,12 @@ public class AudioHandler implements AudioLoadResultHandler {
 
   @Override
   public void playlistLoaded(AudioPlaylist playlist) {
-    LOG.info("Loaded playlist " + playlist.getName());
     player.startTrack(playlist.getTracks().get(0), false);
   }
 
   @Override
   public void noMatches() {
-    LOG.warn("No match for audio identifier.");
+    JDALogger.getLog("Audio").warn("No match for audio identifier.");
   }
 
   @Override

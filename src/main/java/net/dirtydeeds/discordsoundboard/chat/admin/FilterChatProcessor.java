@@ -45,7 +45,7 @@ public class FilterChatProcessor implements ChatCommandProcessor {
   public void process(MessageReceivedEvent event) {
     if (!isApplicableCommand(event)) return;
     try {
-      copyMessage(event, event.getMessage().getContent());
+      copyMessage(event, event.getMessage().getContentRaw());
       if (deleteOriginal) deleteOriginalMessage(event);
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -75,7 +75,7 @@ public class FilterChatProcessor implements ChatCommandProcessor {
     for (String cname : channelnames) {
       textChannels.addAll(event.getGuild().getTextChannelsByName(cname, true));
     }
-    Matcher m = regexp.matcher(event.getMessage().getContent());
+    Matcher m = regexp.matcher(event.getMessage().getContentRaw());
     return !textChannels.isEmpty()
             && !event.isFromType(ChannelType.PRIVATE)
             && !textChannels.contains(event.getTextChannel())

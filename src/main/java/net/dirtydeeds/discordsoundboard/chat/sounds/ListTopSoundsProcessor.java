@@ -9,7 +9,7 @@ import net.dirtydeeds.discordsoundboard.chat.AbstractChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
 

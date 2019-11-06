@@ -20,8 +20,8 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.managers.AudioManager;
-import net.dv8tion.jda.api.utils.PermissionUtil;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.PermissionUtil;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -36,7 +36,6 @@ import java.util.*;
  */
 public class SoundboardBot {
 
-  public static final SimpleLogger LOG = SimpleLogger.getLog("Bot");
   private static final int CHANNEL_CONNECTION_TIMEOUT = 5000;
   private static final int TOP_PLAYED_SOUND_THRESHOLD = 50;
   private static final int MAX_DURATION_FOR_RANDOM = 10;
@@ -324,9 +323,9 @@ public class SoundboardBot {
                           "**. *Contact the bot owner to dispute this action" +
                           " if this action is being abused.*", user);
       }
-      LOG.info("New entrance \"" + filename + "\" set for " + user.getName());
+      JDALogger.getLog("Bot").info("New entrance \"" + filename + "\" set for " + user.getName());
     } else {
-      LOG.info("Cleared entrance associated with " + user.getName());
+      JDALogger.getLog("Bot").info("Cleared entrance associated with " + user.getName());
     }
   }
 
@@ -341,7 +340,7 @@ public class SoundboardBot {
         users.get(0).setDisallowed(true);
         dispatcher.saveUser(users.get(0));
       }
-      LOG.info("User " + user + " disallowed from playing sounds.");
+      JDALogger.getLog("Bot").info("User " + user + " disallowed from playing sounds.");
       sendMessageToUser("You have been **disallowed** from playing sounds" +
                         " with this bot. *Contact the bot owner to dispute " +
                         "this action.*", user);
@@ -383,7 +382,7 @@ public class SoundboardBot {
         users.get(0).setThrottled(true);
         dispatcher.saveUser(users.get(0));
       }
-      LOG.info("User " + user + " throttled from playing sounds.");
+      JDALogger.getLog("Bot").info("User " + user + " throttled from playing sounds.");
       sendMessageToUser("You have been **throttled** from sending"
                         + " me commands. You will only be able to send me" +
                         " limited requests in a  period of time. " +
@@ -433,7 +432,7 @@ public class SoundboardBot {
   public boolean sendMessageToUser(String msg, String username) {
     net.dv8tion.jda.api.entities.User user = getUserByName(username);
     if (isUser(user)) {
-      LOG.fatal("Tried to send message to self with content \"" + msg + "\".");
+      JDALogger.getLog("Bot").error("Tried to send message to self with content \"" + msg + "\".");
       return false;
     }
     if (user != null) {
@@ -441,7 +440,7 @@ public class SoundboardBot {
       return true;
     }
     else {
-      LOG.warn("Tried to send message \"" + msg + "\" to username " +
+      JDALogger.getLog("Bot").warn("Tried to send message \"" + msg + "\" to username " +
               username + " but could not find user.");
       for (SoundboardBot b : dispatcher.getBots()) {
         if (b.equals(this)) continue;
@@ -545,7 +544,7 @@ public class SoundboardBot {
           playFile(fileName, toJoin.getGuild());
           lastPlayed =
             new SoundPlayedEvent(fileName, event.getAuthor().getName());
-          LOG.info("Played sound \"" + fileName + "\" in server " +
+          JDALogger.getLog("Bot").info("Played sound \"" + fileName + "\" in server " +
                    toJoin.getGuild().getName());
         }
       }
@@ -562,7 +561,7 @@ public class SoundboardBot {
       } else {
         moveToChannel(toJoin);
         playURL(url, toJoin.getGuild());
-        LOG.info("Played url \"" + url + "\" in server " +
+        JDALogger.getLog("Bot").info("Played url \"" + url + "\" in server " +
                  toJoin.getGuild().getName());
       }
     }
@@ -576,11 +575,11 @@ public class SoundboardBot {
         try {
           channel = getUsersVoiceChannel(user);
         } catch (Exception e) {
-          LOG.fatal("Failed to search for user " + user +
+          JDALogger.getLog("Bot").error("Failed to search for user " + user +
                     " in a voice channel.");
         }
         if (channel == null) {
-          LOG.warn("Problem moving to user " + user);
+          JDALogger.getLog("Bot").warn("Problem moving to user " + user);
           return null;
         } else {
           moveToChannel(channel);
@@ -606,12 +605,12 @@ public class SoundboardBot {
         !voice.isConnected()) {
       if (joined.getGuild().getAfkChannel() != null &&
           joined.getId().equals(joined.getGuild().getAfkChannel().getId())) {
-        LOG.info("User joined AFK channel so won't follow to play entrance.");
+        JDALogger.getLog("Bot").info("User joined AFK channel so won't follow to play entrance.");
         return false;
       }
       if (connected == null || !connected.equals(joined))
         if (!moveToChannel(joined)) return false;
-      LOG.info("Playing entrance \"" + fileName + "\" for user " +
+      JDALogger.getLog("Bot").info("Playing entrance \"" + fileName + "\" for user " +
                user.getName() + " in " + joined.getName());
       SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
       playFile(fileToPlay, joined.getGuild(), true);
@@ -647,15 +646,15 @@ public class SoundboardBot {
         voice.getConnectedChannel().equals(channel))
       return false;
     if (!hasPermissionInVoiceChannel(channel, Permission.VOICE_CONNECT)) {
-      LOG.info("No permission to join " + channel);
+      JDALogger.getLog("Bot").info("No permission to join " + channel);
       return false;
     }
-    LOG.info("Moving to channel " + channel);
+    JDALogger.getLog("Bot").info("Moving to channel " + channel);
     try {
       if (voice.isConnected() && !voice.isAttemptingToConnect())
         voice.openAudioConnection(channel);
       else if (voice.isAttemptingToConnect())
-        LOG.info("Still waiting to connect to channel " +
+        JDALogger.getLog("Bot").info("Still waiting to connect to channel " +
                  voice.getQueuedAudioConnection().getName());
       else {
         voice.openAudioConnection(channel);
@@ -663,7 +662,7 @@ public class SoundboardBot {
       }
     } catch (Exception e) {
       voice.closeAudioConnection();
-      LOG.warn("Closed audio connection because of an error.");
+      JDALogger.getLog("Bot").warn("Closed audio connection because of an error.");
       e.printStackTrace();
       return false;
     }
@@ -776,7 +775,7 @@ public class SoundboardBot {
     AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     AudioPlayer player = ((AudioPlayerSendHandler)(
                             audio.getSendingHandler())).getPlayer();
-    LOG.info("Sending request for '" + url + "' to AudioManager");
+    JDALogger.getLog("Bot").info("Sending request for '" + url + "' to AudioManager");
     scheduler.load(url, new AudioHandler(player));
   }
 
@@ -830,9 +829,9 @@ public class SoundboardBot {
 
   private void initializeDiscordBot(String token) {
     try {
-      bot = new JDABuilder(AccountType.BOT).setToken(token).buildBlocking();
+      bot = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
       for (Guild guild : getGuilds()) {
-        LOG.info("Connecting: " + guild.getName());
+        JDALogger.getLog("Bot").info("Connecting: " + guild.getName());
         initSettings(guild);
       }
       ChatListener chatListener = new ChatListener(this);
@@ -845,11 +844,13 @@ public class SoundboardBot {
       addListener(guildListener);
       bot.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
       Reusables.setRandomGame(this);
-      LOG.info("Finished initializing bot with name " + getBotName());
+      JDALogger.getLog("Bot").info("Finished initializing bot with name " + 
+        getBotName());
       this.chatListener = chatListener;
     } catch (LoginException | IllegalArgumentException |
-               InterruptedException | RateLimitedException e) {
-      LOG.fatal("Could not completely initialize bot " + getBotName());
+               InterruptedException e) {
+      JDALogger.getLog("Bot").error("Could not completely initialize bot " + 
+        getBotName());
       e.printStackTrace();
     }
   }

@@ -6,7 +6,7 @@ import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedMultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -15,8 +15,6 @@ import java.util.List;
 
 public class RenameSoundProcessor extends
         AuthenticatedMultiArgumentChatCommandProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("RenameSound");
 
   public RenameSoundProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Rename Sound", bot);
@@ -39,13 +37,13 @@ public class RenameSoundProcessor extends
       SoundFile old = bot.getSoundMap().get(oldName);
       File oldFile = old.getSoundFile();
       Path source = Paths.get(oldFile.getPath());
-      LOG.info("Identified path of file: " + source);
+      JDALogger.getLog("Rename").info("Identified path of file: " + source);
       int extIndex = oldFile.getName().lastIndexOf(".");
       String ext = (extIndex != -1) ?
               oldFile.getName().substring(extIndex) : "";
-      LOG.info("Identified extension of file: " + ext);
+      JDALogger.getLog("Rename").info("Identified extension of file: " + ext);
       File newFile = source.resolveSibling(newName + ext).toFile();
-      LOG.info("Moving file to: " + newFile.getPath());
+      JDALogger.getLog("Rename").info("Moving file to: " + newFile.getPath());
       Files.move(oldFile, newFile);
       bot.getDispatcher().updateFileList();
       SoundFile sound = bot.getDispatcher().getSoundFileByName(newName);
@@ -68,7 +66,7 @@ public class RenameSoundProcessor extends
         pm(event, String.format("Renamed `%s` -> `%s`", oldName, newName));
       }
     } catch (Exception e) {
-      LOG.fatal("While renaming a file: " + e.toString() + " => " +
+      JDALogger.getLog("Rename").error("While renaming a file: " + e.toString() + " => " +
               e.getMessage());
       e.printStackTrace();
       bot.getDispatcher().updateFileList();

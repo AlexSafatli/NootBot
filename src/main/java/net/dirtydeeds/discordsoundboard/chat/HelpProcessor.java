@@ -5,11 +5,9 @@ import java.util.List;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class HelpProcessor extends AbstractChatCommandProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("Help");
 
   private List<ChatCommandProcessor> processors;
 
@@ -49,7 +47,8 @@ public class HelpProcessor extends AbstractChatCommandProcessor {
       if (canRunAuthenticated) pm(event, s);
       else m(event, s);
     }
-    LOG.info("Responded to help command from " + event.getAuthor().getName());
+    JDALogger.getLog("Help").info("Responded to help command from " + 
+      event.getAuthor().getName());
   }
 
   @Override

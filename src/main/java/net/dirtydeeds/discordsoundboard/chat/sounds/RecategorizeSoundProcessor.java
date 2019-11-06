@@ -5,7 +5,7 @@ import net.dirtydeeds.discordsoundboard.chat.AuthenticatedMultiArgumentChatComma
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -13,8 +13,6 @@ import java.nio.file.Paths;
 
 public class RecategorizeSoundProcessor extends
         AuthenticatedMultiArgumentChatCommandProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("RecategorizeSound");
 
   public RecategorizeSoundProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Recategorize", bot);
@@ -35,7 +33,7 @@ public class RecategorizeSoundProcessor extends
       pm(event, "The category `" + cat + "` does not exist. *Will make it as " +
               "a new primary category!*");
       Path newCat = bot.getSoundsPath().resolve(cat);
-      LOG.info("Creating directory: " + newCat);
+      JDALogger.getLog("Recat").info("Creating directory: " + newCat);
       newCat.toFile().mkdir();
       bot.getDispatcher().updateFileList();
     }
@@ -43,15 +41,15 @@ public class RecategorizeSoundProcessor extends
       boolean success = false;
       File file = bot.getSoundMap().get(name).getSoundFile();
       Path source = Paths.get(file.getPath());
-      LOG.info("Identified path of file: " + source);
+      JDALogger.getLog("Recat").info("Identified path of file: " + source);
       int extIndex = file.getName().lastIndexOf(".");
       String ext = (extIndex != -1) ? file.getName().substring(extIndex) : "";
-      LOG.info("Identified extension of file: " + ext);
+      JDALogger.getLog("Recat").info("Identified extension of file: " + ext);
       for (Category category : bot.getDispatcher().getCategories()) {
         if (category.getName().equalsIgnoreCase(cat)) {
           File destination =
                   category.getFolderPath().resolve(name + ext).toFile();
-          LOG.info("Moving file to: " + destination.getPath());
+          JDALogger.getLog("Recat").info("Moving file to: " + destination.getPath());
           Files.move(file, destination);
           success = true;
           pm(event, String.format("Moved '%s' from '%s' -> '%s'", file.getName(),
@@ -63,7 +61,7 @@ public class RecategorizeSoundProcessor extends
         pm(event, String.format("Could not move '%s'", name));
     } catch (Exception e) {
       e.printStackTrace();
-      LOG.fatal("While renaming a file: " + e.toString() + " => " +
+      JDALogger.getLog("Recat").error("While renaming a file: " + e.toString() + " => " +
               e.getMessage());
       pm(event, String.format("Could not move '%s'", name));
     }

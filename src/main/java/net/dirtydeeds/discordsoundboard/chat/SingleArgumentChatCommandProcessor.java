@@ -17,7 +17,7 @@ public abstract class SingleArgumentChatCommandProcessor extends
                                       String message);
 
   public void process(MessageReceivedEvent event) {
-    String message = event.getMessage().getContent().toLowerCase();
+    String message = event.getMessage().getContentRaw().toLowerCase();
     if (!message.endsWith(getPrefix()))
       arg = message.substring(getPrefix().length() + 1);
     super.process(event);

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.AbstractAttachmentProcessor;
@@ -19,13 +20,11 @@ import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.api.exceptions.*;
 
 public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
-  public static final SimpleLogger LOG =
-          SimpleLogger.getLog("SoundAttachmentProcessor");
   private static final int MAX_FILE_SIZE_IN_BYTES = 2000000; // 2MB
   private static final int MAX_DURATION_IN_SECONDS = 12; // 12s
   private static final String WAS_THIS_FOR_ME =
@@ -38,12 +37,11 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
   protected boolean handleAttachment(MessageReceivedEvent event,
                                      Attachment attachment) {
     User user = event.getAuthor();
-    String category = event.getMessage().getContent();
+    String category = event.getMessage().getContentRaw();
     AttachmentFile file = getAttachmentDetails(attachment);
 
     // Check for maximum file size allowed.
     if (attachment.getSize() >= MAX_FILE_SIZE_IN_BYTES) {
-      LOG.info("File " + file.name + " is too large.");
       String end = (event.isFromType(ChannelType.PRIVATE)) ?
               "" : WAS_THIS_FOR_ME;
       pm(event, "File `" + file.name + "` is too large." + end);
@@ -63,16 +61,12 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
         }
       }
     } else {
-      LOG.info("No category given or found (" + category + ").");
       category = null;
     }
 
     // See if it already exists!
     File target = new File(downloadPath.toString(), file.name);
-    LOG.info("Will download file with path: " +
-            downloadPath.toString() + " and name: " + file.name);
     if (target.exists() || bot.getSoundMap().get(file.name) != null) {
-      LOG.info(user.getName() + " tried to upload a file that already exists.");
       pm(event, "A sound with the name `" + file.shortName +
               "` already exists! Type `.whatis " + file.shortName +
               "` for details.");
@@ -80,41 +74,46 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
     }
 
     // Download the file.
-    if (attachment.download(target)) {
-      LOG.info("Download succeeded: " + attachment.getFileName());
-      dispatcher.updateFileList();
-      SoundFile soundFile = dispatcher.getSoundFileByName(file.shortName);
-      if (soundFile == null) {
-        e(event, "Something went wrong - could not find downloaded file.");
-        return false;
-      }
-      // Check duration.
-      net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(user);
-      if ((u != null && u.getPrivilegeLevel() < 2 || !bot.isOwner(user)) &&
-              soundFile.getDuration() > MAX_DURATION_IN_SECONDS) {
-        // Delete the file.
-        LOG.info("File was too long! Deleting the file.");
-        if (!target.delete()) LOG.warn("Could not delete file.");
+    try {
+      if (attachment.downloadToFile(target).get() != null) {
+        JDALogger.getLog("Upload").info("Download succeeded: " + attachment.getFileName());
         dispatcher.updateFileList();
-        pm(event,
-                "File `" + file.name + "` is *too long* (**" +
-                        soundFile.getDuration() + "s**). Want *less than or equal to* **" +
-                        MAX_DURATION_IN_SECONDS + "s**.");
+        SoundFile soundFile = dispatcher.getSoundFileByName(file.shortName);
+        if (soundFile == null) {
+          e(event, "Something went wrong - could not find downloaded file.");
+          return false;
+        }
+        // Check duration.
+        net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(user);
+        if ((u != null && u.getPrivilegeLevel() < 2 || !bot.isOwner(user)) &&
+                soundFile.getDuration() > MAX_DURATION_IN_SECONDS) {
+          // Delete the file.
+          JDALogger.getLog("Upload").info("File was too long! Deleting the file.");
+          if (!target.delete()) JDALogger.getLog("Upload").warn("Could not delete file.");
+          dispatcher.updateFileList();
+          pm(event,
+                  "File `" + file.name + "` is *too long* (**" +
+                          soundFile.getDuration() + "s**). Want *less than or equal to* **" +
+                          MAX_DURATION_IN_SECONDS + "s**.");
+          return false;
+        }
+
+        // Send message(s).
+        pm(event, getDownloadedMessage(
+                file.name, category, soundFile, attachment.getSize()));
+        StyledEmbedMessage publishMessage = getPublishMessage(category,
+                file.shortName, user, soundFile, event.getGuild());
+        if (!event.isFromType(ChannelType.PRIVATE)) embed(event, publishMessage);
+        if (!user.getName().equals(bot.getOwner())) { // Alert bot owner too.
+          sendPublishMessageToOwner(publishMessage);
+          JDALogger.getLog("Upload").info("Sent information for uploaded file to owner.");
+        }
+      } else {
+        e(event, "Download of file `" + file.name + "` failed!");
         return false;
       }
-
-      // Send message(s).
-      pm(event, getDownloadedMessage(
-              file.name, category, soundFile, attachment.getSize()));
-      StyledEmbedMessage publishMessage = getPublishMessage(category,
-              file.shortName, user, soundFile, event.getGuild());
-      if (!event.isFromType(ChannelType.PRIVATE)) embed(event, publishMessage);
-      if (!user.getName().equals(bot.getOwner())) { // Alert bot owner too.
-        sendPublishMessageToOwner(publishMessage);
-        LOG.info("Sent information for uploaded file to owner.");
-      }
-    } else {
-      e(event, "Download of file `" + file.name + "` failed!");
+    } catch (InterruptedException | ExecutionException e) {
+      e(event, "Download of file failed!");
       return false;
     }
 
@@ -184,7 +183,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
     }
     if (owner != null) {
       if (!sender.equals(bot)) {
-        LOG.info("Sending message to owner via different bot " + sender.getBotName());
+        JDALogger.getLog("Upload").info("Sending message to owner via different bot " + sender.getBotName());
         msg.addContent("Bot", bot.getBotName(), false);
       }
       owner.openPrivateChannel().queue((PrivateChannel c) ->

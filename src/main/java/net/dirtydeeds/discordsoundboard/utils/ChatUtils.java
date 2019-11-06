@@ -47,7 +47,7 @@ public class ChatUtils {
       a.queue(msgs -> {
         for (Message msg : msgs) {
           if (!msg.getAuthor().equals(bot.getAPI().getSelfUser()))
-            StringUtils.cacheWords(msg.getContent());
+            StringUtils.cacheWords(msg.getContentRaw());
         }
       });
     }

@@ -6,14 +6,12 @@ import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class SearchProcessor extends SingleArgumentChatCommandProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("Search");
 
   public SearchProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Search Sounds", bot);
@@ -40,7 +38,6 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
     // Leverage trie first.
     String possibleName = bot.getClosestMatchingSoundName(query);
     if (possibleName != null) {
-      LOG.info("Closest matching sound name from trie: " + possibleName);
       possibilities.add(possibleName);
     }
 
@@ -55,7 +52,6 @@ public class SearchProcessor extends SingleArgumentChatCommandProcessor {
     mb.append("Found **" + possibilities.size() +
             "** possible sounds for query `" + query + "` \u2014 " +
             user.getAsMention() + ".\n\n");
-    LOG.info("Found " + possibilities.size() + " possible sounds.");
     if (!possibilities.isEmpty()) {
       for (String possibility : possibilities)
         mb.append("`?" + possibility + "` ");

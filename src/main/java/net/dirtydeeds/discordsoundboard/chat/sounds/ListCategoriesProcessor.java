@@ -7,7 +7,7 @@ import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
 

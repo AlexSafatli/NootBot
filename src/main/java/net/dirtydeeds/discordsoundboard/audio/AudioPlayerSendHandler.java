@@ -1,5 +1,7 @@
 package net.dirtydeeds.discordsoundboard.audio;
 
+import java.nio.ByteBuffer;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 
@@ -30,8 +32,8 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
   }
 
   @Override
-  public byte[] provide20MsAudio() {
-    return lastFrame.data;
+  public ByteBuffer provide20MsAudio() {
+    return ByteBuffer.wrap(lastFrame.getData());
   }
 
   @Override

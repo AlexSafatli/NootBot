@@ -4,11 +4,9 @@ import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class PlayUrlProcessor extends SingleArgumentChatCommandProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("URL");
 
   public PlayUrlProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Play URL", bot);
@@ -27,7 +25,6 @@ public class PlayUrlProcessor extends SingleArgumentChatCommandProcessor {
     User user = event.getAuthor();
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, "You're not allowed to do that.");
-      LOG.info(String.format("%s not allowed to play sounds.", user.getName()));
     } else {
       play(event, message.substring(getPrefix().length()));
     }

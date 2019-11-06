@@ -7,8 +7,8 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Activity.ActivityType;
-import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.api.events.user.UserActivityStartEvent;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.awt.*;
 import java.util.Date;
@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("GameStartProcessor");
 
   private static final String MESSAGE_TITLE = "Here's a sound since you're playing **%s**!";
 
@@ -61,7 +59,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     pastEvents = new HashMap<>();
   }
 
-  public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
+  public boolean isApplicableUpdateEvent(UserActivityStartEvent event, User user) {
     Guild guild = event.getGuild();
     VoiceChannel userChannel, botChannel = bot.getConnectedChannel(guild);
     try {
@@ -71,15 +69,13 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
     if (userChannel == null || !userChannel.equals(botChannel))
       return false;
-    Activity game = guild.getMemberById(user.getId()).getActivity();
-    return (game != null &&
-            !game.getType().equals(ActivityType.STREAMING) &&
-            userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
+    List<Activity> games = guild.getMemberById(user.getId()).getActivities();
+    return (!games.isEmpty() && userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
   }
 
-  protected void handleEvent(UserGameUpdateEvent event, User user) {
+  protected void handleEvent(UserActivityStartEvent event, User user) {
     int numPlayers = 0;
-    String game = event.getGuild().getMemberById(user.getId()).getGame().getName();
+    String game = event.getNewActivity().getName();
     VoiceChannel channel;
     try {
       channel = bot.getUsersVoiceChannel(user);
@@ -93,23 +89,25 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     List<Member> members = channel.getMembers();
     User[] users = new User[members.size()];
     for (Member m : members) {
-      Activity g = m.getActivity();
-      if (g != null && g.getName().equals(game) && m.getUser() != null) {
-        LOG.info(m.getUser().getName() + " in channel is playing " + game);
-        users[numPlayers++] = m.getUser();
+      List<Activity> activities = m.getActivities();
+      for (Activity g : activities) {
+        if (g != null && g.getName().equals(game) && m.getUser() != null) {
+          JDALogger.getLog("Game").info(m.getUser().getName() + " in channel is playing " + game);
+          users[numPlayers++] = m.getUser();
+        }
       }
     }
 
     if (numPlayers >= MIN_NUM_PLAYERS) {
 
-      LOG.info("Found " + user.getName() + " + " +
+      JDALogger.getLog("Game").info("Found " + user.getName() + " + " +
               (numPlayers - 1) + " others playing " + game + " in " +
               channel.getName() + " of guild " + event.getGuild().getName() +
               ".");
       if (pastEvents.get(channel.getId()) != null) {
         GameStartEvent pastEvent = pastEvents.get(channel.getId());
         if (pastEvent.isTooSoon()) {
-          LOG.info("Not enough time since last event in channel!");
+          JDALogger.getLog("Game").info("Not enough time since last event in channel!");
           return;
         }
         pastEvent.clear();
@@ -117,7 +115,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
 
       String sound;
       if (bot.isASoundCategory(game)) {
-        LOG.info(game + " is as a category. Can play from that category.");
+        JDALogger.getLog("Game").info(game + " is as a category. Can play from that category.");
         sound = (String)RandomUtils.chooseOne(
                 bot.getRandomSoundNameForCategory(game, MAX_DURATION),
                 bot.getRandomSoundName(MAX_DURATION));
@@ -132,7 +130,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
           bot.playFileForUser(sound, user);
           GameStartEvent e = new GameStartEvent(new Date(System.currentTimeMillis()), null);
           pastEvents.put(channel.getId(), e);
-          LOG.info("Played random sound: \"" + sound + "\".");
+          JDALogger.getLog("Game").info("Played random sound: \"" + sound + "\".");
           embed(lobby, announcement(event, sound, game, users, numPlayers,
                   (f != null) ? f.getNumberOfPlays() : 0),
                   (Message m) -> e.message = m);
@@ -144,7 +142,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
   }
 
-  private StyledEmbedMessage announcement(UserGameUpdateEvent event,
+  private StyledEmbedMessage announcement(UserActivityStartEvent event,
                                          String soundPlayed, String game,
                                          User[] users, int numPlaying,
                                          long numPlays) {

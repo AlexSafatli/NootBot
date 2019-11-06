@@ -3,7 +3,7 @@ package net.dirtydeeds.discordsoundboard.games;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.api.events.user.UserActivityStartEvent;
 
 public class SpecificGameStartProcessor extends GenericGameStartProcessor {
 
@@ -19,8 +19,8 @@ public class SpecificGameStartProcessor extends GenericGameStartProcessor {
     gameName = game;
   }
 
-  public boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user) {
-    Activity currentGame = event.getGuild().getMemberById(user.getId()).getActivity();
+  public boolean isApplicableUpdateEvent(UserActivityStartEvent event, User user) {
+    Activity currentGame = event.getNewActivity();
     if (currentGame == null) return false;
     return super.isApplicableUpdateEvent(event, user) && currentGame.getName().equals(gameName);
   }

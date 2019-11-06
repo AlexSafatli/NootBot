@@ -21,7 +21,7 @@ public abstract class AuthenticatedSingleArgumentChatCommandProcessor extends
         pm(event, "This command is not for you.");
         bot.sendMessageToUser(String.format("User **%s** just tried to run `%s`.",
                 event.getAuthor().getName(),
-                event.getMessage().getContent()),
+                event.getMessage().getContentRaw()),
                 bot.getOwner());
       }
     }

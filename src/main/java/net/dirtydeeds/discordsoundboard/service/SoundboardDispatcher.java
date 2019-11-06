@@ -20,7 +20,7 @@ import net.dirtydeeds.discordsoundboard.trie.LowercaseTrie;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -34,8 +34,6 @@ import java.util.function.Consumer;
 
 @Service
 public class SoundboardDispatcher {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("Dispatcher");
 
   private final UserRepository userDao;
   private final SoundFileRepository soundDao;
@@ -108,18 +106,18 @@ public class SoundboardDispatcher {
       stream.close();
       return;
     } catch (FileNotFoundException e) {
-      LOG.warn("Could not find app.properties file.");
+      JDALogger.getLog("Bot").warn("Could not find app.properties file.");
     } catch (IOException e) {
       e.printStackTrace();
     }
     if (stream == null) {
-      LOG.warn("Loading app.properties file from resources folder");
+      JDALogger.getLog("Bot").warn("Loading app.properties file from resources folder");
       try {
         stream = this.getClass().getResourceAsStream("/app.properties");
         appProperties.load(stream);
         stream.close();
       } catch (IOException | NullPointerException e) {
-        LOG.fatal("Could not load properties.");
+        JDALogger.getLog("Bot").error("Could not load properties.");
         e.printStackTrace();
       }
     }
@@ -128,7 +126,7 @@ public class SoundboardDispatcher {
   private void shutdownBot(int i) {
     int index = i - 1;
     if (bots[index] == null) return;
-    LOG.info("Shutting down bot " + i + ": " + bots[index].getBotName());
+    JDALogger.getLog("Bot").info("Shutting down bot " + i + ": " + bots[index].getBotName());
     for (Object listener : bots[index].getAPI().getRegisteredListeners()) {
       bots[index].getAPI().removeEventListener(listener);
     }
@@ -143,23 +141,23 @@ public class SoundboardDispatcher {
     String token = getProperty("token_" + i),
             owner = getProperty("owner_" + i);
     if (token == null || owner == null) {
-      LOG.fatal("Config not populated! Need API token and owner for bot " + i);
+      JDALogger.getLog("Bot").error("Config not populated! Need API token and owner for bot " + i);
       return;
     } else {
-      LOG.info("Initializing bot " + i +
+      JDALogger.getLog("Bot").info("Initializing bot " + i +
               " (token: " + token + ", owner: " + owner + ")");
     }
     try {
       bot = new SoundboardBot(token, owner, this);
     } catch (Exception e) {
-      LOG.warn("When starting bot " + i + ", ran into exception => " +
+      JDALogger.getLog("Bot").warn("When starting bot " + i + ", ran into exception => " +
               e.getMessage());
     }
     bots[index] = bot;
   }
 
   public void restartBot(SoundboardBot bot) {
-    LOG.info("Restarting bot " + bot.getBotName());
+    JDALogger.getLog("Bot").info("Restarting bot " + bot.getBotName());
     for (int i = 0; i < bots.length; ++i) {
       if (bots[i] != null && bots[i].equals(bot)) {
         startBot(i + 1);
@@ -172,22 +170,22 @@ public class SoundboardDispatcher {
     addStartingPhrases();
     // Bots
     int num = Integer.parseInt(getProperty("number_of_users"));
-    LOG.info("Starting " + num + " bots.");
+    JDALogger.getLog("Bot").info("Starting " + num + " bots.");
     bots = new SoundboardBot[num];
     for (int i = 1; i <= num; ++i) startBot(i);
     // Audio Playing
-    LOG.info("Adding sources to audio manager.");
+    JDALogger.getLog("Bot").info("Adding sources to audio manager.");
     audioManager.registerSourceManager(new YoutubeAudioSourceManager());
     audioManager.registerSourceManager(new TwitchStreamAudioSourceManager());
     audioManager.registerSourceManager(new HttpAudioSourceManager());
     audioManager.registerSourceManager(new LocalAudioSourceManager());
     AudioSourceManagers.registerRemoteSources(audioManager);
     // Async jobs
-    LOG.info("Starting async jobs.");
+    JDALogger.getLog("Bot").info("Starting async jobs.");
     asyncService.addJob(PeriodicLambdas.cleanOldBotMessages());
     asyncService.addJob(PeriodicLambdas.changeToRandomGame());
-    asyncService.addJob(PeriodicLambdas.changeBotChannelTopic());
-    asyncService.addJob(PeriodicLambdas.updateSayingsCaches());
+//    asyncService.addJob(PeriodicLambdas.changeBotChannelTopic());
+//    asyncService.addJob(PeriodicLambdas.updateSayingsCaches());
   }
 
   // This method loads the files. This checks if you are running from a .jar
@@ -198,9 +196,9 @@ public class SoundboardDispatcher {
     Map<String, SoundFile> sounds = new TreeMap<>();
     try {
       if (!soundFilePath.toFile().exists() && soundFilePath.toFile().mkdir())
-        LOG.info("Created new sound directory.");
+        JDALogger.getLog("Bot").info("Created new sound directory.");
       if (!tmpFilePath.toFile().exists() && tmpFilePath.toFile().mkdir())
-        LOG.info("Created new temporary directory.");
+        JDALogger.getLog("Bot").info("Created new temporary directory.");
 
       Files.walk(soundFilePath).forEach(filePath -> {
         if (Files.isRegularFile(filePath)) {
@@ -229,11 +227,11 @@ public class SoundboardDispatcher {
         }
       });
       availableSounds = sounds;
-      LOG.info("Instantiating trie with " + availableSounds.size() +
+      JDALogger.getLog("Bot").info("Instantiating trie with " + availableSounds.size() +
               " sound names.");
       soundNameTrie = new LowercaseTrie(sounds.keySet());
     } catch (Exception e) {
-      LOG.fatal(e.toString());
+      JDALogger.getLog("Bot").error(e.toString());
       e.printStackTrace();
     }
   }
@@ -250,7 +248,7 @@ public class SoundboardDispatcher {
         }
       });
     } catch (IOException e) {
-      LOG.fatal(e.toString());
+      JDALogger.getLog("Bot").error(e.toString());
       e.printStackTrace();
     }
   }
@@ -272,14 +270,14 @@ public class SoundboardDispatcher {
       if (this.bots[i] != null) {
         try {
           lambda.accept(this.bots[i]);
-          LOG.info("Ran lambda using bot " + i + ": " +
+          JDALogger.getLog("Bot").info("Ran lambda using bot " + i + ": " +
                   this.bots[i].getBotName());
         } catch (Exception e) {
-          LOG.warn("When running lambda: " + e.getMessage());
+          JDALogger.getLog("Bot").warn("When running lambda: " + e.getMessage());
           e.printStackTrace();
         }
       } else {
-        LOG.warn("Bot " + i + " was null when trying to run lambda.");
+        JDALogger.getLog("Bot").warn("Bot " + i + " was null when trying to run lambda.");
       }
     }
   }
@@ -392,7 +390,7 @@ public class SoundboardDispatcher {
     for (Category child : _category.getChildren()) {
       if (subcategory.equalsIgnoreCase(child.getName())
               || isASubCategory(subcategory, child.getName())) {
-        LOG.info("Category " + subcategory + " is subcategory to " + category);
+        JDALogger.getLog("Bot").info("Category " + subcategory + " is subcategory to " + category);
         return true;
       }
     }
@@ -460,9 +458,9 @@ public class SoundboardDispatcher {
   public void updateFileList() {
     categoryTree = new Category("", soundFilePath);
     numCategories = 0;
-    LOG.info("Getting list of files.");
+    JDALogger.getLog("Bot").info("Getting list of files.");
     getFileList();
-    LOG.info("Getting list of categories.");
+    JDALogger.getLog("Bot").info("Getting list of categories.");
     getCategoryList(soundFilePath, categoryTree);
   }
 

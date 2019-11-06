@@ -30,7 +30,7 @@ public class ChannelMessageCrawler {
   public List<String> getMessageContent() {
     List<String> strings = new LinkedList<>();
     for (Message m : messages) {
-      strings.add(m.getContent());
+      strings.add(m.getContentRaw());
     }
     return strings;
   }

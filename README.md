@@ -6,6 +6,10 @@ Much of the foundation code was taken from an early commit of [Darkside138/Disco
 
 ## Changelog
 
+### 2.9.0
+
+- Migrate to JDA 4.0 and correct breaking functionality
+
 ### 2.1.6
 
 - Fixed entrance logic so bot does not follow people into AFK channels.

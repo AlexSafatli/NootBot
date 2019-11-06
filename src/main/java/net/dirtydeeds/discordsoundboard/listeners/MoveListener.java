@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.awt.*;
 import java.io.PrintWriter;
@@ -21,8 +21,6 @@ import java.util.Queue;
 import java.util.*;
 
 public class MoveListener extends AbstractListener {
-
-  public static final SimpleLogger LOG = SimpleLogger.getLog("Move");
 
   private static final List<String> WELCOMES = Arrays.asList(
           "%s wants off this planet.",
@@ -60,7 +58,7 @@ public class MoveListener extends AbstractListener {
 
     if (bot.isUser(user)) {
       if (vc.getMembers().size() == 1) {
-        LOG.info("Moved to an empty channel.");
+        JDALogger.getLog("Move").info("Moved to an empty channel.");
         leaveVoiceInGuild(guild);
       }
       return;
@@ -68,7 +66,7 @@ public class MoveListener extends AbstractListener {
       return;
     }
 
-    LOG.info(user.getName() + " joined " + vc.getName() +
+    JDALogger.getLog("Move").info(user.getName() + " joined " + vc.getName() +
             " in " + guild.getName() + ".");
 
     if (!bot.isAllowedToPlaySound(user) ||
@@ -76,10 +74,10 @@ public class MoveListener extends AbstractListener {
                     afk.getId().equals(vc.getId()))) {
       return;
     } else if (bot.isMuted(guild)) {
-      LOG.info("Bot is currently muted. Doing nothing.");
+      JDALogger.getLog("Move").info("Bot is currently muted. Doing nothing.");
       return;
     } else if (vc.getUserLimit() == vc.getMembers().size()) {
-      LOG.info("Channel is full.");
+      JDALogger.getLog("Move").info("Channel is full.");
       return;
     }
 
@@ -90,7 +88,7 @@ public class MoveListener extends AbstractListener {
       bot.sendMessageToUser("**Uh oh!** `" + fileToPlay +
               "` used to be your entrance but I can't find that" +
               " sound anymore. *Update your entrance!*", user);
-      LOG.info(user.getName() + " has stale entrance. Alerted and clearing.");
+      JDALogger.getLog("Move").info(user.getName() + " has stale entrance. Alerted and clearing.");
       bot.setEntranceForUser(user, null, null);
       return;
     }
@@ -152,11 +150,11 @@ public class MoveListener extends AbstractListener {
     // Ignore if it is just the bot or not even connected.
     if (botsChannel == null || bot.isUser(user)) return;
 
-    LOG.info(user.getName() + " left " + vc.getName() + " in " +
+    JDALogger.getLog("Move").info(user.getName() + " left " + vc.getName() + " in " +
             guild.getName() + ".");
 
     if (VoiceUtils.numUsersInVoiceChannels(guild) == 0) {
-      LOG.info("No more users in " + guild.getName());
+      JDALogger.getLog("Move").info("No more users in " + guild.getName());
       leaveVoiceInGuild(guild);
     } else if (botsChannel.getMembers().size() == 1) {
       for (VoiceChannel vc_ : guild.getVoiceChannels()) {
@@ -171,7 +169,7 @@ public class MoveListener extends AbstractListener {
             continue;
           }
           if (bot.moveToChannel(vc_)) {
-            LOG.info("Moving to voice channel " + vc_.getName() +
+            JDALogger.getLog("Move").info("Moving to voice channel " + vc_.getName() +
                     " in server " + guild.getName());
             return;
           }
@@ -193,7 +191,7 @@ public class MoveListener extends AbstractListener {
     if (guild == null) return;
     pastEntrances.computeIfAbsent(guild, k -> new LinkedList<>());
     if (guild.getAudioManager() != null) {
-      LOG.info("Leaving voice in " + guild.getName());
+      JDALogger.getLog("Move").info("Leaving voice in " + guild.getName());
       Queue<EntranceEvent> entrances = pastEntrances.get(guild);
       while (!entrances.isEmpty()) {
         EntranceEvent entrance = entrances.poll();
@@ -217,7 +215,7 @@ public class MoveListener extends AbstractListener {
     return m;
   }
 
-  private StyledEmbedMessage welcomeMessage(User user, Channel channel,
+  private StyledEmbedMessage welcomeMessage(User user, GuildChannel channel,
                                            String soundInfo, boolean welcomeInTitle) {
     String title = (welcomeInTitle) ?
             String.format(Objects.requireNonNull(StringUtils.randomString(WELCOMES)),

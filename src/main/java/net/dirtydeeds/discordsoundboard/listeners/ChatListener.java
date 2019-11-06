@@ -9,16 +9,14 @@ import net.dirtydeeds.discordsoundboard.chat.sounds.*;
 import net.dirtydeeds.discordsoundboard.chat.users.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dv8tion.jda.client.events.relationship.FriendRequestReceivedEvent;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.util.*;
 
 public class ChatListener extends AbstractListener {
 
-  public static final SimpleLogger LOG = SimpleLogger.getLog("Chat");
   private static final char CommonPrefix = '.';
 
   private static final int THROTTLE_TIME_IN_MINUTES = 1;
@@ -89,7 +87,7 @@ public class ChatListener extends AbstractListener {
     processors.add(new FilterTwitchClipProcessor(bot));
     processors.add(new FilterYoutubeClipProcessor(bot));
 
-    LOG.info("Registered " + processors.size() + " processors.");
+    JDALogger.getLog("Chat").info("Registered " + processors.size() + " processors.");
   }
 
   private void updateTick() {
@@ -98,7 +96,7 @@ public class ChatListener extends AbstractListener {
     if (minutesSince >= THROTTLE_TIME_IN_MINUTES) {
       this.tick = now;
       if (requests.size() > 0) {
-        LOG.info(minutesSince +
+        JDALogger.getLog("Chat").info(minutesSince +
                 " min have passed. Clearing request counts for " +
                 requests.size() + " users (" + totalRequests +
                 " total requests).");
@@ -121,7 +119,7 @@ public class ChatListener extends AbstractListener {
       return;
     } else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME
             && !bot.isOwner(user)) {
-      LOG.info("Throttling user " + user.getName() +
+      JDALogger.getLog("Chat").info("Throttling user " + user.getName() +
               " because sent too many requests.");
       bot.throttleUser(user);
       bot.sendMessageToUser("Throttling **" + user.getName() +
@@ -133,9 +131,9 @@ public class ChatListener extends AbstractListener {
     processor.process(event);
     requests.put(user, numRequests + 1); // Increment number of requests.
     ++totalRequests;
-    LOG.info("Processed message using " + processor.getClass().getSimpleName() +
+    JDALogger.getLog("Chat").info("Processed message using " + processor.getClass().getSimpleName() +
             " for user " + user.getName() + " with content \"" +
-            event.getMessage().getContent() + "\" (request: " + totalRequests +
+            event.getMessage().getContentRaw() + "\" (request: " + totalRequests +
             ", bot: " + bot.getBotName() + ").");
   }
 
@@ -145,7 +143,7 @@ public class ChatListener extends AbstractListener {
 
     // See if a help command first. Process it here if that is the case.
     // This does not count against requests.
-    if (event.getMessage().getContent().toLowerCase().equals(withPrefix("help"))) {
+    if (event.getMessage().getContentRaw().toLowerCase().equals(withPrefix("help"))) {
       HelpProcessor help = new HelpProcessor(bot, processors);
       help.process(event);
       return;
@@ -163,27 +161,15 @@ public class ChatListener extends AbstractListener {
     if (isTypoCommand(event)) {
       bot.sendMessageToUser("That is not a command.", event.getAuthor());
       (new NoOpProcessor(bot)).process(event); // Do nothing - deletes the message.
-      LOG.info("User " + event.getAuthor().getName() +
-              " tried to run \"" + event.getMessage().getContent() +
+      JDALogger.getLog("Chat").info("User " + event.getAuthor().getName() +
+              " tried to run \"" + event.getMessage().getContentRaw() +
               "\" which is not a command.");
     }
 
   }
 
-  public void onFriendRequestReceived(FriendRequestReceivedEvent event) {
-    // If the friending user is the owner, add him or her.
-    LOG.info("Received friend request from " + event.getUser().getName());
-    if (event.getUser().equals(bot.getUserByName(bot.getOwner()))) {
-      LOG.info("Accepting friend request.");
-      event.getFriendRequest().accept().queue();
-    } else {
-      LOG.info("Ignoring friend request.");
-      event.getFriendRequest().ignore().queue();
-    }
-  }
-
   private boolean isTypoCommand(MessageReceivedEvent event) {
-    String content = event.getMessage().getContent(),
+    String content = event.getMessage().getContentRaw(),
             prefix = CommonPrefix + "";
     return (content.length() > 1
             && content.startsWith(prefix)

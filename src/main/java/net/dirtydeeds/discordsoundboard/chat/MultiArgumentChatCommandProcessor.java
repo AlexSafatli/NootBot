@@ -17,7 +17,7 @@ public abstract class MultiArgumentChatCommandProcessor extends
                                       String message);
 
   public void process(MessageReceivedEvent event) {
-    String message = event.getMessage().getContent().toLowerCase();
+    String message = event.getMessage().getContentRaw().toLowerCase();
     if (!message.endsWith(getPrefix())) {
       // Get arguments. Comma-delimited.
       String noPrefix = message.substring(getPrefix().length() + 1);
@@ -33,7 +33,7 @@ public abstract class MultiArgumentChatCommandProcessor extends
 
   public String[] getArgumentsCased(MessageReceivedEvent event) {
     String[] argsCased = null;
-    String message = event.getMessage().getContent();
+    String message = event.getMessage().getContentRaw();
     if (!message.endsWith(getPrefix())) {
       // Get arguments. Comma-delimited.
       String noPrefix = message.substring(getPrefix().length() + 1);

@@ -31,7 +31,7 @@ public abstract class AbstractChatCommandProcessor implements
     if (!isApplicableCommand(event)) return;
     clearBuffer();
     try {
-      handleEvent(event, event.getMessage().getContent().toLowerCase());
+      handleEvent(event, event.getMessage().getContentRaw().toLowerCase());
     } catch (Exception ex) {
       StringWriter sw = new StringWriter();
       ex.printStackTrace(new PrintWriter(sw));
@@ -54,7 +54,7 @@ public abstract class AbstractChatCommandProcessor implements
   }
 
   public boolean isApplicableCommand(MessageReceivedEvent event) {
-    return isApplicableCommand(event.getMessage().getContent()) &&
+    return isApplicableCommand(event.getMessage().getContentRaw()) &&
             !bot.isUser(event.getAuthor()); // Never run a command for the bot.
   }
 
@@ -127,7 +127,7 @@ public abstract class AbstractChatCommandProcessor implements
   protected void e(MessageReceivedEvent event, String message) {
     StyledEmbedMessage msg = makeEmbed(message, event.getAuthor());
     msg.addContent("Message", "`" +
-            event.getMessage().getContent() + "`", false);
+            event.getMessage().getContentRaw() + "`", false);
     msg.addContent("Processor", "`" +
             getClass().getSimpleName() + "`", true);
     embed(event, msg.isError(true));
