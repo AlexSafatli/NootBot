@@ -12,11 +12,11 @@ import net.dirtydeeds.discordsoundboard.chat.AbstractChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("New");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("New");
 
   private static final int MIN_NUMBER_OF_HOURS = 168; // 7 days
   private static final int MAX_NUMBER_OF_HOURS = 1152; // 48 days

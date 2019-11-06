@@ -9,13 +9,13 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.utils.JDALogger;
+import net.dv8tion.jda.api.utils.SimpleLogger;
 
 import java.util.Map;
 
 public class GuildUserListener extends AbstractListener {
 
-  public static final JDALogger LOG = JDALogger.getLog("GuildUsers");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("GuildUsers");
 
   private Map<Guild, ModerationRules> modRules;
 

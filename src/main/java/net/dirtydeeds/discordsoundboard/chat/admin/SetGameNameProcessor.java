@@ -6,7 +6,7 @@ import net.dirtydeeds.discordsoundboard.chat.OwnerSingleArgumentChatCommandProce
 import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.JDALogger;
+import net.dv8tion.jda.api.utils.SimpleLogger;
 import net.dv8tion.jda.api.entities.Game;
 
 public class SetGameNameProcessor extends

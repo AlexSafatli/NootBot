@@ -6,7 +6,7 @@ import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedMultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -16,7 +16,7 @@ import java.util.List;
 public class RenameSoundProcessor extends
         AuthenticatedMultiArgumentChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("RenameSound");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("RenameSound");
 
   public RenameSoundProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Rename Sound", bot);

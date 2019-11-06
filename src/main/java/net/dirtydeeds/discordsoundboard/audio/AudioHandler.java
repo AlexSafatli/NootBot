@@ -6,11 +6,11 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 public class AudioHandler implements AudioLoadResultHandler {
 
-  public static final JDALogger LOG = JDALogger.getLog("AudioHandler");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("AudioHandler");
 
   private final AudioPlayer player;
 

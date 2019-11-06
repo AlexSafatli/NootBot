@@ -20,7 +20,7 @@ import net.dirtydeeds.discordsoundboard.trie.LowercaseTrie;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 @Service
 public class SoundboardDispatcher {
 
-  public static final JDALogger LOG = JDALogger.getLog("Dispatcher");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("Dispatcher");
 
   private final UserRepository userDao;
   private final SoundFileRepository soundDao;

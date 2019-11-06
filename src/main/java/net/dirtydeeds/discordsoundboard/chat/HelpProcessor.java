@@ -5,11 +5,11 @@ import java.util.List;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 public class HelpProcessor extends AbstractChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("Help");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("Help");
 
   private List<ChatCommandProcessor> processors;
 

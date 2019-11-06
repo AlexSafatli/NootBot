@@ -3,12 +3,12 @@ package net.dirtydeeds.discordsoundboard.chat.users;
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedSingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 public class RemoveLimitUserProcessor extends
         AuthenticatedSingleArgumentChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("RemoveLimitUser");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("RemoveLimitUser");
 
   public RemoveLimitUserProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Unthrottle User", bot);

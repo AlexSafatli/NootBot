@@ -5,7 +5,7 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.JDALogger;
+import net.dv8tion.jda.api.utils.SimpleLogger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Random;
 public class RandomReactionProcessor implements ChatCommandProcessor {
 
   protected SoundboardBot bot;
-  public static final JDALogger LOG = JDALogger.getLog("RandomReaction");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("RandomReaction");
   private static final int N = 100;
   private static final List<String> REACTIONS = Arrays.asList("👏", "✌", "🤔", "😑", "😓", "😒");
   private Random rng;

@@ -4,12 +4,12 @@ import net.dirtydeeds.discordsoundboard.chat.MultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.JDALogger;
+import net.dv8tion.jda.api.utils.SimpleLogger;
 
 public class PlaySoundForUserProcessor extends
         MultiArgumentChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("SoundForUser");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("SoundForUser");
 
   public PlaySoundForUserProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Sound for User", bot);

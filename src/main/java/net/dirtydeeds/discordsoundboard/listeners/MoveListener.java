@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 import java.awt.*;
 import java.io.PrintWriter;
@@ -22,7 +22,7 @@ import java.util.*;
 
 public class MoveListener extends AbstractListener {
 
-  public static final JDALogger LOG = JDALogger.getLog("Move");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("Move");
 
   private static final List<String> WELCOMES = Arrays.asList(
           "%s wants off this planet.",

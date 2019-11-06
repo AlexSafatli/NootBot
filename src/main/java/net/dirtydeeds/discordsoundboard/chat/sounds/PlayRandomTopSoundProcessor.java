@@ -5,12 +5,12 @@ import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 public class PlayRandomTopSoundProcessor extends
         SingleArgumentChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("RandomTopSound");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("RandomTopSound");
 
   public PlayRandomTopSoundProcessor(String prefix, SoundboardBot soundPlayer) {
     super(prefix, "Random Top Sound", soundPlayer);

@@ -19,13 +19,13 @@ import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.JDALogger;
+import net.dv8tion.jda.api.utils.SimpleLogger;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
 public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
-  public static final JDALogger LOG =
-          JDALogger.getLog("SoundAttachmentProcessor");
+  public static final SimpleLogger LOG =
+          SimpleLogger.getLog("SoundAttachmentProcessor");
   private static final int MAX_FILE_SIZE_IN_BYTES = 2000000; // 2MB
   private static final int MAX_DURATION_IN_SECONDS = 12; // 12s
   private static final String WAS_THIS_FOR_ME =

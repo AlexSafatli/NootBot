@@ -21,7 +21,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.managers.AudioManager;
 import net.dv8tion.jda.api.utils.PermissionUtil;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -36,7 +36,7 @@ import java.util.*;
  */
 public class SoundboardBot {
 
-  public static final JDALogger LOG = JDALogger.getLog("Bot");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("Bot");
   private static final int CHANNEL_CONNECTION_TIMEOUT = 5000;
   private static final int TOP_PLAYED_SOUND_THRESHOLD = 50;
   private static final int MAX_DURATION_FOR_RANDOM = 10;

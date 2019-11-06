@@ -2,7 +2,7 @@ package net.dirtydeeds.discordsoundboard.service;
 
 import net.dirtydeeds.discordsoundboard.async.SoundboardJob;
 import net.dirtydeeds.discordsoundboard.utils.Periodic;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import java.util.Stack;
 @Service
 public class AsyncService {
 
-  public static final JDALogger LOG = JDALogger.getLog("Jobs");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("Jobs");
   private List<SoundboardJob> jobs;
   private Stack<SoundboardJob> tasks;
 

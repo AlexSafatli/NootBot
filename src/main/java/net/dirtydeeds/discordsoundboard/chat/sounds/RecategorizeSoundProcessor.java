@@ -5,7 +5,7 @@ import net.dirtydeeds.discordsoundboard.chat.AuthenticatedMultiArgumentChatComma
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.internal.utils.JDALogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class RecategorizeSoundProcessor extends
         AuthenticatedMultiArgumentChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("RecategorizeSound");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("RecategorizeSound");
 
   public RecategorizeSoundProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Recategorize", bot);

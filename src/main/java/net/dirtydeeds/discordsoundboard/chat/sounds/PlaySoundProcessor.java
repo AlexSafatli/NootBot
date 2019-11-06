@@ -8,7 +8,7 @@ import net.dirtydeeds.discordsoundboard.utils.Strings;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.JDALogger;
+import net.dv8tion.jda.api.utils.SimpleLogger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("Sound");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("Sound");
 
   public PlaySoundProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Play Sound", bot);

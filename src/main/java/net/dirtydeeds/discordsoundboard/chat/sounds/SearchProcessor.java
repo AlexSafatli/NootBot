@@ -6,14 +6,14 @@ import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.JDALogger;
+import net.dv8tion.jda.api.utils.SimpleLogger;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 
-  public static final JDALogger LOG = JDALogger.getLog("Search");
+  public static final SimpleLogger LOG = SimpleLogger.getLog("Search");
 
   public SearchProcessor(String prefix, SoundboardBot bot) {
     super(prefix, "Search Sounds", bot);
