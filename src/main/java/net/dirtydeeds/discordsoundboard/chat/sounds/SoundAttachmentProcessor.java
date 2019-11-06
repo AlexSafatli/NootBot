@@ -19,7 +19,7 @@ import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
 public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {

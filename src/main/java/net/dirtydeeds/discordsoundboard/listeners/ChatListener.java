@@ -12,7 +12,7 @@ import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.client.events.relationship.FriendRequestReceivedEvent;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 import java.util.*;
 

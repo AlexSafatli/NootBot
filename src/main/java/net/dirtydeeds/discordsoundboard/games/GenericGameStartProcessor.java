@@ -6,9 +6,9 @@ import net.dirtydeeds.discordsoundboard.utils.RandomUtils;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.Game.GameType;
+import net.dv8tion.jda.api.entities.Activity.ActivityType;
 import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.api.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 import java.awt.*;
 import java.util.Date;
@@ -71,9 +71,9 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     }
     if (userChannel == null || !userChannel.equals(botChannel))
       return false;
-    Game game = guild.getMemberById(user.getId()).getGame();
+    Activity game = guild.getMemberById(user.getId()).getActivity();
     return (game != null &&
-            !game.getType().equals(GameType.STREAMING) &&
+            !game.getType().equals(ActivityType.STREAMING) &&
             userChannel.getMembers().size() >= MIN_NUM_PLAYERS);
   }
 
@@ -93,7 +93,7 @@ public class GenericGameStartProcessor extends AbstractGameUpdateProcessor {
     List<Member> members = channel.getMembers();
     User[] users = new User[members.size()];
     for (Member m : members) {
-      Game g = m.getGame();
+      Activity g = m.getActivity();
       if (g != null && g.getName().equals(game) && m.getUser() != null) {
         LOG.info(m.getUser().getName() + " in channel is playing " + game);
         users[numPlayers++] = m.getUser();

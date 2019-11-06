@@ -6,8 +6,8 @@ import net.dirtydeeds.discordsoundboard.chat.OwnerSingleArgumentChatCommandProce
 import net.dirtydeeds.discordsoundboard.utils.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.SimpleLogger;
-import net.dv8tion.jda.api.entities.Game;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
+import net.dv8tion.jda.api.entities.Activity;
 
 public class SetGameNameProcessor extends
         OwnerSingleArgumentChatCommandProcessor {
@@ -23,10 +23,10 @@ public class SetGameNameProcessor extends
                   m.substring(getPrefix().length() + 1).trim() : null;
     if (name == null || name.isEmpty()) {
       Reusables.setRandomGame(bot);
-      Game g = bot.getAPI().getPresence().getGame();
+      Activity g = bot.getAPI().getPresence().getActivity();
       m(event, "Set random game name" + ((g != null) ?  " **" + g.getName() + "**": "") + "!");
     } else {
-      bot.getAPI().getPresence().setGame(Game.of(name));
+      bot.getAPI().getPresence().setActivity(Activity.of(name));
       m(event, "Set game name to `" + name + "`!");
     }
   }

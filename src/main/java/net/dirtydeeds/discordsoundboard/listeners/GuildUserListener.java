@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.utils.SimpleLogger;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 import java.util.Map;
 

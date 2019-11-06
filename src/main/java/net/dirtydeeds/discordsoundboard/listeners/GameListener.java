@@ -4,13 +4,13 @@ import net.dirtydeeds.discordsoundboard.games.GameUpdateProcessor;
 import net.dirtydeeds.discordsoundboard.games.GenericGameStartProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
-import net.dv8tion.jda.api.entities.Game;
-import net.dv8tion.jda.api.entities.Game.GameType;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Activity.ActivityType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
-import net.dv8tion.jda.api.utils.SimpleLogger;
+import net.dv8tion.jda.api.events.user.UserActivityUpdateEvent;
+import net.dv8tion.jda.internal.utils.SimpleLogger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,32 +31,32 @@ public class GameListener extends AbstractListener {
     processors.add(new GenericGameStartProcessor(bot));
   }
 
-  private void logGameChange(String name, Guild guild, Game previousGame,
-                             Game currentGame) {
+  private void logGameChange(String name, Guild guild, Activity previousGame,
+                             Activity currentGame) {
     String guildName = (guild != null) ? guild.getName() : null;
     if (currentGame == null && previousGame != null) {
-      if (previousGame.getType().equals(GameType.STREAMING)) return;
+      if (previousGame.getType().equals(ActivityType.STREAMING)) return;
       LOG.info(name + " stopped playing " + previousGame.getName() +
               " in server " + guildName + ".");
     } else if (currentGame != null && previousGame == null) {
-      if (currentGame.getType().equals(GameType.STREAMING)) return;
+      if (currentGame.getType().equals(ActivityType.STREAMING)) return;
       LOG.info(name + " started playing " + currentGame.getName() +
               " in server " + guildName + ".");
     } else if (currentGame != null) {
-      if (currentGame.getType().equals(GameType.STREAMING) ||
-              previousGame.getType().equals(GameType.STREAMING)) return;
+      if (currentGame.getType().equals(ActivityType.STREAMING) ||
+              previousGame.getType().equals(ActivityType.STREAMING)) return;
       LOG.info(name + " changed to " + currentGame.getName() + " from " +
               previousGame.getName() + " in server " + guildName + ".");
     }
   }
 
-  private void cacheGameName(Game game) {
-    if (game == null || game.getType().equals(GameType.STREAMING) ||
+  private void cacheGameName(Activity game) {
+    if (game == null || game.getType().equals(ActivityType.STREAMING) ||
             game.getName().equals("Spotify")) return;
     StringUtils.cacheWords(game.getName());
   }
 
-  public void onUserGameUpdate(UserGameUpdateEvent event) {
+  public void onUserActivityUpdate(UserActivityUpdateEvent event) {
     if (event.getUser().isBot()) return; // Ignore bots.
 
     User user = event.getUser();
@@ -64,8 +64,8 @@ public class GameListener extends AbstractListener {
     Member member = guild.getMemberById(user.getId());
 
     String name = user.getName();
-    Game previousGame = event.getPreviousGame(),
-            currentGame = member.getGame();
+    Activity previousGame = event.getPreviousActivity(),
+            currentActivity = member.getActivity();
     logGameChange(name, guild, previousGame, currentGame);
     cacheGameName(previousGame);
     cacheGameName(currentGame);

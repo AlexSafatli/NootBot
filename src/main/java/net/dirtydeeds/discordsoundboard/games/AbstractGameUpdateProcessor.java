@@ -4,7 +4,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.user.UserGameUpdateEvent;
+import net.dv8tion.jda.api.events.user.UserActivityUpdateEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.util.function.Consumer;
@@ -19,11 +19,11 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
     this.bot = bot;
   }
 
-  protected abstract void handleEvent(UserGameUpdateEvent event, User user);
+  protected abstract void handleEvent(UserActivityUpdateEvent event, User user);
 
-  public abstract boolean isApplicableUpdateEvent(UserGameUpdateEvent event, User user);
+  public abstract boolean isApplicableUpdateEvent(UserActivityUpdateEvent event, User user);
 
-  public void process(UserGameUpdateEvent event) {
+  public void process(UserActivityUpdateEvent event) {
     handleEvent(event, event.getUser());
   }
 
@@ -40,7 +40,7 @@ public abstract class AbstractGameUpdateProcessor implements GameUpdateProcessor
     }
   }
 
-  protected void error(UserGameUpdateEvent event, Exception e) {
+  protected void error(UserActivityUpdateEvent event, Exception e) {
     Guild guild = event.getGuild();
     VoiceChannel botChannel = bot.getConnectedChannel(guild);
     Game game = guild.getMemberById(event.getUser().getId()).getGame();

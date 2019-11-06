@@ -3,7 +3,7 @@ package net.dirtydeeds.discordsoundboard.utils;
 import net.dirtydeeds.discordsoundboard.moderation.ModerationRules;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.service.SoundboardDispatcher;
-import net.dv8tion.jda.api.entities.Game;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
