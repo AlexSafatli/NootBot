@@ -763,8 +763,8 @@ public class SoundboardBot {
     AudioManager audio = guild.getAudioManager();
     if (audio.isSelfMuted()) return;
     AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
-    AudioPlayer player = (
-            (AudioPlayerSendHandler)(audio.getSendingHandler())).getPlayer();
+    AudioPlayer player = ((AudioPlayerSendHandler)(
+                            audio.getSendingHandler())).getPlayer();
     String path = audioFile.getPath();
     scheduler.load(path, new AudioHandler(player));
   }

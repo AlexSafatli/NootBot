@@ -60,7 +60,8 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
   private void play(MessageReceivedEvent event, String name) {
     try {
       bot.playFileForChatCommand(name, event);
-    } catch (Exception ignored) {
+    } catch (Exception e) {
+      e(event, "Could not play sound => " + e.getMessage());
     }
   }
 
@@ -76,12 +77,12 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
     String name = message.substring(1);
     ModerationRules r = bot.getRulesForGuild(event.getGuild());
     boolean playNumberedSets = r != null && r.canPlayNumberedSets();
-
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, "You're not allowed to do that.");
       JDALogger.getLog("Sound").info(
               String.format("%s isn't allowed to play sounds.", user.getName()));
     } else if (StringUtils.containsAny(name, '?')) {
+      return;
     } else if (bot.getSoundMap().get(name) == null) {
       JDALogger.getLog("Sound").info("Sound was not found.");
       String suggestion = "Check your spelling.",
