@@ -13,7 +13,6 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
   private final AudioManager voice;
   private final AudioPlayer audioPlayer;
   private AudioFrame lastFrame;
-  private int numberFramesSinceLastFrame;
 
   public AudioPlayerSendHandler(AudioManager voice, AudioPlayer audioPlayer) {
     this.voice = voice;
@@ -26,21 +25,15 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
 
   @Override
   public boolean canProvide() {
-    if (!voice.isConnected() || voice.getQueuedAudioConnection() != null)
-      return false;
-    if (lastFrame != null)
-      lastFrame = audioPlayer.provide();
-    else
-      ++numberFramesSinceLastFrame;
-    return lastFrame != null && (numberFramesSinceLastFrame > 25);
+    if (!voice.isConnected()) return false;
+    if (voice.getQueuedAudioConnection() != null) return false;
+    lastFrame = audioPlayer.provide();
+    return lastFrame != null;
   }
 
   @Override
   public ByteBuffer provide20MsAudio() {
-    if (lastFrame != null)
-      return ByteBuffer.wrap(lastFrame.getData());
-    else
-      return null;
+    return ByteBuffer.wrap(lastFrame.getData());
   }
 
   @Override
