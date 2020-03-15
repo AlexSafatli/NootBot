@@ -68,8 +68,7 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
     File target = new File(downloadPath.toString(), file.name);
     if (target.exists() || bot.getSoundMap().get(file.name) != null) {
       pm(event, "A sound with the name `" + file.shortName +
-              "` already exists! Type `.whatis " + file.shortName +
-              "` for details.");
+              "` already exists!");
       return false;
     }
 
