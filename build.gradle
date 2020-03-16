@@ -27,9 +27,8 @@ repositories {
 }
 
 dependencies {
-    compile('javax.xml.bind:jaxb-api:2.3.0')
-    compile('net.dv8tion:JDA:4.0.0_56')
-    compile('com.sedmelluq:lavaplayer:1.3.25')
+    compile('net.dv8tion:JDA:4.1.1_115')
+    compile('com.sedmelluq:lavaplayer:1.3.34')
     compile("commons-io:commons-io:2.5")
     compile("com.h2database:h2")
     compile("com.googlecode.soundlibs:mp3spi:1.9.5-1")
