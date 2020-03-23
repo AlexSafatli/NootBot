@@ -18,7 +18,6 @@ import net.dirtydeeds.discordsoundboard.utils.Reusables;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.managers.AudioManager;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
 import net.dv8tion.jda.internal.utils.JDALogger;
@@ -551,17 +550,17 @@ public class SoundboardBot {
     }
   }
 
-  public void playURLForChatCommand(
-    String url, MessageReceivedEvent event) throws Exception {
-    if (event != null && !url.isEmpty()
+  public void playYouTubeVideoIDForChatCommand(
+    String videoID, MessageReceivedEvent event) throws Exception {
+    if (event != null && !videoID.isEmpty()
         && isAllowedToPlaySound(event.getAuthor())) {
       VoiceChannel toJoin = getUsersVoiceChannel(event.getAuthor());
       if (toJoin == null) {
         sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, event.getAuthor());
       } else {
         moveToChannel(toJoin);
-        playURL(url, toJoin.getGuild());
-        JDALogger.getLog("Bot").info("Played url \"" + url + "\" in server " +
+        playYouTube(videoID, toJoin.getGuild());
+        JDALogger.getLog("Bot").info("Played videoID \"" + videoID + "\" in server " +
                  toJoin.getGuild().getName());
       }
     }
@@ -769,14 +768,14 @@ public class SoundboardBot {
     scheduler.load(path, new AudioHandler(player));
   }
 
-  private void playURL(String url, Guild guild) {
+  private void playYouTube(String videoID, Guild guild) {
     AudioManager audio = guild.getAudioManager();
     if (audio.isSelfMuted()) return;
     AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     AudioPlayer player = ((AudioPlayerSendHandler)(
                             audio.getSendingHandler())).getPlayer();
-    JDALogger.getLog("Bot").info("Sending request for '" + url + "' to AudioManager");
-    scheduler.load(url, new AudioHandler(player));
+    JDALogger.getLog("Bot").info("Sending request for '" + videoID + "' to AudioManager");
+    scheduler.load(videoID, new AudioHandler(player));
   }
 
   private void initSettings(Guild guild) {

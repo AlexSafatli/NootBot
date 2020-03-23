@@ -20,13 +20,9 @@ public class NewTopicRoleProcessor extends
       e(event, "Not enough arguments.");
       return;
     }
-    if (event.getGuild() == null) {
-      pm(event, "You did not send this command in a server.");
-      return;
-    }
     String name = getArgumentsCased(event)[0], cName = getArguments()[1];
     if (!bot.getRulesForGuild(event.getGuild()).isPermitted()) {
-      pm(event, "You haven't given me permission to moderate roles yet.");
+      pm(event, "You haven't given me permission to moderate roles yet OR the setting is not set.");
       return;
     }
     ModerationRules rules = bot.getRulesForGuild(event.getGuild());

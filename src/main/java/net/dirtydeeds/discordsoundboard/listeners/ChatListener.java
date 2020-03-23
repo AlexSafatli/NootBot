@@ -42,7 +42,7 @@ public class ChatListener extends AbstractListener {
 
   private void setupChatProcessors() {
     processors.add(new PlaySoundProcessor("?", bot));
-    processors.add(new PlayUrlProcessor("~~", bot));
+    processors.add(new PlayYouTubeUrlProcessor("~~", bot));
     processors.add(new ListSoundsProcessor(withPrefix("list"), bot));
     processors.add(new SearchProcessor(withPrefix("search"), bot));
     processors.add(new ListCategoriesProcessor(withPrefix("categories"), bot));
