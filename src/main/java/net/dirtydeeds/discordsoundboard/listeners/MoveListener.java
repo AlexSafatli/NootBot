@@ -220,15 +220,15 @@ public class MoveListener extends AbstractListener {
     String title = (welcomeInTitle) ?
             String.format(Objects.requireNonNull(StringUtils.randomString(WELCOMES)),
                     "**" + user.getName() + "**") :
-            user.getName() + " came, again.";
-    String description = "";
+            user.getName() + " came back.";
+    String desc = "";
     if (!soundInfo.isEmpty()) {
-      description = soundInfo + Strings.SEPARATOR + user.getAsMention();
+      desc = soundInfo + Strings.SEPARATOR + user.getAsMention();
     }
-    StyledEmbedMessage m = StyledEmbedMessage.forUser(bot, user, title, description);
+    StyledEmbedMessage m = StyledEmbedMessage.forUser(bot, user, title, desc);
     m.setThumbnail(user.getEffectiveAvatarUrl());
     m.addContent(StringUtils.randomString(Strings.WHATS),
-            "I play sounds and automate things. Type `.help` for commands.",
+            "I play sounds and automate things. Type `.help` for more.",
             false);
     Color color = StringUtils.toColor(user.getName());
     m.addFooterText(String.format("(%d, %d, %d)", color.getRed(),

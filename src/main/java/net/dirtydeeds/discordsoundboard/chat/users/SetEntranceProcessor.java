@@ -27,8 +27,8 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
         pm(event, "That sound was not found.");
         return;
       }
-      boolean authenticated = bot.isAuthenticated(event.getAuthor(),
-              event.getGuild());
+      boolean authenticated = event.isFromGuild() && bot.isAuthenticated(
+              event.getAuthor(), event.getGuild());
       if (!authenticated && file.getDuration() != null &&
               file.getDuration() > MAX_DURATION_IN_SECONDS) {
         pm(event, "The file `" + fileName +
@@ -38,7 +38,8 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
       bot.setEntranceForUser(event.getAuthor(), fileName, null);
       pm(event, "Updated your entrance to sound file `" + fileName + "`!");
       if (file.getDuration() > WARNING_DURATION_IN_SECONDS) {
-        String mightBeLong = String.format("The file `%s` (%ds) may be a bit **long**.", fileName, file.getDuration());
+        String mightBeLong = String.format("The file `%s` (%ds) may be a bit **long**.",
+                fileName, file.getDuration());
         pm(event, mightBeLong +
                 " *Be careful of setting very long entrances!*");
       }

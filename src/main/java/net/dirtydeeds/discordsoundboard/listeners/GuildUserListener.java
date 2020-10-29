@@ -32,7 +32,7 @@ public class GuildUserListener extends AbstractListener {
     TextChannel channel = bot.getBotChannel(guild);
     mentionMember(channel, event.getMember(),
             event.getMember().getEffectiveName() + " just left the server.",
-            "Good riddance.");
+            "Yikes.");
   }
 
   private void verifyRole(Member member) {
