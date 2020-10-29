@@ -141,7 +141,8 @@ public class SoundboardDispatcher {
     String token = getProperty("token_" + i),
             owner = getProperty("owner_" + i);
     if (token == null || owner == null) {
-      JDALogger.getLog("Bot").error("Config not populated! Need API token and owner for bot " + i);
+      JDALogger.getLog("Bot").error(
+              "Config not populated! Need API token and owner for bot " + i);
       return;
     } else {
       JDALogger.getLog("Bot").info("Initializing bot " + i +
@@ -150,7 +151,8 @@ public class SoundboardDispatcher {
     try {
       bot = new SoundboardBot(token, owner, this);
     } catch (Exception e) {
-      JDALogger.getLog("Bot").warn("When starting bot " + i + ", ran into exception => " +
+      JDALogger.getLog("Bot").error(
+              "When starting bot " + i + ", ran into exception => " +
               e.getMessage());
     }
     bots[index] = bot;

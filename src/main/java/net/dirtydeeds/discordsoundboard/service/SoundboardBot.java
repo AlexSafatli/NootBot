@@ -40,7 +40,7 @@ public class SoundboardBot {
   private static final int MAX_DURATION_FOR_RANDOM = 10;
   private static final long MIN_MINUTES_TO_SHOW_AS_HOURS = 120;  // 2 hours
   private static final long MIN_MINUTES_TO_SHOW_AS_DAYS  = 2880; // 2 days
-  private static String NOT_IN_VOICE_CHANNEL_MESSAGE = "Are you in a voice channel? I can't see you.";
+  private static String NOT_IN_VOICE_CHANNEL_MESSAGE = "You in VC? Can't see you.";
 
   private long startTime;
   private Random rng = new Random();
@@ -273,8 +273,6 @@ public class SoundboardBot {
   public VoiceChannel getConnectedChannel(Guild guild) {
     if (guild.getAudioManager().isConnected())
       return guild.getAudioManager().getConnectedChannel();
-    else if (guild.getAudioManager().isAttemptingToConnect())
-      return guild.getAudioManager().getQueuedAudioConnection();
     return null;
   }
 
@@ -598,7 +596,7 @@ public class SoundboardBot {
     if (fileName == null) return false;
     AudioManager voice = joined.getGuild().getAudioManager();
     VoiceChannel connected = voice.getConnectedChannel();
-    if ((voice.isConnected() || voice.isAttemptingToConnect()) &&
+    if ((voice.isConnected()) &&
         connected != null &&
         (connected.equals(joined) || connected.getMembers().size() == 1) ||
         !voice.isConnected()) {
@@ -650,11 +648,8 @@ public class SoundboardBot {
     }
     JDALogger.getLog("Bot").info("Moving to channel " + channel);
     try {
-      if (voice.isConnected() && !voice.isAttemptingToConnect())
+      if (voice.isConnected())
         voice.openAudioConnection(channel);
-      else if (voice.isAttemptingToConnect())
-        JDALogger.getLog("Bot").info("Still waiting to connect to channel " +
-                 voice.getQueuedAudioConnection().getName());
       else {
         voice.openAudioConnection(channel);
         voice.setConnectTimeout(CHANNEL_CONNECTION_TIMEOUT);
@@ -828,7 +823,7 @@ public class SoundboardBot {
 
   private void initializeDiscordBot(String token) {
     try {
-      bot = new JDABuilder(AccountType.BOT).setToken(token).build().awaitReady();
+      bot = JDABuilder.createDefault(token).build().awaitReady();
       for (Guild guild : getGuilds()) {
         JDALogger.getLog("Bot").info("Connecting: " + guild.getName());
         initSettings(guild);

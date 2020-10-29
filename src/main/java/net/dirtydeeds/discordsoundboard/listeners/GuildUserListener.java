@@ -7,9 +7,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.util.Map;
 
@@ -25,14 +23,6 @@ public class GuildUserListener extends AbstractListener {
   public void onGuildMemberJoin(GuildMemberJoinEvent event) {
     Member member = event.getMember();
     verifyRole(member);
-  }
-
-  public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
-    Guild guild = event.getGuild();
-    TextChannel channel = bot.getBotChannel(guild);
-    mentionMember(channel, event.getMember(),
-            event.getMember().getEffectiveName() + " just left the server.",
-            "Yikes.");
   }
 
   private void verifyRole(Member member) {
