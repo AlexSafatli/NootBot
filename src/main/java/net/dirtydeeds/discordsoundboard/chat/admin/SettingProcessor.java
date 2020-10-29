@@ -33,8 +33,9 @@ public class SettingProcessor extends
       s.setValue(value);
       bot.getDispatcher().saveSetting(s);
     }
-    pm(event, String.format("**%d** \u2014 `%s` : `%s`",
-            s.getGuildId(), s.getKey(), s.getValue()));
+    pm(event, String.format("%s (**%d**) \u2014 `%s` : `%s`",
+            event.getGuild().getName(), s.getGuildId(), s.getKey(),
+            s.getValue()));
   }
 
   @Override

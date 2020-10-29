@@ -22,7 +22,7 @@ public class FavoritePhraseProcessor extends
       pm(event, "You didn't give me anything.");
     } else {
       bot.getDispatcher().addPhrase(phrase);
-      m(event, "Added phrase `" + phrase + "` to list of phrases!");
+      m(event, "Added phrase `" + phrase + "` to list!");
     }
   }
 
