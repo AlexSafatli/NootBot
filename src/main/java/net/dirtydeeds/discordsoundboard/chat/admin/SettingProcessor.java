@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.chat.admin;
 import net.dirtydeeds.discordsoundboard.beans.Setting;
 import net.dirtydeeds.discordsoundboard.chat.OwnerMultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class SettingProcessor extends
@@ -20,7 +21,7 @@ public class SettingProcessor extends
     }
     String key = args[0];
     String value = (args.length > 1) ? args[1] : null;
-    if (event.getGuild() == null) {
+    if (event.isFromType(ChannelType.PRIVATE)) {
       pm(event, "You did not send this command in a server.");
       return;
     }

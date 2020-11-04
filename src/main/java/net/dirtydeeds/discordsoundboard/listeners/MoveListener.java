@@ -24,13 +24,12 @@ public class MoveListener extends AbstractListener {
 
   private static final List<String> WELCOMES = Arrays.asList(
           "%s wants off this planet.",
-          "Just like old times, %s.",
           "Can it wait for a bit, %s? I'm in the middle of some calibrations.",
-          "%s? I don't know what to do with them...",
           "%s came when he was six years old. *Nice*.",
-          "You subverted my expectations, %s.",
           "Why do you think I came all this way %s?",
-          "All hail %s, King of the Andals and the First Men, Lord of the Six Kingdoms and Protector of the Realm");
+          "All hail %s, King of the Andals and the First Men, Lord of the Six Kingdoms and Protector of the Realm",
+          "What about the droid attack on the wookies, %s?",
+          "Why hello there, %s.");
 
   private Map<Guild, Queue<EntranceEvent>> pastEntrances;
 
@@ -81,9 +80,9 @@ public class MoveListener extends AbstractListener {
       return;
     }
 
+    // Look for entrance sound.
     String fileToPlay = bot.getEntranceForUser(user), soundInfo = "";
     if (fileToPlay == null || fileToPlay.isEmpty()) return;
-
     if (bot.getSoundMap().get(fileToPlay) == null) {
       bot.sendMessageToUser("**Uh oh!** `" + fileToPlay +
               "` used to be your entrance but I can't find that" +
@@ -119,7 +118,10 @@ public class MoveListener extends AbstractListener {
                           s.getNumberOfPlays());
         }
       } catch (Exception e) {
-        embed(bot.getBotChannel(guild), errorMessage(e, user), (Message m) -> bot.getDispatcher().getAsyncService().runJob(new DeleteMessageJob(m, 240)));
+        embed(bot.getBotChannel(guild),
+                errorMessage(e, user),
+                (Message m) -> bot.getDispatcher().getAsyncService().runJob(
+                        new DeleteMessageJob(m, 240)));
         e.printStackTrace();
       }
     } else if (bot.getConnectedChannel(guild) == null) {
@@ -127,16 +129,9 @@ public class MoveListener extends AbstractListener {
     }
 
     // Send a message greeting them into the server.
-    VoiceChannel joined = bot.getConnectedChannel(guild);
-    if (joined != null && joined.equals(vc)) {
-      if (bot.getBotChannel(guild) != null) {
-        embed(bot.getBotChannel(guild),
-                welcomeMessage(user, vc, soundInfo, !recentEntrance),
-                (Message m) ->
-                        pastEntrances.get(guild).add(
-                                new EntranceEvent(m, user)));
-      }
-    }
+    embed(bot.getBotChannel(guild),
+            welcomeMessage(user, vc, soundInfo, !recentEntrance),
+            (Message m) -> pastEntrances.get(guild).add(new EntranceEvent(m, user)));
   }
 
   public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {

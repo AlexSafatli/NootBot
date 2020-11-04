@@ -2,6 +2,7 @@ package net.dirtydeeds.discordsoundboard.chat.sounds;
 
 import net.dirtydeeds.discordsoundboard.chat.AuthenticatedSingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class UnmuteSoundProcessor extends
@@ -12,7 +13,7 @@ public class UnmuteSoundProcessor extends
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    if (event.getGuild() == null) {
+    if (event.isFromType(ChannelType.PRIVATE)) {
       pm(event, "You need to do this in a server.");
       return;
     }
