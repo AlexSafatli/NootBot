@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
+import net.dv8tion.jda.api.audio.AudioSendHandler;
 import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class AudioHandler implements AudioLoadResultHandler {
@@ -14,6 +15,10 @@ public class AudioHandler implements AudioLoadResultHandler {
 
   public AudioHandler(AudioPlayer player) {
     this.player = player;
+  }
+
+  public AudioHandler(AudioSendHandler audio) {
+    this.player = ((AudioPlayerSendHandler)(audio)).getPlayer();
   }
 
   @Override

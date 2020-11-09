@@ -648,15 +648,9 @@ public class SoundboardBot {
     }
     JDALogger.getLog("Bot").info("Moving to channel " + channel);
     try {
-      if (voice.isConnected())
-        voice.openAudioConnection(channel);
-      else {
-        voice.openAudioConnection(channel);
-        voice.setConnectTimeout(CHANNEL_CONNECTION_TIMEOUT);
-      }
+      voice.openAudioConnection(channel);
+      voice.setConnectTimeout(CHANNEL_CONNECTION_TIMEOUT);
     } catch (Exception e) {
-      voice.closeAudioConnection();
-      JDALogger.getLog("Bot").warn("Closed audio connection because of an error.");
       e.printStackTrace();
       return false;
     }
@@ -757,20 +751,16 @@ public class SoundboardBot {
     AudioManager audio = guild.getAudioManager();
     if (audio.isSelfMuted()) return;
     AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
-    AudioPlayer player = ((AudioPlayerSendHandler)(
-                            audio.getSendingHandler())).getPlayer();
     String path = audioFile.getPath();
-    scheduler.load(path, new AudioHandler(player));
+    scheduler.load(path, new AudioHandler(audio.getSendingHandler()));
   }
 
   private void playYouTube(String videoID, Guild guild) {
     AudioManager audio = guild.getAudioManager();
     if (audio.isSelfMuted()) return;
     AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
-    AudioPlayer player = ((AudioPlayerSendHandler)(
-                            audio.getSendingHandler())).getPlayer();
     JDALogger.getLog("Bot").info("Sending request for '" + videoID + "' to AudioManager");
-    scheduler.load(videoID, new AudioHandler(player));
+    scheduler.load(videoID, new AudioHandler(audio.getSendingHandler()));
   }
 
   private void initSettings(Guild guild) {

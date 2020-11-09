@@ -125,7 +125,7 @@ public class MoveListener extends AbstractListener {
         e.printStackTrace();
       }
     } else if (bot.getConnectedChannel(guild) == null) {
-      bot.moveToChannel(vc); // Move to channel otherwise.
+      bot.moveToChannel(vc); // Move and don't play anything otherwise.
     }
 
     // Send a message greeting them into the server.
