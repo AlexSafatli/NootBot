@@ -1,6 +1,5 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
-import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
@@ -26,7 +25,7 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
       if (category != null) {
         if (bot.isASoundCategory(category)) {
           Category cat = bot.getSoundCategory(category);
-          desc = "Category **" + cat + "** has " + cat.size() + " sounds.";
+          desc = "The **" + cat + "** category was provided.";
           title = "Played Random " + cat + " Sound";
           filePlayed = bot.playRandomFileForCategory(event.getAuthor(),
                        category);

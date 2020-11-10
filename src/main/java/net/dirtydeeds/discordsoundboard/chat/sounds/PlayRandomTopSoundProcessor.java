@@ -15,7 +15,7 @@ public class PlayRandomTopSoundProcessor extends
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    String desc = "Played a random **top played** sound (see `.top`) ";
+    String desc = "See `.top` for **top played** sounds ";
     if (!bot.isAllowedToPlaySound(event.getAuthor())) {
       pm(event, "You're not allowed to do that.");
       return;
@@ -27,7 +27,7 @@ public class PlayRandomTopSoundProcessor extends
         JDALogger.getLog("Sound").info("Played \"" + filePlayed + "\" in server " +
                  event.getGuild().getName());
         StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file,
-                                "You've Played a Random Top Sound",
+                                "Played Random Top Sound",
                                 desc + " \u2014 " +
                                 event.getAuthor().getAsMention());
         embedForUser(event, em);

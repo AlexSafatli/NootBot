@@ -19,7 +19,7 @@ import java.util.TreeMap;
 
 public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
 
-  private static final int BIG_NUMBER_OF_SOUNDS = 1750;
+  private static final int BIG_NUMBER_OF_SOUNDS = 1625;
   private static final String UNCATEGORIZED = "Uncategorized";
 
   private Map<String, SoundFile> soundFiles;

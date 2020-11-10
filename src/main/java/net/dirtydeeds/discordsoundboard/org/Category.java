@@ -55,10 +55,6 @@ public class Category {
     return new LinkedList<>();
   }
 
-  public int size() {
-    return getFiles().size();
-  }
-
   public String toString() {
     return getName();
   }
