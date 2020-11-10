@@ -214,6 +214,30 @@ public class SoundboardBot {
     return getRandomTopPlayedSoundName(MAX_DURATION_FOR_RANDOM);
   }
 
+  public String getRandomLongestSoundName() {
+    List<SoundFile> sounds = dispatcher.getSoundFilesOrderedByDuration();
+    Map<String, Boolean> seen = new HashMap<>();
+    Map<String, SoundFile> map = getSoundMap();
+    if (sounds == null || sounds.isEmpty()) return null;
+    SoundFile file = null;
+    int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size() / 5),
+        index,
+        ceiling = top;
+    while (file == null
+           || file.isExcludedFromRandom()
+           || file.getDuration() == null
+           || map.get(file.getSoundFileId()) == null) {
+      // No sounds that can actually be played.
+      if (seen.size() == sounds.size()) return null;
+      index = rng.nextInt(Math.min(ceiling, sounds.size()));
+      file = sounds.get(index);
+      if (ceiling + 1 < sounds.size()) ++ceiling;
+      if (file != null && seen.get(file.getSoundFileId()) == null)
+        seen.put(file.getSoundFileId(), true);
+    }
+    return file.getSoundFileId();
+  }
+
   public User getUser(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty()) {

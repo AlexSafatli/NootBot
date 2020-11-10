@@ -42,7 +42,7 @@ public class AsyncService {
   public void maintain(SoundboardDispatcher dispatcher) {
     List<SoundboardBot> bots = dispatcher.getBots();
     while (!bots.isEmpty()) {
-      // Only fire a certain amount of times a minute.
+      // Only fire every 15 minutes.
       long millisecondsToWait = Periodic.EVERY_QUARTER_HOUR * 1000;
       try {
         Thread.sleep(millisecondsToWait);

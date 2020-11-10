@@ -9,7 +9,7 @@ public class UserInfoProcessor extends
         AuthenticatedSingleArgumentChatCommandProcessor {
 
   public UserInfoProcessor(String prefix, SoundboardBot bot) {
-    super(prefix, "User Info", bot);
+    super(prefix, "User", bot);
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
@@ -21,7 +21,7 @@ public class UserInfoProcessor extends
       return;
     }
     pm(event, String.format(
-            "```%s\nEntrance: %s / Can Play Sounds: %b / Throttled: %b / Moderator: %b / Privilege Level: %d```",
+            "%s\nEntrance: %s\nCan Play Sounds: %b\nThrottled: %b\nModerator: %b\nPrivilege Level: %d",
             user.getName(),
             bot.getEntranceForUser(user),
             bot.isAllowedToPlaySound(user),

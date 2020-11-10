@@ -19,7 +19,7 @@ public class FavoritePhraseProcessor extends
            phrase = (m.length() > len) ?
                   m.substring(getPrefix().length() + 1).trim() : null;
     if (phrase == null) {
-      pm(event, "You didn't give me anything.");
+      pm(event, "You didn't give me a phrase.");
     } else {
       bot.getDispatcher().addPhrase(phrase);
       m(event, "Added phrase `" + phrase + "` to list!");
