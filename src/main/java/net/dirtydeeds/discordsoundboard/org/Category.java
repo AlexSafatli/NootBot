@@ -1,8 +1,13 @@
 package net.dirtydeeds.discordsoundboard.org;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Category {
 
@@ -38,6 +43,20 @@ public class Category {
 
   public void setFolderPath(Path folderPath) {
     this.folderPath = folderPath;
+  }
+
+  public List<String> getFiles() {
+    try (Stream<Path> walk = Files.walk(folderPath)) {
+      return walk.filter(Files::isRegularFile).map(
+              Path::toString).collect(Collectors.toList());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return new LinkedList<>();
+  }
+
+  public int size() {
+    return getFiles().size();
   }
 
   public String toString() {

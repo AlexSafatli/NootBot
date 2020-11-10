@@ -2,6 +2,7 @@ package net.dirtydeeds.discordsoundboard.chat.sounds;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
+import net.dirtydeeds.discordsoundboard.org.Category;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -14,7 +15,9 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
-    String category = getArgument(), filePlayed = null, desc = "Did you like it?";
+    String category = getArgument(), filePlayed = null,
+            desc = "No category was provided.",
+            title = "Played Random Sound";
     if (!bot.isAllowedToPlaySound(event.getAuthor())) {
       pm(event, "You're not allowed to do that.");
       return;
@@ -22,23 +25,25 @@ public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
     try {
       if (category != null) {
         if (bot.isASoundCategory(category)) {
-          desc = "Played from category **" + bot.getSoundCategory(category).getName() +
-                  "**.";
+          Category cat = bot.getSoundCategory(category);
+          desc = "Category **" + cat + "** has " + cat.size() + " sounds.";
+          title = "Played Random " + cat + " Sound";
           filePlayed = bot.playRandomFileForCategory(event.getAuthor(),
                        category);
         } else {
-          w(event, String.format("Category '%s' not found", category));
+          w(event, String.format("Category `%s` was not found.", category));
         }
       } else {
         filePlayed = bot.playRandomFile(event.getAuthor());
       }
       if (filePlayed != null &&
           bot.getUsersVoiceChannel(event.getAuthor()) != null) {
-        SoundFile file = bot.getDispatcher().getSoundFileByName(filePlayed);
         JDALogger.getLog("Sound").info("Played \"" + filePlayed + "\" in server " +
                  event.getGuild().getName());
-        StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot, file,
-                                "Played Random Sound `" + filePlayed + "`",
+        StyledEmbedMessage em = StyledEmbedMessage.forSoundFile(bot,
+                                bot.getDispatcher().getSoundFileByName(
+                                        filePlayed),
+                                title,
                                 desc + " \u2014 " +
                                 event.getAuthor().getAsMention());
         embedForUser(event, em);

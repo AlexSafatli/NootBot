@@ -164,6 +164,7 @@ public class SoundboardBot {
   }
 
   public String getRandomSoundNameForCategory(String category, int maxDuration) {
+    //TODO leverage category to get exact sound file count, files
     Map<String, Boolean> seen = new HashMap<>();
     SoundFile file = null;
     Object[] files = dispatcher.getAvailableSoundFiles().values().toArray();
