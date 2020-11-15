@@ -186,8 +186,8 @@ public class SoundboardDispatcher {
     JDALogger.getLog("Bot").info("Starting async jobs.");
     asyncService.addJob(PeriodicLambdas.cleanOldBotMessages());
     asyncService.addJob(PeriodicLambdas.changeToRandomGame());
-//    asyncService.addJob(PeriodicLambdas.changeBotChannelTopic());
-//    asyncService.addJob(PeriodicLambdas.updateSayingsCaches());
+    asyncService.addJob(PeriodicLambdas.changeBotChannelTopic());
+    asyncService.addJob(PeriodicLambdas.updateSayingsCaches());
   }
 
   // This method loads the files. This checks if you are running from a .jar

@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-// import net.dv8tion.jda.api.managers.ChannelManagerUpdatable;
+import net.dv8tion.jda.api.managers.ChannelManager;
 
 public class Reusables {
 
@@ -26,18 +26,19 @@ public class Reusables {
                                             dispatcher.getPhrases()));
   }
 
-  // public static void setRandomTopicForPublicChannels(SoundboardBot b) {
-  //   for (Guild guild : b.getGuilds()) {
-  //     TextChannel publicChannel = b.getBotChannel(guild);
-  //     ModerationRules rules = b.getRulesForGuild(guild);
-  //     if (publicChannel != null && rules.isPermitted()) {
-  //       ChannelManagerUpdatable mngr = publicChannel.getManagerUpdatable();
-  //       Message msg = (Message)RandomUtils.chooseOne(rules.getSayings().toArray());
-  //       mngr.getTopicField().setValue(msg.getStrippedContent());
-  //       mngr.update().queue();
-  //     }
-  //   }
-  // }
+   public static void setRandomTopicForPublicChannels(SoundboardBot b) {
+     for (Guild guild : b.getGuilds()) {
+       TextChannel publicChannel = b.getBotChannel(guild);
+       ModerationRules rules = b.getRulesForGuild(guild);
+       if (publicChannel != null && rules.isPermitted()) {
+         ChannelManager mngr = publicChannel.getManager();
+         Message msg = (Message)RandomUtils.chooseOne(
+                 rules.getSayings().toArray());
+         String saying = msg.getContentStripped();
+         mngr.setTopic(saying).queue();
+       }
+     }
+   }
 
   public static void updateSayingsCache(SoundboardBot b) {
     for (Guild guild : b.getGuilds()) {

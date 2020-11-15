@@ -28,13 +28,15 @@ public class AsyncService {
 
   // Adds to a job to be run periodically.
   synchronized void addJob(SoundboardJob job) {
-    JDALogger.getLog("Jobs").info("Adding job " + job.getClass().getSimpleName());
+    JDALogger.getLog("Jobs").info("Adding job " +
+            job.getClass().getSimpleName());
     jobs.add(job);
   }
 
   // Runs a job only once as a "task".
   public synchronized void runJob(SoundboardJob job) {
-    JDALogger.getLog("Jobs").info("Adding task " + job.getClass().getSimpleName());
+    JDALogger.getLog("Jobs").info("Adding task " +
+            job.getClass().getSimpleName());
     tasks.push(job);
   }
 
@@ -47,7 +49,8 @@ public class AsyncService {
       try {
         Thread.sleep(millisecondsToWait);
       } catch (InterruptedException e) {
-        JDALogger.getLog("Jobs").error("Thread sleep failed for time: " + millisecondsToWait);
+        JDALogger.getLog("Jobs").error("Thread sleep failed for time: " +
+                millisecondsToWait);
       }
       // See if there are any tasks.
       Collection<SoundboardJob> unrunTasks = new LinkedList<>();
@@ -57,11 +60,13 @@ public class AsyncService {
           try {
             task.run(dispatcher);
           } catch (Exception e) {
-            JDALogger.getLog("Jobs").error("Exception when running task " + task.getClass().getSimpleName() +
+            JDALogger.getLog("Jobs").error("Exception when running task "
+                    + task.getClass().getSimpleName() +
                       ": " + e.toString() + " => " + e.getMessage());
             continue;
           }
-          JDALogger.getLog("Jobs").info("Finished running task " + task.getClass().getSimpleName());
+          JDALogger.getLog("Jobs").info("Finished running task " +
+                  task.getClass().getSimpleName());
         } else {
           unrunTasks.add(task);
         }
@@ -73,11 +78,13 @@ public class AsyncService {
           try {
             job.run(dispatcher);
           } catch (Exception e) {
-            JDALogger.getLog("Jobs").error("Exception when running " + job.getClass().getSimpleName() +
+            JDALogger.getLog("Jobs").error("Exception when running " +
+                    job.getClass().getSimpleName() +
                     ": " + e.toString() + " => " + e.getMessage());
             continue;
           }
-          JDALogger.getLog("Jobs").info("Finished running job " + job.getClass().getSimpleName());
+          JDALogger.getLog("Jobs").info("Finished running job " +
+                  job.getClass().getSimpleName());
         }
       }
     }
