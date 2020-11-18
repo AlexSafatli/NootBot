@@ -54,7 +54,6 @@ public class ChatListener extends AbstractListener {
     processors.add(new ListShortestSoundsProcessor(withPrefix("shortest"), bot));
     processors.add(new PlayRandomTopSoundProcessor(withPrefix("randomtop"), bot));
     processors.add(new PlayRandomLongestSoundProcessor(withPrefix("randomlongest"), bot));
-    processors.add(new PlayMultipleRandomProcessor(withPrefix("shuffle"), bot));
     processors.add(new PlayRandomProcessor(withPrefix("random"), bot));
     processors.add(new AuthenticateUserProcessor(withPrefix("privilege"), bot));
     processors.add(new DeleteBotMessagesProcessor(withPrefix("clear"), bot));
