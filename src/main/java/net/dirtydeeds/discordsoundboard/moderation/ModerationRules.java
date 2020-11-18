@@ -12,7 +12,6 @@ public class ModerationRules {
   private final boolean permitted;
   private Role defaultRole;
   private Role suspendedRole;
-  private boolean numberedSetPlaying;
   private ChannelMessageCrawler sayingsCrawler;
 
   public ModerationRules(Guild guild, boolean permitted) {
@@ -67,14 +66,6 @@ public class ModerationRules {
       return RolesModerator.assertMemberOnlyHasRole(member, suspendedRole);
     }
     return null;
-  }
-
-  public void setPlayNumberedSets(boolean setting) {
-    numberedSetPlaying = setting;
-  }
-
-  public boolean canPlayNumberedSets() {
-    return numberedSetPlaying;
   }
 
   public List<Role> getTopicRoles() {
