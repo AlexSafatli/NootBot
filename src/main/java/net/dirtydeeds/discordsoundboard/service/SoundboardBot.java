@@ -526,7 +526,7 @@ public class SoundboardBot {
         sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, user);
       } else {
         moveToChannel(toJoin);
-        playFile(toPlay, toJoin.getGuild());
+        playFile(toPlay, toJoin.getGuild(), true);
         lastPlayed = new SoundPlayedEvent(toPlay, user.getName());
         return toPlay;
       }
@@ -545,7 +545,7 @@ public class SoundboardBot {
         String toPlay = getRandomSoundNameForCategory(category);
         if (toPlay == null) return null;
         moveToChannel(toJoin);
-        playFile(toPlay, toJoin.getGuild());
+        playFile(toPlay, toJoin.getGuild(), true);
         lastPlayed = new SoundPlayedEvent(toPlay, user.getName());
         return toPlay;
       }
@@ -635,7 +635,7 @@ public class SoundboardBot {
       JDALogger.getLog("Bot").info("Playing entrance \"" + fileName + "\" for user " +
                user.getName() + " in " + joined.getName());
       SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
-      playFile(fileToPlay, joined.getGuild(), true);
+      playFile(fileToPlay, joined.getGuild(), true, false);
       return true;
     }
     return false;
@@ -757,14 +757,21 @@ public class SoundboardBot {
   }
 
   public void playFile(String fileName, Guild guild) {
-    SoundFile fileToPlay = dispatcher.getAvailableSoundFiles().get(fileName);
-    playFile(fileToPlay, guild, true);
+    playFile(dispatcher.getAvailableSoundFiles().get(fileName),
+            guild, true, false);
     lastPlayed = new SoundPlayedEvent(fileName, null);
   }
 
-  private void playFile(SoundFile fileToPlay, Guild guild, boolean addToCount) {
+  public void playFile(String fileName, Guild guild, boolean nointerrupt) {
+    playFile(dispatcher.getAvailableSoundFiles().get(fileName),
+            guild, true, nointerrupt);
+    lastPlayed = new SoundPlayedEvent(fileName, null);
+  }
+
+  private void playFile(SoundFile fileToPlay, Guild guild, boolean addToCount,
+                        boolean nointerrupt) {
     if (fileToPlay != null && guild != null) {
-      playFile(fileToPlay.getSoundFile(), guild);
+      playFile(fileToPlay.getSoundFile(), guild, nointerrupt);
       if (addToCount) {
         fileToPlay.addOneToNumberOfPlays();
         dispatcher.saveSound(fileToPlay);
@@ -772,12 +779,13 @@ public class SoundboardBot {
     }
   }
 
-  private void playFile(File audioFile, Guild guild) {
+  private void playFile(File audioFile, Guild guild, boolean nointerrupt) {
     AudioManager audio = guild.getAudioManager();
     if (audio.isSelfMuted()) return;
     AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
     String path = audioFile.getPath();
-    scheduler.load(path, new AudioHandler(audio.getSendingHandler()));
+    scheduler.load(path, new AudioHandler(audio.getSendingHandler(),
+            nointerrupt));
   }
 
   private void playYouTube(String videoID, Guild guild) {

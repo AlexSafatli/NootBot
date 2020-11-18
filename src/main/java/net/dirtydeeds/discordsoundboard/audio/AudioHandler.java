@@ -12,23 +12,31 @@ import net.dv8tion.jda.internal.utils.JDALogger;
 public class AudioHandler implements AudioLoadResultHandler {
 
   private final AudioPlayer player;
+  private final boolean nointerrupt;
 
   public AudioHandler(AudioPlayer player) {
     this.player = player;
+    this.nointerrupt = false;
   }
 
   public AudioHandler(AudioSendHandler audio) {
     this.player = ((AudioPlayerSendHandler)(audio)).getPlayer();
+    this.nointerrupt = false;
+  }
+
+  public AudioHandler(AudioSendHandler audio, boolean nointerrupt) {
+    this.player = ((AudioPlayerSendHandler)(audio)).getPlayer();
+    this.nointerrupt = nointerrupt;
   }
 
   @Override
   public void trackLoaded(AudioTrack track) {
-    player.startTrack(track, false);
+    player.startTrack(track, nointerrupt);
   }
 
   @Override
   public void playlistLoaded(AudioPlaylist playlist) {
-    player.startTrack(playlist.getTracks().get(0), false);
+    player.startTrack(playlist.getTracks().get(0), nointerrupt);
   }
 
   @Override

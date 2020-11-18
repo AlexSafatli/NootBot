@@ -54,7 +54,8 @@ public class PlayMultipleRandomProcessor extends MultiArgumentChatCommandProcess
           desc = "The **" + cat + "** category was provided.";
           title = "Played Multiple Random " + cat + " Sounds";
           for (int i = 1; i <= num; ++i) {
-            String sound = bot.playRandomFileForCategory(event.getAuthor(), category);
+            String sound = bot.playRandomFileForCategory(event.getAuthor(),
+                    category);
             filesPlayed.add(sound);
             SoundFile f = bot.getDispatcher().getSoundFileByName(sound);
             if (f != null)

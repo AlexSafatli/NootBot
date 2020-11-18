@@ -26,9 +26,9 @@ import net.dv8tion.jda.api.exceptions.*;
 public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
   private static final int MAX_FILE_SIZE_IN_BYTES = 2000000; // 2MB
-  private static final int MAX_DURATION_IN_SECONDS = 12; // 12s
+  private static final int MAX_DURATION_IN_SECONDS = 12; // s
   private static final String WAS_THIS_FOR_ME =
-          " *Was this for me?* I watch for `.mp3`, `.wav`, `.flac`, `.m4a` files.";
+          "*Was this for me?* I want `.mp3`, `.wav`, `.flac`, `.m4a` files.";
 
   public SoundAttachmentProcessor(SoundboardBot bot) {
     super("Sound Upload", bot);
@@ -36,7 +36,6 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
   protected boolean handleAttachment(MessageReceivedEvent event,
                                      Attachment attachment) {
-    User user = event.getAuthor();
     String category = event.getMessage().getContentRaw();
     AttachmentFile file = getAttachmentDetails(attachment);
 
@@ -51,9 +50,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
 
     // Check for category path.
     Path downloadPath = bot.getSoundsPath();
-    SoundboardDispatcher dispatcher = bot.getDispatcher();
     if (bot.isASoundCategory(category)) {
-      for (Category _category : dispatcher.getCategories()) {
+      for (Category _category : bot.getDispatcher().getCategories()) {
         if (_category.getName().equalsIgnoreCase(category)) {
           downloadPath = _category.getFolderPath();
           category = _category.getName();
@@ -68,32 +66,37 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
     File target = new File(downloadPath.toString(), file.name);
     if (target.exists() || bot.getSoundMap().get(file.name) != null) {
       pm(event, "A sound with the name `" + file.shortName +
-              "` already exists! Type `.whatis " + file.shortName +
-              "` for details.");
+              "` already exists!");
+      event.getMessage().addReaction("😶").queue();
       return false;
     }
 
     // Download the file.
     try {
       if (attachment.downloadToFile(target).get() != null) {
-        JDALogger.getLog("Upload").info("Download succeeded: " + attachment.getFileName());
-        dispatcher.updateFileList();
-        SoundFile soundFile = dispatcher.getSoundFileByName(file.shortName);
+        JDALogger.getLog("Upload").info("Download succeeded: " +
+                attachment.getFileName());
+        bot.getDispatcher().updateFileList();
+        SoundFile soundFile = bot.getDispatcher().getSoundFileByName(
+                file.shortName);
         if (soundFile == null) {
-          e(event, "Something went wrong - could not find downloaded file.");
+          e(event, "Oops! Could not find downloaded file by name.");
           return false;
         }
         // Check duration.
+        User user = event.getAuthor();
         net.dirtydeeds.discordsoundboard.beans.User u = bot.getUser(user);
         if ((u != null && u.getPrivilegeLevel() < 2 || !bot.isOwner(user)) &&
                 soundFile.getDuration() > MAX_DURATION_IN_SECONDS) {
           // Delete the file.
-          JDALogger.getLog("Upload").info("File was too long! Deleting the file.");
-          if (!target.delete()) JDALogger.getLog("Upload").warn("Could not delete file.");
-          dispatcher.updateFileList();
+          JDALogger.getLog("Upload").info(
+                  "File was too long! Deleting the file.");
+          if (!target.delete()) JDALogger.getLog("Upload").warn(
+                  "Could not delete file.");
+          bot.getDispatcher().updateFileList();
           pm(event,
                   "File `" + file.name + "` is *too long* (**" +
-                          soundFile.getDuration() + "s**). Want *less than or equal to* **" +
+                          soundFile.getDuration() + "s**). Want <= **" +
                           MAX_DURATION_IN_SECONDS + "s**.");
           return false;
         }
@@ -103,10 +106,12 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
                 file.name, category, soundFile, attachment.getSize()));
         StyledEmbedMessage publishMessage = getPublishMessage(category,
                 file.shortName, user, soundFile, event.getGuild());
-        if (!event.isFromType(ChannelType.PRIVATE)) embed(event, publishMessage);
+        if (!event.isFromType(ChannelType.PRIVATE))
+          embed(event, publishMessage);
         if (!user.getName().equals(bot.getOwner())) { // Alert bot owner too.
           sendPublishMessageToOwner(publishMessage);
-          JDALogger.getLog("Upload").info("Sent information for uploaded file to owner.");
+          JDALogger.getLog("Upload").info(
+                  "Sent information for uploaded file to owner.");
         }
       } else {
         e(event, "Download of file `" + file.name + "` failed!");
@@ -129,8 +134,9 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
     List<Attachment> attachments = event.getMessage().getAttachments();
     for (Attachment attachment : attachments) {
       AttachmentFile file = getAttachmentDetails(attachment);
-      if (file.extension.equals("wav") || file.extension.equals("mp3") ||
-              file.extension.equals("flac") || file.extension.equals("m4a"))
+      String ext = file.extension;
+      if (ext.equals("wav") || ext.equals("mp3") || ext.equals("flac") ||
+              ext.equals("m4a"))
         return true;
     }
     return false;
@@ -150,7 +156,8 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
     msg.addContent("Name", "`" + name + "`", true);
     msg.addContent("Category", category, true);
     if (file.getDuration() != null) {
-      msg.addContent("Duration", file.getDuration() + " seconds", true);
+      msg.addContent("Duration", file.getDuration() + " seconds",
+              true);
     }
     if (guild != null) {
       msg.addContent("Server", guild.getName(), false);
@@ -183,7 +190,9 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
     }
     if (owner != null) {
       if (!sender.equals(bot)) {
-        JDALogger.getLog("Upload").info("Sending message to owner via different bot " + sender.getBotName());
+        JDALogger.getLog("Upload").info(
+                "Sending message to owner via different bot " +
+                        sender.getBotName());
         msg.addContent("Bot", bot.getBotName(), false);
       }
       owner.openPrivateChannel().queue((PrivateChannel c) ->
