@@ -19,7 +19,7 @@ public class ListLowSoundsProcessor extends AbstractChatCommandProcessor {
   private static final int NUMBER_TO_SHOW = 50;
 
   public ListLowSoundsProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Least Played Sounds", bot);
+    super(prefix, "least", "Least Played Sounds", bot);
     commands.addCommands(new CommandData("least", "List least played sound files."));
   }
 

@@ -15,7 +15,7 @@ import net.dv8tion.jda.internal.utils.JDALogger;
 public class ListCategoriesProcessor extends AbstractChatCommandProcessor {
 
   public ListCategoriesProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Categories", bot);
+    super(prefix, "categories", "Categories", bot);
     commands.addCommands(new CommandData("categories", "List all sound categories."));
   }
 

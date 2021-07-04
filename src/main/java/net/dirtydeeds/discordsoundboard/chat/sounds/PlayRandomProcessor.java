@@ -16,7 +16,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
 public class PlayRandomProcessor extends SingleArgumentChatCommandProcessor {
 
   public PlayRandomProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Random Sound", bot);
+    super(prefix, "random", "Random Sound", bot);
     commands.addCommands(new CommandData("random", "Plays a random sound file in the current channel.")
             .addOptions(new OptionData(STRING, "category", "A category to play from")));
   }

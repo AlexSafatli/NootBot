@@ -1,7 +1,6 @@
 package net.dirtydeeds.discordsoundboard.chat.sounds;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.dirtydeeds.discordsoundboard.beans.SoundFile;
@@ -12,14 +11,13 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
-import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
 
   private static final int NUMBER_TO_SHOW = 50;
 
   public ListTopSoundsProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Top Sounds", bot);
+    super(prefix, "top", "Top Sounds", bot);
     commands.addCommands(new CommandData("top", "List most played sound files."));
   }
 

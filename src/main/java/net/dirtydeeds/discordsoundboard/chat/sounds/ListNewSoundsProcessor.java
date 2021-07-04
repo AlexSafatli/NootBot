@@ -24,7 +24,7 @@ public class ListNewSoundsProcessor extends AbstractChatCommandProcessor {
   private static final int DAYS = 24;
 
   public ListNewSoundsProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Newest Sounds", bot);
+    super(prefix, "new", "Newest Sounds", bot);
     commands.addCommands(new CommandData("new", "List all recently added sound files."));
   }
 

@@ -17,7 +17,7 @@ public class PlayRandomTopSoundProcessor extends
         SingleArgumentChatCommandProcessor {
 
   public PlayRandomTopSoundProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Random Top Sound", bot);
+    super(prefix, "randomtop", "Random Top Sound", bot);
     commands.addCommands(new CommandData("randomtop", "Plays a random top played sound in the current channel."));
   }
 

@@ -13,6 +13,12 @@ public abstract class SingleArgumentChatCommandProcessor extends
     super(prefix, title, bot);
   }
 
+  public SingleArgumentChatCommandProcessor(String prefix, String slashCommand,
+                                            String title,
+                                            SoundboardBot bot) {
+    super(prefix, slashCommand, title, bot);
+  }
+
   protected abstract void handleEvent(MessageReceivedEvent event,
                                       String message);
 

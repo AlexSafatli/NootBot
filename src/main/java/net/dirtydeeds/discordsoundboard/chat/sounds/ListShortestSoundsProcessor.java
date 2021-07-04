@@ -19,7 +19,7 @@ public class ListShortestSoundsProcessor extends AbstractChatCommandProcessor {
   private static final int NUMBER_TO_SHOW = 50;
 
   public ListShortestSoundsProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Shortest Sounds", bot);
+    super(prefix,  "shortest", "Shortest Sounds", bot);
     commands.addCommands(new CommandData("shortest", "List shortest duration sound files."));
   }
 

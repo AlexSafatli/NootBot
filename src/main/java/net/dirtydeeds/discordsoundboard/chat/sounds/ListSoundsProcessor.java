@@ -29,7 +29,7 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
   private Map<String, SoundFile> soundFiles;
 
   public ListSoundsProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Sounds", bot);
+    super(prefix, "list", "Sounds", bot);
     commands.addCommands(new CommandData("list", "Lists all sound files.")
             .addOptions(new OptionData(STRING, "category", "The category to list sounds for")));
   }

@@ -22,7 +22,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
 public class SearchProcessor extends SingleArgumentChatCommandProcessor {
 
   public SearchProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Search Sounds", bot);
+    super(prefix, "searchfor", "Search Sounds", bot);
     commands.addCommands(new CommandData("searchfor", "Lists all sound files that match a query.")
             .addOptions(new OptionData(STRING, "query", "The query to search for").setRequired(true)));
   }

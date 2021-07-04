@@ -16,7 +16,7 @@ public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
   private static final int MAX_DURATION_IN_SECONDS = 8;
 
   public SetEntranceProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Entrance", bot);
+    super(prefix, "entrance", "Entrance", bot);
     commands.addCommands(new CommandData("entrance", "Set your entrance sound when joining a voice channel.")
             .addOptions(new OptionData(STRING, "sound", "The sound file to play")
                     .setRequired(true)));

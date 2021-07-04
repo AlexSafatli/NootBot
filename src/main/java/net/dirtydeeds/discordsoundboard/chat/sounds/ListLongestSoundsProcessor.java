@@ -19,7 +19,7 @@ public class ListLongestSoundsProcessor extends AbstractChatCommandProcessor {
   private static final int NUMBER_TO_SHOW = 50;
 
   public ListLongestSoundsProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Longest Sounds", bot);
+    super(prefix, "longest", "Longest Sounds", bot);
     commands.addCommands(new CommandData("longest", "List longest duration sound files."));
   }
 

@@ -24,7 +24,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
 public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
   public PlaySoundProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "Play Sound", bot);
+    super(prefix, "sound", "Play Sound", bot);
     commands.addCommands(new CommandData("sound", "Plays a sound file in the current channel.")
             .addOptions(new OptionData(STRING, "sound", "The sound file to play")
                     .setRequired(true)));
