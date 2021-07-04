@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
 import net.dv8tion.jda.internal.utils.JDALogger;
 
@@ -46,6 +47,8 @@ public class SoundboardBot {
   private Random rng = new Random();
 
   private JDA bot;
+  private CommandListUpdateAction slashCommands;
+
   private ChatListener chatListener;
   private String owner;
   private SoundboardDispatcher dispatcher;
@@ -844,7 +847,8 @@ public class SoundboardBot {
         JDALogger.getLog("Bot").info("Connecting: " + guild.getName());
         initSettings(guild);
       }
-      ChatListener chatListener = new ChatListener(this);
+      slashCommands = bot.updateCommands();
+      ChatListener chatListener = new ChatListener(this, slashCommands);
       MoveListener moveListener = new MoveListener(this);
       GameListener gameListener = new GameListener(this);
       GuildUserListener guildListener = new GuildUserListener(this, rules);

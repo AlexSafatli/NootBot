@@ -11,6 +11,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.util.*;
@@ -28,19 +29,19 @@ public class ChatListener extends AbstractListener {
   private Map<User, Integer> requests;
   private List<ChatCommandProcessor> processors;
 
-  public ChatListener(SoundboardBot bot) {
+  public ChatListener(SoundboardBot bot, CommandListUpdateAction slashCommands) {
     this.bot = bot;
     this.tick = new Date(System.currentTimeMillis());
     this.requests = new HashMap<>();
     this.processors = new LinkedList<>();
-    setupChatProcessors();
+    setupChatProcessors(slashCommands);
   }
 
   private String withPrefix(String command) {
     return CommonPrefix + command;
   }
 
-  private void setupChatProcessors() {
+  private void setupChatProcessors(CommandListUpdateAction slashCommands) {
     processors.add(new PlaySoundProcessor("?", bot));
     processors.add(new PlayYouTubeUrlProcessor("~~", bot));
     processors.add(new ListSoundsProcessor(withPrefix("list"), bot));
