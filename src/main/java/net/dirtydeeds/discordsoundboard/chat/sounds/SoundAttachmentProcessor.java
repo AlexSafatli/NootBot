@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import net.dv8tion.jda.api.exceptions.*;
@@ -125,9 +126,17 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
     return true;
   }
 
+  public void processAsSlashCommand(SlashCommandEvent event) {
+
+  }
+
   @Override
   public boolean isApplicableCommand(MessageReceivedEvent event) {
     return super.isApplicableCommand(event) && hasApplicableAttachment(event);
+  }
+
+  public boolean isApplicableCommand(SlashCommandEvent event) {
+    return false;
   }
 
   private boolean hasApplicableAttachment(MessageReceivedEvent event) {
@@ -203,6 +212,10 @@ public class SoundAttachmentProcessor extends AbstractAttachmentProcessor {
   @Override
   public boolean canBeRunBy(User user, Guild guild) {
     return !bot.isUser(user) && bot.isAuthenticated(user, guild);
+  }
+
+  public boolean canBeRunAsSlashCommand() {
+    return false;
   }
 
   @Override

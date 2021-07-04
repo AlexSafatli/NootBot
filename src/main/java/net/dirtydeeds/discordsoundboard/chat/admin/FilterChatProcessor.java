@@ -9,6 +9,7 @@ import net.dirtydeeds.discordsoundboard.chat.ChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class FilterChatProcessor implements ChatCommandProcessor {
@@ -52,6 +53,10 @@ public class FilterChatProcessor implements ChatCommandProcessor {
     }
   }
 
+  public void processAsSlashCommand(SlashCommandEvent event) {
+
+  }
+
   protected void copyMessage(MessageReceivedEvent event, String message) {
     List<TextChannel> textChannels = new LinkedList<>();
     for (String cname : channelnames) {
@@ -82,12 +87,20 @@ public class FilterChatProcessor implements ChatCommandProcessor {
             && m.matches();
   }
 
+  public boolean isApplicableCommand(SlashCommandEvent event) {
+    return false;
+  }
+
   public boolean canBeRunByAnyone() {
     return true;
   }
 
   public boolean canBeRunBy(User user, Guild guild) {
     return true;
+  }
+
+  public boolean canBeRunAsSlashCommand() {
+    return false;
   }
 
   private void delete(Message m) {

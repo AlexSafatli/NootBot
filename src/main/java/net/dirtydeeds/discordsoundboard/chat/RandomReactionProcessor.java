@@ -4,6 +4,7 @@ import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.JDALogger;
 
@@ -36,10 +37,18 @@ public class RandomReactionProcessor implements ChatCommandProcessor {
     }
   }
 
+  public void processAsSlashCommand(SlashCommandEvent event) {
+
+  }
+
   public boolean isApplicableCommand(MessageReceivedEvent event) {
     // 1 in N chance
     return (event.getMessage().getAttachments().isEmpty() &&
             rng.nextInt(N) == 0);
+  }
+
+  public boolean isApplicableCommand(SlashCommandEvent event) {
+    return false;
   }
 
   public boolean canBeRunByAnyone() {
@@ -47,6 +56,10 @@ public class RandomReactionProcessor implements ChatCommandProcessor {
   }
 
   public boolean canBeRunBy(User user, Guild guild) {
+    return false;
+  }
+
+  public boolean canBeRunAsSlashCommand() {
     return false;
   }
 
