@@ -10,6 +10,7 @@ public interface ChatCommandProcessor {
   boolean isApplicableCommand(MessageReceivedEvent event);
   boolean canBeRunByAnyone();
   boolean canBeRunBy(User user, Guild guild);
+  boolean canBeRunAsSlashCommand();
   String getTitle();
   String getCommandHelpString();
 

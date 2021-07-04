@@ -66,6 +66,10 @@ public abstract class AbstractChatCommandProcessor implements
     return true;
   }
 
+  public boolean canBeRunAsSlashCommand() {
+    return false;
+  }
+
   public String getPrefix() {
     return this.prefix;
   }
