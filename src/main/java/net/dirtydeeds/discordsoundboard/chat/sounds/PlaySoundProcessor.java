@@ -9,6 +9,7 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
@@ -24,7 +25,7 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
 public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
   public PlaySoundProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
-    super(prefix, "sound", "Play Sound", bot);
+    super(prefix, "sound", "Play Sound", true, bot);
     commands.addCommands(new CommandData("sound", "Plays a sound file in the current channel.")
             .addOptions(new OptionData(STRING, "sound", "The sound file to play")
                     .setRequired(true)));
@@ -102,7 +103,8 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
 
   protected void handleEvent(SlashCommandEvent event) {
     User user = event.getUser();
-    String name = Objects.requireNonNull(event.getOption("sound")).getAsString();
+    OptionMapping opt = event.getOption("sound");
+    String name = opt != null ? opt.getAsString() : "";
     if (!bot.isAllowedToPlaySound(user)) {
       pm(event, "You're not allowed to do that.");
       JDALogger.getLog("Sound").info(
@@ -116,6 +118,8 @@ public class PlaySoundProcessor extends SingleArgumentChatCommandProcessor {
     }
     if (suggestion != null) {
       sendBadSoundMessage(event, name, suggestion, user);
+    } else {
+      m(event, "Played sound " + name);
     }
   }
 

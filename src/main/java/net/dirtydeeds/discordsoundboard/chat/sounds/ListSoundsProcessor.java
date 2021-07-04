@@ -10,6 +10,7 @@ import net.dirtydeeds.discordsoundboard.utils.StyledEmbedMessage;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
@@ -196,7 +197,8 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
   }
 
   protected void handleEvent(SlashCommandEvent event) {
-    String cat = Objects.requireNonNull(event.getOption("category")).getAsString();
+    OptionMapping opt = event.getOption("category");
+    String cat = opt != null ? opt.getAsString() : null;
     soundFiles = bot.getSoundMap();
 
     // List the sound files.

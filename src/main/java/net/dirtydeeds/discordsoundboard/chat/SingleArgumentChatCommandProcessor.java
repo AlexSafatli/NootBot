@@ -19,6 +19,13 @@ public abstract class SingleArgumentChatCommandProcessor extends
     super(prefix, slashCommand, title, bot);
   }
 
+  public SingleArgumentChatCommandProcessor(String prefix, String slashCommand,
+                                            String title, boolean ephemeral,
+                                            SoundboardBot bot) {
+    super(prefix, slashCommand, title, bot);
+    this.ephemeral = ephemeral;
+  }
+
   protected abstract void handleEvent(MessageReceivedEvent event,
                                       String message);
 
