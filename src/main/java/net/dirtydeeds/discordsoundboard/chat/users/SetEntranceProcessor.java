@@ -4,14 +4,22 @@ import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.SingleArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
+
+import static net.dv8tion.jda.api.interactions.commands.OptionType.STRING;
 
 public class SetEntranceProcessor extends SingleArgumentChatCommandProcessor {
 
   private static final int WARNING_DURATION_IN_SECONDS = 5;
   private static final int MAX_DURATION_IN_SECONDS = 8;
 
-  public SetEntranceProcessor(String prefix, SoundboardBot bot) {
+  public SetEntranceProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
     super(prefix, "Entrance", bot);
+    commands.addCommands(new CommandData("entrance", "Set your entrance sound when joining a voice channel.")
+            .addOptions(new OptionData(STRING, "sound", "The sound file to play")
+                    .setRequired(true)));
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {

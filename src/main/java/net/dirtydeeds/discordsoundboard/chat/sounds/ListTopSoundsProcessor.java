@@ -8,15 +8,19 @@ import net.dirtydeeds.discordsoundboard.beans.SoundFile;
 import net.dirtydeeds.discordsoundboard.chat.AbstractChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.MessageBuilder;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
 
 public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
 
   private static final int NUMBER_TO_SHOW = 50;
 
-  public ListTopSoundsProcessor(String prefix, SoundboardBot bot) {
+  public ListTopSoundsProcessor(String prefix, SoundboardBot bot, CommandListUpdateAction commands) {
     super(prefix, "Top Sounds", bot);
+    commands.addCommands(new CommandData("top", "List most played sound files."));
   }
 
   private List<String> getTopSounds() {
@@ -40,6 +44,14 @@ public class ListTopSoundsProcessor extends AbstractChatCommandProcessor {
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {
+    if (bot.getSoundMap().isEmpty()) {
+      e(event, "There are **no sound files**.");
+      return;
+    }
+    for (String s : getTopSounds()) m(event, s);
+  }
+
+  protected void handleEvent(SlashCommandEvent event) {
     if (bot.getSoundMap().isEmpty()) {
       e(event, "There are **no sound files**.");
       return;

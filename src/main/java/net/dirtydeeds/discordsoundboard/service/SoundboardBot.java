@@ -557,37 +557,21 @@ public class SoundboardBot {
   }
 
   public void playFileForChatCommand(
-    String fileName, MessageReceivedEvent event) throws Exception {
-    if (event != null && !fileName.isEmpty() &&
-        isAllowedToPlaySound(event.getAuthor())) {
+    String fileName, net.dv8tion.jda.api.entities.User user) throws Exception {
+    if (user != null && !fileName.isEmpty() &&
+        isAllowedToPlaySound(user)) {
       if (dispatcher.getAvailableSoundFiles().get(fileName) != null) {
-        VoiceChannel toJoin = getUsersVoiceChannel(event.getAuthor());
+        VoiceChannel toJoin = getUsersVoiceChannel(user);
         if (toJoin == null) {
-          sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, event.getAuthor());
+          sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, user);
         } else {
           moveToChannel(toJoin);
           playFile(fileName, toJoin.getGuild());
           lastPlayed =
-            new SoundPlayedEvent(fileName, event.getAuthor().getName());
+            new SoundPlayedEvent(fileName, user.getName());
           JDALogger.getLog("Bot").info("Played sound \"" + fileName + "\" in server " +
                    toJoin.getGuild().getName());
         }
-      }
-    }
-  }
-
-  public void playYouTubeVideoIDForChatCommand(
-    String videoID, MessageReceivedEvent event) throws Exception {
-    if (event != null && !videoID.isEmpty()
-        && isAllowedToPlaySound(event.getAuthor())) {
-      VoiceChannel toJoin = getUsersVoiceChannel(event.getAuthor());
-      if (toJoin == null) {
-        sendMessageToUser(NOT_IN_VOICE_CHANNEL_MESSAGE, event.getAuthor());
-      } else {
-        moveToChannel(toJoin);
-        playYouTube(videoID, toJoin.getGuild());
-        JDALogger.getLog("Bot").info("Played videoID \"" + videoID + "\" in server " +
-                 toJoin.getGuild().getName());
       }
     }
   }

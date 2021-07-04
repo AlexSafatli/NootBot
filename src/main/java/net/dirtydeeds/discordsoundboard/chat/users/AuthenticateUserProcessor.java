@@ -3,6 +3,7 @@ package net.dirtydeeds.discordsoundboard.chat.users;
 import net.dirtydeeds.discordsoundboard.beans.User;
 import net.dirtydeeds.discordsoundboard.chat.OwnerMultiArgumentChatCommandProcessor;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class AuthenticateUserProcessor extends

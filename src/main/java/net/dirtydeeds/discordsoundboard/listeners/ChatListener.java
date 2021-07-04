@@ -10,6 +10,7 @@ import net.dirtydeeds.discordsoundboard.chat.users.*;
 import net.dirtydeeds.discordsoundboard.service.SoundboardBot;
 import net.dirtydeeds.discordsoundboard.utils.StringUtils;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
@@ -41,21 +42,18 @@ public class ChatListener extends AbstractListener {
     return CommonPrefix + command;
   }
 
-  private void setupChatProcessors(CommandListUpdateAction slashCommands) {
-    processors.add(new PlaySoundProcessor("?", bot));
-    processors.add(new PlayYouTubeUrlProcessor("~~", bot));
-    processors.add(new ListSoundsProcessor(withPrefix("list"), bot));
-    processors.add(new SearchProcessor(withPrefix("search"), bot));
-    processors.add(new ListCategoriesProcessor(withPrefix("categories"), bot));
-    processors.add(new ListNewSoundsProcessor(withPrefix("new"), bot));
-    processors.add(new ListTopSoundsProcessor(withPrefix("top"), bot));
-    processors.add(new ListLowSoundsProcessor(withPrefix("least"), bot));
-    processors.add(new ListMostReportsProcessor(withPrefix("controversial"), bot));
-    processors.add(new ListLongestSoundsProcessor(withPrefix("longest"), bot));
-    processors.add(new ListShortestSoundsProcessor(withPrefix("shortest"), bot));
-    processors.add(new PlayRandomTopSoundProcessor(withPrefix("randomtop"), bot));
-    processors.add(new PlayRandomLongestSoundProcessor(withPrefix("randomlongest"), bot));
-    processors.add(new PlayRandomProcessor(withPrefix("random"), bot));
+  private void setupChatProcessors(CommandListUpdateAction commands) {
+    processors.add(new PlaySoundProcessor("?", bot, commands));
+    processors.add(new ListSoundsProcessor(withPrefix("list"), bot, commands));
+    processors.add(new SearchProcessor(withPrefix("search"), bot, commands));
+    processors.add(new ListCategoriesProcessor(withPrefix("categories"), bot, commands));
+    processors.add(new ListNewSoundsProcessor(withPrefix("new"), bot, commands));
+    processors.add(new ListTopSoundsProcessor(withPrefix("top"), bot, commands));
+    processors.add(new ListLowSoundsProcessor(withPrefix("least"), bot, commands));
+    processors.add(new ListLongestSoundsProcessor(withPrefix("longest"), bot, commands));
+    processors.add(new ListShortestSoundsProcessor(withPrefix("shortest"), bot, commands));
+    processors.add(new PlayRandomTopSoundProcessor(withPrefix("randomtop"), bot, commands));
+    processors.add(new PlayRandomProcessor(withPrefix("random"), bot, commands));
     processors.add(new AuthenticateUserProcessor(withPrefix("privilege"), bot));
     processors.add(new DeleteBotMessagesProcessor(withPrefix("clear"), bot));
     processors.add(new FavoritePhraseProcessor(withPrefix("addphrase"), bot));
@@ -74,7 +72,7 @@ public class ChatListener extends AbstractListener {
     processors.add(new ExcludeSoundFromRandomProcessor(withPrefix("exclude"), bot));
     processors.add(new IncludeSoundFromRandomProcessor(withPrefix("include"), bot));
     processors.add(new SetEntranceForUserProcessor(withPrefix("entrancefor"), bot));
-    processors.add(new SetEntranceProcessor(withPrefix("entrance"), bot));
+    processors.add(new SetEntranceProcessor(withPrefix("entrance"), bot, commands));
     processors.add(new PlaySoundForUserProcessor(withPrefix("playfor"), bot));
     processors.add(new StopSoundProcessor(withPrefix("stop"), bot));
     processors.add(new RestartBotProcessor(withPrefix("restart"), bot));
@@ -90,6 +88,9 @@ public class ChatListener extends AbstractListener {
     processors.add(new FilterYoutubeClipProcessor(bot));
 
     JDALogger.getLog("Chat").info("Registered " + processors.size() + " processors.");
+
+    commands.queue();
+    JDALogger.getLog("Chat").info("Queued new slash commands.");
   }
 
   private void updateTick() {
@@ -139,6 +140,38 @@ public class ChatListener extends AbstractListener {
             ", bot: " + bot.getBotName() + ").");
   }
 
+  private void process(ChatCommandProcessor processor,
+                       SlashCommandEvent event) {
+    User user = event.getUser();
+    Integer numRequests = requests.get(user);
+    if (numRequests == null) numRequests = 0;
+
+    if (numRequests >= MAX_NUMBER_OF_REQUESTS_PER_TIME
+            && bot.isThrottled(user)) {
+      bot.sendMessageToUser(
+              "Please wait before sending another command.", user);
+      return;
+    } else if (numRequests >= EXCESSIVE_NUMBER_OF_REQUESTS_PER_TIME
+            && !bot.isOwner(user)) {
+      JDALogger.getLog("Chat").info("Throttling user " + user.getName() +
+              " because sent too many requests.");
+      bot.throttleUser(user);
+      bot.sendMessageToUser("Throttling **" + user.getName() +
+                      "** automatically because too many requests.",
+              bot.getOwner());
+      return;
+    }
+
+    processor.processAsSlashCommand(event);
+    requests.put(user, numRequests + 1); // Increment number of requests.
+    ++totalRequests;
+    JDALogger.getLog("Chat").info("Processed slash message using " + processor.getClass().getSimpleName() +
+            " for user " + user.getName() + " with options \"" +
+            event.getOptions() + "\" (request: " + totalRequests +
+            ", bot: " + bot.getBotName() + ").");
+  }
+
+  @Override
   public void onMessageReceived(MessageReceivedEvent event) {
 
     updateTick();
@@ -168,6 +201,24 @@ public class ChatListener extends AbstractListener {
               "\" which is not a command.");
     }
 
+  }
+
+  @Override
+  public void onSlashCommand(SlashCommandEvent event) {
+
+    updateTick();
+
+    if (event.getGuild() == null) {
+      return; // only accept commands from guilds
+    }
+
+    // Respond to the slash command using a processor if one is found.
+    for (ChatCommandProcessor processor : processors) {
+      if (processor.isApplicableCommand(event)) {
+        process(processor, event);
+        return;
+      }
+    }
   }
 
   private boolean isTypoCommand(MessageReceivedEvent event) {
