@@ -120,6 +120,10 @@ public abstract class AbstractChatCommandProcessor implements
     return this.title;
   }
 
+  public String getSlashCommand() {
+    return this.slashCommand;
+  }
+
   private void delete(Message m) {
     if (bot.hasPermissionInChannel(m.getTextChannel(), Permission.MESSAGE_MANAGE))
       m.delete().queue();

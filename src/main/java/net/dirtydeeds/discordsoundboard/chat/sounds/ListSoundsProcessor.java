@@ -139,8 +139,8 @@ public class ListSoundsProcessor extends SingleArgumentChatCommandProcessor {
     w(event, "**" + soundFiles.size() + " files are stored** (" +
             bot.getDispatcher().sizeOfLibrary() + ") " +
             "\u2014 that's so much! Listing them will *flood this" +
-            " channel*. List sounds by category using `" + getPrefix() +
-            " <category>` instead. To list categories, use `.categories`.");
+            " channel*. List sounds by category using `/" + getSlashCommand() +
+            " <category>` instead. To list categories, use `/categories`.");
   }
 
   protected void handleEvent(MessageReceivedEvent event, String message) {

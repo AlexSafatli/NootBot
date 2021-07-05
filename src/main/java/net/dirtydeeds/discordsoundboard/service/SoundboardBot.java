@@ -17,9 +17,7 @@ import net.dirtydeeds.discordsoundboard.utils.ChatUtils;
 import net.dirtydeeds.discordsoundboard.utils.Reusables;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
-import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
 import net.dv8tion.jda.internal.utils.JDALogger;
 
@@ -29,11 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-/**
- * @author dfurrer.
- *
- * This class handles moving into channels and playing sounds. Also, it loads the available sound files.
- */
 public class SoundboardBot {
 
   private static final int CHANNEL_CONNECTION_TIMEOUT = 5000;
@@ -41,20 +34,19 @@ public class SoundboardBot {
   private static final int MAX_DURATION_FOR_RANDOM = 10;
   private static final long MIN_MINUTES_TO_SHOW_AS_HOURS = 120;  // 2 hours
   private static final long MIN_MINUTES_TO_SHOW_AS_DAYS  = 2880; // 2 days
-  private static String NOT_IN_VOICE_CHANNEL_MESSAGE = "You in VC? Can't see you.";
+  private static final String NOT_IN_VOICE_CHANNEL_MESSAGE = "Can't find you in a voice channel.";
 
-  private long startTime;
-  private Random rng = new Random();
+  private final long startTime;
+  private final Random rng = new Random();
 
   private JDA bot;
-  private CommandListUpdateAction slashCommands;
 
   private ChatListener chatListener;
-  private String owner;
-  private SoundboardDispatcher dispatcher;
-  private Map<String, Setting> settings;
-  private Map<Guild, AudioTrackScheduler> audioSchedulers;
-  private Map<Guild, ModerationRules> rules;
+  private final String owner;
+  private final SoundboardDispatcher dispatcher;
+  private final Map<String, Setting> settings;
+  private final Map<Guild, AudioTrackScheduler> audioSchedulers;
+  private final Map<Guild, ModerationRules> rules;
 
   public SoundboardBot(String token, String owner,
                        SoundboardDispatcher dispatcher) {
@@ -217,30 +209,6 @@ public class SoundboardBot {
     return getRandomTopPlayedSoundName(MAX_DURATION_FOR_RANDOM);
   }
 
-  public String getRandomLongestSoundName() {
-    List<SoundFile> sounds = dispatcher.getSoundFilesOrderedByDuration();
-    Map<String, Boolean> seen = new HashMap<>();
-    Map<String, SoundFile> map = getSoundMap();
-    if (sounds == null || sounds.isEmpty()) return null;
-    SoundFile file = null;
-    int top = Math.max(TOP_PLAYED_SOUND_THRESHOLD, sounds.size() / 5),
-        index,
-        ceiling = top;
-    while (file == null
-           || file.isExcludedFromRandom()
-           || file.getDuration() == null
-           || map.get(file.getSoundFileId()) == null) {
-      // No sounds that can actually be played.
-      if (seen.size() == sounds.size()) return null;
-      index = rng.nextInt(Math.min(ceiling, sounds.size()));
-      file = sounds.get(index);
-      if (ceiling + 1 < sounds.size()) ++ceiling;
-      if (file != null && seen.get(file.getSoundFileId()) == null)
-        seen.put(file.getSoundFileId(), true);
-    }
-    return file.getSoundFileId();
-  }
-
   public User getUser(net.dv8tion.jda.api.entities.User user) {
     List<User> users = dispatcher.getUserById(user.getId());
     if (users != null && !users.isEmpty()) {
@@ -276,18 +244,26 @@ public class SoundboardBot {
   }
 
   public boolean hasPermissionInChannel(TextChannel textChannel, Permission p) {
-    if (textChannel == null || textChannel.getGuild() == null) return false;
+    if (textChannel == null) {
+      return false;
+    } else {
+      textChannel.getGuild();
+    }
     String id = bot.getSelfUser().getId();
     Member self = textChannel.getGuild().getMemberById(id);
-    return PermissionUtil.checkPermission(textChannel, self, p);
+    return self != null && PermissionUtil.checkPermission(textChannel, self, p);
   }
 
   public boolean hasPermissionInVoiceChannel(
     VoiceChannel voiceChannel, Permission p) {
-    if (voiceChannel == null || voiceChannel.getGuild() == null) return false;
+    if (voiceChannel == null) {
+      return false;
+    } else {
+      voiceChannel.getGuild();
+    }
     String id = bot.getSelfUser().getId();
     Member self = voiceChannel.getGuild().getMemberById(id);
-    return PermissionUtil.checkPermission(voiceChannel, self, p);
+    return self != null && PermissionUtil.checkPermission(voiceChannel, self, p);
   }
 
   public String getBotName() {
@@ -724,7 +700,7 @@ public class SoundboardBot {
     List<Guild> guilds = new LinkedList<>();
     for (Guild guild : getGuilds()) {
       List<Member> members = guild.getMembersByName(user.getName(), false);
-      if (members != null && !members.isEmpty()) guilds.add(guild);
+      if (!members.isEmpty()) guilds.add(guild);
     }
     return guilds;
   }
@@ -775,14 +751,6 @@ public class SoundboardBot {
             nointerrupt));
   }
 
-  private void playYouTube(String videoID, Guild guild) {
-    AudioManager audio = guild.getAudioManager();
-    if (audio.isSelfMuted()) return;
-    AudioTrackScheduler scheduler = getSchedulerForGuild(guild);
-    JDALogger.getLog("Bot").info("Sending request for '" + videoID + "' to AudioManager");
-    scheduler.load(videoID, new AudioHandler(audio.getSendingHandler()));
-  }
-
   private void initSettings(Guild guild) {
     Setting mod = dispatcher.getSetting("permit_moderation", guild);
     Setting defaultRole = dispatcher.getSetting("default_role", guild);
@@ -831,20 +799,26 @@ public class SoundboardBot {
         JDALogger.getLog("Bot").info("Connecting: " + guild.getName());
         initSettings(guild);
       }
-      slashCommands = bot.updateCommands();
-      ChatListener chatListener = new ChatListener(this, slashCommands);
+
+      // Initialize listeners.
+      ChatListener chatListener = new ChatListener(this, bot.updateCommands());
       MoveListener moveListener = new MoveListener(this);
       GameListener gameListener = new GameListener(this);
       GuildUserListener guildListener = new GuildUserListener(this, rules);
+
+      // Register listeners.
       addListener(chatListener);
       addListener(moveListener);
       addListener(gameListener);
       addListener(guildListener);
+      this.chatListener = chatListener;
+
+      // Set to DND mode and set random game name.
       bot.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
       Reusables.setRandomGame(this);
+
       JDALogger.getLog("Bot").info("Finished initializing bot with name " + 
         getBotName());
-      this.chatListener = chatListener;
     } catch (LoginException | IllegalArgumentException |
                InterruptedException e) {
       JDALogger.getLog("Bot").error("Could not completely initialize bot " + 
